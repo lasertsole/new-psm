@@ -1,0 +1,24 @@
+#开发环境申明
+spring:
+  profiles: dev
+  #多媒体文件所在文件夹
+  resource:
+    static-locations: classpath:../../src/main/resources/static/
+
+#redis的主机ip及端口
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+#mysql数据库连接配置
+  datasource:
+    druid:
+      url: jdbc:mysql:///psm?serverTimezone=UTC
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+#服务器地址及端口
+server:
+  port: 8000
+  address: 127.0.0.1
