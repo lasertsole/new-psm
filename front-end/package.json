@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "gsap": "^3.12.5",
+    "mitt": "^3.0.1",
     "nuxt": "^3.12.4",
     "pinia": "^2.1.7",
-    "vue": "latest"
+    "swiper": "^8.4.7",
+    "vue": "latest",
+    "vue-awesome-swiper": "^5.0.1"
   },
   "overrides": {
     "vue": "latest"

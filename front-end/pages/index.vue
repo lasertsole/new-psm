@@ -1,42 +1,60 @@
 <template>
-   <div>
-      <NuxtLayout name="tool">
-         <div class="text-red-400">工具页模板xxxxxx</div>
-         <el-button type="primary" size="default" @click="buttonClick">测试存储按钮</el-button>
-      </NuxtLayout>
+   <div class="indexPage">
+       <div class="top">
+           <div class="info">
+               <div class="title">找好切片MAN，完成需求，一举两得</div>
+           </div>
+       </div>
+       <div class="bottom">
+           <IndexPageCarousel
+               :carouselProcessArr="carouselProcessArr"
+           >
+           </IndexPageCarousel>
+       </div>
    </div>
 </template>
 
-<script setup>
-   import { useLocalStore } from '@/store/useLocalStore' 
-
-   const localStore = useLocalStore()
-
-   const buttonClick=()=>
-   {
-      console.log(localStore.name)
-      console.log(localStore.age)
-   }
-   //浏览器执行
-   if(process.client)
-   {
-      //localStore
-      localStore.setName("localStore存储测试")
-      localStore.setAge(18)
-   }
-   //前端服务器执行
-   if(process.server)
-   {
-      console.log("服务器执行")
-   }
-   console.log("测试") //client,server都会执行
+<script lang="ts" setup>
+   const carouselProcessArr:string[] = ['/carousel/bg-1.jpg', '/carousel/bg-2.jpg', '/carousel/bg-3.jpg'];
 </script>
 
-<style scoped lang="scss">
-   .index{
-      color:red;
-      .div{
-         color:blue;
-      }
+<style lang="scss" scoped>
+   @mixin fullContain{
+       width: 100%;
+       height: 100%;
+   }
+   .indexPage{
+       @include fullContain;
+       position: relative;
+       z-index: 1;
+       .top{
+           @include fullContain;
+           position: absolute;
+           z-index: 1;
+           background-color: rgba($color: #000000, $alpha: .2);
+           display: flex;
+           flex-direction: column;
+           justify-content: center;
+           align-items: center;
+           .info{
+               max-width: 700px;
+               height: 370px;
+               display: flex;
+               flex-direction: column;
+               justify-content: center;
+               align-items: center;
+               .title{
+                   font-size: 34px;
+                   color: white;
+                   font-weight: bold;
+                   padding: 0px 20px;
+               }
+           }
+       }
+       .bottom{
+           @include fullContain;
+           position: relative;
+           z-index: 0;
+       }
    }
 </style>
