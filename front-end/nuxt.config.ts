@@ -23,4 +23,28 @@ export default defineNuxtConfig({
       ]
     }
   },
+  vite: {
+    resolve: {
+      alias: {
+        '~': resolve(__dirname, './'),
+        '@': resolve(__dirname, './'),
+      },
+    },
+  },
+  nitro: {
+    devProxy: {
+      "/api": {
+        target: process.env.VITE_API_BASE_URL, // 这里是接口地址
+        changeOrigin: true,
+        prependPath: true,
+      },
+    }
+  },
+  runtimeConfig: {
+    public: {
+      baseURL: process.env.VITE_BASE_URL,
+      apiBaseURL: "/api"
+    }
+  }
 })
+

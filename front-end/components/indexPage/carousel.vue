@@ -19,7 +19,7 @@
 		>
             <template v-for="item in carouselProcessArr">
                 <swiper-slide>
-                    <img :src="item"/>
+                     <div class="image" :style="`background-image: url(${item});`"></div>
                 </swiper-slide>
             </template>
 		</swiper>
@@ -43,33 +43,35 @@
 </script>
 
 <style lang="scss" scoped>
+    @use "sass:math";
+    @import "@/common.scss";
     .swiperBox{
-        width: 100%;
-        height: 100%;
+        @include fullInParent;
         .Swiper{
-            width: 100%;
-            height: 100%;
-            img{
+            @include fullInParent;
+            .image{
+                @include fullInParent;
                 object-fit: cover;
-                width: 100%;
-                height: 100%;
+                background-position: center;
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-clip: border-box;
             }
         }
-    }
-</style>
-<style lang="scss">
-    .swiper-pagination{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .swiper-pagination-bullet-active{
-            width: 16px;
-            height: 16px;
-            background-image: url(icons/eatBean.svg);
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: transparent;
+
+        :deep(.swiper-pagination){
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .swiper-pagination-bullet-active{
+                width: 16px;
+                height: 16px;
+                background-image: url(icons/eatBean.svg);
+                background-size: 100% 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: transparent;
+            }
         }
     }
 </style>

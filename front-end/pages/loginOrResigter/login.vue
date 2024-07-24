@@ -2,7 +2,7 @@
     <form class="login">
         <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="手机号" v-model="userInfo.phone" clearable/>
         <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="密码" v-model="userInfo.password" clearable/>
-        <el-button type="primary">登录</el-button>
+        <el-button type="primary" @click="submit()">登录</el-button>
         <div class="select">
             <NuxtLink to="register">注册新账号</NuxtLink>
             <span>忘记密码</span>
@@ -29,6 +29,11 @@
         phone: "",
         password: "",
     });
+
+    function submit(){
+        const { data, error, refresh } = useApiFetch("userState/test");
+        alert(data);
+    }
 </script>
 
 <style lang="scss" scoped>

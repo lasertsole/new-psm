@@ -39,6 +39,7 @@
         @include fullViewWindow;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         header{
             transition: height .3s linear;
             position: relative;

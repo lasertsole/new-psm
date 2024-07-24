@@ -1,16 +1,16 @@
 <template>
    <div class="indexPage">
-       <div class="top">
-           <div class="info">
+        <div class="top">
+            <div class="info">
                <div class="title">找好切片MAN，完成需求，一举两得</div>
            </div>
-       </div>
-       <div class="bottom">
-           <IndexPageCarousel
-               :carouselProcessArr="carouselProcessArr"
-           >
-           </IndexPageCarousel>
-       </div>
+        </div>
+        <div class="bottom">
+            <IndexPageCarousel
+                :carouselProcessArr="carouselProcessArr"
+             >
+            </IndexPageCarousel>
+        </div>
    </div>
 </template>
 
@@ -19,16 +19,15 @@
 </script>
 
 <style lang="scss" scoped>
-   @mixin fullContain{
-       width: 100%;
-       height: 100%;
-   }
-   .indexPage{
-       @include fullContain;
+    @use "sass:math";
+    @import "@/common.scss";
+
+    .indexPage{
+       @include fullInParent;
        position: relative;
        z-index: 1;
        .top{
-           @include fullContain;
+           @include fullInParent;
            position: absolute;
            z-index: 1;
            background-color: rgba($color: #000000, $alpha: .2);
@@ -51,10 +50,10 @@
                }
            }
        }
-       .bottom{
-           @include fullContain;
+        .bottom{
+           @include fullInParent;
            position: relative;
            z-index: 0;
-       }
+        }
    }
 </style>

@@ -3,5 +3,6 @@ export default defineNuxtRouteMiddleware(
     {
         if(to.path == "/loginOrResigter"|| to.path == "/loginOrResigter/"){
             return navigateTo("/loginOrResigter/login");
+        }
     }
-});
+);
