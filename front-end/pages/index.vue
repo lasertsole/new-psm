@@ -2,7 +2,7 @@
     <div>
        <NuxtLayout name="tool">
           <div class="text-red-400">工具页模板xxxxxx</div>
-          <button type="primary" size="default" @click="buttonClick">测试存储按钮</button>
+          <el-button type="primary" size="default" @click="buttonClick">测试存储按钮</el-button>
        </NuxtLayout>
     </div>
  </template>

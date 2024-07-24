@@ -19,6 +19,7 @@
     "vue": "latest"
   },
   "devDependencies": {
+    "@element-plus/nuxt": "^1.0.9",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1"
   }
 }
