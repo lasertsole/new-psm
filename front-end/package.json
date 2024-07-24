@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.9",
-    "@pinia-plugin-persistedstate/nuxt": "^1.2.1"
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
+    "sass": "^1.77.8"
   }
 }
