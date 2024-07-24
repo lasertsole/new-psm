@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="right">
-                <HeaderLoginOrlogout></HeaderLoginOrlogout>
+                <HeaderUserState></HeaderUserState>
             </div>
         </header>
         <main>

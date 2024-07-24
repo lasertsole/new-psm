@@ -1,8 +1,8 @@
 <template>
      <!-- 登录注册按钮 -->
      <div v-if="!isOnline" class="loginOrRegister">
-        <router-link to="#" class="login">登录</router-link>
-        <router-link to="#" class="register">注册</router-link>
+        <NuxtLink to="/loginOrResigter/login" class="login">登录</NuxtLink>
+        <NuxtLink to="/loginOrResigter/register" class="register">注册</NuxtLink>
     </div>
     <ul class="userTool" v-else>
         111
