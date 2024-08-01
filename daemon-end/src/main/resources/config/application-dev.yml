@@ -1,14 +1,27 @@
 #开发环境申明
 spring:
   profiles: dev
-  #多媒体文件所在文件夹
-  resource:
-    static-locations: classpath:../../src/main/resources/static/
 
 #redis的主机ip及端口
   redis:
     host: 127.0.0.1
     port: 6379
+    lettuce:
+      pool:
+        #最大连接数
+        max-active: 8
+        #最大阻塞等待时间数（负数表示没有限制）
+        max-wait: -1
+        #最大空闲
+        max-idle: 8
+        #最小空闲
+        min-idle: 0
+      #连接超时时间
+      timeout: 10000
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 #mysql数据库连接配置
   datasource:
@@ -22,3 +35,13 @@ spring:
 server:
   port: 8000
   address: 127.0.0.1
+
+#mybaitis-plus配置
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: tb_
+  configuration:
+    map-underscore-to-camel-case: true #开启驼峰命名
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #日志配置
+  type-aliases-package: com.psm.domain

@@ -17,22 +17,8 @@
 	</parent>
 
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 	</properties>
-
-	<!--依赖管理器-->
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.netflix.graphql.dgs</groupId>
-				<artifactId>graphql-dgs-platform-dependencies</artifactId>
-				<!-- The DGS BOM/platform dependency. This is the only place you set version of DGS -->
-				<version>4.9.16</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<!--springboot构建器-->
 	<build>
@@ -42,28 +28,10 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources/static</directory>
-				<excludes>
-					<!--用户头像不需要保存在目标文件内-->
-					<exclude>images/userProfile/**</exclude>
-
-					<!--用户视频不需要保存在目标文件内-->
-					<exclude>Video/**</exclude>
-				</excludes>
-			</resource>
-		</resources>
 	</build>
 
 	<!--依赖项-->
 	<dependencies>
-		<!--IO工具类-->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-		</dependency>
 
 		<!--web开发的起步依赖-->
 		<dependency>
@@ -78,18 +46,18 @@
 			<version>8.0.17</version>
 		</dependency>
 
-		<!--mybatis-plus依赖-->
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus</artifactId>
-			<version>3.5.7</version>
-		</dependency>
-
 		<!--druid数据库连接池起步依赖-->
 		<dependency>
 			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.2.23</version>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.2.20</version>
+		</dependency>
+
+		<!--mybatis-plus依赖-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+			<version>3.5.7</version>
 		</dependency>
 
 		<!--redis起步依赖-->
@@ -109,6 +77,52 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
+		<!--引入springsecurity依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!--引入fastjson依赖-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.33</version>
+		</dependency>
+
+		<!--引入jjwt依赖-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+		<!--引入数据校验依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!--引入redis依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!--IO工具类-->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<!--单元测试依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
