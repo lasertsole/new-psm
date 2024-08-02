@@ -1,0 +1,118 @@
+package com.psm.service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.psm.domain.User;
+import com.psm.mapper.UserMapper;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+import java.util.Map;
+
+@SpringBootTest
+public class UserServiceWrapperTest {
+    @Autowired
+    private UserMapper userMapper;
+
+    @Test
+    public void test01() {//测试封装查询条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("phone", "201");
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test02(){//测试封装排序条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByAsc( "phone").orderByDesc("email");
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test03(){//测试封装删除条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email","");
+        int result = userMapper.delete(queryWrapper);
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void test04(){//测试封装更新条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.gt("phone",202).or().lt("phone",277);
+        User user = new User();
+        user.setPhone("222");
+        int result = userMapper.update(user,queryWrapper);
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void test05(){//测试封装条件优先级
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        //lambda表达式中的条件优先执行
+        queryWrapper.like("name","ybc").and(i->i.gt("phone",110).or().eq("email",""));
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test06(){//测试查询有限字段
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id","name","phone");
+        List<Map<String, Object>> maps= userMapper.selectMaps(queryWrapper);
+        maps.forEach(System.out::println);
+    }
+
+    @Test
+    public void test07(){//测试子查询
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.inSql("id","select id from tb_user where phone > '111'");
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test08(){//测试updateWrapper,同test04
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("phone","111").set("phone","222");
+        int result = userMapper.update(null,updateWrapper);
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void test09(){//测试condition查询
+        String name = "a";
+        String phone = "111";
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(name!=null,"name",name).eq(phone!=null,"phone",phone);
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test10(){//LambdaQueryWrapper写法
+        String name = "a";
+        String phone = "111";
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(name!=null,User::getName,name).eq(phone!=null,User::getPhone,phone);
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test11(){//LambdaUpdateWrapper写法
+        String name = "a";
+        String phone = "111";
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.like(User::getName,"ybc").and(i->i.gt(User::getPhone,110).or().eq(User::getEmail,""));
+        int result = userMapper.update(null,updateWrapper);
+        System.out.println("result = " + result);
+    }
+
+}

@@ -40,8 +40,15 @@ server:
 mybatis-plus:
   global-config:
     db-config:
-      table-prefix: tb_
+      table-prefix: tb_ #数据表前缀
+
+      logic-delete-field: deleted #全局逻辑删除的实体字段名
+      logic-delete-value: 1 #逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 #逻辑未删除值(默认为 0)
   configuration:
     map-underscore-to-camel-case: true #开启驼峰命名
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #日志配置
+  #实体类所对应的包
   type-aliases-package: com.psm.domain
+  #扫描通用枚举的包
+  type-enums-package: com.psm.enums
