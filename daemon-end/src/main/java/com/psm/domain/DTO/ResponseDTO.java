@@ -1,10 +1,10 @@
-package com.psm.domain;
+package com.psm.domain.DTO;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
-public class ResponseResult<T> {
+public class ResponseDTO<T> {
     /**
      *状态码
      */
@@ -20,18 +20,18 @@ public class ResponseResult<T> {
      */
     private T data;
 
-    public ResponseResult(T data) {
+    public ResponseDTO(T data) {
         this.code = HttpStatus.OK.value();
         this.data = data;
         this.msg = "success";
     }
 
-    public ResponseResult(HttpStatus httpStatus, String msg) {
+    public ResponseDTO(HttpStatus httpStatus, String msg) {
         this.code = httpStatus.value();
         this.msg = msg;
     }
 
-    public ResponseResult(HttpStatus httpStatus, String msg, T data) {
+    public ResponseDTO(HttpStatus httpStatus, String msg, T data) {
         this.code = httpStatus.value();
         this.msg = msg;
         this.data = data;

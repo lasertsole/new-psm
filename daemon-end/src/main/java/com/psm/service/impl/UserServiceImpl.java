@@ -2,7 +2,7 @@ package com.psm.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.LoginUser;
-import com.psm.domain.ResponseResult;
+import com.psm.domain.DTO.ResponseDTO;
 import com.psm.domain.User;
 import com.psm.mapper.UserMapper;
 import com.psm.service.UserService;
@@ -71,7 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param username
      * @return ResponseResult
      */
-    public ResponseResult login(User user) {
+    public ResponseDTO login(User user) {
         //AuthenticationManager authenticate进行认证
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword());
@@ -88,15 +88,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             map.put("token",jwt);
             redisCache.setCacheObject("login:"+id,loginUser,1, TimeUnit.DAYS);
 
-            return new ResponseResult(HttpStatus.OK,"登录成功",map);
+            return new ResponseDTO(HttpStatus.OK,"登录成功",map);
         } catch (LockedException e){
-            return new ResponseResult(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
         } catch (BadCredentialsException e) {
-            return new ResponseResult(HttpStatus.UNAUTHORIZED,"认证失败");
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"认证失败");
         } catch (DisabledException e){
-            return new ResponseResult(HttpStatus.FORBIDDEN,"账号被禁用");
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"账号被禁用");
         } catch (Exception e) {
-            return new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
         }
     }
 
@@ -106,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return ResponseResult
      */
     @Override
-    public ResponseResult logout() {
+    public ResponseDTO logout() {
         try {
             //获取SecurityContextHolder中的用户id
             UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -115,17 +115,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             //根据用户id删除redis中的用户信息
             redisCache.deleteObject("login:"+id);
-            return new ResponseResult<>(HttpStatus.OK,"注销成功");
+            return new ResponseDTO<>(HttpStatus.OK,"注销成功");
         }
         catch (RuntimeException e){
-            return new ResponseResult<>(HttpStatus.BAD_REQUEST,"注销失败");
+            return new ResponseDTO<>(HttpStatus.BAD_REQUEST,"注销失败");
         }
         catch (Exception e){
-            return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
+            return new ResponseDTO<>(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
         }
     }
 
-    public ResponseResult register(User user) {
+    public ResponseDTO register(User user) {
         return null;
     }
 }
