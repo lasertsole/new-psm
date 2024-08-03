@@ -31,11 +31,33 @@ public class JWTUtil {
 
     /**
      * 生成jwt
+     *
+     * @param subject
+     * @return String jwt密文
+     */
+    public static String createJWT(String subject){
+        return createJWT(subject, null, getUUID());// 设置过期时间
+    }
+
+    /**
+     * 生成jwt
+     *
      * @param subject token中要存放的数据（json格式）
      * @param ttlMillis token超时时间
-     * @return
+     * @return String jwt密文
      */
-    public static String createJWT(String id,String subject, Long ttlMillis){
+    public static String createJWT(String subject, Long ttlMillis){
+        return createJWT(subject, ttlMillis, getUUID());
+    }
+
+    /**
+     * 生成jwt
+     *
+     * @param subject token中要存放的数据（json格式）
+     * @param ttlMillis token超时时间
+     * @return String jwt密文
+     */
+    public static String createJWT(String subject, Long ttlMillis, String id){
         JwtBuilder builder = getJwtBuilder(subject, ttlMillis, id);// 设置过期时间
         return builder.compact();
     }
@@ -67,6 +89,7 @@ public class JWTUtil {
 
     /**
      * 解析jwt
+     *
      * @param jwt
      * @return
      * @throws Exception
