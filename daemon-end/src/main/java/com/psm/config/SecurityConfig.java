@@ -1,5 +1,7 @@
 package com.psm.config;
 
+import com.psm.filter.JwtAuthenticationTokenFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Autowired
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -33,8 +38,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 //放行登录接口
-                .antMatchers("/user/test","/user/login","/user/register").permitAll()
+                .antMatchers("/user/test").permitAll()
+                //匿名状态下才能访问登录注册接口
+                .antMatchers("/user/login","/user/register").anonymous()
                 //其他接口都需要认证
                 .anyRequest().authenticated();
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

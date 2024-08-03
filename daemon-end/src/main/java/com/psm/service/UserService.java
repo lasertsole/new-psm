@@ -12,4 +12,18 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResponseResult login(User user);
+
+    /**
+     * 退出登录
+     *
+     * @return
+     */
+    ResponseResult logout();
+
+    /**
+     * 注册
+     *
+     * @return
+     */
+    ResponseResult register(User user);
 }

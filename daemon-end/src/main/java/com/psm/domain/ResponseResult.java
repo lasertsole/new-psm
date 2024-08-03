@@ -1,6 +1,7 @@
 package com.psm.domain;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 @Data
 public class ResponseResult<T> {
@@ -19,18 +20,19 @@ public class ResponseResult<T> {
      */
     private T data;
 
-    public ResponseResult(Integer code, String msg) {
-        this.code = code;
+    public ResponseResult(T data) {
+        this.code = HttpStatus.OK.value();
+        this.data = data;
+        this.msg = "success";
+    }
+
+    public ResponseResult(HttpStatus httpStatus, String msg) {
+        this.code = httpStatus.value();
         this.msg = msg;
     }
 
-    public ResponseResult(Integer code, T data) {
-        this.code = code;
-        this.data = data;
-    }
-
-    public ResponseResult(Integer code, String msg, T data) {
-        this.code = code;
+    public ResponseResult(HttpStatus httpStatus, String msg, T data) {
+        this.code = httpStatus.value();
         this.msg = msg;
         this.data = data;
     }

@@ -9,9 +9,10 @@ import com.psm.service.UserService;
 import com.psm.utils.JWTUtil;
 import com.psm.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,7 +43,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * SpringSecurity会自动调用这个方法进行用户名密码校验
      *
      * @param username
-     * @return
+     * @return UserDetails
      * @throws UsernameNotFoundException
      */
     @Override
@@ -50,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 根据用户名查询用户信息
         LambdaQueryWrapper<User> quryWrapper = new LambdaQueryWrapper<>();
         quryWrapper.eq(User::getName, username);
-        User user =  userMapper.selectOne(quryWrapper);
+        User user = userMapper.selectOne(quryWrapper);
 
         // 如果没有查询到用户抛出异常
         if (Objects.isNull(user)){
@@ -59,36 +60,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //TODO 查询用户对应权限
 
-
         //把用户信息封装成UserDetails对象返回
         return new LoginUser(user);
     }
 
-    public boolean register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return this.save(user);
-    }
+    @Override
+    /**
+     * 登录
+     *
+     * @param username
+     * @return ResponseResult
+     */
     public ResponseResult login(User user) {
         //AuthenticationManager authenticate进行认证
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword());
+            Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
-        //如果认证没通过，给出对应提示
-        if(Objects.isNull(authenticate)){
-            throw new RuntimeException("登录失败");
+            //如果认证通过了，使用id生成jwt
+            LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+            User loginUserInfo = loginUser.getUser();
+            String id = loginUserInfo.getId().toString();
+            String jwt = JWTUtil.createJWT(id);
+
+            //把完整信息存入redis，id作为key
+            Map<String, Object> map = new HashMap<>();
+            map.put("token",jwt);
+            redisCache.setCacheObject("login:"+id,loginUser,1, TimeUnit.DAYS);
+
+            return new ResponseResult(HttpStatus.OK,"登录成功",map);
+        } catch (LockedException e){
+            return new ResponseResult(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+        } catch (BadCredentialsException e) {
+            return new ResponseResult(HttpStatus.UNAUTHORIZED,"认证失败");
+        } catch (DisabledException e){
+            return new ResponseResult(HttpStatus.FORBIDDEN,"账号被禁用");
+        } catch (Exception e) {
+            return new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
         }
+    }
 
-        //如果认证通过了，使用id生成jwt
-        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        User loginUserInfo = loginUser.getUser();
-        String id = loginUserInfo.getId().toString();
-        String jwt = JWTUtil.createJWT(id);
+    /**
+     * 退出登录
+     *
+     * @return ResponseResult
+     */
+    @Override
+    public ResponseResult logout() {
+        try {
+            //获取SecurityContextHolder中的用户id
+            UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+            Long id = loginUser.getUser().getId();
 
-        //把完整信息存入redis，id作为key
-        Map<String, Object> map = new HashMap<>();
-        map.put("token",jwt);
-        redisCache.setCacheObject("login:"+id,loginUser,1, TimeUnit.DAYS);
+            //根据用户id删除redis中的用户信息
+            redisCache.deleteObject("login:"+id);
+            return new ResponseResult<>(HttpStatus.OK,"注销成功");
+        }
+        catch (RuntimeException e){
+            return new ResponseResult<>(HttpStatus.BAD_REQUEST,"注销失败");
+        }
+        catch (Exception e){
+            return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
+        }
+    }
 
-        return new ResponseResult(200, "登录成功", map);
+    public ResponseResult register(User user) {
+        return null;
     }
 }
