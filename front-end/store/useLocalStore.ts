@@ -1,15 +1,26 @@
 import { defineStore } from 'pinia';
 
 interface State {
+    token:string,
     name:string,
     age:number
 }
-export const useLocalStore = defineStore('localStore', {/*localStore(key),不同内容可以新建不同文件设置不同key*/
+const useLocalStore = defineStore('localStore', {/*localStore(key),不同内容可以新建不同文件设置不同key*/
     state: (): State => ({
+        token: '',
         name: '',
         age:0,
     }),
     actions: {
+        login: function(name:string, password:string): void {
+            let result = useApiFetch("/user/login",{
+                method: 'post',
+                body: {
+                    name,
+                    password,
+                },
+            });
+        },
         setName(name: string) {
             this.name = name
         },
@@ -27,4 +38,6 @@ export const useLocalStore = defineStore('localStore', {/*localStore(key),不同
     persist: process.client && {
         storage: localStorage,
     },
-})
+})();
+
+export default useLocalStore;

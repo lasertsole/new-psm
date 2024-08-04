@@ -4,13 +4,55 @@
         <NuxtLink to="/loginOrResigter/login" class="login">登录</NuxtLink>
         <NuxtLink to="/loginOrResigter/register" class="register">注册</NuxtLink>
     </div>
-    <ul class="userTool" v-else>
-        111
-    </ul>
+    <div class="userTool" v-else @click="drawer = true"></div>
+    <el-drawer
+        v-model="drawer"
+        :direction="direction"
+        :modal="true"
+    >
+        <pre>
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+            1
+        </pre>
+    </el-drawer>
 </template>
 
 <script lang="ts" setup>
-    const isOnline = ref<boolean>(false);
+    import type { DrawerProps } from 'element-plus'
+    const isOnline = ref<boolean>(true);
+    const { $on } = useNuxtApp();
+
+    $on("online", () => {
+        isOnline.value = true;
+    });
+
+    const drawer = ref(false)
+    const direction = ref<DrawerProps['direction']>('ttb')
 </script>
 
 <style lang="scss">
@@ -44,132 +86,24 @@
         }
     }
     .userTool{
-        display: flex;
-        flex-direction: row;
-        font-size: 13px;
-        align-items: center;
-        padding: 10px;
-        li{
-            padding: 5px;
-            border-radius: 5px;
-            &.profile{
-                cursor: pointer;
-                background-size: 100%;
-                margin-right: 20px;
-                padding: 0px;
-                position: relative;
-                $profileSize: 35px;
-                .userProfile{
-                    @include fixedCircle($profileSize);
-                    z-index: 2;
-                    position: relative;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    transition: linear .3s;
-
-                    &.show{
-                        transform: scale(2) translateY(75%);
-                    }
-                }
-                .userDetail{
-                    opacity: 0;
-                    display: block;
-                    z-index: 1;
-                    position: absolute;
-                    background-color: white;
-                    @include fixedRoundedRectangle(200px,280px, 10px);
-                    top: 30px;
-                    left: math.div($profileSize, 2);
-                    transform: translateX(-50%);
-                    padding: math.div($profileSize, 2) + 25px 20px 10px;
-
-                    .name{
-                        display: flex;
-                        justify-content: center;
-                        font-weight: bolder;
-                    }
-
-                    .numInfo{
-                        display: flex;
-                        width: 100%;
-                        justify-content: space-around;
-                        
-                        li{
-                            cursor: pointer;
-                            width: 50%;
-
-                            &:hover{
-                                background-color: #f5f5f5;
-                                transition: .5s ease;
-                            }
-
-                            >div{
-                                display: flex;
-                                justify-content: center;
-
-                                &.top{
-                                    font-size: 16px;
-                                    font-weight: bolder;
-                                }
-                                &.bottom{
-                                    font-size: 10px;
-                                    font-weight: normal;
-                                }
-                            }
-                        }
-                    }
-
-                    .option{
-                        margin-top: 15px;
-                        li{
-                            cursor: pointer;
-                            font-weight: bold;
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            
-                            a{
-                                flex-grow: 1;
-                            }
-
-                            span{
-                                flex-grow: 1;
-                                margin-left: 10px;
-                            }
-
-                            &:hover{
-                                background-color: #f5f5f5;
-                                transition: .5s ease;
-                            }
-
-                            div,a{
-                                font-weight: inherit;
-                                color: black;
-                                display: flex;
-                                align-items: center;
-                                span{}
-
-                                img{
-                                    @include fixedSquare(15px);
-                                }
-                            }
-                        }
-                    }
-
-                    hr{
-                        margin: 10px 0px;
-                    }
-                }
-            }
+        background-image: url("/icons/menu.svg");
+        background-size: 80%;
+        background-position: center;
+        background-repeat: no-repeat;
+        @include fixedCircle(35px);
+        display: none;
+        transition: all 0.3s;
+        &:hover{
+            background-color: #d3d3d3;
         }
     }
+    $showDraw: none;
     @media screen and (max-width: 600px) {
         .loginOrRegister{
             display: none;
         }
         .userTool{
-            display: none;
+            display: block;
         }
     }
 </style>

@@ -1,16 +1,51 @@
 <template>
-    <form class="login">
-        <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="手机号" v-model="userInfo.phone" clearable/>
-        <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="密码" v-model="userInfo.password" clearable/>
-        <el-button type="primary" @click="submit()">登录</el-button>
+    <el-form class="login"
+        :rules="rules"
+        :model="userInfo"
+    >
+        <el-form-item prop="name">
+            <el-input
+                :maxlength="12"
+                placeholder="用户名"
+                v-model="userInfo.name"
+                autocomplete="off"
+                clearable
+                style="margin-bottom: 0px;"
+            />
+        </el-form-item>
+
+        <el-form-item prop="password">
+            <el-input
+                type="password"
+                :maxlength="12"
+                placeholder="密码"
+                v-model="userInfo.password"
+                autocomplete="off"
+                clearable
+                style="margin-bottom: 0px;"
+            />
+        </el-form-item>
+
+        <el-form-item>
+            <el-button
+                type="primary"
+                @click="submit()"
+            >
+                登录
+            </el-button>
+        </el-form-item>
+
         <div class="select">
             <NuxtLink to="register">注册新账号</NuxtLink>
             <span>忘记密码</span>
         </div>
-    </form>
+
+    </el-form>
 </template>
 
 <script lang="ts" setup>
+    import type { FormInstance, FormRules } from 'element-plus'
+
     definePageMeta({
         keepalive:true,
         pageTransition:{
@@ -19,20 +54,57 @@
         }
     })
 
+    const ruleFormRef = ref<FormInstance>()
+
     type UserInfo = {
-        phone: string;
+        name: string;
         password: string;
-        repassword?:"";
     };
 
     const userInfo:UserInfo = reactive({
-        phone: "",
+        name: "",
         password: "",
     });
 
+    let flagName = false;
+    const validateName = (rule: any, value: any, callback: any) => {
+        if (value == '') {
+            callback(new Error('请输入用户名'));
+            flagName = false;
+        } else if (value.length < 3 || value.length > 12) {
+            callback(new Error('无效用户名'));
+            flagName = false;
+        }
+        else{
+            flagName = true;
+        }
+    }
+
+    let flagPass = true;
+    const validatePass = (rule: any, value: string, callback: any) => {
+        if (value == '') {
+            callback(new Error('请输入密码'));
+            flagPass = false;
+        } else if (value.length < 6 || value.length > 16) {
+            callback(new Error('无效密码'));
+            flagPass = false;
+        }
+        else{
+            if(userInfo.name != ""){
+                flagPass = true;
+            }
+        }
+    }
+
+    const rules = reactive<FormRules<UserInfo>>({
+        name: [{ validator: validateName, trigger: 'blur' }],
+        password: [{ validator: validatePass, trigger: 'blur' }],
+    })
+
     function submit(){
-        const { data, error, refresh } = useApiFetch("userState/test");
-        alert(data);
+        if(flagName&&flagPass){
+            login(userInfo.name, userInfo.password);
+        }
     }
 </script>
 
@@ -42,6 +114,14 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        :deep(.el-form-item){
+            width: 100%;
+            .el-input{
+                height: 50px;
+            }
+        }
+
         .select{
             width: 100%;
             font-size: 14px;

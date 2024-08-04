@@ -1,9 +1,9 @@
 <template>
     <form class="register">
-        <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="手机号" v-model="userInfo.phone" clearable/>
+        <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="用户名" v-model="userInfo.name" clearable/>
         <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="密码" type="password" v-model="userInfo.password" clearable/>
         <el-input :input-style="{lineHeight:'48px',minHeight:'48px'}" :maxlength="12" placeholder="确认密码" type="password" v-model="userInfo.repassword" clearable/>
-        <div class="contract">请确认您已同意 <NuxtLink to="#">《喵剪辑服务协议》</NuxtLink></div>
+        <!-- <div class="contract">请确认您已同意 <NuxtLink to="#">《喵剪辑服务协议》</NuxtLink></div> -->
         <el-button type="primary">注册</el-button>
         <NuxtLink to="login" class="backLogin">已有账号?点击登录</NuxtLink>
     </form>
@@ -19,16 +19,18 @@
     })
 
     type UserInfo = {
-        phone: string;
+        name: string;
         password: string;
         repassword?:"";
     };
 
     const userInfo:UserInfo = reactive({
-        phone: "",
+        name: "",
         password: "",
         repassword:""
     });
+
+    
 </script>
 
 <style lang="scss" scoped>

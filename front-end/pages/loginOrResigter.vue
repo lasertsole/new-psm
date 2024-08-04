@@ -52,6 +52,8 @@
                     @include fixedSquare(60px);
                     background-image: url(/images/psmlogo.png);
                     background-size: 100%;
+                    margin-right: 10px;
+                    background-position: center;
                 }
                 
                 &-text{
