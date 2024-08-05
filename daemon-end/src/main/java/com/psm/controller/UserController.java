@@ -2,7 +2,7 @@ package com.psm.controller;
 
 import com.psm.domain.DTO.UserDTO;
 import com.psm.domain.DTO.ResponseDTO;
-import com.psm.domain.User;
+import com.psm.domain.DAO.UserDAO;
 import com.psm.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ public class UserController {
         return new ResponseDTO<>(HttpStatus.OK, "test");
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login")//登录
     public ResponseDTO login(@Valid @RequestBody UserDTO userDto){
-        User user = new User();
+        UserDAO user = new UserDAO();
         BeanUtils.copyProperties(userDto, user);
         return userService.login(user);
     }
@@ -40,9 +40,11 @@ public class UserController {
         return userService.logout();
     }
 
-//    @PostMapping("/register")
-//    public ResponseResult register(@RequestBody User user){
-//        //注册
-//        return userService.register(user);
-//    }
+    @PostMapping("/register")
+    public ResponseDTO register(@Valid @RequestBody UserDTO userDto){
+        //注册
+        UserDAO user = new UserDAO();
+        BeanUtils.copyProperties(userDto, user);
+        return userService.register(user);
+    }
 }

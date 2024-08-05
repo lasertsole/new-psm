@@ -1,6 +1,6 @@
 package com.psm.service;
 
-import com.psm.domain.User;
+import com.psm.domain.DAO.UserDAO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,9 +21,9 @@ public class UserServiceTest {
 
     @Test
     public void testInsertAll(){
-        List<User> list = new ArrayList<>();
+        List<UserDAO> list = new ArrayList<>();
         for (int i = 1; i<=10; i++){
-            User user = new User();
+            UserDAO user = new UserDAO();
             user.setPhone("20"+i);
             user.setName("ybc"+i);
             user.setPassword("555");

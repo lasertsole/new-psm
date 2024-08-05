@@ -31,8 +31,19 @@ public class ResponseDTO<T> {
         this.msg = msg;
     }
 
+    public ResponseDTO(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     public ResponseDTO(HttpStatus httpStatus, String msg, T data) {
         this.code = httpStatus.value();
+        this.msg = msg;
+        this.data = data;
+    }
+
+    public ResponseDTO(Integer code, String msg, T data) {
+        this.code = code;
         this.msg = msg;
         this.data = data;
     }

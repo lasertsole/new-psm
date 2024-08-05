@@ -1,6 +1,6 @@
 package com.psm.mapper;
 
-import com.psm.domain.User;
+import com.psm.domain.DAO.UserDAO;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ public class UserMapperTest {
 
     @Test
     public void testInsert(){
-        User user = new User();
+        UserDAO user = new UserDAO();
         user.setName("张三");
         user.setPassword("123456");
         user.setPhone("12345678901");
@@ -30,7 +30,7 @@ public class UserMapperTest {
 
     @Test
     public void testUpdate(){
-        User user = new User();
+        UserDAO user = new UserDAO();
         user.setId(1L);
         user.setName("张三");
         user.setPassword("123456");

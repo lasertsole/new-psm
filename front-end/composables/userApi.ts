@@ -1,24 +1,52 @@
-import useApiFetch from '@/composables/useApiFetch'
-const { $emit } = useNuxtApp();
-export function login(name:string, password:string):void{
-    let {data} = useApiFetch("/user/login",{
-        method: 'post',
-        body: {
+export async function login(name:string, password:string):Promise<Boolean>{
+    const res:any = await getFetchData({
+        url: '/user/login',
+        opts: {
             name,
             password,
         },
+        method: 'post',
     });
-
-    $emit('online');//登录后全局发送登录事件
+    if(res.code==200){
+        ElMessage.success('登录成功');
+        if(process.client)
+        {
+            localStorage.setItem('token', res.data.token);
+            localStorage.setItem('online', 'true');
+        }
+        return true;
+    }
+    else{
+        ElMessage.error('登录失败:'+res.msg);
+        if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+        localStorage.setItem('online', 'false');
+        return false;
+    }
 }
 
-export function register(name:string, password:string):void{
-    let {data} = useApiFetch("/user/register",{
-        method: 'post',
-        body: {
+export async function register(name:string, password:string, email:string):Promise<Boolean>{
+    const res:any = await getFetchData({
+        url: '/user/register',
+        opts: {
             name,
             password,
+            email
         },
+        method: 'post',
     });
-    console.log(data);
+    if(res.code==200){
+        ElMessage.success('注册成功');
+        if(process.client)
+        {
+            localStorage.setItem('token', res.data.token);
+            localStorage.setItem('online', 'true');
+        }
+        return true;
+    }
+    else{
+        ElMessage.error('注册失败:'+res.msg);
+        if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+        localStorage.setItem('online', 'false');
+        return false;
+    }
 }

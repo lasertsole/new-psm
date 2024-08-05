@@ -1,7 +1,8 @@
-package com.psm.domain;
+package com.psm.domain.DAO;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
 import com.psm.enums.SexEnum;
 import lombok.AllArgsConstructor;
@@ -13,16 +14,19 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
-    private static final long serialVersionUID = -4678091231437634330L;
+@TableName("tb_user")
+public class UserDAO implements Serializable {
+    private static final long serialVersionUID = -2388883145401911525L;
 
     @TableId
     private Long id;
     private String name;
     private String password;
     private String phone;
+    private String avatar;
     private String email;
     private SexEnum sex;
+    private String profile;
     private String createTime;
     private String modifyTime;
 

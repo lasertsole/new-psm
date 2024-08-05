@@ -25,7 +25,7 @@
 
     const tabBarArr = ref<RouterInfo[]>([
         {text:"首页", linkTo:"#"},
-        {text:"橱窗", linkTo:"#"},
+        {text:"橱窗", linkTo:"/showcase"},
         {text:"企划", linkTo:"#"},
         {text:"作品", linkTo:"#"},
     ])

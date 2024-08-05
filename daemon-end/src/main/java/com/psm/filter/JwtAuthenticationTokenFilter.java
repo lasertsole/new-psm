@@ -1,6 +1,6 @@
 package com.psm.filter;
 
-import com.psm.domain.LoginUser;
+import com.psm.domain.Auth.LoginUser;
 import com.psm.utils.JWTUtil;
 import com.psm.utils.RedisCache;
 import io.jsonwebtoken.Claims;

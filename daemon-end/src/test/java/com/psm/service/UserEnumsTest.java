@@ -1,6 +1,6 @@
 package com.psm.service;
 
-import com.psm.domain.User;
+import com.psm.domain.DAO.UserDAO;
 import com.psm.enums.SexEnum;
 import com.psm.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ public class UserEnumsTest {
     UserMapper userMapper;
     @Test
     public void testEnum(){//测试枚举类型
-        User user = new User();
+        UserDAO user = new UserDAO();
         user.setSex(SexEnum.MALE);
         user.setPhone("123");
         user.setEmail("123");

@@ -2,6 +2,7 @@
     <el-form class="login"
         :rules="rules"
         :model="userInfo"
+        ref="ruleFormRef"
     >
         <el-form-item prop="name">
             <el-input
@@ -10,7 +11,6 @@
                 v-model="userInfo.name"
                 autocomplete="off"
                 clearable
-                style="margin-bottom: 0px;"
             />
         </el-form-item>
 
@@ -22,14 +22,13 @@
                 v-model="userInfo.password"
                 autocomplete="off"
                 clearable
-                style="margin-bottom: 0px;"
             />
         </el-form-item>
 
         <el-form-item>
             <el-button
                 type="primary"
-                @click="submit()"
+                @click="submit(ruleFormRef)"
             >
                 登录
             </el-button>
@@ -45,6 +44,8 @@
 
 <script lang="ts" setup>
     import type { FormInstance, FormRules } from 'element-plus'
+    import type { UserInfo } from "@/types/user";
+    import { useRouter } from '#app'
 
     definePageMeta({
         keepalive:true,
@@ -52,47 +53,38 @@
             name: 'slide-right',
             mode: 'out-in',
         }
-    })
+    });
 
-    const ruleFormRef = ref<FormInstance>()
-
-    type UserInfo = {
-        name: string;
-        password: string;
-    };
+    const ruleFormRef = ref<FormInstance>();
 
     const userInfo:UserInfo = reactive({
         name: "",
         password: "",
     });
 
-    let flagName = false;
     const validateName = (rule: any, value: any, callback: any) => {
+        const regex = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]+$");
+
         if (value == '') {
             callback(new Error('请输入用户名'));
-            flagName = false;
-        } else if (value.length < 3 || value.length > 12) {
+        } else if (value.length < 3 || value.length > 12 || !regex.test(value)) {
             callback(new Error('无效用户名'));
-            flagName = false;
         }
         else{
-            flagName = true;
+            callback();
         }
     }
 
-    let flagPass = true;
     const validatePass = (rule: any, value: string, callback: any) => {
+        const regex = new RegExp("^[a-zA-Z0-9_*]+$");
+
         if (value == '') {
             callback(new Error('请输入密码'));
-            flagPass = false;
-        } else if (value.length < 6 || value.length > 16) {
+        } else if (value.length < 6 || value.length > 16 || !regex.test(value)) {
             callback(new Error('无效密码'));
-            flagPass = false;
         }
         else{
-            if(userInfo.name != ""){
-                flagPass = true;
-            }
+            callback();
         }
     }
 
@@ -101,11 +93,21 @@
         password: [{ validator: validatePass, trigger: 'blur' }],
     })
 
-    function submit(){
-        if(flagName&&flagPass){
-            login(userInfo.name, userInfo.password);
-        }
-    }
+    const { $emit }= useNuxtApp();
+    const router = useRouter();
+    const submit = debounce((formEl: FormInstance | undefined)=>{
+        if (!formEl) return
+        formEl.validate((valid) => {
+            if (valid) {
+                login(userInfo.name, userInfo.password).then(isSuccuss => {
+                    if(isSuccuss){
+                        $emit("online");
+                        router.push("/");
+                    }
+                });
+            }
+        })
+    }, 1000)
 </script>
 
 <style lang="scss" scoped>
@@ -119,6 +121,7 @@
             width: 100%;
             .el-input{
                 height: 50px;
+                margin-bottom: 0px !important;
             }
         }
 

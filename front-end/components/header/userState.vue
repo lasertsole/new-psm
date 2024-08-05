@@ -4,47 +4,31 @@
         <NuxtLink to="/loginOrResigter/login" class="login">登录</NuxtLink>
         <NuxtLink to="/loginOrResigter/register" class="register">注册</NuxtLink>
     </div>
-    <div class="userTool" v-else @click="drawer = true"></div>
+    <div class="userTool" @click="drawer = true"></div>
     <el-drawer
         v-model="drawer"
         :direction="direction"
         :modal="true"
+        size="auto"
     >
-        <pre>
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-            1
-        </pre>
+        <ul>
+            <template v-for="(item, index) in routerList" :key="index">
+                <li 
+                    :class="{login:item.path=='/login',register:item.path=='/register'}"
+                    v-if="!(item.needOffLine==true&&isOnline)"
+                >
+                    {{item.name}}
+                </li>
+            </template>
+        </ul>
     </el-drawer>
 </template>
 
 <script lang="ts" setup>
     import type { DrawerProps } from 'element-plus'
-    const isOnline = ref<boolean>(true);
+    import type { Router } from '@/types/router';
+
+    const isOnline = ref<boolean>(false);
     const { $on } = useNuxtApp();
 
     $on("online", () => {
@@ -53,9 +37,11 @@
 
     const drawer = ref(false)
     const direction = ref<DrawerProps['direction']>('ttb')
+
+    const routerList:Router[] = getRouterList();
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @use "sass:math";
     @import "@/common.scss";
     
@@ -95,6 +81,32 @@
         transition: all 0.3s;
         &:hover{
             background-color: #d3d3d3;
+        }
+    }
+    ul{
+        li{
+            background-color: #ecf5ff;
+            @include fixedRoundedRectangle(100%, 50px, 4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #409eff;
+            margin: 10px;
+            transition: all 0.3s;
+            &:hover{
+                cursor: pointer;
+                color: #ecf5ff;
+                background-color: #409eff;
+            }
+            
+            &.login{
+                background-color: #fb7299;
+                color: #ecf5ff;
+            }
+            &.register{
+                background-color: #00a8e9;
+                color: #ecf5ff;
+            }
         }
     }
     $showDraw: none;
