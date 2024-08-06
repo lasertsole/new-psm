@@ -1,8 +1,8 @@
 package com.psm.controller;
 
-import com.psm.domain.DTO.UserDTO;
-import com.psm.domain.DTO.ResponseDTO;
-import com.psm.domain.DAO.UserDAO;
+import com.psm.domain.User.UserDTO;
+import com.psm.domain.UtilsDom.ResponseDTO;
+import com.psm.domain.User.UserDAO;
 import com.psm.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +12,10 @@ import org.springframework.http.HttpStatus;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     UserService userService;
-
-    @GetMapping("/test")
-    public ResponseDTO test(){
-        return new ResponseDTO<>(HttpStatus.OK, "test");
-    }
-
-    @GetMapping("/testToken")
-    public ResponseDTO testToken(){
-        return new ResponseDTO<>(HttpStatus.OK, "test");
-    }
 
     @PostMapping("/login")//登录
     public ResponseDTO login(@Valid @RequestBody UserDTO userDto){

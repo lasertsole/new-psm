@@ -1,15 +1,15 @@
-package com.psm.annotation.validator;
+package com.psm.annotation.impl;
 
-import com.psm.annotation.BooleanField;
+import com.psm.annotation.ValidBoolean;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
 
-public class BooleanFieldValidator implements ConstraintValidator<BooleanField, Object> {
+public class BooleanValidator implements ConstraintValidator<ValidBoolean, Object> {
 
     @Override
-    public void initialize(BooleanField constraintAnnotation) {
+    public void initialize(ValidBoolean constraintAnnotation) {
     }
 
     @Override

@@ -4,7 +4,7 @@
             <div class="left">
                 <HeaderLogo></HeaderLogo>
                 <div class="tabBar">
-                    <HeaderTabBar :tabBarArr="tabBarArr"></HeaderTabBar>
+                    <HeaderTabBar :tabBarArr="routerList"></HeaderTabBar>
                 </div>
             </div>
             <div class="right">
@@ -18,17 +18,11 @@
 </template>
 
 <script setup lang="ts">
-    interface RouterInfo{
-        text:String,
-        linkTo:String,
-    }
+    import type { Router } from '@/types/router';
 
-    const tabBarArr = ref<RouterInfo[]>([
-        {text:"首页", linkTo:"#"},
-        {text:"橱窗", linkTo:"/showcase"},
-        {text:"企划", linkTo:"#"},
-        {text:"作品", linkTo:"#"},
-    ])
+    const routerList:Router[] = getRouterList().filter((item) => {
+        return item.tarbar == true;
+    });
 </script>
 
 <style lang="scss" scoped>

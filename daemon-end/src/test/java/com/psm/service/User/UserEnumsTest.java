@@ -1,6 +1,6 @@
-package com.psm.service;
+package com.psm.service.User;
 
-import com.psm.domain.DAO.UserDAO;
+import com.psm.domain.User.UserDAO;
 import com.psm.enums.SexEnum;
 import com.psm.mapper.UserMapper;
 import org.junit.jupiter.api.Test;

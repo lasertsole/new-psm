@@ -1,6 +1,6 @@
 package com.psm.mapper;
 
-import com.psm.domain.DAO.UserDAO;
+import com.psm.domain.User.UserDAO;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;

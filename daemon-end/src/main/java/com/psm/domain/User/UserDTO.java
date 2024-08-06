@@ -1,6 +1,6 @@
-package com.psm.domain.DTO;
+package com.psm.domain.User;
 
-import com.psm.annotation.BooleanField;
+import com.psm.annotation.ValidBoolean;
 import com.psm.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,17 +30,17 @@ public class UserDTO implements Serializable {
     private String phone;
 
     @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "头像地址格式错误")
-    @Max(value = 255, message = "头像地址长度不能超过255")
+    @Size(max = 255, message = "头像地址长度不能超过255")
     private String avatar;
 
     @Pattern(regexp = "^[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)+$", message = "邮箱地址格式错误")
     @Size(min = 8, max = 255, message = "邮箱地址长度必须在6-32之间")
     private String email;
 
-    @BooleanField
+    @ValidBoolean
     private SexEnum sex;
 
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "简介格式错误")
-    @Max(value = 255, message = "简介长度不能超过255")
+    @Size(max = 255, message = "简介长度不能超过255")
     private String profile;
 }

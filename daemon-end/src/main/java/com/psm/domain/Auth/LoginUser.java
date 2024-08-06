@@ -1,6 +1,6 @@
 package com.psm.domain.Auth;
 
-import com.psm.domain.DAO.UserDAO;
+import com.psm.domain.User.UserDAO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

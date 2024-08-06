@@ -6,36 +6,42 @@ export const routerList:Router[] = [
         path: '/',
         needOnLine: false,
         needOffLine: false,
+        tarbar: true,
     },
     {
         name: '橱窗',
-        path: '/#',
+        path: '/showcase',
         needOnLine: false,
         needOffLine: false,
+        tarbar: true,
     },
     {
         name: '企划',
         path: '/#',
         needOnLine: false,
         needOffLine: false,
+        tarbar: true,
     },
     {
         name: '作品',
         path: '/#',
         needOnLine: false,
         needOffLine: false,
+        tarbar: true,
     },
     {
         name: '登录',
         path: '/login',
         needOnLine: false,
         needOffLine: true,
+        tarbar: false,
     },
     {
         name: '注册',
         path: '/register',
         needOnLine: false,
         needOffLine: true,
+        tarbar: false,
     },
 ]
 

@@ -1,6 +1,6 @@
 export async function login(name:string, password:string):Promise<Boolean>{
     const res:any = await getFetchData({
-        url: '/user/login',
+        url: '/users/login',
         opts: {
             name,
             password,
@@ -26,7 +26,7 @@ export async function login(name:string, password:string):Promise<Boolean>{
 
 export async function register(name:string, password:string, email:string):Promise<Boolean>{
     const res:any = await getFetchData({
-        url: '/user/register',
+        url: '/users/register',
         opts: {
             name,
             password,

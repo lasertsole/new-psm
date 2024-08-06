@@ -1,4 +1,4 @@
-package com.psm.service;
+package com.psm.service.plugins;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

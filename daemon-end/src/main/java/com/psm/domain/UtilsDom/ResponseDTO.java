@@ -1,4 +1,4 @@
-package com.psm.domain.DTO;
+package com.psm.domain.UtilsDom;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

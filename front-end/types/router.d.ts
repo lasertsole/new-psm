@@ -3,4 +3,5 @@ export type Router = {
     path: string,
     needOnLine: boolean,
     needOffLine: boolean,
+    tarbar: boolean,
 }

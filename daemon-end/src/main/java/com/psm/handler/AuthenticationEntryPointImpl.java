@@ -1,7 +1,7 @@
 package com.psm.handler;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.domain.DTO.ResponseDTO;
+import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.utils.WebUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;

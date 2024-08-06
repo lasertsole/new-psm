@@ -1,7 +1,7 @@
-package com.psm.service;
+package com.psm.service.plugins;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.DAO.UserDAO;
+import com.psm.domain.User.UserDAO;
 import com.psm.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.psm.domain.VO;
+package com.psm.domain.User;
 
 import com.psm.enums.SexEnum;
 

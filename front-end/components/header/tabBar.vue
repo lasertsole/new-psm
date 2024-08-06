@@ -1,7 +1,7 @@
 <template>
     <ul class="tabBarArr">
         <li v-for="item in tabBarArr">
-            <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.linkTo">{{item.text}}</NuxtLink>
+            <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
         </li>
     </ul>
 </template>

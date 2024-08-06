@@ -15,7 +15,7 @@
             <template v-for="(item, index) in routerList" :key="index">
                 <li 
                     :class="{login:item.path=='/login',register:item.path=='/register'}"
-                    v-if="!(item.needOffLine==true&&isOnline)"
+                    v-if="!(item.tarbar==true&&isOnline)"
                 >
                     {{item.name}}
                 </li>

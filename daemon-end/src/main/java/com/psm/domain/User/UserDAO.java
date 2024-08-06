@@ -1,4 +1,4 @@
-package com.psm.domain.DAO;
+package com.psm.domain.User;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
