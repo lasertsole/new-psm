@@ -3,36 +3,37 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.example</groupId>
-	<artifactId>daemon-backend</artifactId>
-	<version>1.1.1</version>
-	<name>psm-backend</name>
-	<description>project for Spring Boot</description>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.16</version>
+		<version>3.3.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<groupId>com.psm</groupId>
+	<artifactId>daemon-backend</artifactId>
+	<version>1.1.1</version>
+	<name>daemon-backend</name>
+	<description>project for Spring Boot3</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
-
-	<!--springboot构建器-->
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 	<!--依赖项-->
 	<dependencies>
-
 		<!--web开发的起步依赖,但排除tomcat-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -85,18 +86,6 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
-		<!--用于用户密码加密的依赖-->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
-		</dependency>
-
-		<!--引入springsecurity依赖-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
 		<!--引入fastjson2依赖-->
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
@@ -132,5 +121,22 @@
 		</dependency>
 
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
