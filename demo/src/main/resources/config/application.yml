@@ -1,0 +1,9 @@
+#配置使用环境
+spring:
+  application:
+    name: daemon-end
+  profiles:
+    active: dev
+
+#后端版本
+version: "1.1.1"
