@@ -1,4 +1,4 @@
-package com.psm.service.User;
+package com.psm;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -80,7 +80,7 @@ public class UserServiceWrapperTest {
     @Test
     public void test08(){//测试updateWrapper,同test04
         UpdateWrapper<UserDAO> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("phone","111").set("phone","222");
+        updateWrapper.eq("phone","201").set("sex",false);
         int result = userMapper.update(null,updateWrapper);
         System.out.println("result = " + result);
     }

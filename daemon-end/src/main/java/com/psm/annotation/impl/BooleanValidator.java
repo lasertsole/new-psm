@@ -2,8 +2,8 @@ package com.psm.annotation.impl;
 
 import com.psm.annotation.ValidBoolean;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
 
 public class BooleanValidator implements ConstraintValidator<ValidBoolean, Object> {

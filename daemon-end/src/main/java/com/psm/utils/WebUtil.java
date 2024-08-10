@@ -1,6 +1,6 @@
 package com.psm.utils;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class WebUtil {

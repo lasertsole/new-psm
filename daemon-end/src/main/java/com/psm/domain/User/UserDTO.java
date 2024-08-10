@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 
 @Data
@@ -14,7 +14,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 2281690874579504458L;
-
 
     @NotNull(message = "用户名不能为空")
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "用户名格式错误")

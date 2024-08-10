@@ -1,9 +1,9 @@
 package com.psm.service.impl;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Auth.LoginUser;
-import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.domain.User.UserDAO;
+import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.UserMapper;
 import com.psm.service.UserService;
 import com.psm.utils.JWTUtil;
@@ -15,19 +15,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements UserService, UserDetailsService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements UserService {
 
     @Autowired
     private UserMapper userMapper;
@@ -41,42 +37,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     private RedisCache redisCache;
 
-    /**
-     * SpringSecurity会自动调用这个方法进行用户名密码校验
-     *
-     * @param username
-     * @return UserDetails
-     * @throws UsernameNotFoundException
-     */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 根据用户名查询用户信息
-        LambdaQueryWrapper<UserDAO> quryWrapper = new LambdaQueryWrapper<>();
-        quryWrapper.eq(UserDAO::getName, username);
-        UserDAO user = userMapper.selectOne(quryWrapper);
-
-        // 如果没有查询到用户抛出异常
-        if (Objects.isNull(user)){
-            throw new RuntimeException("用户名或密码错误");
-        }
-
-        //TODO 查询用户对应权限
-
-        //把用户信息封装成UserDetails对象返回
-        return new LoginUser(user);
-    }
-
-    @Override
-    /**
-     * 登录
-     *
-     * @param username
-     * @return ResponseResult
-     */
     public ResponseDTO login(UserDAO user) {
         try {
             //AuthenticationManager authenticate进行认证
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword());
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
             //如果认证通过了，使用id生成jwt
@@ -127,6 +93,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
         }
     }
 
+    /**
+     * 注册
+     *
+     * @param user
+     * @return
+     */
     public ResponseDTO register(UserDAO user) {
         try{
             //将前端传来的user对象拷贝到register对象中,并加密register对象的密码

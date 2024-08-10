@@ -1,15 +1,14 @@
 package com.psm.controller;
 
+import com.psm.domain.User.UserDAO;
 import com.psm.domain.User.UserDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
-import com.psm.domain.User.UserDAO;
 import com.psm.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -24,13 +23,13 @@ public class UserController {
         return userService.login(user);
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/logout")//登出
     public ResponseDTO logout()
     {
         return userService.logout();
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register")//注册
     public ResponseDTO register(@Valid @RequestBody UserDTO userDto){
         //注册
         UserDAO user = new UserDAO();

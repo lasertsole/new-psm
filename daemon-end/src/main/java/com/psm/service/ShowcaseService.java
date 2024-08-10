@@ -5,8 +5,6 @@ import com.psm.domain.Showcase.ShowcaseDAO;
 import com.psm.domain.Showcase.ShowcaseDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 
-import java.util.List;
-
 
 /**
  * 橱窗服务

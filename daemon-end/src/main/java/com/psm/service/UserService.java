@@ -33,3 +33,4 @@ public interface UserService extends IService<UserDAO> {
      */
     ResponseDTO register(UserDAO user);
 }
+

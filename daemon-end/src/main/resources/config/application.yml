@@ -1,5 +1,7 @@
 #配置使用环境
 spring:
+  application:
+    name: daemon-end
   profiles:
     active: dev
 

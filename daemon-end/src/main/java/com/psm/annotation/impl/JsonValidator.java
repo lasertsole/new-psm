@@ -3,8 +3,8 @@ package com.psm.annotation.impl;
 import com.alibaba.fastjson2.JSON;
 import com.psm.annotation.ValidJson;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class JsonValidator implements ConstraintValidator<ValidJson, String> {
 

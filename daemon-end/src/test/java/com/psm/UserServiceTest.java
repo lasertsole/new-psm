@@ -1,4 +1,4 @@
-package com.psm.service.User;
+package com.psm;
 
 import com.psm.domain.User.UserDAO;
 import com.psm.service.UserService;
