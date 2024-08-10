@@ -6,6 +6,7 @@
 ### gsap动画组件
 ## 后端:
 ### springboot3.3
+### springsecurity安全框架
 ### postgresql(podman)最先进的数据库
 ### redis(podman) nosql内存数据库
 ### nginx(podman)
