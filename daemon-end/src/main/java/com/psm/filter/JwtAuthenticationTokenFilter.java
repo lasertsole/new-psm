@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
@@ -39,11 +40,24 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         } catch (Exception e) {
             throw new RuntimeException("token非法");
         }
+
         //从redis中获取用户信息
         String redisKey = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
         if(Objects.isNull(loginUser)){
             throw new RuntimeException("用户未登录");
+        }
+
+        //如果redis缓存的验证信息过期剩余时间小于一小时则重置过期时间
+        if(redisCache.getExpire(redisKey) <= 3600){
+            redisCache.setExpire(redisKey,1, TimeUnit.DAYS);
+        }
+
+        //如果JWT验证信息过期时间小于一小时则重置JWT
+        if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= 3600){
+            String jwt = JWTUtil.createJWT(loginUser.getUser().getId().toString());
+            redisCache.setCacheObject(redisKey,loginUser,1, TimeUnit.DAYS);
+            response.setHeader("token",jwt);
         }
 
         //存入SecurityContextHolder

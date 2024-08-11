@@ -3,6 +3,9 @@ spring:
   config:
     activate:
       on-profile: dev
+#配置静态资源路径
+  resources:
+    static-locations: classpath:/static/
 
 #redis的主机ip及端口
   data:

@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 public class JWTUtil {
     /**
-     * 有效期为
+     * 默认有效期为
      */
     public static final Long JWT_TTL = 60 * 60 * 1000L;//一个小时
 
@@ -37,7 +37,7 @@ public class JWTUtil {
      * @return String jwt密文
      */
     public static String createJWT(String subject){
-        return createJWT(subject, null, getUUID());// 设置过期时间
+        return createJWT(subject, JWT_TTL, getUUID());// 设置过期时间
     }
 
     /**
@@ -116,5 +116,33 @@ public class JWTUtil {
                 .build()
                 .parseClaimsJws(jwt)
                 .getBody();
+    }
+
+    /**
+     * 获取jwt过期时间
+     *
+     * @param jwt
+     * @return
+     */
+    private static Date getJwtExpiration(String jwt) {
+        SecretKey secretKey = generalKey();
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getExpiration();
+    }
+
+    /**
+     * 获取jwt剩余过期时间
+     *
+     * @param expirationDate
+     * @return
+     */
+    private static long getRemainingTime(Date expirationDate) {
+        long currentTimeMillis = System.currentTimeMillis();
+        long expirationTime = expirationDate.getTime();
+        return (expirationTime - currentTimeMillis) / 1000;//返回以秒为单位
     }
 }

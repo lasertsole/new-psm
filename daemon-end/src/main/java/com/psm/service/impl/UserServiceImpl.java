@@ -187,6 +187,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             wrapper.set(ObjectUtil.isEmpty(user.getSex()), UserDAO::getSex, user.getSex());
 
             userMapper.update(null,wrapper);
+
             return new ResponseDTO<>(HttpStatus.OK,"修改成功");
         } catch (LockedException e){
             return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");

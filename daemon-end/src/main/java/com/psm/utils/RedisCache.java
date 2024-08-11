@@ -13,6 +13,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 public class RedisCache {
+    /**
+     * 默认有效期为
+     */
+    public static final Long Redis_TTL = 60 * 60 * 1000L;//一个小时
+
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -38,29 +43,6 @@ public class RedisCache {
     public <T> void setCacheObject(final String key, final T value, final Integer timeout, final TimeUnit timeUnit)
     {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
-    }
-
-    /**
-     * 设置有效时间
-     *
-     * @param key Redis键
-     * @param timeout 超时时间
-     * @return true=设置成功；false=设置失败
-     */
-    public boolean expire(final String key, final long timeout){
-        return expire(key, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 设置有效时间
-     *
-     * @param key Redis键
-     * @param timeout 超时时间
-     * @param unit 时间单位
-     * @return true=设置成功；false=设置失败
-     */
-    public boolean expire(final String key, final long timeout, final TimeUnit unit){
-        return redisTemplate.expire(key, timeout, unit);
     }
 
     /**
@@ -220,5 +202,36 @@ public class RedisCache {
      */
     public Collection<String> keys(final String pattern){
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 获取过期时间
+     *
+     * @param key
+     * @return
+     */
+    public long getExpire(final String key){
+        return getExpire(key, TimeUnit.SECONDS);
+    }
+
+    public long getExpire(final String key, final TimeUnit timeUnit){
+        return redisTemplate.getExpire(key, timeUnit);
+    }
+
+    /**
+     * 设置过期时间
+     *
+     * @param key
+     */
+    public void setExpire(final String key){
+        setExpire(key, Redis_TTL);
+    }
+
+    public void setExpire(final String key, final long timeout){
+        setExpire(key, timeout, TimeUnit.SECONDS);
+    }
+
+    public void setExpire(final String key, final long timeout, final TimeUnit timeUnit){
+        redisTemplate.expire(key, timeout, timeUnit);
     }
 }
