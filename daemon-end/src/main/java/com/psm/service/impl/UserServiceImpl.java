@@ -1,5 +1,7 @@
 package com.psm.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Auth.LoginUser;
 import com.psm.domain.User.UserDAO;
@@ -83,10 +85,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
             //根据用户id删除redis中的用户信息
             redisCache.deleteObject("login:"+id);
-            return new ResponseDTO<>(HttpStatus.OK,"注销成功");
+            return new ResponseDTO<>(HttpStatus.OK,"登出成功");
         }
         catch (RuntimeException e){
-            return new ResponseDTO<>(HttpStatus.BAD_REQUEST,"注销失败");
+            return new ResponseDTO<>(HttpStatus.BAD_REQUEST,"登出失败");
         }
         catch (Exception e){
             return new ResponseDTO<>(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
@@ -123,6 +125,77 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+        }
+    }
+
+    /**
+     * 注册
+     *
+     * @return
+     */
+    @Override
+    public ResponseDTO deleteUser() {
+        try {
+            //获取SecurityContextHolder中的用户id
+            UsernamePasswordAuthenticationToken authentication =
+                    (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+            Long id = loginUser.getUser().getId();
+
+            //根据用户id删除redis中的用户信息
+            redisCache.deleteObject("login:"+id);
+
+            //根据用户id删除pg中的用户信息
+            userMapper.deleteById(id);
+
+            return new ResponseDTO<>(HttpStatus.OK,"注销成功");
+        } catch (LockedException e){
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+        } catch (BadCredentialsException e) {
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"认证失败");
+        } catch (DisabledException e){
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"账号被禁用");
+        } catch (Exception e) {
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误: "+e.getMessage());
+        }
+    }
+
+    /**
+     * 更新
+     *
+     * @param user
+     * @return
+     */
+    public ResponseDTO updateUser(UserDAO user) {
+        try {
+            //TODO
+            //获取SecurityContextHolder中的用户id
+            UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+            Long id = loginUser.getUser().getId();
+
+            //更新用户信息
+            LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(UserDAO::getId,id);
+
+            wrapper.set(ObjectUtil.isEmpty(user.getName()), UserDAO::getName, user.getName());
+            wrapper.set(ObjectUtil.isEmpty(user.getPassword()), UserDAO::getPassword, user.getPassword());
+            wrapper.set(ObjectUtil.isEmpty(user.getAvatar()), UserDAO::getAvatar, user.getAvatar());
+            wrapper.set(ObjectUtil.isEmpty(user.getProfile()), UserDAO::getProfile, user.getProfile());
+            wrapper.set(ObjectUtil.isEmpty(user.getPhone()), UserDAO::getPhone, user.getPhone());
+            wrapper.set(ObjectUtil.isEmpty(user.getEmail()), UserDAO::getEmail, user.getEmail());
+            wrapper.set(ObjectUtil.isEmpty(user.getSex()), UserDAO::getSex, user.getSex());
+
+            userMapper.update(null,wrapper);
+            return new ResponseDTO<>(HttpStatus.OK,"修改成功");
+        } catch (LockedException e){
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+        } catch (BadCredentialsException e) {
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"认证失败");
+        } catch (DisabledException e){
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"账号被禁用");
+        } catch (Exception e) {
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误: "+e.getMessage());
         }
     }
 }

@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
     "gsap": "^3.12.5",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",

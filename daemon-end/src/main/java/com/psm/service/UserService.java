@@ -32,5 +32,19 @@ public interface UserService extends IService<UserDAO> {
      * @return
      */
     ResponseDTO register(UserDAO user);
+
+    /**
+     * 销号
+     *
+     * @return
+     */
+    ResponseDTO deleteUser();
+
+    /**
+     * 更新
+     *
+     * @return
+     */
+    public ResponseDTO updateUser(UserDAO user);
 }
 

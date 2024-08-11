@@ -23,17 +23,31 @@ public class UserController {
         return userService.login(user);
     }
 
-    @GetMapping("/logout")//登出
-    public ResponseDTO logout()
-    {
-        return userService.logout();
-    }
-
     @PostMapping("/register")//注册
     public ResponseDTO register(@Valid @RequestBody UserDTO userDto){
         //注册
         UserDAO user = new UserDAO();
         BeanUtils.copyProperties(userDto, user);
         return userService.register(user);
+    }
+
+    @DeleteMapping("/logout")//登出
+    public ResponseDTO logout()
+    {
+        return userService.logout();
+    }
+
+    @DeleteMapping("/deleteUser")//销号
+    public ResponseDTO deleteUser()
+    {
+        return userService.deleteUser();
+    }
+
+    @PutMapping("/updateUser")//更新
+    public ResponseDTO updateUser(@Valid @RequestBody UserDTO userDto)
+    {
+        UserDAO user = new UserDAO();
+        BeanUtils.copyProperties(userDto, user);
+        return userService.updateUser(user);
     }
 }

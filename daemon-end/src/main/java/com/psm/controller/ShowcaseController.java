@@ -14,6 +14,9 @@ public class ShowcaseController {
     @Autowired
     ShowcaseService showcaseService;
 
+    @GetMapping("/cata")
+    public Object showcase(){return null;};
+
     @GetMapping("/{id}")
     public Object getShowcaseById(@PathVariable Long id) {
         return showcaseService.getShowcaseById(id);
