@@ -33,7 +33,7 @@ public class AuthUserService implements UserDetailsService {
 
         // 如果没有查询到用户抛出异常
         if (Objects.isNull(user)){
-            throw new RuntimeException("用户名或密码错误");
+            throw new RuntimeException("Incorrect username or password");
         }
 
         //TODO 查询用户对应权限

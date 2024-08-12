@@ -58,15 +58,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
             Map<String, Object> map = new HashMap<>();
             map.put("token",jwt);
-            return new ResponseDTO(HttpStatus.OK,"登录成功",map);
+            return new ResponseDTO(HttpStatus.OK,"Login successful",map);
         } catch (LockedException e){
-            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
         } catch (BadCredentialsException e) {
-            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"认证失败");
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
         } catch (DisabledException e){
-            return new ResponseDTO(HttpStatus.FORBIDDEN,"账号被禁用");
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
         } catch (Exception e) {
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误: "+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
         }
     }
 
@@ -85,13 +85,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
             //根据用户id删除redis中的用户信息
             redisCache.deleteObject("login:"+id);
-            return new ResponseDTO<>(HttpStatus.OK,"登出成功");
+            return new ResponseDTO(HttpStatus.OK,"Logout successful");
         }
         catch (RuntimeException e){
-            return new ResponseDTO<>(HttpStatus.BAD_REQUEST,"登出失败");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"Logout failed");
         }
         catch (Exception e){
-            return new ResponseDTO<>(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error"+e.getMessage());
         }
     }
 
@@ -112,19 +112,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             save(register);
 
             //使用未加密密码的user对象登录
-            ResponseDTO<Map<String, Object>> loginResponseDTO = login(user);
+            ResponseDTO loginResponseDTO = login(user);
 
             if (loginResponseDTO.getCode() == HttpStatus.OK.value()){
-                return new ResponseDTO<>(HttpStatus.OK,"注册成功",loginResponseDTO.getData());
+                return new ResponseDTO(HttpStatus.OK,"Registration successful",loginResponseDTO.getData());
             }
-            else return new ResponseDTO<>(HttpStatus.OK,loginResponseDTO.getMsg());
+            else return new ResponseDTO(HttpStatus.OK,loginResponseDTO.getMsg());
 
         }
         catch (DuplicateKeyException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST,"注册失败，账户已存在");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"Registration failed, account already exists");
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());
         }
     }
 
@@ -148,15 +148,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             //根据用户id删除pg中的用户信息
             userMapper.deleteById(id);
 
-            return new ResponseDTO<>(HttpStatus.OK,"注销成功");
+            return new ResponseDTO(HttpStatus.OK,"Logout successful");
         } catch (LockedException e){
-            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
         } catch (BadCredentialsException e) {
-            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"认证失败");
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
         } catch (DisabledException e){
-            return new ResponseDTO(HttpStatus.FORBIDDEN,"账号被禁用");
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
         } catch (Exception e) {
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误: "+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
         }
     }
 
@@ -188,15 +188,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
             userMapper.update(null,wrapper);
 
-            return new ResponseDTO<>(HttpStatus.OK,"修改成功");
+            return new ResponseDTO(HttpStatus.OK,"Update successful");
         } catch (LockedException e){
-            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"账号被锁定");
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
         } catch (BadCredentialsException e) {
-            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"认证失败");
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
         } catch (DisabledException e){
-            return new ResponseDTO(HttpStatus.FORBIDDEN,"账号被禁用");
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
         } catch (Exception e) {
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误: "+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
         }
     }
 }

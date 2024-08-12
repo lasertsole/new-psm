@@ -1,8 +1,11 @@
 package com.psm.filter;
 
+import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Auth.LoginUser;
+import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.utils.JWTUtil;
 import com.psm.utils.RedisCache;
+import com.psm.utils.ResponseWrapper;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +19,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
     RedisCache redisCache;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //获取token
@@ -38,14 +44,40 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             Claims claims = JWTUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            throw new RuntimeException("token非法");
+            throw new RuntimeException("Invalid token");
         }
 
         //从redis中获取用户信息
         String redisKey = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
         if(Objects.isNull(loginUser)){
-            throw new RuntimeException("用户未登录");
+            throw new RuntimeException("User not logged in");
+        }
+
+        //存入SecurityContextHolder
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        // 使用 ResponseWrapper 包装 HttpServletResponse
+        ResponseWrapper responseWrapper = new ResponseWrapper(response);
+
+        //放行
+        filterChain.doFilter(request, responseWrapper);
+
+        // 获取原本要返回的 JSON 数据
+        ResponseDTO responseDTO = responseWrapper.getContentAsObject(ResponseDTO.class);
+        Map<String, Object> resultMap;
+
+        if(responseDTO.getData()== null){
+            resultMap = new HashMap<>();
+        }
+        else{
+            resultMap = responseDTO.getData();
+        }
+
+        if(Objects.isNull(redisCache.getCacheObject(redisKey))){
+            responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
+            return;
         }
 
         //如果redis缓存的验证信息过期剩余时间小于一小时则重置过期时间
@@ -57,14 +89,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= 3600){
             String jwt = JWTUtil.createJWT(loginUser.getUser().getId().toString());
             redisCache.setCacheObject(redisKey,loginUser,1, TimeUnit.DAYS);
-            response.setHeader("token",jwt);
+
+            resultMap.put("token",jwt);
+            responseDTO.setData(resultMap);
+
+            responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
         }
-
-        //存入SecurityContextHolder
-        //TODO:获取权限信息封装到Authentication中
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-        filterChain.doFilter(request, response);
     }
 }

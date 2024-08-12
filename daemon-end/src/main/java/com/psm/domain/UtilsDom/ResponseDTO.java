@@ -1,10 +1,14 @@
 package com.psm.domain.UtilsDom;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.util.Map;
+
 @Data
-public class ResponseDTO<T> {
+@NoArgsConstructor
+public class ResponseDTO {
     /**
      *状态码
      */
@@ -18,9 +22,9 @@ public class ResponseDTO<T> {
     /**
      *查询到的结果数据
      */
-    private T data;
+    private Map<String, Object> data;
 
-    public ResponseDTO(T data) {
+    public ResponseDTO(Map<String, Object> data) {
         this.code = HttpStatus.OK.value();
         this.data = data;
         this.msg = "success";
@@ -36,13 +40,13 @@ public class ResponseDTO<T> {
         this.msg = msg;
     }
 
-    public ResponseDTO(HttpStatus httpStatus, String msg, T data) {
+    public ResponseDTO(HttpStatus httpStatus, String msg, Map<String, Object> data) {
         this.code = httpStatus.value();
         this.msg = msg;
         this.data = data;
     }
 
-    public ResponseDTO(Integer code, String msg, T data) {
+    public ResponseDTO(Integer code, String msg, Map<String, Object> data) {
         this.code = code;
         this.msg = msg;
         this.data = data;

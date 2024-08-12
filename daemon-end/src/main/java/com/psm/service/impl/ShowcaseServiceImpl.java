@@ -13,7 +13,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO> implements ShowcaseService {
@@ -23,23 +25,28 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
     public ResponseDTO getShowcaseById(Long id) {
         try {
             ShowcaseDAO showcaseDAO = showcaseMapper.selectById(id);
-            return new ResponseDTO(HttpStatus.OK, "查询成功", showcaseDAO);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("result",showcaseDAO);
+            return new ResponseDTO(HttpStatus.OK, "Query successful", map);
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());
         }
     }
 
-    public ResponseDTO<List<ShowcaseDAO>> getShowcaseListByPage(Integer currentPage, Integer pageSize) {
+    public ResponseDTO getShowcaseListByPage(Integer currentPage, Integer pageSize) {
         try {
             Page<ShowcaseDAO> page = new Page<>(currentPage,pageSize);//当前第1页，每页3条数据
             Page<ShowcaseDAO> resultPage = showcaseMapper.selectPage(page,null);
             List<ShowcaseDAO> records = resultPage.getRecords();
 
-            return new ResponseDTO(HttpStatus.OK, "查询成功",records);
+            Map<String, Object> map = new HashMap<>();
+            map.put("result",records);
+            return new ResponseDTO(HttpStatus.OK, "Query successful",map);
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());
         }
     }
 
@@ -48,13 +55,13 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
             ShowcaseDAO showcaseDAO = new ShowcaseDAO();
             BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
             save(showcaseDAO);
-            return new ResponseDTO(HttpStatus.OK,"上传成功");
+            return new ResponseDTO(HttpStatus.OK,"Upload successful");
         }
         catch (DuplicateKeyException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST,"上传失败，橱窗已存在");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"Upload failed, the showcase already exists";);
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());
         }
     }
 
@@ -63,20 +70,20 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
             ShowcaseDAO showcaseDAO = new ShowcaseDAO();
             BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
             updateById(showcaseDAO);
-            return new ResponseDTO(HttpStatus.OK,"更新成功");
+            return new ResponseDTO(HttpStatus.OK,"Update successful");
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());
         }
    }
 
    public ResponseDTO deleteShowcase(Long id) {
         try{
             removeById(id);
-            return new ResponseDTO(HttpStatus.OK,"删除成功");
+            return new ResponseDTO(HttpStatus.OK,"Delete successful");
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"服务器错误:"+e.getMessage());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());
         }
    }
 }

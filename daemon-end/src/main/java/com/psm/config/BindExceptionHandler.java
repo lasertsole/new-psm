@@ -15,7 +15,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class BindExceptionHandler {
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ResponseDTO<Object>> handle(BindException e){
+    public ResponseEntity handle(BindException e){
         List<FieldError> fieldErrors = e.getFieldErrors();
         Map errors = new LinkedHashMap<>();
         for (FieldError error : fieldErrors){

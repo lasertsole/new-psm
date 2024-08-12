@@ -1,7 +1,6 @@
 package com.psm.config;
 
 import com.psm.filter.JwtAuthenticationTokenFilter;
-import com.psm.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
