@@ -120,6 +120,13 @@
 			<version>2.6</version>
 		</dependency>
 
+		<!-- 文件上传依赖 -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
+
 		<!--Bean构建简化-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

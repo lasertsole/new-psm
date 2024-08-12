@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/showcases")
@@ -14,8 +18,22 @@ public class ShowcaseController {
     @Autowired
     ShowcaseService showcaseService;
 
-    @GetMapping("/cata")
-    public Object showcase(){return null;};
+
+    @PostMapping("/upload")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
+        try {
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+            // 指定文件保存路径
+            String filePath = "/var/www/uploads/" + fileName;
+            // 将文件写入磁盘
+            File destFile = new File(filePath);
+            file.transferTo(destFile);
+            return "File uploaded successfully: " + fileName;
+        } catch (IOException e) {
+            return "Error uploading file: " + e.getMessage();
+        }
+    }
 
     @GetMapping("/{id}")
     public Object getShowcaseById(@PathVariable Long id) {

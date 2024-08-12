@@ -3,9 +3,12 @@ spring:
   config:
     activate:
       on-profile: dev
-#配置静态资源路径
-  resources:
-    static-locations: classpath:/static/
+#静态文件上传配置
+  servlet:
+    multipart:
+      location: /var/www/uploads/  # 临时文件存储位置
+      max-file-size: 200MB  # 单个文件的最大大小
+      max-request-size: 250MB  # 单次请求的最大总大小
 
 #redis的主机ip及端口
   data:
@@ -31,7 +34,7 @@ spring:
           #最小空闲
           min-idle: 0
         #连接超时时间
-        timeout: 2000
+        timeout: 2000a
     mongodb:
       uri: mongodb://admin:123456@localhost:27017/showcase
       # 是否自动创建索引
