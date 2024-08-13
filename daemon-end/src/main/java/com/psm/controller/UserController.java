@@ -43,11 +43,19 @@ public class UserController {
         return userService.deleteUser();
     }
 
-    @PutMapping("/updateUser")//更新
+    @PutMapping("/updateUser")//更新用户信息(除了密码)
     public ResponseDTO updateUser(@Valid @RequestBody UserDTO userDto)
     {
         UserDAO user = new UserDAO();
         BeanUtils.copyProperties(userDto, user);
         return userService.updateUser(user);
+    }
+
+    @PutMapping("/updatePassword")//更新密码
+    public ResponseDTO updatePassword(@Valid @RequestBody UserDTO userDto)
+    {
+        String password = userDto.getPassword();
+        String changePassword = userDto.getChangePassword();
+        return userService.updatePassword(password,changePassword);
     }
 }

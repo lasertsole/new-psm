@@ -1,6 +1,7 @@
 package com.psm.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Auth.LoginUser;
@@ -10,6 +11,7 @@ import com.psm.mapper.UserMapper;
 import com.psm.service.UserService;
 import com.psm.utils.JWTUtil;
 import com.psm.utils.RedisCache;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -129,7 +132,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     }
 
     /**
-     * 注册
+     * 删除用户
      *
      * @return
      */
@@ -161,14 +164,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     }
 
     /**
-     * 更新
+     * 更新用户信息(除了密码)
      *
      * @param user
      * @return
      */
     public ResponseDTO updateUser(UserDAO user) {
         try {
-            //TODO
             //获取SecurityContextHolder中的用户id
             UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             LoginUser loginUser = (LoginUser) authentication.getPrincipal();
@@ -178,18 +180,77 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
             wrapper.eq(UserDAO::getId,id);
 
-            wrapper.set(ObjectUtil.isEmpty(user.getName()), UserDAO::getName, user.getName());
-            wrapper.set(ObjectUtil.isEmpty(user.getPassword()), UserDAO::getPassword, user.getPassword());
-            wrapper.set(ObjectUtil.isEmpty(user.getAvatar()), UserDAO::getAvatar, user.getAvatar());
-            wrapper.set(ObjectUtil.isEmpty(user.getProfile()), UserDAO::getProfile, user.getProfile());
-            wrapper.set(ObjectUtil.isEmpty(user.getPhone()), UserDAO::getPhone, user.getPhone());
-            wrapper.set(ObjectUtil.isEmpty(user.getEmail()), UserDAO::getEmail, user.getEmail());
-            wrapper.set(ObjectUtil.isEmpty(user.getSex()), UserDAO::getSex, user.getSex());
+            //修改用户信息（除了密码）
+            wrapper.set(!ObjectUtil.isEmpty(user.getName()), UserDAO::getName, user.getName());
+            wrapper.set(!ObjectUtil.isEmpty(user.getAvatar()), UserDAO::getAvatar, user.getAvatar());
+            wrapper.set(!ObjectUtil.isEmpty(user.getProfile()), UserDAO::getProfile, user.getProfile());
+            wrapper.set(!ObjectUtil.isEmpty(user.getPhone()), UserDAO::getPhone, user.getPhone());
+            wrapper.set(!ObjectUtil.isEmpty(user.getEmail()), UserDAO::getEmail, user.getEmail());
+            wrapper.set(!ObjectUtil.isEmpty(user.getSex()), UserDAO::getSex, user.getSex());
 
             userMapper.update(null,wrapper);
 
             return new ResponseDTO(HttpStatus.OK,"Update successful");
         } catch (LockedException e){
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
+        } catch (BadCredentialsException e) {
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
+        } catch (DisabledException e){
+            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
+        } catch (Exception e) {
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
+        }
+    }
+
+    /**
+     * 更新用户密码
+     *
+     * @param password
+     * @param changePassword
+     * @return
+     */
+    public ResponseDTO updatePassword(String password, String changePassword) {
+        try{
+            //获取SecurityContextHolder中的用户id
+            UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+            Long id = loginUser.getUser().getId();
+
+            //判断密码是否为空
+            if(StringUtil.isNullOrEmpty(password)){
+                return new ResponseDTO(HttpStatus.BAD_REQUEST,"Password cannot be empty");
+            }
+
+            //判断新密码是否与旧密码相同
+            if(password.equals(changePassword)){
+                return new ResponseDTO(HttpStatus.BAD_REQUEST,"New password cannot be the same as the old password");
+            }
+
+            //获取数据库中用户的password和和用户提交的password是否相同
+            LambdaQueryWrapper<UserDAO> queryWrapper = new LambdaQueryWrapper<UserDAO>();
+            queryWrapper.select(UserDAO::getPassword)
+                    .eq(UserDAO::getId, id);
+
+            List<Map<String, Object>> passwordList = userMapper.selectMaps(queryWrapper);
+            String passwordFromDB = (String) passwordList.get(0).get("password");
+
+            if(passwordEncoder.matches(password,passwordFromDB)){
+                return new ResponseDTO(HttpStatus.BAD_REQUEST,"Password error");
+            }
+
+            //判断新密码是否与数据库中用户的password相同
+            if(passwordEncoder.matches(changePassword,passwordFromDB)){
+                return new ResponseDTO(HttpStatus.BAD_REQUEST,"New password cannot be the same as the old password");
+            }
+
+            //将新密码覆盖数据库中的password
+            LambdaUpdateWrapper<UserDAO> uploadWrapper = new LambdaUpdateWrapper<UserDAO>();
+            uploadWrapper.eq(UserDAO::getId, id)
+                    .set(UserDAO::getPassword, passwordEncoder.encode(changePassword));
+            userMapper.update(null, uploadWrapper);
+            return new ResponseDTO(HttpStatus.OK,"Update successful");
+
+        }catch (LockedException e){
             return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
         } catch (BadCredentialsException e) {
             return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");

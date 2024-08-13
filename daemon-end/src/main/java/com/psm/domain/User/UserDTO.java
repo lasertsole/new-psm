@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO implements Serializable {
-    private static final long serialVersionUID = 2281690874579504458L;
+    private static final long serialVersionUID = -2234378943489471672L;
 
     @NotNull(message = "用户名不能为空")
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "用户名格式错误")
@@ -24,6 +24,12 @@ public class UserDTO implements Serializable {
     @Pattern(regexp = "^[a-zA-Z0-9_*]+$", message = "用户名格式错误")
     @Size(min = 6, max = 16, message = "密码长度必须在6-16之间")
     private String password;
+
+    @NotNull(message = "更改密码不能为空")
+    @Pattern(regexp = "^[a-zA-Z0-9_*]+$", message = "用户名格式错误")
+    @Size(min = 6, max = 16, message = "密码长度必须在6-16之间")
+    private String changePassword;
+
 
     @Pattern(regexp = "^(?:\\+?(\\d{1,3}))?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?$", message = "手机号码格式错误")
     private String phone;

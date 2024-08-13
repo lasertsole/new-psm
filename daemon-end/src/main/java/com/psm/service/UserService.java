@@ -46,5 +46,14 @@ public interface UserService extends IService<UserDAO> {
      * @return
      */
     public ResponseDTO updateUser(UserDAO user);
+
+    /**
+     * 更新密码
+     *
+     * @param password
+     * @param changePassword
+     * @return
+     */
+    public ResponseDTO updatePassword(String password, String changePassword);
 }
 

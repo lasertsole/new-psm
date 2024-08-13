@@ -21,18 +21,7 @@ public class ShowcaseController {
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file) {
-        try {
-            // 获取文件名
-            String fileName = file.getOriginalFilename();
-            // 指定文件保存路径
-            String filePath = "/var/www/uploads/" + fileName;
-            // 将文件写入磁盘
-            File destFile = new File(filePath);
-            file.transferTo(destFile);
-            return "File uploaded successfully: " + fileName;
-        } catch (IOException e) {
-            return "Error uploading file: " + e.getMessage();
-        }
+        return null;
     }
 
     @GetMapping("/{id}")

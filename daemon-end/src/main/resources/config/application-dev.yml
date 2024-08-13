@@ -83,3 +83,15 @@ mybatis-plus:
   type-aliases-package: com.psm.domain
   #扫描通用枚举的包
   type-enums-package: com.psm.enums
+
+# application.yml
+ftp:
+  host: 127.0.0.1
+  #TODO 用户名和端口需要修改和测试
+  userName: admin
+  password: 123456
+  port: 9000
+  #TODO /uploads/video/和/uploads/image/
+  rootPath: /uploads/video/
+  img:
+    url: http://127.0.0.1:9000/
