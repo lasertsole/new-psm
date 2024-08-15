@@ -3,7 +3,6 @@ package com.psm.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
 
 import javax.crypto.SecretKey;

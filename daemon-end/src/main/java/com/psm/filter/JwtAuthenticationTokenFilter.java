@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Auth.LoginUser;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.utils.JWTUtil;
-import com.psm.utils.RedisCache;
+import com.psm.utils.Redis.RedisCache;
 import com.psm.utils.ResponseWrapper;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;

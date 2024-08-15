@@ -84,14 +84,23 @@ mybatis-plus:
   #扫描通用枚举的包
   type-enums-package: com.psm.enums
 
-# application.yml
-ftp:
-  host: 127.0.0.1
-  #TODO 用户名和端口需要修改和测试
-  userName: admin
-  password: 123456
-  port: 9000
-  #TODO /uploads/video/和/uploads/image/
-  rootPath: /uploads/video/
-  img:
-    url: http://127.0.0.1:9000/
+#阿里云配置信息
+aliyun:
+  #oss服务
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    access-key-id: LTAI5t8QXMXdHCpCorzzkVi2
+    access-key-secret: Bv31pl1AcYEryStLmeN1cJksmshROK
+    bucket-name: new-psm
+
+#jwt配置
+#TODO 需要修改
+jwt:
+  #jwt签发者
+  issuer: moye
+  #jwt加密密钥
+  secret: moyesprite
+  #jwt过期时间
+  expiration: 3600
+  #jwt刷新时间
+  refresh-expiration: 7200

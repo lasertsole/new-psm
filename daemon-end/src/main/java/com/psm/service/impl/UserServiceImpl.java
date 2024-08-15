@@ -10,7 +10,7 @@ import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.UserMapper;
 import com.psm.service.UserService;
 import com.psm.utils.JWTUtil;
-import com.psm.utils.RedisCache;
+import com.psm.utils.Redis.RedisCache;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +42,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     private RedisCache redisCache;
 
+    /**
+     * 登录
+     *
+     * @param user
+     * @return
+     */
     @Override
     public ResponseDTO login(UserDAO user) {
         try {

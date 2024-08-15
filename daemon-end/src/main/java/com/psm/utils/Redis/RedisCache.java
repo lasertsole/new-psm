@@ -1,4 +1,4 @@
-package com.psm.utils;
+package com.psm.utils.Redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
