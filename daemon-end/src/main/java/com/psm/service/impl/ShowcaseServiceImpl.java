@@ -58,7 +58,7 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
             return new ResponseDTO(HttpStatus.OK,"Upload successful");
         }
         catch (DuplicateKeyException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST,"Upload failed, the showcase already exists";);
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"Upload failed, the showcase already exists");
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error:"+e.getMessage());

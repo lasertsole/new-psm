@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,19 +16,33 @@ import java.util.UUID;
 /**
  * JWT工具类
  */
+@Component
+@ConfigurationProperties(prefix = "jwt")
 public class JWTUtil {
     /**
      * 默认有效期为
      */
-    public static final Long JWT_TTL = 60 * 60 * 1000L;//一个小时
+    public Long expiration;
 
     /**
      * 设置密钥
      */
-    public static final String JWT_KEY = "moyesprite";
+    public String secret;
 
-    public static String getUUID(){
+    /**
+     * 签发者
+     */
+    public String issuer;
+
+    /**
+     * 生成uuid
+     *
+     * @return String uuid
+     */
+    public String getUUID()
+    {
         return UUID.randomUUID().toString().replaceAll("-","");
+
     }
 
     /**
@@ -35,8 +51,8 @@ public class JWTUtil {
      * @param subject
      * @return String jwt密文
      */
-    public static String createJWT(String subject){
-        return createJWT(subject, JWT_TTL, getUUID());// 设置过期时间
+    public String createJWT(String subject){
+        return createJWT(subject, expiration, getUUID());// 设置过期时间
     }
 
     /**
@@ -46,7 +62,7 @@ public class JWTUtil {
      * @param ttlMillis token超时时间
      * @return String jwt密文
      */
-    public static String createJWT(String subject, Long ttlMillis){
+    public String createJWT(String subject, Long ttlMillis){
         return createJWT(subject, ttlMillis, getUUID());
     }
 
@@ -57,12 +73,12 @@ public class JWTUtil {
      * @param ttlMillis token超时时间
      * @return String jwt密文
      */
-    public static String createJWT(String subject, Long ttlMillis, String id){
+    public String createJWT(String subject, Long ttlMillis, String id){
         JwtBuilder builder = getJwtBuilder(subject, ttlMillis, id);// 设置过期时间
         return builder.compact();
     }
 
-    private static JwtBuilder getJwtBuilder(String subject, Long ttlMillis, String uuid){
+    private JwtBuilder getJwtBuilder(String subject, Long ttlMillis, String uuid){
         //指定加密算法
         SecureDigestAlgorithm<SecretKey, SecretKey> algorithm = Jwts.SIG.HS256;
 
@@ -70,21 +86,21 @@ public class JWTUtil {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         if (ttlMillis == null){
-            ttlMillis = JWT_TTL;
+            ttlMillis = expiration;
         }
         long expMillis = nowMillis + ttlMillis;
         Date expDate = new Date(expMillis);
         return Jwts.builder()
                 .setId(uuid) // 设置唯一id
                 .setSubject(subject) //主题 可以是json数据
-                .setIssuer("moye") // 签发者
+                .setIssuer(issuer) // 签发者
                 .setIssuedAt(now) // 签发时间
                 .signWith(secretKey, algorithm)// 加密算法以及秘钥
                 .setExpiration(expDate);
     }
 
-    public static SecretKey generalKey(){
-        String originalKey = JWT_KEY;
+    public SecretKey generalKey(){
+        String originalKey = secret;
         int requiredLength = 43; // Base64 encoded length for 256 bits (32 bytes)
 
         // 将原始密钥重复填充到 43 字符
@@ -108,7 +124,7 @@ public class JWTUtil {
      * @return
      * @throws Exception
      */
-    public static Claims parseJWT(String jwt) throws Exception{
+    public Claims parseJWT(String jwt) throws Exception{
         SecretKey secretKey = generalKey();
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -123,7 +139,7 @@ public class JWTUtil {
      * @param jwt
      * @return
      */
-    private static Date getJwtExpiration(String jwt) {
+    private Date getJwtExpiration(String jwt) {
         SecretKey secretKey = generalKey();
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -139,7 +155,7 @@ public class JWTUtil {
      * @param expirationDate
      * @return
      */
-    private static long getRemainingTime(Date expirationDate) {
+    private long getRemainingTime(Date expirationDate) {
         long currentTimeMillis = System.currentTimeMillis();
         long expirationTime = expirationDate.getTime();
         return (expirationTime - currentTimeMillis) / 1000;//返回以秒为单位

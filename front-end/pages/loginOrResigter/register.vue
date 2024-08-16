@@ -101,7 +101,7 @@
         if (value == '') {
             callback(new Error('请输入密码'));
         }
-        else if (value.length < 6 || value.length > 16 || !regex.test(value)) {
+        else if (value.length < 8 || value.length > 26 || !regex.test(value)) {
             callback(new Error('无效密码'));
         }
         else{
@@ -116,7 +116,7 @@
         if (value == '') {
             callback(new Error('请输入密码'));
         }
-        else if (value.length < 6 || value.length > 16 || !regex.test(value)) {
+        else if (value.length < 8 || value.length > 26 || !regex.test(value)) {
             callback(new Error('无效密码'));
         }
         else if(value != userInfo.password){

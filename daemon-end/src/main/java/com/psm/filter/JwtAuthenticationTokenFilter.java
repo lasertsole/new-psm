@@ -29,6 +29,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
     RedisCache redisCache;
 
+    @Autowired
+    JWTUtil jwtUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //获取token
@@ -41,7 +44,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         //解析token
         String userid;
         try {
-            Claims claims = JWTUtil.parseJWT(token);
+            Claims claims = jwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
             throw new RuntimeException("Invalid token");
@@ -87,7 +90,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
 
         //如果JWT验证信息过期时间小于一小时则重置JWT
         if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= 3600){
-            String jwt = JWTUtil.createJWT(loginUser.getUser().getId().toString());
+            String jwt = jwtUtil.createJWT(loginUser.getUser().getId().toString());
             redisCache.setCacheObject(redisKey,loginUser,1, TimeUnit.DAYS);
 
             resultMap.put("token",jwt);

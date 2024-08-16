@@ -10,28 +10,28 @@ import java.io.Serializable;
 public class ShowcaseDTO implements Serializable {
     private static final long serialVersionUID = 3962323961628208910L;
 
-    @NotNull(message = "标题不能为空")
-    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "标题格式错误")
-    @Size(max = 20, message = "标题长度不能超过20")
+    @NotNull(message = "The title cannot be empty")
+    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The title format is incorrect")
+    @Size(max = 20, message = "The title length must not exceed 20 characters")
     private String title;
 
-    @NotNull(message = "内容不能为空")
-    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "内容格式错误")
-    @Size(max = 255, message = "内容长度不能超过255")
+    @NotNull(message = "The content cannot be empty")
+    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The content format is incorrect")
+    @Size(max = 255, message = "The content length must not exceed 255 characters")
     private String content;
 
-    @NotNull(message = "封面不能为空")
-    @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "封面地址格式错误")
-    @Size(max = 255, message = "封面地址长度不能超过255")
+    @NotNull(message = "The cover cannot be empty")
+    @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "The cover format is incorrect")
+    @Size(max = 255, message = "The cover length must not exceed 255 characters")
     private String cover;
 
-    @NotNull(message = "视频不能为空")
-    @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "视频地址格式错误")
-    @Size(max = 255, message = "视频地址长度不能超过255")
+    @NotNull(message = "The video cannot be empty")
+    @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "The video URL format is incorrect")
+    @Size(max = 255, message = "The video length must not exceed 255 characters")
     private String video;
 
-    @NotNull(message = "分类不能为空")
+    @NotNull(message = "The category cannot be empty")
     @ValidJson
-    @Size(max = 255, message = "分类长度不能超过255")
+    @Size(max = 255, message = "The category length must not exceed 255 characters")
     private String category;
 }

@@ -42,6 +42,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     private RedisCache redisCache;
 
+    @Autowired
+    JWTUtil jwtUtil;
+
     /**
      * 登录
      *
@@ -60,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
             UserDAO loginUserInfo = loginUser.getUser();
             String id = loginUserInfo.getId().toString();
-            String jwt = JWTUtil.createJWT(id);
+            String jwt = jwtUtil.createJWT(id);
 
             //把完整信息存入redis，id作为key
             redisCache.setCacheObject("login:"+id,loginUser,1, TimeUnit.DAYS);
