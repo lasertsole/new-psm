@@ -1,8 +1,8 @@
 package com.psm.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.psm.domain.Showcase.ShowcaseDAO;
-import com.psm.domain.Showcase.ShowcaseDTO;
+import com.psm.domain.Subtitles.SubtitlesDAO;
+import com.psm.domain.Subtitles.SubtitlesDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 
 
@@ -12,7 +12,7 @@ import com.psm.domain.UtilsDom.ResponseDTO;
  * @author moye
  * @date 2021/05/08
  */
-public interface ShowcaseService extends IService<ShowcaseDAO> {
+public interface SubtitlesService extends IService<SubtitlesDAO> {
     /**
      * 分页查询橱窗盒子
      *
@@ -36,7 +36,7 @@ public interface ShowcaseService extends IService<ShowcaseDAO> {
      * @param showcaseDTO
      * @return
      */
-    public ResponseDTO addShowcase(ShowcaseDTO showcaseDTO);
+    public ResponseDTO addShowcase(SubtitlesDTO showcaseDTO);
 
     /**
      * 修改橱窗盒子
@@ -44,7 +44,7 @@ public interface ShowcaseService extends IService<ShowcaseDAO> {
      * @param showcaseDTO
      * @return
      */
-    public ResponseDTO updateShowcase(ShowcaseDTO showcaseDTO);
+    public ResponseDTO updateShowcase(SubtitlesDTO showcaseDTO);
 
     /**
      * 删除橱窗盒子

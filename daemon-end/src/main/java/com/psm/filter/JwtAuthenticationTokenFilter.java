@@ -57,7 +57,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             throw new RuntimeException("User not logged in");
         }
 
-        //存入SecurityContextHolder
+        //存入SecurityContextHolder,并跳过验证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

@@ -1,8 +1,13 @@
-#开发环境申明
 spring:
+  #开发环境申明
   config:
     activate:
       on-profile: dev
+  #配置文件编码
+  mvc:
+    cotent-negotiation-manager:
+      #默认编码
+      default-charset: UTF-8
 #静态文件上传配置
   servlet:
     multipart:
@@ -40,13 +45,21 @@ spring:
       # 是否自动创建索引
       auto-index-creation: true
       connection-string:
+        #最大连接数
         max-connections-per-host: 100
+        #最大等待时间
         max-wait-time-ms: 5000
+        #心跳频率
         heartbeat-frequency-ms: 10000
+        #心跳连接超时时间
         heartbeat-connect-timeout-ms: 20000
+        #连接超时时间
         connect-timeout-ms: 10000
+        #socket超时时间
         socket-timeout-ms: 0
+        #socket保持连接
         socket-keep-alive: true
+        #服务器选择超时时间
         server-selection-timeout-ms: 10000
 
   jackson:
@@ -88,7 +101,7 @@ mybatis-plus:
 aliyun:
   #oss服务
   oss:
-    endpoint: oss-cn-guangzhou.aliyuncs.com
+    endpoint: https://oss-cn-guangzhou.aliyuncs.com
     access-key-id: LTAI5t8QXMXdHCpCorzzkVi2
     access-key-secret: Bv31pl1AcYEryStLmeN1cJksmshROK
     bucket-name: new-psm

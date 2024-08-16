@@ -22,6 +22,6 @@ public class BindExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         }
 
-        return new ResponseEntity<>(new ResponseDTO(HttpStatus.BAD_REQUEST, "参数校验错误", errors),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseDTO(HttpStatus.BAD_REQUEST, "parameters is incorrect", errors),HttpStatus.BAD_REQUEST);
     }
 }

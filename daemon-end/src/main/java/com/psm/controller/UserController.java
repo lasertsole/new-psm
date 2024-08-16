@@ -4,11 +4,18 @@ import com.psm.domain.User.UserDAO;
 import com.psm.domain.User.UserDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.service.UserService;
+import com.psm.utils.OSS.UploadOSSUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -58,4 +65,19 @@ public class UserController {
         String changePassword = userDto.getChangePassword();
         return userService.updatePassword(password,changePassword);
     }
+
+    @GetMapping("/{id}")//通过ID获取用户信息
+    public ResponseDTO getUserByID(@PathVariable Long id)
+    {
+        return null;
+    }
+
+    @GetMapping//通过用户名获取用户信息
+    public ResponseDTO getUserByName(@RequestParam("username") String name)
+    {
+        return null;
+    }
+
+    @Autowired
+    UploadOSSUtil uploadOSSUtil;
 }

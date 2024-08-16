@@ -2,11 +2,11 @@ package com.psm.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.psm.domain.Showcase.ShowcaseDAO;
-import com.psm.domain.Showcase.ShowcaseDTO;
+import com.psm.domain.Subtitles.SubtitlesDAO;
+import com.psm.domain.Subtitles.SubtitlesDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
-import com.psm.mapper.ShowcaseMapper;
-import com.psm.service.ShowcaseService;
+import com.psm.mapper.SubtitlesMapper;
+import com.psm.service.SubtitlesService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO> implements ShowcaseService {
+public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, SubtitlesDAO> implements SubtitlesService {
     @Autowired
-    private ShowcaseMapper showcaseMapper;
+    private SubtitlesMapper showcaseMapper;
 
     public ResponseDTO getShowcaseById(Long id) {
         try {
-            ShowcaseDAO showcaseDAO = showcaseMapper.selectById(id);
+            SubtitlesDAO showcaseDAO = showcaseMapper.selectById(id);
 
             Map<String, Object> map = new HashMap<>();
             map.put("result",showcaseDAO);
@@ -37,9 +37,9 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
 
     public ResponseDTO getShowcaseListByPage(Integer currentPage, Integer pageSize) {
         try {
-            Page<ShowcaseDAO> page = new Page<>(currentPage,pageSize);//当前第1页，每页3条数据
-            Page<ShowcaseDAO> resultPage = showcaseMapper.selectPage(page,null);
-            List<ShowcaseDAO> records = resultPage.getRecords();
+            Page<SubtitlesDAO> page = new Page<>(currentPage,pageSize);//当前第1页，每页3条数据
+            Page<SubtitlesDAO> resultPage = showcaseMapper.selectPage(page,null);
+            List<SubtitlesDAO> records = resultPage.getRecords();
 
             Map<String, Object> map = new HashMap<>();
             map.put("result",records);
@@ -50,9 +50,9 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
         }
     }
 
-    public ResponseDTO addShowcase(ShowcaseDTO showcaseDTO) {
+    public ResponseDTO addShowcase(SubtitlesDTO showcaseDTO) {
         try{
-            ShowcaseDAO showcaseDAO = new ShowcaseDAO();
+            SubtitlesDAO showcaseDAO = new SubtitlesDAO();
             BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
             save(showcaseDAO);
             return new ResponseDTO(HttpStatus.OK,"Upload successful");
@@ -65,9 +65,9 @@ public class ShowcaseServiceImpl extends ServiceImpl<ShowcaseMapper, ShowcaseDAO
         }
     }
 
-    public ResponseDTO updateShowcase(ShowcaseDTO showcaseDTO) {
+    public ResponseDTO updateShowcase(SubtitlesDTO showcaseDTO) {
         try{
-            ShowcaseDAO showcaseDAO = new ShowcaseDAO();
+            SubtitlesDAO showcaseDAO = new SubtitlesDAO();
             BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
             updateById(showcaseDAO);
             return new ResponseDTO(HttpStatus.OK,"Update successful");

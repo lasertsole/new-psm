@@ -1,9 +1,9 @@
-package com.psm.domain.Showcase;
+package com.psm.domain.Subtitles;
 
 import java.io.Serializable;
 
-public class ShowcaseVO implements Serializable {
-    private static final long serialVersionUID = -8749263899902601775L;
+public class SubtitlesVO implements Serializable {
+    private static final long serialVersionUID = 1331789288879702334L;
 
     private Long id;
     private Long userId;

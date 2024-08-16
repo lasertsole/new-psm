@@ -1,4 +1,4 @@
-package com.psm.domain.Showcase;
+package com.psm.domain.Subtitles;
 
 import com.psm.annotation.ValidJson;
 
@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
-public class ShowcaseDTO implements Serializable {
-    private static final long serialVersionUID = 3962323961628208910L;
+public class SubtitlesDTO implements Serializable {
+    private static final long serialVersionUID = -2044884146523558412L;
 
     @NotNull(message = "The title cannot be empty")
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The title format is incorrect")

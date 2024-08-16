@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Auth.LoginUser;
 import com.psm.domain.User.UserDAO;
+import com.psm.domain.User.UserVO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.UserMapper;
 import com.psm.service.UserService;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements UserService {
@@ -65,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             String id = loginUserInfo.getId().toString();
             String jwt = jwtUtil.createJWT(id);
 
-            //把完整信息存入redis，id作为key
+            //把完整信息存入redis，id作为key(如果原先有则覆盖)
             redisCache.setCacheObject("login:"+id,loginUser,1, TimeUnit.DAYS);
 
             Map<String, Object> map = new HashMap<>();
@@ -161,12 +163,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             userMapper.deleteById(id);
 
             return new ResponseDTO(HttpStatus.OK,"Logout successful");
-        } catch (LockedException e){
-            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
-        } catch (BadCredentialsException e) {
-            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
-        } catch (DisabledException e){
-            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
         } catch (Exception e) {
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
         }
@@ -200,12 +196,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             userMapper.update(null,wrapper);
 
             return new ResponseDTO(HttpStatus.OK,"Update successful");
-        } catch (LockedException e){
-            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
-        } catch (BadCredentialsException e) {
-            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
-        } catch (DisabledException e){
-            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
         } catch (Exception e) {
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
         }
@@ -243,6 +233,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             List<Map<String, Object>> passwordList = userMapper.selectMaps(queryWrapper);
             String passwordFromDB = (String) passwordList.get(0).get("password");
 
+            //判断旧密码是否正确
             if(passwordEncoder.matches(password,passwordFromDB)){
                 return new ResponseDTO(HttpStatus.BAD_REQUEST,"Password error");
             }
@@ -259,12 +250,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             userMapper.update(null, uploadWrapper);
             return new ResponseDTO(HttpStatus.OK,"Update successful");
 
-        }catch (LockedException e){
-            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS,"Account is locked");
-        } catch (BadCredentialsException e) {
-            return new ResponseDTO(HttpStatus.UNAUTHORIZED,"Authentication failed");
-        } catch (DisabledException e){
-            return new ResponseDTO(HttpStatus.FORBIDDEN,"Account is disabled");
+        } catch (Exception e) {
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
+        }
+    }
+
+    /**
+     * 通过ID获取用户信息
+     *
+     * @param id
+     * @return
+     */
+    public ResponseDTO getUserByID(Long id) {
+        try {
+            //获取用户信息
+            UserDAO userDAO = getById(id);
+
+            //判断用户是否存在
+            if(userDAO != null){
+                //将用户信息封装成UserVO
+                UserVO userVO = new UserVO();
+                BeanUtils.copyProperties(userDAO, userVO);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("userInfo", userVO);
+                return new ResponseDTO(HttpStatus.OK, "Get user information successfully", map);
+            }
+
+            //用户不存在
+            return new ResponseDTO(HttpStatus.NOT_FOUND, "User not found");
+        } catch (Exception e) {
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
+        }
+    }
+
+    /**
+     * 通过用户名获取用户信息
+     *
+     * @param name
+     * @return
+     */
+    public ResponseDTO getUserByName(String name) {
+        try {
+            //获取用户信息
+            LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
+            wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
+                    UserDAO::getCreateTime).like(UserDAO::getName, name);
+            List<UserDAO> userDAOList = userMapper.selectList(wrapper);
+
+            //判断用户是否存在
+            if(!userDAOList.isEmpty()){
+                //将用户信息封装成UserVO类型
+                List<UserVO> userVOList = userDAOList.stream().map(
+                        userDAO -> {
+                            UserVO userVO = new UserVO();
+                            BeanUtils.copyProperties(userDAO, userVO);
+                            return userVO;
+                        }
+                ).collect(Collectors.toList());
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("userInfo", userVOList);
+                return new ResponseDTO(HttpStatus.OK, "Get user information successfully", map);
+            }
+
+            //用户不存在
+            return new ResponseDTO(HttpStatus.NOT_FOUND, "User not found");
         } catch (Exception e) {
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: "+e.getMessage());
         }
