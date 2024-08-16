@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 /**
  * JWT工具类
  */
+@Setter
 @Component
 @ConfigurationProperties(prefix = "jwt")
 public class JWTUtil {

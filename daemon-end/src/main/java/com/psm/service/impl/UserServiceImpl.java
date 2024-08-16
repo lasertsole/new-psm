@@ -129,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             if (loginResponseDTO.getCode() == HttpStatus.OK.value()){
                 return new ResponseDTO(HttpStatus.OK,"Registration successful",loginResponseDTO.getData());
             }
-            else return new ResponseDTO(HttpStatus.OK,loginResponseDTO.getMsg());
+            else return new ResponseDTO(loginResponseDTO.getCode(),loginResponseDTO.getMsg());
 
         }
         catch (DuplicateKeyException e){
