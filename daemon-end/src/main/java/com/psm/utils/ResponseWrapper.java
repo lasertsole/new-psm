@@ -13,30 +13,31 @@ import java.nio.charset.StandardCharsets;
 
 public class ResponseWrapper extends HttpServletResponseWrapper {
     private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    private final PrintWriter writer;
+    private final ServletOutputStream originalOutputStream;
+    private final ServletOutputStream cacheOutputStream= new ServletOutputStream() {
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {}
+
+        @Override
+        public void write(int b) throws IOException {
+            buffer.write(b);
+        }
+    };
+
 
     public ResponseWrapper(HttpServletResponse response) throws IOException {
         super(response);
-        this.writer = response.getWriter();
+        this.originalOutputStream = response.getOutputStream();
     }
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        return new ServletOutputStream() {
-            @Override
-            public boolean isReady() {
-                return true;
-            }
-
-            @Override
-            public void setWriteListener(WriteListener writeListener) {
-            }
-
-            @Override
-            public void write(int b) throws IOException {
-                buffer.write(b);
-            }
-        };
+        return cacheOutputStream;
     }
 
     @Override
@@ -44,8 +45,12 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
         return new PrintWriter(buffer, true);
     }
 
+    public byte[] getContent() {
+        return buffer.toByteArray();
+    }
+
     public String getContentAsString() {
-        return buffer.toString(StandardCharsets.UTF_8);
+        return buffer.toString();
     }
 
     public <T> T getContentAsObject(Class<T> type) {
@@ -58,8 +63,9 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
 
     public void setResponseContent(String content) throws RuntimeException {
         try {
-            writer.print(content);
-            writer.flush();
+            //设置原来response的响应内容并发送
+            originalOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
+            originalOutputStream.flush();
         } catch (Exception e) {
             throw new RuntimeException("Failed to write content to response", e);
         }

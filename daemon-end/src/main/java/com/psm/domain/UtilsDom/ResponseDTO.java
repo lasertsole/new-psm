@@ -4,11 +4,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
-public class ResponseDTO {
+public class ResponseDTO implements Serializable {
+    private static final long serialVersionUID = -378144855071152805L;
+
     /**
      *状态码
      */

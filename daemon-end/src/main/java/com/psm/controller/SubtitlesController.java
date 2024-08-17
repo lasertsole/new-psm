@@ -47,7 +47,7 @@ public class SubtitlesController {
      * @return ResponseDTO
      * @throws IOException
      */
-    @PostMapping
+    @PostMapping("/upload")
     public ResponseDTO addShowcase(@RequestParam("imageFile") MultipartFile imageFile) throws IOException {
         //把图片上传到阿里云oss
         String url = uploadOSSUtil.upload(imageFile);

@@ -71,14 +71,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         ResponseDTO responseDTO = responseWrapper.getContentAsObject(ResponseDTO.class);
         Map<String, Object> resultMap;
 
-        if(responseDTO.getData()== null){
+        //如果原本要返回的 JSON 数据为空则创建一个空的 Map,否则获取原本要返回的 JSON 数据
+        if(Objects.isNull(responseDTO.getData())){
             resultMap = new HashMap<>();
         }
         else{
             resultMap = responseDTO.getData();
         }
 
+        //如果redis缓存的验证信息过期则直接返回
         if(Objects.isNull(redisCache.getCacheObject(redisKey))){
+            //发送内容到客户端
             responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
             return;
         }
@@ -95,8 +98,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
 
             resultMap.put("token",jwt);
             responseDTO.setData(resultMap);
-
-            responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
         }
+
+        //发送内容到客户端
+        responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
     }
 }
