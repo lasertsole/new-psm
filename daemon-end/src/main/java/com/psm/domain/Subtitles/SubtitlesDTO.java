@@ -5,6 +5,8 @@ import com.psm.annotation.ValidJson;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.Serializable;
 
 public class SubtitlesDTO implements Serializable {
@@ -23,12 +25,12 @@ public class SubtitlesDTO implements Serializable {
     @NotNull(message = "The cover cannot be empty")
     @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "The cover format is incorrect")
     @Size(max = 255, message = "The cover length must not exceed 255 characters")
-    private String cover;
+    private MultipartFile cover;
 
     @NotNull(message = "The video cannot be empty")
     @Pattern(regexp = "^(?:\\/[\\w\\-]+)+\\/?$", message = "The video URL format is incorrect")
     @Size(max = 255, message = "The video length must not exceed 255 characters")
-    private String video;
+    private MultipartFile video;
 
     @NotNull(message = "The category cannot be empty")
     @ValidJson

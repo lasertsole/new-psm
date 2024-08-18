@@ -106,6 +106,12 @@ aliyun:
     access-key-secret: Bv31pl1AcYEryStLmeN1cJksmshROK
     bucket-name: new-psm
 
+    #oss文件路径配置
+    path:
+      subtitles:
+        imageFolderPath: subtitles/covers
+        videoFolderPath: subtitles/videos
+
 #jwt配置
 jwt:
   #jwt签发者
