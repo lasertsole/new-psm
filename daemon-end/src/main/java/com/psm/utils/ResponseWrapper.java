@@ -65,7 +65,6 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
         try {
             //设置原来response的响应内容并发送
             originalOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
-            originalOutputStream.flush();
         } catch (Exception e) {
             throw new RuntimeException("Failed to write content to response", e);
         }
@@ -74,5 +73,17 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
     @Override
     public void setContentType(String type) {
         super.setContentType(type + ";charset=UTF-8");
+    }
+
+    public void sendResponse() throws RuntimeException{
+        try {
+            originalOutputStream.flush();
+
+            //关闭输出流
+            originalOutputStream.close();
+            cacheOutputStream.close();
+        } catch (Exception e){
+            throw new RuntimeException("Failed to send response", e);
+        }
     }
 }

@@ -81,8 +81,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
 
         //如果redis缓存的验证信息过期则直接返回
         if(Objects.isNull(redisCache.getCacheObject(redisKey))){
-            //发送内容到客户端
+            //设置返回内容
             responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
+
+            //发送内容到客户端
+            responseWrapper.sendResponse();
             return;
         }
 
@@ -100,7 +103,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             responseDTO.setData(resultMap);
         }
 
-        //发送内容到客户端
+        //设置返回内容
         responseWrapper.setResponseContent(JSON.toJSONString(responseDTO));
+
+        //发送内容到客户端
+        responseWrapper.sendResponse();
     }
 }
