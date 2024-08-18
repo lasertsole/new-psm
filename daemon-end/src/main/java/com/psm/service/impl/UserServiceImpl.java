@@ -13,8 +13,10 @@ import com.psm.service.UserService;
 import com.psm.utils.JWTUtil;
 import com.psm.utils.Redis.RedisCache;
 import io.netty.util.internal.StringUtil;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
@@ -29,7 +31,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Setter
 @Service
+@ConfigurationProperties(prefix = "jwt")//配置和jwt一样的过期时间
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements UserService {
 
     @Autowired
@@ -46,6 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
     @Autowired
     JWTUtil jwtUtil;
+
+    public Long expiration;//jwt有效期
 
     /**
      * 登录
@@ -68,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             String jwt = jwtUtil.createJWT(id);
 
             //把完整信息存入redis，id作为key(如果原先有则覆盖)
-            redisCache.setCacheObject("login:"+id,loginUser,1, TimeUnit.DAYS);
+            redisCache.setCacheObject("login:"+id,loginUser,Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
 
             Map<String, Object> map = new HashMap<>();
             map.put("token",jwt);

@@ -52,9 +52,10 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
 
     public ResponseDTO addShowcase(SubtitlesDTO showcaseDTO) {
         try{
-            SubtitlesDAO showcaseDAO = new SubtitlesDAO();
-            BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
-            save(showcaseDAO);
+
+//            SubtitlesDAO showcaseDAO = new SubtitlesDAO();
+//            BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
+//            save(showcaseDAO);
             return new ResponseDTO(HttpStatus.OK,"Upload successful");
         }
         catch (DuplicateKeyException e){

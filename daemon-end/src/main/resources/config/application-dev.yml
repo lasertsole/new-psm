@@ -119,6 +119,6 @@ jwt:
   #jwt加密密钥
   secret: moyesprite
   #jwt过期时间
-  expiration: 3600000 #1小时
+  expiration: 86400000 #24小时,单位为毫秒
   #jwt刷新时间
-  refresh-expiration: 900000 #15分钟
+  refresh-expiration: 3600000 #15分钟,单位为毫秒

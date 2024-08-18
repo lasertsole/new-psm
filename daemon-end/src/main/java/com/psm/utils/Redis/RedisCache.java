@@ -1,6 +1,8 @@
 package com.psm.utils.Redis;
 
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,13 +12,15 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@Setter
 @Component
+@ConfigurationProperties(prefix = "jwt")//配置和jwt一样的过期时间
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 public class RedisCache {
     /**
      * 默认有效期为
      */
-    public static final Long Redis_TTL = 60 * 60 * 1000L;//一个小时
+    public Long expiration;//配置和jwt一样的过期时间,单位为毫秒
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -224,7 +228,7 @@ public class RedisCache {
      * @param key
      */
     public void setExpire(final String key){
-        setExpire(key, Redis_TTL);
+        setExpire(key, expiration/1000);
     }
 
     public void setExpire(final String key, final long timeout){

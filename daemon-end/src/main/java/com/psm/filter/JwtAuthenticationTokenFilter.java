@@ -7,7 +7,10 @@ import com.psm.utils.JWTUtil;
 import com.psm.utils.Redis.RedisCache;
 import com.psm.utils.ResponseWrapper;
 import io.jsonwebtoken.Claims;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,13 +27,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+@Setter
 @Component
+@ConfigurationProperties(prefix = "jwt")//配置和jwt一样的过期时间
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
     RedisCache redisCache;
 
     @Autowired
     JWTUtil jwtUtil;
+
+    /**
+     * jwt有效期
+     */
+    public Long expiration;
+
+    /**
+     * jwt刷新时间
+     */
+    public Long refreshExpiration;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -71,6 +86,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         ResponseDTO responseDTO = responseWrapper.getContentAsObject(ResponseDTO.class);
         Map<String, Object> resultMap;
 
+        if(Objects.isNull(responseDTO)){
+            responseDTO = new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Server error: ");
+            return;
+        }
+
         //如果原本要返回的 JSON 数据为空则创建一个空的 Map,否则获取原本要返回的 JSON 数据
         if(Objects.isNull(responseDTO.getData())){
             resultMap = new HashMap<>();
@@ -89,15 +109,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             return;
         }
 
-        //如果redis缓存的验证信息过期剩余时间小于一小时则重置过期时间
-        if(redisCache.getExpire(redisKey) <= 3600){
-            redisCache.setExpire(redisKey,1, TimeUnit.DAYS);
-        }
-
         //如果JWT验证信息过期时间小于一小时则重置JWT
-        if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= 3600){
+        if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= refreshExpiration/1000){
             String jwt = jwtUtil.createJWT(loginUser.getUser().getId().toString());
-            redisCache.setCacheObject(redisKey,loginUser,1, TimeUnit.DAYS);
+            redisCache.setCacheObject(redisKey,loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
 
             resultMap.put("token",jwt);
             responseDTO.setData(resultMap);

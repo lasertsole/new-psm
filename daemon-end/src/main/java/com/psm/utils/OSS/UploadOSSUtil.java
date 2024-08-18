@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class UploadOSSUtil {
@@ -81,23 +83,25 @@ public class UploadOSSUtil {
      * @throws Exception
      */
     public String multipartUpload(MultipartFile multipartFile, String folderPath) throws Exception {
+
         String endpoint = ossUtilsProperties.getEndpoint();
         String accessKeyId = ossUtilsProperties.getAccessKeyId();
         String accessKeySecret = ossUtilsProperties.getAccessKeySecret();
         String bucketName = ossUtilsProperties.getBucketName();
 
+        // 文件名
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+                + UUID.randomUUID().toString().replaceAll("-","");
+
         // 获取上传文件的输入流
         // 创建一个临时文件
-        File tempFile = File.createTempFile("temp", null);
+        File tempFile = File.createTempFile(fileName, null);
 
         // 将multipartFile的内容转移到临时文件
         multipartFile.transferTo(tempFile);
 
         // 临时文件路径
         String tempFilePath = tempFile.getAbsolutePath();
-
-        // 避免文件覆盖
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")) + multipartFile.getOriginalFilename();
 
         // 构建完整的文件路径
         String fullFilePath;
@@ -171,6 +175,8 @@ public class UploadOSSUtil {
             if (ossClient != null) {
                 ossClient.shutdown();
             }
+            // 删除临时文件
+            tempFile.delete();
         }
     }
 }

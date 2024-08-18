@@ -46,19 +46,22 @@ public class SubtitlesController {
 
     /**
      * 上传图片
-     *
-     * @param cover
+     * （接收FormData类型）
+     * @param subtitlesDTO
      * @return ResponseDTO
      * @throws IOException
      */
     @PostMapping("/upload")
-    public ResponseDTO addSubtitles(@RequestParam("cover") MultipartFile cover) throws Exception {
-        //把图片上传到阿里云oss
-        String url = uploadOSSUtil.upload(cover,imageFolderPath);
-        Map<String, Object> map = new HashMap<>();
-        map.put("url", url);
-        uploadOSSUtil.multipartUpload(cover,imageFolderPath);
-        return new ResponseDTO(HttpStatus.OK, "上传成功", map);
+    public ResponseDTO addSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws Exception {
+        System.out.println("subtitlesDTO: " + subtitlesDTO);
+        return new ResponseDTO(HttpStatus.OK, "上传成功");
+
+//        //把图片上传到阿里云oss
+//        String url = uploadOSSUtil.upload(cover,imageFolderPath);
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("url", url);
+//        uploadOSSUtil.multipartUpload(cover,imageFolderPath);
+//        return new ResponseDTO(HttpStatus.OK, "上传成功", map);
     }
 
     @PutMapping("/{id}")
