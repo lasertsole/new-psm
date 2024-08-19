@@ -20,7 +20,7 @@ public interface SubtitlesService extends IService<SubtitlesDAO> {
      * @param pageSize
      * @return
      */
-    public ResponseDTO getShowcaseListByPage(Integer currentPage, Integer pageSize);
+    public ResponseDTO getSubtitlesListByPage(Integer currentPage, Integer pageSize);
 
     /**
      * 根据id查询橱窗盒子
@@ -28,23 +28,23 @@ public interface SubtitlesService extends IService<SubtitlesDAO> {
      * @param id
      * @return
      */
-    public ResponseDTO getShowcaseById(Long id);
+    public ResponseDTO getSubtitlesById(Long id);
 
     /**
      * 增加橱窗盒子
      *
-     * @param showcaseDTO
+     * @param subtitlesDAO
      * @return
      */
-    public ResponseDTO addShowcase(SubtitlesDTO showcaseDTO);
+    public ResponseDTO addSubtitles(SubtitlesDAO subtitlesDAO);
 
     /**
      * 修改橱窗盒子
      *
-     * @param showcaseDTO
+     * @param subtitlesDAO
      * @return
      */
-    public ResponseDTO updateShowcase(SubtitlesDTO showcaseDTO);
+    public ResponseDTO updateSubtitles(SubtitlesDAO subtitlesDAO);
 
     /**
      * 删除橱窗盒子
@@ -52,5 +52,5 @@ public interface SubtitlesService extends IService<SubtitlesDAO> {
      * @param id
      * @return
      */
-    public ResponseDTO deleteShowcase(Long id);
+    public ResponseDTO deleteSubtitles(Long id);
 }

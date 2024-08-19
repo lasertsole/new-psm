@@ -1,20 +1,22 @@
 package com.psm.controller;
 
 import com.psm.domain.Page.PageDTO;
+import com.psm.domain.Subtitles.SubtitlesDAO;
 import com.psm.domain.Subtitles.SubtitlesDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.service.SubtitlesService;
 import com.psm.utils.OSS.UploadOSSUtil;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,12 +38,12 @@ public class SubtitlesController {
 
     @GetMapping("/{id}")
     public ResponseDTO getSubtitlesById(@PathVariable Long id) {
-        return subtitlesService.getShowcaseById(id);
+        return subtitlesService.getSubtitlesById(id);
     }
 
     @GetMapping
     public ResponseDTO getSubtitlesList(@Valid @ModelAttribute PageDTO pageDTO) {
-        return subtitlesService.getShowcaseListByPage(pageDTO.getCurrentPage(),pageDTO.getPageSize());
+        return subtitlesService.getSubtitlesListByPage(pageDTO.getCurrentPage(),pageDTO.getPageSize());
     }
 
     /**
@@ -53,24 +55,48 @@ public class SubtitlesController {
      */
     @PostMapping("/upload")
     public ResponseDTO addSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws Exception {
-        System.out.println("subtitlesDTO: " + subtitlesDTO);
-        return new ResponseDTO(HttpStatus.OK, "上传成功");
+        String coverUrl;
+        String videoUrl;
 
-//        //把图片上传到阿里云oss
-//        String url = uploadOSSUtil.upload(cover,imageFolderPath);
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("url", url);
-//        uploadOSSUtil.multipartUpload(cover,imageFolderPath);
-//        return new ResponseDTO(HttpStatus.OK, "上传成功", map);
+        try{
+            coverUrl = uploadOSSUtil.multipartUpload(subtitlesDTO.getCover(),imageFolderPath);
+        }
+        catch (Exception e){
+            Map<String, Object> map = new HashMap<>();
+            map.put("error",e);
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "Cover upload failed",map);
+        }
+
+        try{
+            videoUrl = uploadOSSUtil.multipartUpload(subtitlesDTO.getCover(),videoFolderPath);
+        }
+        catch (Exception e){
+            String coverOSSPath = new URL(coverUrl).getPath().substring(1);
+            uploadOSSUtil.deleteFile(coverOSSPath);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("error",e);
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "Video upload failed",map);
+        }
+
+        SubtitlesDAO subtitlesDAO = new SubtitlesDAO();
+        BeanUtils.copyProperties(subtitlesDTO, subtitlesDAO);
+        subtitlesDAO.setCover(coverUrl);
+        subtitlesDAO.setVideo(videoUrl);
+        System.out.println(subtitlesDAO);
+
+        return subtitlesService.addSubtitles(subtitlesDAO);
     }
 
     @PutMapping("/{id}")
-    public ResponseDTO updateSubtitles(@PathVariable Long id, @Valid @RequestBody SubtitlesDTO showcaseDTO) {
-        return subtitlesService.updateShowcase(showcaseDTO);
+    public ResponseDTO updateSubtitles(@PathVariable Long id, @Valid @RequestBody SubtitlesDTO subtitlesDTO) {
+        SubtitlesDAO subtitlesDAO = new SubtitlesDAO();
+        BeanUtils.copyProperties(subtitlesDTO, subtitlesDAO);
+        return subtitlesService.updateSubtitles(subtitlesDAO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseDTO deleteSubtitles(@PathVariable Long id) {
-        return subtitlesService.deleteShowcase(id);
+        return subtitlesService.deleteSubtitles(id);
     }
 }

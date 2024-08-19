@@ -3,7 +3,7 @@ package com.psm.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Subtitles.SubtitlesDAO;
-import com.psm.domain.Subtitles.SubtitlesDTO;
+import com.psm.domain.Subtitles.SubtitlesVO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.SubtitlesMapper;
 import com.psm.service.SubtitlesService;
@@ -22,7 +22,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
     @Autowired
     private SubtitlesMapper showcaseMapper;
 
-    public ResponseDTO getShowcaseById(Long id) {
+    public ResponseDTO getSubtitlesById(Long id) {
         try {
             SubtitlesDAO showcaseDAO = showcaseMapper.selectById(id);
 
@@ -35,7 +35,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
     }
 
-    public ResponseDTO getShowcaseListByPage(Integer currentPage, Integer pageSize) {
+    public ResponseDTO getSubtitlesListByPage(Integer currentPage, Integer pageSize) {
         try {
             Page<SubtitlesDAO> page = new Page<>(currentPage,pageSize);//当前第1页，每页3条数据
             Page<SubtitlesDAO> resultPage = showcaseMapper.selectPage(page,null);
@@ -50,13 +50,20 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
     }
 
-    public ResponseDTO addShowcase(SubtitlesDTO showcaseDTO) {
+    public ResponseDTO addSubtitles(SubtitlesDAO subtitlesDAO) {
         try{
 
-//            SubtitlesDAO showcaseDAO = new SubtitlesDAO();
-//            BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
-//            save(showcaseDAO);
-            return new ResponseDTO(HttpStatus.OK,"Upload successful");
+            SubtitlesDAO showcaseDAO = new SubtitlesDAO();
+            BeanUtils.copyProperties(subtitlesDAO,showcaseDAO);
+            save(showcaseDAO);
+
+            SubtitlesVO SubtitlesVO = new SubtitlesVO();
+            BeanUtils.copyProperties(showcaseDAO,SubtitlesVO);
+
+            // 返回结果
+            Map<String, Object> map = new HashMap<>();
+            map.put("result",SubtitlesVO);
+            return new ResponseDTO(HttpStatus.OK,"Upload successful",map);
         }
         catch (DuplicateKeyException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"Upload failed, the showcase already exists");
@@ -66,10 +73,10 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
     }
 
-    public ResponseDTO updateShowcase(SubtitlesDTO showcaseDTO) {
+    public ResponseDTO updateSubtitles(SubtitlesDAO subtitlesDAO) {
         try{
             SubtitlesDAO showcaseDAO = new SubtitlesDAO();
-            BeanUtils.copyProperties(showcaseDTO,showcaseDAO);
+            BeanUtils.copyProperties(subtitlesDAO,showcaseDAO);
             updateById(showcaseDAO);
             return new ResponseDTO(HttpStatus.OK,"Update successful");
         }
@@ -78,7 +85,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
    }
 
-   public ResponseDTO deleteShowcase(Long id) {
+   public ResponseDTO deleteSubtitles(Long id) {
         try{
             removeById(id);
             return new ResponseDTO(HttpStatus.OK,"Delete successful");
