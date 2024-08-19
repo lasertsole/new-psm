@@ -39,8 +39,8 @@ public class SubtitlesDAO implements Serializable {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Category{
-        private String oriLang;
-        private String tarLang;
+        private String oriLan;//原始语言
+        private String tarLan;//目标语言
     }
 
     public Category getCategory() {

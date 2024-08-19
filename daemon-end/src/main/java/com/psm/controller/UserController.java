@@ -27,6 +27,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UploadOSSUtil uploadOSSUtil;
+
     String avatarFolderPath;
 
     @PostMapping("/login")//登录
@@ -67,14 +70,12 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUser")//销号
-    public ResponseDTO deleteUser()
-    {
+    public ResponseDTO deleteUser() {
         return userService.deleteUser();
     }
 
     @PutMapping("/updateUser")//更新用户信息(除了密码)
-    public ResponseDTO updateUser(@Valid @RequestBody UserDTO userDto)
-    {
+    public ResponseDTO updateUser(@Valid @RequestBody UserDTO userDto) {
         String avatarUrl = null;
         if (!Objects.isNull(userDto.getAvatar())){
             try{
@@ -94,25 +95,19 @@ public class UserController {
     }
 
     @PutMapping("/updatePassword")//更新密码
-    public ResponseDTO updatePassword(@Valid @RequestBody UserDTO userDto)
-    {
+    public ResponseDTO updatePassword(@Valid @RequestBody UserDTO userDto) {
         String password = userDto.getPassword();
         String changePassword = userDto.getChangePassword();
         return userService.updatePassword(password,changePassword);
     }
 
     @GetMapping("/{id}")//通过ID获取用户信息
-    public ResponseDTO getUserByID(@PathVariable Long id)
-    {
+    public ResponseDTO getUserByID(@PathVariable Long id) {
         return null;
     }
 
     @GetMapping//通过用户名获取用户信息
-    public ResponseDTO getUserByName(@RequestParam("username") String name)
-    {
+    public ResponseDTO getUserByName(@RequestParam("username") String name) {
         return null;
     }
-
-    @Autowired
-    UploadOSSUtil uploadOSSUtil;
 }
