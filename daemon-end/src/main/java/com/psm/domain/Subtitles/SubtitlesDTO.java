@@ -1,5 +1,6 @@
 package com.psm.domain.Subtitles;
 
+import com.psm.annotation.ValidFileSize;
 import com.psm.annotation.ValidImage;
 import com.psm.annotation.ValidJson;
 
@@ -29,9 +30,11 @@ public class SubtitlesDTO implements Serializable {
     private String content;
 
     @ValidImage
+    @ValidFileSize(maxSize = 10 * 1024)//最大10MB
     private MultipartFile cover;
 
     @ValidVideo
+    @ValidFileSize(maxSize = 200 * 1024)//最大200MB
     private MultipartFile video;
 
     @ValidJson

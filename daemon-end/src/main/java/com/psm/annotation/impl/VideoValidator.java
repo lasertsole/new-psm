@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class VideoValidator implements ConstraintValidator<ValidVideo, MultipartFile> {
     private static final Tika tika = new Tika();
+
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         if (file == null || file.isEmpty()) {

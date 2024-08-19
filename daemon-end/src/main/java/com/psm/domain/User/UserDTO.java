@@ -1,6 +1,7 @@
 package com.psm.domain.User;
 
 import com.psm.annotation.ValidBoolean;
+import com.psm.annotation.ValidFileSize;
 import com.psm.annotation.ValidImage;
 import com.psm.enums.SexEnum;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class UserDTO implements Serializable {
     private String phone;
 
     @ValidImage
+    @ValidFileSize(maxSize = 10 * 1024)//最大10MB
     private MultipartFile avatar;
 
     @Pattern(regexp = "^[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)+$", message = "The Email format is incorrect")
