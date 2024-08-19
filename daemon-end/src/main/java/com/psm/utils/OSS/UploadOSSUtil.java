@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.OSSException;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.InputStream;

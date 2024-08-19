@@ -122,3 +122,25 @@ jwt:
   expiration: 86400000 #24小时,单位为毫秒
   #jwt刷新时间
   refresh-expiration: 3600000 #15分钟,单位为毫秒
+
+# websocket配置
+socketio:
+  # 监听的ip和端口
+  host: localhost
+  port: 9099
+  # 设置最大每帧处理数据的长度，防止他人利用大数据来攻击服务器
+  max-frame-payload-length: 1048576
+  # 设置http交互最大内容长度
+  max-http-content-length: 1048576
+  # socket连接数大小（如只监听一个端口boss线程组为1即可）
+  boss-count: 1
+  # 工作线程组大小
+  work-count: 100
+  # 是否允许自定义请求，默认false
+  allow-custom-requests: true
+  # 协议升级超时时间（毫秒），默认10秒。HTTP握手升级为ws协议超时时间
+  upgrade-timeout: 1000000
+  # Ping消息超时时间（毫秒），默认60秒，这个时间间隔内没有接收到心跳消息就会发送超时事件
+  ping-timeout: 6000000
+  # Ping消息间隔（毫秒），默认25秒。客户端向服务器发送一条心跳消息间隔
+  ping-interval: 25000

@@ -1,16 +1,40 @@
 package com.psm.controller;
 
 import com.psm.domain.UtilsDom.ResponseDTO;
+import com.psm.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
-    @GetMapping("/test")
-    public ResponseDTO test() {
-        return new ResponseDTO(HttpStatus.OK, "上传成功");
+    @Autowired
+    private ChatService chatService;
+
+    @GetMapping("/myServlet")
+    public String testMyHttpServlet(){
+        return "hello servlet";
+    }
+
+    @PostMapping("/myServlet1")
+    public String testMyHttpServlet1(){
+        return "hello servlet";
+    }
+
+    @GetMapping("/sendMsg")
+    public String sendMsg(@RequestParam("userId") String userId, @RequestParam("msg") String msg){
+        return "hello socketIO";
+    }
+
+    @GetMapping("/testSendMsg")
+    public String testSendMsg(@RequestParam("username") String username,@RequestParam("msg") String msg){
+        Map<String, Object> map = new HashMap<>();
+        map.put("msg",msg);
+        chatService.sendMessage(username, map);
+        return "hello socketIO";
     }
 }

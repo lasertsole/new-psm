@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
-public class AuthUserService implements UserDetailsService {
+public class AuthUserServiceImpl implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 

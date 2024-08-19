@@ -1,5 +1,5 @@
 import mitt from 'mitt';
-import { defineNuxtPlugin } from '#app'
+import { defineNuxtPlugin } from '#app';
 
 export default defineNuxtPlugin(() => {
   const emitter = mitt();
@@ -9,4 +9,4 @@ export default defineNuxtPlugin(() => {
       on: emitter.on// 监听事件方法 $on
     }
   }
-})
+});
