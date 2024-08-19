@@ -6,6 +6,7 @@ import com.psm.domain.Subtitles.SubtitlesDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.service.SubtitlesService;
 import com.psm.utils.OSS.UploadOSSUtil;
+import io.micrometer.common.util.StringUtils;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Setter
 @RestController
@@ -55,6 +57,17 @@ public class SubtitlesController {
      */
     @PostMapping("/upload")
     public ResponseDTO addSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws Exception {
+        // 参数校验
+        if(
+                StringUtils.isBlank(subtitlesDTO.getTitle())||
+                StringUtils.isBlank(subtitlesDTO.getContent())||
+                StringUtils.isBlank(subtitlesDTO.getCategory())||
+                Objects.isNull(subtitlesDTO.getCover())||
+                Objects.isNull(subtitlesDTO.getVideo())
+        ){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "The parameters cannot be empty");
+        }
+
         String coverUrl;
         String videoUrl;
 

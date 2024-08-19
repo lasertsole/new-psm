@@ -111,6 +111,8 @@ aliyun:
       subtitles:
         imageFolderPath: subtitles/covers
         videoFolderPath: subtitles/videos
+      users:
+        avatarFolderPath: users/avatars
 
 #jwt配置
 jwt:

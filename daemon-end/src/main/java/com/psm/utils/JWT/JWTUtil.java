@@ -1,10 +1,11 @@
-package com.psm.utils;
+package com.psm.utils.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -21,20 +22,8 @@ import java.util.UUID;
 @Component
 @ConfigurationProperties(prefix = "jwt")
 public class JWTUtil {
-    /**
-     * 默认有效期为
-     */
-    public Long expiration;
-
-    /**
-     * 设置密钥
-     */
-    public String secret;
-
-    /**
-     * 签发者
-     */
-    public String issuer;
+    @Autowired
+    JWTUtilProperties jwtUtilProperties;
 
     /**
      * 生成uuid
@@ -54,7 +43,7 @@ public class JWTUtil {
      * @return String jwt密文
      */
     public String createJWT(String subject){
-        return createJWT(subject, expiration, getUUID());// 设置过期时间
+        return createJWT(subject, jwtUtilProperties.getExpiration(), getUUID());// 设置过期时间
     }
 
     /**
@@ -88,21 +77,21 @@ public class JWTUtil {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         if (ttlMillis == null){
-            ttlMillis = expiration;
+            ttlMillis = jwtUtilProperties.getExpiration();
         }
         long expMillis = nowMillis + ttlMillis;
         Date expDate = new Date(expMillis);
         return Jwts.builder()
                 .setId(uuid) // 设置唯一id
                 .setSubject(subject) //主题 可以是json数据
-                .setIssuer(issuer) // 签发者
+                .setIssuer(jwtUtilProperties.getIssuer()) // 签发者
                 .setIssuedAt(now) // 签发时间
                 .signWith(secretKey, algorithm)// 加密算法以及秘钥
                 .setExpiration(expDate);
     }
 
     public SecretKey generalKey(){
-        String originalKey = secret;
+        String originalKey = jwtUtilProperties.getSecret();
         int requiredLength = 43; // Base64 encoded length for 256 bits (32 bytes)
 
         // 将原始密钥重复填充到 43 字符

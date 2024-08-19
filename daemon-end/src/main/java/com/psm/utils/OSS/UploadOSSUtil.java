@@ -23,8 +23,9 @@ import java.util.UUID;
 
 @Component
 public class UploadOSSUtil {
+    // 导入OSS配置
     @Autowired
-    OSSUtilsProperties ossUtilsProperties;
+    OSSUtilProperties ossUtilsProperties;
 
     private static final ThreadLocal<Integer> threadLocal =  new ThreadLocal<Integer>();
     /**

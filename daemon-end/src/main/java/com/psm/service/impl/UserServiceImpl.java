@@ -10,7 +10,7 @@ import com.psm.domain.User.UserVO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.UserMapper;
 import com.psm.service.UserService;
-import com.psm.utils.JWTUtil;
+import com.psm.utils.JWT.JWTUtil;
 import com.psm.utils.Redis.RedisCache;
 import io.netty.util.internal.StringUtil;
 import lombok.Setter;
@@ -118,21 +118,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     /**
      * 注册
      *
-     * @param user
+     * @param userDAO
      * @return
      */
-    public ResponseDTO register(UserDAO user) {
+    public ResponseDTO register(UserDAO userDAO) {
         try{
             //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
             UserDAO register = new UserDAO();
-            BeanUtils.copyProperties(user, register);
+            BeanUtils.copyProperties(userDAO, register);
             register.setPassword(passwordEncoder.encode(register.getPassword()));
 
             //将register对象保存到数据库
             save(register);
 
             //使用未加密密码的user对象登录
-            ResponseDTO loginResponseDTO = login(user);
+            ResponseDTO loginResponseDTO = login(userDAO);
 
             if (loginResponseDTO.getCode() == HttpStatus.OK.value()){
                 return new ResponseDTO(HttpStatus.OK,"Registration successful",loginResponseDTO.getData());

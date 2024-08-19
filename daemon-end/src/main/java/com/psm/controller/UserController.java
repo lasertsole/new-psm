@@ -5,20 +5,40 @@ import com.psm.domain.User.UserDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.service.UserService;
 import com.psm.utils.OSS.UploadOSSUtil;
+import io.micrometer.common.util.StringUtils;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+@Setter
 @RestController
 @RequestMapping("/users")
+@ConfigurationProperties(prefix = "aliyun.oss.path.users")
 public class UserController {
     @Autowired
     UserService userService;
 
+    String avatarFolderPath;
+
     @PostMapping("/login")//登录
     public ResponseDTO login(@Valid @RequestBody UserDTO userDto){
+        // 参数校验
+        if(
+                StringUtils.isBlank(userDto.getName())||
+                StringUtils.isBlank(userDto.getPassword())
+        ){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "The parameters cannot be empty");
+        }
+
         UserDAO user = new UserDAO();
         BeanUtils.copyProperties(userDto, user);
         return userService.login(user);
@@ -26,6 +46,14 @@ public class UserController {
 
     @PostMapping("/register")//注册
     public ResponseDTO register(@Valid @RequestBody UserDTO userDto){
+        // 参数校验
+        if(
+                StringUtils.isBlank(userDto.getName())||
+                StringUtils.isBlank(userDto.getPassword())
+        ){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "The parameters cannot be empty");
+        }
+
         //注册
         UserDAO user = new UserDAO();
         BeanUtils.copyProperties(userDto, user);
@@ -47,9 +75,22 @@ public class UserController {
     @PutMapping("/updateUser")//更新用户信息(除了密码)
     public ResponseDTO updateUser(@Valid @RequestBody UserDTO userDto)
     {
-        UserDAO user = new UserDAO();
-        BeanUtils.copyProperties(userDto, user);
-        return userService.updateUser(user);
+        String avatarUrl = null;
+        if (!Objects.isNull(userDto.getAvatar())){
+            try{
+                avatarUrl = uploadOSSUtil.multipartUpload(userDto.getAvatar(),avatarFolderPath);
+            }
+            catch (Exception e){
+                Map<String, Object> map = new HashMap<>();
+                map.put("error",e);
+                return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "avatarUrl upload failed",map);
+            }
+        }
+
+        UserDAO userDao = new UserDAO();
+        BeanUtils.copyProperties(userDto, userDao);
+        userDao.setAvatar(avatarUrl);
+        return userService.updateUser(userDao);
     }
 
     @PutMapping("/updatePassword")//更新密码
