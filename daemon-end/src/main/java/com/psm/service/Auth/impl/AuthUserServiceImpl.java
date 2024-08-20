@@ -1,4 +1,4 @@
-package com.psm.service.impl;
+package com.psm.service.Auth.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.psm.domain.Auth.LoginUser;

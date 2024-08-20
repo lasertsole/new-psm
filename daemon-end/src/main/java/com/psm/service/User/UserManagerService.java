@@ -1,16 +1,14 @@
-package com.psm.service;
+package com.psm.service.User;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.domain.User.UserDAO;
+import com.psm.domain.UtilsDom.ResponseDTO;
 
-
-/**用户服务
+/**用户应用服务
  *
- * @author su
- * @date 2021/05/01
+ * @author moye
+ * @date 2024/08/21
  */
-public interface UserService extends IService<UserDAO> {
+public interface UserManagerService {
     /**
      * 登录
      *
@@ -72,4 +70,3 @@ public interface UserService extends IService<UserDAO> {
      */
     public ResponseDTO getUserByName(String name);
 }
-

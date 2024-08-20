@@ -1,4 +1,4 @@
-package com.psm.domain.Page;
+package com.psm.domain.UtilsDom;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

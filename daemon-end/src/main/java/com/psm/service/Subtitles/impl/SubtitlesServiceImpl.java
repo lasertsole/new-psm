@@ -1,4 +1,4 @@
-package com.psm.service.impl;
+package com.psm.service.Subtitles.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -6,7 +6,7 @@ import com.psm.domain.Subtitles.SubtitlesDAO;
 import com.psm.domain.Subtitles.SubtitlesVO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.SubtitlesMapper;
-import com.psm.service.SubtitlesService;
+import com.psm.service.Subtitles.SubtitlesService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,6 +22,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
     @Autowired
     private SubtitlesMapper showcaseMapper;
 
+    @Override
     public ResponseDTO getSubtitlesById(Long id) {
         try {
             SubtitlesDAO showcaseDAO = showcaseMapper.selectById(id);
@@ -35,6 +36,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
     }
 
+    @Override
     public ResponseDTO getSubtitlesListByPage(Integer currentPage, Integer pageSize) {
         try {
             Page<SubtitlesDAO> page = new Page<>(currentPage,pageSize);//当前第1页，每页3条数据
@@ -50,6 +52,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
     }
 
+    @Override
     public ResponseDTO addSubtitles(SubtitlesDAO subtitlesDAO) {
         try{
 
@@ -73,6 +76,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
     }
 
+    @Override
     public ResponseDTO updateSubtitles(SubtitlesDAO subtitlesDAO) {
         try{
             SubtitlesDAO showcaseDAO = new SubtitlesDAO();
@@ -85,6 +89,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
         }
    }
 
+    @Override
    public ResponseDTO deleteSubtitles(Long id) {
         try{
             removeById(id);

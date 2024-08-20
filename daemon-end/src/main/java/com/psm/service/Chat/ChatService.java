@@ -1,10 +1,15 @@
-package com.psm.service;
+package com.psm.service.Chat;
 
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Observer;
 import java.util.Map;
 
+/**聊天领域服务
+ *
+ * @author moye
+ * @date 2024/08/21
+ */
 public interface ChatService extends Observer, InitializingBean {
     /**
      * description: 给容器内所有的客户端发送通知

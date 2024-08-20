@@ -1,9 +1,10 @@
-package com.psm.controller;
+package com.psm.controller.User.impl;
 
+import com.psm.controller.User.UserController;
 import com.psm.domain.User.UserDAO;
 import com.psm.domain.User.UserDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
-import com.psm.service.UserService;
+import com.psm.service.User.UserManagerService;
 import com.psm.utils.OSS.UploadOSSUtil;
 import io.micrometer.common.util.StringUtils;
 import lombok.Setter;
@@ -23,16 +24,16 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/users")
 @ConfigurationProperties(prefix = "aliyun.oss.path.users")
-public class UserController {
+public class UserControllerImpl implements UserController {
     @Autowired
-    UserService userService;
+    UserManagerService userManagerService;
 
     @Autowired
     UploadOSSUtil uploadOSSUtil;
 
     String avatarFolderPath;
 
-    @PostMapping("/login")//登录
+    @PostMapping("/login")
     public ResponseDTO login(@Valid @RequestBody UserDTO userDto){
         // 参数校验
         if(
@@ -42,12 +43,12 @@ public class UserController {
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "The parameters cannot be empty");
         }
 
-        UserDAO user = new UserDAO();
-        BeanUtils.copyProperties(userDto, user);
-        return userService.login(user);
+        UserDAO userDAO = new UserDAO();
+        BeanUtils.copyProperties(userDto, userDAO);
+        return userManagerService.login(userDAO);
     }
 
-    @PostMapping("/register")//注册
+    @PostMapping("/register")
     public ResponseDTO register(@Valid @RequestBody UserDTO userDto){
         // 参数校验
         if(
@@ -58,23 +59,23 @@ public class UserController {
         }
 
         //注册
-        UserDAO user = new UserDAO();
-        BeanUtils.copyProperties(userDto, user);
-        return userService.register(user);
+        UserDAO userDAO = new UserDAO();
+        BeanUtils.copyProperties(userDto, userDAO);
+        return userManagerService.register(userDAO);
     }
 
-    @DeleteMapping("/logout")//登出
+    @DeleteMapping("/logout")
     public ResponseDTO logout()
     {
-        return userService.logout();
+        return userManagerService.logout();
     }
 
-    @DeleteMapping("/deleteUser")//销号
+    @DeleteMapping("/deleteUser")
     public ResponseDTO deleteUser() {
-        return userService.deleteUser();
+        return userManagerService.deleteUser();
     }
 
-    @PutMapping("/updateUser")//更新用户信息(除了密码)
+    @PutMapping("/updateUser")
     public ResponseDTO updateUser(@Valid @RequestBody UserDTO userDto) {
         String avatarUrl = null;
         if (!Objects.isNull(userDto.getAvatar())){
@@ -91,23 +92,36 @@ public class UserController {
         UserDAO userDao = new UserDAO();
         BeanUtils.copyProperties(userDto, userDao);
         userDao.setAvatar(avatarUrl);
-        return userService.updateUser(userDao);
+        return userManagerService.updateUser(userDao);
     }
 
-    @PutMapping("/updatePassword")//更新密码
+    @PutMapping("/updatePassword")
     public ResponseDTO updatePassword(@Valid @RequestBody UserDTO userDto) {
         String password = userDto.getPassword();
         String changePassword = userDto.getChangePassword();
-        return userService.updatePassword(password,changePassword);
+        return userManagerService.updatePassword(password,changePassword);
     }
 
-    @GetMapping("/{id}")//通过ID获取用户信息
-    public ResponseDTO getUserByID(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseDTO getUserByID(@PathVariable Long id)
+    {
         return null;
     }
 
-    @GetMapping//通过用户名获取用户信息
-    public ResponseDTO getUserByName(@RequestParam("username") String name) {
-        return null;
+    @GetMapping
+    public ResponseDTO getUserByName(@RequestParam String name) {
+        try {
+            // 参数校验
+            if(StringUtils.isBlank(name)){
+                return new ResponseDTO(HttpStatus.BAD_REQUEST, "The parameters cannot be empty");
+            }
+            UserDTO userDto = new UserDTO();
+            userDto.setName(name);
+            userDto.validateField("name");
+
+            return null;
+        }catch (IllegalArgumentException e){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "The parameters cannot be empty");
+        }
     }
 }

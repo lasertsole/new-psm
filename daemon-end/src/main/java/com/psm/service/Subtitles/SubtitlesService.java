@@ -1,13 +1,12 @@
-package com.psm.service;
+package com.psm.service.Subtitles;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.Subtitles.SubtitlesDAO;
-import com.psm.domain.Subtitles.SubtitlesDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 
 
 /**
- * 橱窗服务
+ * 橱窗领域服务
  *
  * @author moye
  * @date 2021/05/08

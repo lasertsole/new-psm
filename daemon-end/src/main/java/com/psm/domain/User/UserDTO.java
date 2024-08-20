@@ -4,11 +4,14 @@ import com.psm.annotation.ValidBoolean;
 import com.psm.annotation.ValidFileSize;
 import com.psm.annotation.ValidImage;
 import com.psm.enums.SexEnum;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.*;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -51,4 +54,19 @@ public class UserDTO implements Serializable {
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The profile format is incorrect")
     @Size(max = 255, message = "The profile length must not exceed 255 characters")
     private String profile;
+
+
+    private static final Validator validator = new LocalValidatorFactoryBean(); // 使用Spring的LocalValidatorFactoryBean
+
+    public void validateField(String fieldName) {
+        ConstraintViolation<UserDTO> violation = validator.validateProperty(this, fieldName)
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        if (violation != null) {
+            // 处理验证错误
+            throw new IllegalArgumentException(violation.getMessage());
+        }
+    }
 }

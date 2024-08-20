@@ -5,12 +5,14 @@ import com.psm.annotation.ValidImage;
 import com.psm.annotation.ValidJson;
 
 import com.psm.annotation.ValidVideo;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -40,4 +42,18 @@ public class SubtitlesDTO implements Serializable {
     @ValidJson
     @Size(max = 255, message = "The category length must not exceed 255 characters")
     private String category;
+
+    private static final Validator validator = new LocalValidatorFactoryBean(); // 使用Spring的LocalValidatorFactoryBean
+
+    private void validateField(String fieldName) {
+        ConstraintViolation<SubtitlesDTO> violation = validator.validateProperty(this, fieldName)
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        if (violation != null) {
+            // 处理验证错误
+            throw new IllegalArgumentException(violation.getMessage());
+        }
+    }
 }

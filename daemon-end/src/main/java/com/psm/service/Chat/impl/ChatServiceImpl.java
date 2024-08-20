@@ -1,10 +1,10 @@
-package com.psm.service.impl;
+package com.psm.service.Chat.impl;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.psm.handler.SocketIOMessageEventHandler;
-import com.psm.service.ChatService;
+import com.psm.service.Chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;

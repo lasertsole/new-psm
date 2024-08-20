@@ -1,4 +1,4 @@
-package com.psm.service.impl;
+package com.psm.service.User.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -9,7 +9,7 @@ import com.psm.domain.User.UserDAO;
 import com.psm.domain.User.UserVO;
 import com.psm.domain.UtilsDom.ResponseDTO;
 import com.psm.mapper.UserMapper;
-import com.psm.service.UserService;
+import com.psm.service.User.UserService;
 import com.psm.utils.JWT.JWTUtil;
 import com.psm.utils.Redis.RedisCache;
 import io.netty.util.internal.StringUtil;
@@ -56,15 +56,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     /**
      * 登录
      *
-     * @param user
-     * @return
+     * @param userDAO
+     * @return ResponseDTO
      */
     @Override
-    public ResponseDTO login(UserDAO user) {
+    public ResponseDTO login(UserDAO userDAO) {
         try {
             //AuthenticationManager authenticate进行认证
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword());
+                    new UsernamePasswordAuthenticationToken(userDAO.getName(),userDAO.getPassword());
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
             //如果认证通过了，使用id生成jwt
@@ -121,6 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
      * @param userDAO
      * @return
      */
+    @Override
     public ResponseDTO register(UserDAO userDAO) {
         try{
             //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
@@ -180,6 +181,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
      * @param user
      * @return
      */
+    @Override
     public ResponseDTO updateUser(UserDAO user) {
         try {
             //获取SecurityContextHolder中的用户id
@@ -214,6 +216,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
      * @param changePassword
      * @return
      */
+    @Override
     public ResponseDTO updatePassword(String password, String changePassword) {
         try{
             //获取SecurityContextHolder中的用户id
@@ -267,6 +270,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
      * @param id
      * @return
      */
+    @Override
     public ResponseDTO getUserByID(Long id) {
         try {
             //获取用户信息
@@ -296,6 +300,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
      * @param name
      * @return
      */
+    @Override
     public ResponseDTO getUserByName(String name) {
         try {
             //获取用户信息

@@ -1,9 +1,8 @@
-package com.psm.controller;
+package com.psm.controller.Chat.impl;
 
-import com.psm.domain.UtilsDom.ResponseDTO;
-import com.psm.service.ChatService;
+import com.psm.controller.Chat.ChatController;
+import com.psm.service.Chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/chat")
-public class ChatController {
+public class ChatControllerImpl implements ChatController {
     @Autowired
     private ChatService chatService;
 

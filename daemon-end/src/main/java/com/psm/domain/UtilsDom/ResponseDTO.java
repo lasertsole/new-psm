@@ -4,9 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -56,5 +53,17 @@ public class ResponseDTO implements Serializable {
         this.code = code;
         this.msg = msg;
         this.data = data;
+    }
+
+    public static ResponseDTO ok(String msg, Map<String, Object> data){
+        return new ResponseDTO(HttpStatus.OK, msg, data);
+    }
+
+    public static ResponseDTO ok(Map<String, Object> data){
+        return new ResponseDTO(HttpStatus.OK, "success", data);
+    }
+
+    public static ResponseDTO ok(String msg){
+        return new ResponseDTO(HttpStatus.OK, msg);
     }
 }

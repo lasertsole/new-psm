@@ -1,10 +1,11 @@
-package com.psm.controller;
+package com.psm.controller.Subtitles.impl;
 
-import com.psm.domain.Page.PageDTO;
+import com.psm.controller.Subtitles.SubtitlesController;
+import com.psm.domain.UtilsDom.PageDTO;
 import com.psm.domain.Subtitles.SubtitlesDAO;
 import com.psm.domain.Subtitles.SubtitlesDTO;
 import com.psm.domain.UtilsDom.ResponseDTO;
-import com.psm.service.SubtitlesService;
+import com.psm.service.Subtitles.SubtitlesManagerService;
 import com.psm.utils.OSS.UploadOSSUtil;
 import io.micrometer.common.util.StringUtils;
 import lombok.Setter;
@@ -26,10 +27,10 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/subtitles")
 @ConfigurationProperties(prefix = "aliyun.oss.path.subtitles")
-public class SubtitlesController {
+public class SubtitlesControllerImpl implements SubtitlesController {
 
     @Autowired
-    SubtitlesService subtitlesService;
+    SubtitlesManagerService subtitlesManagerService;
 
     @Autowired
     UploadOSSUtil uploadOSSUtil;
@@ -40,12 +41,12 @@ public class SubtitlesController {
 
     @GetMapping("/{id}")
     public ResponseDTO getSubtitlesById(@PathVariable Long id) {
-        return subtitlesService.getSubtitlesById(id);
+        return subtitlesManagerService.getSubtitlesById(id);
     }
 
     @GetMapping
     public ResponseDTO getSubtitlesList(@Valid @ModelAttribute PageDTO pageDTO) {
-        return subtitlesService.getSubtitlesListByPage(pageDTO.getCurrentPage(),pageDTO.getPageSize());
+        return subtitlesManagerService.getSubtitlesListByPage(pageDTO.getCurrentPage(),pageDTO.getPageSize());
     }
 
     /**
@@ -98,18 +99,18 @@ public class SubtitlesController {
         subtitlesDAO.setVideo(videoUrl);
         System.out.println(subtitlesDAO);
 
-        return subtitlesService.addSubtitles(subtitlesDAO);
+        return subtitlesManagerService.addSubtitles(subtitlesDAO);
     }
 
     @PutMapping("/{id}")
     public ResponseDTO updateSubtitles(@PathVariable Long id, @Valid @RequestBody SubtitlesDTO subtitlesDTO) {
         SubtitlesDAO subtitlesDAO = new SubtitlesDAO();
         BeanUtils.copyProperties(subtitlesDTO, subtitlesDAO);
-        return subtitlesService.updateSubtitles(subtitlesDAO);
+        return subtitlesManagerService.updateSubtitles(subtitlesDAO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseDTO deleteSubtitles(@PathVariable Long id) {
-        return subtitlesService.deleteSubtitles(id);
+        return subtitlesManagerService.deleteSubtitles(id);
     }
 }
