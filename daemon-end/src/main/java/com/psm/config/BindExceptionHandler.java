@@ -1,6 +1,6 @@
 package com.psm.config;
 
-import com.psm.domain.UtilsDom.ResponseDTO;
+import com.psm.utils.DTO.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
