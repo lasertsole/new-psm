@@ -4,7 +4,7 @@
             <div class="left">
                 <HeaderLogo></HeaderLogo>
                 <div class="tabBar">
-                    <HeaderTabBar :tabBarArr="routerList"></HeaderTabBar>
+                    <HeaderTabBar></HeaderTabBar>
                 </div>
             </div>
             <div class="right">
@@ -18,11 +18,6 @@
 </template>
 
 <script setup lang="ts">
-    import type { Router } from '@/types/router';
-
-    const routerList:Router[] = getRouterList().filter((item) => {
-        return item.tarbar == true;
-    });
 </script>
 
 <style lang="scss" scoped>

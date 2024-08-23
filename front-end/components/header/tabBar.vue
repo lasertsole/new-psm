@@ -1,13 +1,17 @@
 <template>
     <ul class="tabBarArr">
-        <li v-for="item in tabBarArr">
+        <li v-for="item in routerList">
             <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
         </li>
     </ul>
 </template>
 
 <script lang="ts" setup>
-    const props = defineProps({tabBarArr:Object});
+    import type { Router } from '@/types/router';
+
+    const routerList:Router[] = getRouterList().filter((item) => {
+        return item.tarbar == true;
+    });
 </script>
 
 <style lang="scss" scoped>
