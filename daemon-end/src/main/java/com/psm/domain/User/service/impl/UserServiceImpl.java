@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     UploadOSSUtil uploadOSSUtil;
 
-    @Value("${aliyun.oss.path.users}")
+    @Value("${aliyun.oss.path.users.avatarFolderPath}")
     String avatarFolderPath;
 
     @Override

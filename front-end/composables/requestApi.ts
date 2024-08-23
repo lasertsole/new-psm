@@ -1,11 +1,10 @@
 import type { NitroFetchRequest } from 'nitropack';
-import type { FetchOptions } from 'ofetch';
 
 interface Params {
     url: NitroFetchRequest;
-    opts: FetchOptions<any>;
-    method?: 'get' | 'post';
-    contentType: 'application/x-www-form-urlencoded' | 'application/json';
+    opts?: object;
+    method?: 'get' | 'post' | 'put' | 'delete';
+    contentType?: 'application/x-www-form-urlencoded' | 'application/json';
 }
 
 let loadingCount = 0;
@@ -33,7 +32,7 @@ const replacePathVariables = (url: NitroFetchRequest, params: any = {}) => {
 
 export async function getFetchData({
     url,
-    opts,
+    opts = {},
     method = 'get',
     contentType = 'application/json',
   }: Params) {

@@ -9,8 +9,8 @@ export const routerList:Router[] = [
         tarbar: true,
     },
     {
-        name: '橱窗',
-        path: '/showcase',
+        name: '字幕',
+        path: '/subtitles',
         needOnLine: false,
         needOffLine: false,
         tarbar: true,

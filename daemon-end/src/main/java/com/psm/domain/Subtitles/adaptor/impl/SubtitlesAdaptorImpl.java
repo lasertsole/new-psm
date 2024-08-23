@@ -1,5 +1,6 @@
 package com.psm.domain.Subtitles.adaptor.impl;
 
+import com.psm.annotation.spring.Adaptor;
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
@@ -16,6 +17,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 
+@Adaptor
 public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
     @Autowired
     SubtitlesService subtitlesService;
