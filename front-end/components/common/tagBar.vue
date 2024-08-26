@@ -2,17 +2,18 @@
     <div class="classify">
         <div class="full-contain">
             <div class="tabBox">
-                <ul>
+                <div>
                     <template v-for="item,index in tabList">
-                        <li
+                        <NuxtLink
                             :class="{selected:tabIndex==index}"
                             :style="`${item.paddingLeft?'padding-left:'+item.paddingLeft+';':'10px;'} ${item.paddingRight?'padding-right:'+item.paddingRight+';':'10px;'}`"
+                            :to="item.path"
                             @click="changeTabIndex(index)"
                         >
                             {{ item.tabName }}
-                        </li>
+                        </NuxtLink>
                     </template>
-                </ul>
+                </div>
                 <div class="lineBar">
                     <div class="line" :style="`width:${1/tabList.length*100}%; transform: translateX(${tabIndex*100}%);`"></div>
                 </div>
@@ -55,9 +56,9 @@
             .tabBox{
                 display: flex;
                 flex-direction: column;
-                ul{
+                div{
                     display: flex;
-                    li{
+                    a{
                         display: flex;
                         justify-content: center;
                         align-items: center;
