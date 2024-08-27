@@ -1,19 +1,17 @@
-package com.psm.domain.SubtitlesShowBar.entity;
+package com.psm.objectValue;
 
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.entity.User.UserVO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 
-@Data
-@NoArgsConstructor
+@Getter
 public class SubtitlesShowBarVO implements Serializable {
     private static final long serialVersionUID = -7834822399598777861L;
 
