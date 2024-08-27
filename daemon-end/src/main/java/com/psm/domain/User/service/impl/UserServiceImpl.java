@@ -3,12 +3,15 @@ package com.psm.domain.User.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.User.entity.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.repository.UserMapper;
 import com.psm.domain.User.service.UserService;
+import com.psm.utils.DTO.PageDTO;
 import com.psm.utils.JWT.JWTUtil;
 import com.psm.utils.OSS.UploadOSSUtil;
 import com.psm.utils.Redis.RedisCache;
@@ -260,5 +263,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
         } catch (Exception e) {
             throw new RuntimeException("Server error when getUserByName: "+e.getMessage());
         }
+    }
+
+    @Override
+    public List<UserDAO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize){
+        //获取用户信息
+        LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
+                UserDAO::getCreateTime).orderByAsc(UserDAO::getCreateTime);
+
+        //分页
+        Page<UserDAO> page = new Page<>(currentPage,pageSize);
+
+        //执行查询
+        Page<UserDAO> resultPage = userMapper.selectPage(page, wrapper);
+
+        //返回结果
+        return resultPage.getRecords();
     }
 }

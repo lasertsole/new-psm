@@ -34,15 +34,13 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         }
 
         // 将DAO转换为VO
-        List<SubtitlesVO> subtitlesVOList = subtitlesDAOList.stream().map(
+        return subtitlesDAOList.stream().map(
                 subtitlesDAO -> {
                     SubtitlesVO subtitlesVO = new SubtitlesVO();
                     BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
                     return subtitlesVO;
                 }
         ).toList();
-
-        return subtitlesVOList;
     };
 
     @Override
@@ -64,6 +62,28 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         SubtitlesVO subtitlesVO = new SubtitlesVO();
         BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
         return subtitlesVO;
+    };
+
+    public List<SubtitlesVO> getSubtitlesByUserId(@Valid SubtitlesDTO subtitlesDTO){
+        // 参数判空
+        if(Objects.isNull(subtitlesDTO.getUserId())){
+            throw new InvalidParameterException("Invalid parameter");
+        }
+
+        // 获取字幕盒子列表
+        List<SubtitlesDAO> subtitlesDAOList = subtitlesService.getSubtitlesByUserId(subtitlesDTO.getUserId());
+
+        // 判断字幕盒子是否存在
+        if(subtitlesDAOList == null){
+            throw new RuntimeException("The Subtitles does not exist.");
+        }
+
+        // 将DAO转换为VO
+        return subtitlesDAOList.stream().map(subtitlesDAO -> {
+            SubtitlesVO subtitlesVO = new SubtitlesVO();
+            BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
+            return subtitlesVO;
+        }).toList();
     };
 
     @Override

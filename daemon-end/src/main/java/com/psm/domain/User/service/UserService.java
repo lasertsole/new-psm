@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.User.entity.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.utils.DTO.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -89,5 +90,13 @@ public interface UserService extends IService<UserDAO> {
      * @return
      */
     List<UserDAO> getUserByName(String name);
+
+    /**
+     * 按创建时间排序获取用户列表
+     *
+     * @param pageDTO
+     * @return
+     */
+    List<UserDAO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize);
 }
 

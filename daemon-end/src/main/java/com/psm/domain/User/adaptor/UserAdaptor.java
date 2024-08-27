@@ -2,6 +2,7 @@ package com.psm.domain.User.adaptor;
 
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
+import com.psm.utils.DTO.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -80,4 +81,12 @@ public interface UserAdaptor {
      * @return
      */
     List<UserVO> getUserByName(UserDTO userDTO) throws InvalidParameterException;
+
+    /**
+     * 按创建时间排序获取用户列表
+     *
+     * @param pageDTO
+     * @return
+     */
+    List<UserVO> getUserOrderByCreateTimeAsc(PageDTO pageDTO);
 }

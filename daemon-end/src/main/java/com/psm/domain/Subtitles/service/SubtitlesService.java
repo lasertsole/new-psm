@@ -33,6 +33,14 @@ public interface SubtitlesService extends IService<SubtitlesDAO> {
     public SubtitlesDAO getSubtitlesById(Long id);
 
     /**
+     * 根据userId查询橱窗盒子
+     *
+     * @param userId
+     * @return
+     */
+    List<SubtitlesDAO> getSubtitlesByUserId(Long userId);
+
+    /**
      * 增加橱窗盒子
      *
      * @param subtitlesDTO

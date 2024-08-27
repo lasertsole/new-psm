@@ -1,11 +1,13 @@
 package com.psm.domain.User.adaptor.impl;
 
 import com.psm.annotation.spring.Adaptor;
+import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
 import com.psm.domain.User.service.UserService;
+import com.psm.utils.DTO.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -111,9 +113,9 @@ public class UserAdaptorImpl implements UserAdaptor {
                 StringUtils.isBlank(userDTO.getEmail())&&
                 StringUtils.isBlank(userDTO.getProfile())&&
                 Objects.isNull(userDTO.getAvatar())
-        ){
+        )
             throw new InvalidParameterException("Invalid parameter");
-        }
+
 
         // 修改用户
         userService.updateUser(userDTO);
@@ -180,4 +182,26 @@ public class UserAdaptorImpl implements UserAdaptor {
 
         return userVOList;
     }
+
+    @Override
+    public List<UserVO> getUserOrderByCreateTimeAsc(@Valid PageDTO pageDTO){
+        List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(pageDTO.getCurrentPage(),
+                pageDTO.getPageSize());
+
+        // 判断用户列表是否存在
+        if(userDAOList == null){
+            throw new RuntimeException("The Subtitles does not exist.");
+        }
+
+        // 将DAO转换为VO
+        List<UserVO> userVOList = userDAOList.stream().map(
+                userDAO -> {
+                    UserVO userVO = new UserVO();
+                    BeanUtils.copyProperties(userDAO, userVO);
+                    return userVO;
+                }
+        ).toList();
+
+        return userVOList;
+    };
 }

@@ -1,5 +1,6 @@
 package com.psm.domain.Subtitles.adaptor;
 
+import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.utils.DTO.PageDTO;
@@ -24,6 +25,14 @@ public interface SubtitlesAdaptor {
      * @return SubtitlesVO
      */
     public SubtitlesVO getSubtitlesById(SubtitlesDTO subtitlesDTO) throws InvalidParameterException;
+
+    /**
+     * 根据userId查询橱窗盒子
+     *
+     * @param subtitlesDTO
+     * @return
+     */
+    List<SubtitlesVO> getSubtitlesByUserId(SubtitlesDTO subtitlesDTO);
 
     /**
      * 增加橱窗盒子

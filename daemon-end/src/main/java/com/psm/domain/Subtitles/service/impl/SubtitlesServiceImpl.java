@@ -1,5 +1,6 @@
 package com.psm.domain.Subtitles.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
@@ -38,11 +39,22 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
     @Override
     public SubtitlesDAO getSubtitlesById(Long id) {
         try {
-            SubtitlesDAO showcaseDAO = showcaseMapper.selectById(id);
-            return showcaseDAO;
+            return showcaseMapper.selectById(id);
         }
         catch (Exception e){
             throw new RuntimeException("Server error when getSubtitlesById: "+e.getMessage());
+        }
+    }
+
+    @Override
+    public List<SubtitlesDAO> getSubtitlesByUserId(Long userId) {
+        try {
+            LambdaQueryWrapper<SubtitlesDAO> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SubtitlesDAO::getUserId,userId);
+            return showcaseMapper.selectList(wrapper);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Server error when getSubtitlesByUserId: "+e.getMessage());
         }
     }
 
@@ -87,7 +99,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
 
             // 将信息保存到数据库
             SubtitlesDAO showcaseDAO = new SubtitlesDAO();
-            BeanUtils.copyProperties(subtitlesDTO,showcaseDAO);
+            BeanUtils.copyProperties(subtitlesDTO, showcaseDAO);
             showcaseDAO.setCover(coverUrl);
             showcaseDAO.setVideo(videoUrl);
             save(showcaseDAO);

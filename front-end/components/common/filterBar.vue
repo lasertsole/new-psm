@@ -1,7 +1,7 @@
 <template>
     <div class="filter-bar">
         <template v-for="(item,index) in filterItem.selectList" :key="index">
-            <el-select v-model="typeValue" class="m-2" :placeholder="item&&item[0].label" size="small">
+            <el-select v-model="typeValue[index]" class="m-2" :placeholder="item&&item[0].label" size="small">
                 <el-option
                     v-for="subItem in item"
                     :key="subItem.label"
@@ -12,8 +12,8 @@
         </template>
 
         <el-switch
-            v-for="item in filterItem.switchList"
-            v-model="isIdle"
+            v-for="(item,index) in filterItem.switchList"
+            v-model="switchValue[index]"
             :key="item.label"
             :active-text="item.label"
         />
@@ -28,23 +28,27 @@
     const props = defineProps({
         filterItem:{type:Object as PropType<FilterItem>, required: true},
     });
+    
 
     const emits = defineEmits(["changeClassifyOption"]);
 
     //大类选项
-    const typeValue = ref<number>(0);
+    let selectListLength:number = props.filterItem.selectList?props.filterItem.selectList.length:0;
+    const typeValue = ref<number[]>([]);
+    for(let i = 0;i < selectListLength; i++){
+        typeValue.value[i] = 0;
+    }
+    
 
     //小类选项
-    const sortValue = ref<number>(0);
-
-    //档期空闲？
-    const isIdle = ref<boolean>(false);
-
-    //能否加急
-    const canQuicky = ref<boolean>(false);
+    let switchListLength:number = props.filterItem.switchList?props.filterItem.switchList.length:0;
+    const switchValue = ref<boolean[]>([]);
+        for(let i = 0;i < switchListLength; i++){
+            switchValue.value[i] = false;
+    }
 
     //当上述条件变化时向服务器发出请求
-    watch([typeValue, sortValue, isIdle, canQuicky],(newVal, oldVal)=>{
+    watch([typeValue, switchValue],(newVal, oldVal)=>{
         emits("changeClassifyOption", newVal);
     });
 </script>

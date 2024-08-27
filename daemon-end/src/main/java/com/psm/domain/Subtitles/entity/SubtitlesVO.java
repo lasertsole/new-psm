@@ -19,4 +19,5 @@ public class SubtitlesVO implements Serializable {
     private String cover;
     private String video;
     private String category;
+    private String createTime;
 }
