@@ -1,0 +1,5 @@
+spring:
+  #开发环境申明
+  config:
+    activate:
+      on-profile: dev

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class SubtitlesShowBarController {
         }
 
         // 创建字幕Bar列表
-        List<SubtitlesShowBarVO> subtitlesShowBarVOList = List.of();
+        List<SubtitlesShowBarVO> subtitlesShowBarVOList =  new ArrayList<>(10);
 
         // 创建字幕列表
         List<SubtitlesVO> subtitlesVOList;

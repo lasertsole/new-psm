@@ -5,6 +5,7 @@ import com.psm.domain.User.entity.User.UserVO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
@@ -12,8 +13,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
+@ToString
 public class SubtitlesShowBarVO implements Serializable {
-    private static final long serialVersionUID = -7834822399598777861L;
+    private static final long serialVersionUID = -4862791505815432325L;
 
     UserVO userVO;
     List<SubtitlesVO> subtitlesVOList;
@@ -24,8 +26,9 @@ public class SubtitlesShowBarVO implements Serializable {
                 Objects.isNull(userVO)||
                 Objects.isNull(subtitlesVOList)||
                 subtitlesVOList.isEmpty()
-        )
+        ){
             throw new InvalidParameterException("Invalid parameter");
+        }
 
         if(
                 Objects.isNull(userVO.getId())&&
@@ -36,7 +39,9 @@ public class SubtitlesShowBarVO implements Serializable {
                 StringUtils.isBlank(userVO.getProfile())&&
                 StringUtils.isBlank(userVO.getCreateTime())
         )
+        {
             throw new InvalidParameterException("Invalid parameter");
+        }
 
         subtitlesVOList.forEach(subtitlesVO -> {
             if(
@@ -48,7 +53,9 @@ public class SubtitlesShowBarVO implements Serializable {
                     StringUtils.isBlank(subtitlesVO.getCategory())&&
                     StringUtils.isBlank(subtitlesVO.getCreateTime())
             )
+            {
                 throw new InvalidParameterException("Invalid parameter");
+            }
 
             //移除多余信息，减少传输压力
             subtitlesVO.setUserId(null);

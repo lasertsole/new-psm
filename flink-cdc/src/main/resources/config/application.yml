@@ -1,0 +1,13 @@
+#配置使用环境
+spring:
+  application:
+    name: daemon-end
+  profiles:
+    active: dev
+
+#应用信息
+app:
+  name: psm-daemon-end
+  desc: daemon-end of psm project
+  version: 1.0.0
+  author: moye

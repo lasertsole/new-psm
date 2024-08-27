@@ -82,6 +82,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         return subtitlesDAOList.stream().map(subtitlesDAO -> {
             SubtitlesVO subtitlesVO = new SubtitlesVO();
             BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
+            subtitlesVO.setCategory(subtitlesDAO.getCategory().toString());
             return subtitlesVO;
         }).toList();
     };
