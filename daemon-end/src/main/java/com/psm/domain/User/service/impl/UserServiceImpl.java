@@ -49,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     JWTUtil jwtUtil;
 
-    @Value("${jwt.expiration}")
+    @Value("${spring.security.jwt.expiration}")
     public Long expiration;//jwt有效期
 
     @Autowired

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "jwt")
+@ConfigurationProperties(prefix = "spring.security.jwt")
 public class JWTUtilProperties {
     /**
      * 默认有效期为

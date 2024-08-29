@@ -75,10 +75,26 @@ spring:
       password: 123456
       driver-class-name: org.postgresql.Driver
 
-#服务器地址及端口
-server:
-  port: 8000
-  address: 127.0.0.1
+  security:
+    #jwt配置
+    jwt:
+      #jwt签发者
+      issuer: moye
+      #jwt加密密钥
+      secret: moyesprite
+      #jwt过期时间
+      expiration: 86400000 #24小时,单位为毫秒
+      #jwt刷新时间
+      refresh-expiration: 3600000 #15分钟,单位为毫秒
+
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23lilO28AYKuoWOkPs
+            client-secret: 818af0dbaf48927dfd7770b25f47c59157a04ee7
+            direct-url: http://localhost:8000/users/githubLoginCallback
+      expiration: 600000L; #第三方登录默认过期时间,单位为毫秒. 默认十分钟
 
 #mybaitis-plus配置
 mybatis-plus:
@@ -114,17 +130,6 @@ aliyun:
       users:
         avatarFolderPath: users/avatars
 
-#jwt配置
-jwt:
-  #jwt签发者
-  issuer: moye
-  #jwt加密密钥
-  secret: moyesprite
-  #jwt过期时间
-  expiration: 86400000 #24小时,单位为毫秒
-  #jwt刷新时间
-  refresh-expiration: 3600000 #15分钟,单位为毫秒
-
 # websocket配置
 socketio:
   # 监听的ip和端口
@@ -146,3 +151,8 @@ socketio:
   ping-timeout: 6000000
   # Ping消息间隔（毫秒），默认25秒。客户端向服务器发送一条心跳消息间隔
   ping-interval: 25000
+
+#服务器地址及端口
+server:
+  port: 8000
+  address: 127.0.0.1

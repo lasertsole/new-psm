@@ -29,23 +29,23 @@ import java.util.concurrent.TimeUnit;
 
 @Setter
 @Component
-@ConfigurationProperties(prefix = "jwt")//配置和jwt一样的过期时间
+@ConfigurationProperties(prefix = "spring.security.jwt")//配置和jwt一样的过期时间
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
-    RedisCache redisCache;
+    private RedisCache redisCache;
 
     @Autowired
-    JWTUtil jwtUtil;
+    private JWTUtil jwtUtil;
 
     /**
      * jwt有效期
      */
-    public Long expiration;
+    private Long expiration;
 
     /**
      * jwt刷新时间
      */
-    public Long refreshExpiration;
+    private Long refreshExpiration;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

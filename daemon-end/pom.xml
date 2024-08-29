@@ -93,6 +93,12 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<!--引入oauth2-client依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
 		<!--引入fastjson2依赖-->
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
