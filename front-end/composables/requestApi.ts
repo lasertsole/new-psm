@@ -119,7 +119,7 @@ export function useFetchApi<T>(url: string, options?: object):ReturnType<typeof 
         onResponse({ request, response, options }) {
             let raw_data = response._data;
             // 处理响应数据
-            if(raw_data.code != 200){
+            if(raw_data.code != 200 || raw_data.code != 302){
                 ElMessage.error(raw_data.msg);
                 localStorage.removeItem('token');
             }

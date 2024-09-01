@@ -10,19 +10,6 @@
 </template>
 
 <style lang="scss">
-  *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    object-fit: contain;
-  }
-  a{
-    text-decoration: none;
-    color: inherit;
-  }
-  ul{
-    list-style: none;
-  }
 </style>
 
 <script lang="ts" setup>

@@ -1,8 +1,8 @@
 <template>
      <!-- 登录注册按钮 -->
      <div v-if="!isOnline" class="loginOrRegister">
-        <NuxtLink to="/loginOrResigter/login" class="login">登录</NuxtLink>
-        <NuxtLink to="/loginOrResigter/register" class="register">注册</NuxtLink>
+        <NuxtLink to="/loginOrRegister/login" class="login">登录</NuxtLink>
+        <NuxtLink to="/loginOrRegister/register" class="register">注册</NuxtLink>
     </div>
     <div class="userTool" @click="drawer = true"></div>
     <el-drawer

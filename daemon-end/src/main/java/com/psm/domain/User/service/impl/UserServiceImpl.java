@@ -5,13 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.User.entity.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.repository.UserMapper;
 import com.psm.domain.User.service.UserService;
-import com.psm.utils.DTO.PageDTO;
 import com.psm.utils.JWT.JWTUtil;
 import com.psm.utils.OSS.UploadOSSUtil;
 import com.psm.utils.Redis.RedisCache;
@@ -25,10 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -44,9 +39,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private RedisCache redisCache;
-
-    @Autowired
     JWTUtil jwtUtil;
 
     @Value("${spring.security.jwt.expiration}")
@@ -57,6 +49,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
     @Value("${aliyun.oss.path.users.avatarFolderPath}")
     String avatarFolderPath;
+
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{

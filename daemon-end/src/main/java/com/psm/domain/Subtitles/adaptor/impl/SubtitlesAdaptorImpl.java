@@ -5,11 +5,11 @@ import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
+import com.psm.domain.Subtitles.infrastructure.SubtitlesInfrastructure;
 import com.psm.domain.Subtitles.service.SubtitlesService;
 import com.psm.utils.DTO.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -36,9 +36,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         // 将DAO转换为VO
         return subtitlesDAOList.stream().map(
                 subtitlesDAO -> {
-                    SubtitlesVO subtitlesVO = new SubtitlesVO();
-                    BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
-                    return subtitlesVO;
+                    return SubtitlesInfrastructure.DAOConvertToVO(subtitlesDAO);
                 }
         ).toList();
     };
@@ -59,9 +57,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         }
 
         // 将DAO转换为VO
-        SubtitlesVO subtitlesVO = new SubtitlesVO();
-        BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
-        return subtitlesVO;
+        return SubtitlesInfrastructure.DAOConvertToVO(subtitlesDAO);
     };
 
     public List<SubtitlesVO> getSubtitlesByUserId(@Valid SubtitlesDTO subtitlesDTO){
@@ -80,10 +76,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
 
         // 将DAO转换为VO
         return subtitlesDAOList.stream().map(subtitlesDAO -> {
-            SubtitlesVO subtitlesVO = new SubtitlesVO();
-            BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
-            subtitlesVO.setCategory(subtitlesDAO.getCategory().toString());
-            return subtitlesVO;
+            return SubtitlesInfrastructure.DAOConvertToVO(subtitlesDAO);
         }).toList();
     };
 

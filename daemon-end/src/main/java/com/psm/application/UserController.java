@@ -1,17 +1,13 @@
 package com.psm.application;
 
-import cn.hutool.http.HttpRequest;
-import com.alibaba.fastjson2.JSONObject;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
 import com.psm.utils.DTO.ResponseDTO;
-import com.psm.utils.OSS.UploadOSSUtil;
-import com.psm.utils.ThirdAuth.github.GithubAuthProperties;
-import com.psm.utils.ThirdAuth.github.GithubAuthUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -34,13 +30,19 @@ public class UserController {
     @Autowired
     UserAdaptor userAdaptor;
 
-    @Autowired
-    UploadOSSUtil uploadOSSUtil;
+    // 前端地址
+    @Value("${server.front-end-url.base}")
+    private String frontEndBaseUrl;
 
-    String avatarFolderPath;
+    // 前端登录页面
+    @Value("${server.front-end-url.login-page}")
+    private String loginPage;
 
-    @Autowired
-    GithubAuthUtil githubAuthUtil;
+    // 返回前端登录视图
+    @GetMapping("/login")
+    public void login(HttpServletResponse response) throws IOException {
+        response.sendRedirect(frontEndBaseUrl+loginPage);
+    };
 
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody UserDTO userDTO){
@@ -66,80 +68,6 @@ public class UserController {
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-
-    @GetMapping("/githubLogin")
-    public void githubLogin(HttpServletResponse response) throws IOException {
-        //获取Github认证服务的属性信息
-        GithubAuthProperties githubAuthProperties = githubAuthUtil.getGithubAuthProperties();
-
-        // 生成并保存state，忽略该参数有可能导致CSRF攻击
-        String state = githubAuthUtil.genState();
-        // 传递参数response_type、client_id、state、redirect_uri
-        String param = "response_type=code&" + "client_id=" + githubAuthProperties.getClientId() + "&state=" + state
-                + "&redirect_uri=" + githubAuthProperties.getDirectUrl();
-
-        // 请求Github认证服务器
-        response.sendRedirect(githubAuthProperties.getAuthorizeUrl() + "?" + param);
-    }
-
-    @GetMapping("/githubCallback")
-    public String githubCallback(String code, String state, HttpServletResponse response) throws Exception {
-        // 验证state，如果不一致，可能被CSRF攻击
-        if(!githubAuthUtil.checkState(state)) {
-            throw new Exception("State验证失败");
-        }
-
-        //获取Github认证服务的属性信息
-        GithubAuthProperties githubAuthProperties = githubAuthUtil.getGithubAuthProperties();
-
-        // 设置JSONObject请求体
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("client_id",githubAuthProperties.getClientId());
-        jsonObject.put("client_secret",githubAuthProperties.getClientSecret());
-        jsonObject.put("code",code);
-
-        String accessTokenRequestJson = null;
-        try{
-            long start = System.currentTimeMillis();
-            // 请求accessToken，成功获取到后进行下一步信息获取,这里第一次可能会超时
-            accessTokenRequestJson = HttpRequest.post(githubAuthProperties.getAccessTokenUrl())
-                    .header("Accept"," application/json")
-                    .body(jsonObject.toJSONString())
-                    .timeout(30000)
-                    .execute().body();
-        }catch (Exception e){
-            throw new Exception(e);
-        }
-
-        JSONObject accessTokenObject = JSONObject.parseObject(accessTokenRequestJson);
-        // 如果返回的数据包含error，表示失败，错误原因存储在error_description
-        if(accessTokenObject.containsKey("error")) {
-            throw  new Exception("error_description，令牌获取错误");
-        }
-        // 如果返回结果中包含access_token，表示成功
-        if(!accessTokenObject.containsKey("access_token")) {
-            throw  new Exception("获取token失败");
-        }
-
-        // 得到token和token_type
-        String accessToken = (String) accessTokenObject.get("access_token");
-        String tokenType = (String) accessTokenObject.get("token_type");
-        String userInfo = null;
-        try{
-            long start = System.currentTimeMillis();
-            // 请求资源服务器获取个人信息
-            userInfo = HttpRequest.get(githubAuthProperties.getResourceUrl())
-                    .header("Authorization", tokenType + " " + accessToken)
-                    .timeout(5000)
-                    .execute().body();
-        }catch (Exception e){
-            throw new Exception(e);
-        }
-
-        JSONObject userInfoJson = JSONObject.parseObject(userInfo);
-        return userInfoJson.toJSONString();
-    }
-
 
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody UserDTO userDTO){

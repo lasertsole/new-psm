@@ -93,8 +93,34 @@ spring:
           github:
             client-id: Ov23lilO28AYKuoWOkPs
             client-secret: 818af0dbaf48927dfd7770b25f47c59157a04ee7
-            direct-url: http://localhost:8000/users/githubLoginCallback
-      expiration: 600000L; #第三方登录默认过期时间,单位为毫秒. 默认十分钟
+            authorizationGrantType: authorization_code
+            redirect-uri: http://localhost:8000/login/oauth2/code/github
+            scope:
+              - read:user
+              - user:email
+
+          gitee:
+            client-id: 8bdd02308c94e52fc7ff018d863ea0a1ef4c3f4b454c456ef9dfec592ed310dd
+            client-secret: f13885c4ae4f0874aca433793f36994b9521fada1d776ebd4faa84f5a7e874d7
+            authorizationGrantType: authorization_code
+            redirect-uri: http://localhost:8000/login/oauth2/code/gitee
+            scope:
+              - user_info
+
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: login
+
+          gitee:
+            authorization-uri: https://gitee.com/oauth/authorize
+            token-uri: https://gitee.com/oauth/token
+            user-info-uri: https://gitee.com/api/v5/user
+            user-name-attribute: name
+
+      authorization-base-uri: /oauth2/authorization
 
 #mybaitis-plus配置
 mybatis-plus:
@@ -154,5 +180,9 @@ socketio:
 
 #服务器地址及端口
 server:
+  protocol: http
   port: 8000
   address: 127.0.0.1
+  front-end-url:
+    base: http://localhost:3000
+    login-page: /loginOrRegister/login

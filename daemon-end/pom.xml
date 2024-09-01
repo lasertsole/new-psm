@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.psm</groupId>
-	<artifactId>flink-cdc</artifactId>
+	<artifactId>daemon-end</artifactId>
 	<version>1.1.1</version>
 	<name>daemon-end</name>
 	<description>Demo project for Spring Boot</description>
@@ -93,7 +93,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-		<!--引入oauth2-client依赖-->
+		<!-- Spring Security OAuth2 Client依赖 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -147,6 +147,7 @@
 			<version>3.17.4</version>
 		</dependency>
 
+		<!--以下是阿里云oss依赖其他依赖-->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -163,6 +164,7 @@
 			<artifactId>jaxb-runtime</artifactId>
 			<version>2.3.3</version>
 		</dependency>
+		<!--以上是阿里云oss依赖其他依赖-->
 
 		<!--消除Annotation Processor not configured警告-->
 		<dependency>

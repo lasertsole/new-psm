@@ -18,6 +18,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+  css:['@/main.scss'],
   vite: {
     resolve: {
       alias: {
@@ -33,12 +34,20 @@ export default defineNuxtConfig({
         changeOrigin: true,
         prependPath: true,
       },
+    },
+    prerender:{ //预渲染
+      routes: [
+        '/', //首页(默认渲染)
+        "/loginOrResigter/login", //登录页
+        "/loginOrResigter/register" //注册页
+      ]
     }
   },
   runtimeConfig: {
     public: {
-      baseURL: process.env.VITE_BASE_URL,
-      apiBaseURL: "/api"
+      baseURL: process.env.VITE_API_BASE_URL,
+      apiBaseURL: "/api",
+      oauth2AuthURL: process.env.VITE_OAuth2_Auth_URL//第三方登录授权地址
     }
   }
 })

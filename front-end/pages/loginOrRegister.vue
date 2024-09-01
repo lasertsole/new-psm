@@ -1,5 +1,5 @@
 <template>
-    <div class="loginAndResigter">
+    <div class="loginOrResigter">
         <div class="box">
             <div class="logo">
                 <div class="logo-image"></div>
@@ -25,7 +25,8 @@
 <style lang="scss" scoped>
     @use "sass:math";
     @import "@/common.scss";
-    .loginAndResigter{
+
+    .loginOrResigter{
         width: 100%;
         height: 100%;
         overflow-y: auto;
