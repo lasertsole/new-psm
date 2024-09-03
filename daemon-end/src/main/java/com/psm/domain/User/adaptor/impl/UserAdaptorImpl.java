@@ -6,7 +6,7 @@ import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
 import com.psm.domain.User.service.UserService;
-import com.psm.domain.User.infrastructure.UserInfrastructure;
+import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
 import com.psm.utils.DTO.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
@@ -36,7 +36,7 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
         }
 
-        UserDAO userDAO = UserInfrastructure.DTOConvertToDAO(userDTO);
+        UserDAO userDAO = UserConvertor.DTOConvertToDAO(userDTO);
 
         // 登录
         Map<String, Object> map = userService.login(userDTO);
@@ -50,7 +50,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserVO
-        UserVO userVO = UserInfrastructure.DAOConvertToVO(userDAO);
+        UserVO userVO = UserConvertor.DAOConvertToVO(userDAO);
         map.put("user", userVO);
 
         return map;
@@ -88,7 +88,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserVO
-        UserVO userVO = UserInfrastructure.DAOConvertToVO(userDAO);
+        UserVO userVO = UserConvertor.DAOConvertToVO(userDAO);
         map.put("user", userVO);
 
         return map;
@@ -149,7 +149,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserVO
-        return UserInfrastructure.DAOConvertToVO(userDAO);
+        return UserConvertor.DAOConvertToVO(userDAO);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class UserAdaptorImpl implements UserAdaptor {
 
         // 将UserDAO转换为UserVO
         List<UserVO> userVOList = userDAOList.stream().map(userDAO -> {
-            return UserInfrastructure.DAOConvertToVO(userDAO);
+            return UserConvertor.DAOConvertToVO(userDAO);
         }).toList();
 
         return userVOList;
@@ -187,7 +187,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         // 将DAO转换为VO
         List<UserVO> userVOList = userDAOList.stream().map(
                 userDAO -> {
-                    return UserInfrastructure.DAOConvertToVO(userDAO);
+                    return UserConvertor.DAOConvertToVO(userDAO);
                 }
         ).toList();
 

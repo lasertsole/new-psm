@@ -1,4 +1,4 @@
-package com.psm.handler;
+package com.psm.domain.Chat.handler;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;

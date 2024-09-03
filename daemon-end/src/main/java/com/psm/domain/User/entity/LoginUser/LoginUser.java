@@ -1,4 +1,4 @@
-package com.psm.domain.User.entity;
+package com.psm.domain.User.entity.LoginUser;
 
 import com.psm.domain.User.entity.User.UserDAO;
 import lombok.AllArgsConstructor;

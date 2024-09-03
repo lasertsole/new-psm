@@ -1,4 +1,4 @@
-package com.psm.domain.User.entity.OAuth2;
+package com.psm.domain.User.entity.OAuth2User;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -20,19 +20,19 @@ public class OAuth2ThirdAccount implements Serializable {
     @TableId
     private Integer id;                 //自增id
 
-    private Integer userId;             //第三方登录id
+    private Integer userId;             //外键用户id
 
     @TableField("provider")
     private String registrationId;      //第三方登录类型id
 
-    @TableField("provider_user_id")
-    private String login;               //第三方登录账号
+    private String providerUserId;               //第三方登录账号id
 
     private String name;                //第三方登录用户名
     private String avatar;              //第三方用户头像
-    private String Credentials;         //第三方用户凭证
-    private Date credentialsExpiresAt;  //第三方用户凭证过期时间
 
-    private Date createTime;            //第三方用户创建时间
-    private Date updateTime;            //第三方用户更新时间
+    @TableField("access_token")
+    private String Credentials;         //第三方用户凭证
+
+    @TableField("token_expires_at")
+    private Date credentialsExpiresAt;  //第三方用户凭证过期时间
 }

@@ -5,9 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.psm.domain.User.entity.LoginUser;
+import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
 import com.psm.domain.User.repository.UserMapper;
 import com.psm.domain.User.service.UserService;
 import com.psm.utils.JWT.JWTUtil;
@@ -106,8 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     public Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException{
         try{
             //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
-            UserDAO register = new UserDAO();
-            BeanUtils.copyProperties(userDTO, register);
+            UserDAO register = UserConvertor.DTOConvertToDAO(userDTO);
             register.setPassword(passwordEncoder.encode(register.getPassword()));
 
             //将register对象保存到数据库

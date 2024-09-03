@@ -1,4 +1,4 @@
-package com.psm.handler;
+package com.psm.domain.User.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.psm.utils.DTO.ResponseDTO;

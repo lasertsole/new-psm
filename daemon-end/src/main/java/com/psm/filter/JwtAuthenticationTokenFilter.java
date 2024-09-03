@@ -1,7 +1,7 @@
 package com.psm.filter;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.domain.User.entity.LoginUser;
+import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.utils.DTO.ResponseDTO;
 import com.psm.utils.JWT.JWTUtil;
 import com.psm.utils.Redis.RedisCache;

@@ -1,7 +1,7 @@
 package com.psm.domain.User.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.psm.domain.User.entity.LoginUser;
+import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.repository.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
