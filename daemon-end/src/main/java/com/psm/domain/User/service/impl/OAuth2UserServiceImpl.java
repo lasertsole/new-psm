@@ -3,12 +3,15 @@ package com.psm.domain.User.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.psm.domain.User.entity.LoginUser.LoginThirdUser;
 import com.psm.domain.User.entity.OAuth2User.OAuth2ThirdAccount;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.infrastructure.Convertor.OAuth2Convertor;
 import com.psm.domain.User.repository.OAuth2ThirdAccountMapper;
 import com.psm.domain.User.repository.UserMapper;
+import com.psm.utils.Redis.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -16,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
@@ -24,6 +28,12 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RedisCache redisCache;
+
+    @Value("${spring.security.jwt.expiration}")
+    public Long expiration;//jwt有效期
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -51,12 +61,6 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
             // 添加或更新改用户已在数据库内的信息
             if (Objects.isNull(oAuth2ThirdAccount1)){//判断用户的第三方平台账号是否已在数据库
-                //在tb_user表中新建一个账号
-                //TODO 将OAuth2ThirdAccount转化为UserDAO
-                UserDAO userDAO = OAuth2Convertor.OAuth2ThirdAccountConvertToUserDAO(oAuth2ThirdAccount);
-
-                //获取tb_user表新建账号的id
-
                 //在tb_third_party_user表中新建第三方账号，外键user_id的值为tb_user表的id
                 oauth2Mapper.insert(oAuth2ThirdAccount);
             }
@@ -71,6 +75,13 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
                 oauth2Mapper.update(null, updateWrapper);
             }
+            //将第三方账号转成LoginThirdUser格式
+            LoginThirdUser loginThirdUser = new LoginThirdUser(oAuth2ThirdAccount);
+
+            String uniqueThirdId = registerationId + oAuth2ThirdAccount.getProviderUserId();
+
+            //把完整信息存入redis，id作为key(如果原先有则覆盖)
+            redisCache.setCacheObject("login:"+uniqueThirdId,loginThirdUser,Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
         }
 
         // 返回用户信息

@@ -15,9 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import com.psm.domain.User.entity.LoginUser.LoginUser;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -151,6 +149,13 @@ public class UserController {
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    // 获取当前用户信息
+    @GetMapping("/current")
+    public ResponseDTO getCurrentUser(@AuthenticationPrincipal LoginUser loginUser) {
+        Long id = loginUser.getUser().getId();
+        return getUserByID(id);
     }
 
     @GetMapping

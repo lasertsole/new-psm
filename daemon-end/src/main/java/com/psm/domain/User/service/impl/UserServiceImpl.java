@@ -14,7 +14,6 @@ import com.psm.domain.User.service.UserService;
 import com.psm.utils.JWT.JWTUtil;
 import com.psm.utils.OSS.UploadOSSUtil;
 import com.psm.utils.Redis.RedisCache;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;

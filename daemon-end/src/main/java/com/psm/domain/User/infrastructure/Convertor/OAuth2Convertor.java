@@ -32,7 +32,7 @@ public class OAuth2Convertor {
         return account;
     }
 
-    public static UserDAO OAuth2ThirdAccountConvertToUserDAO(OAuth2ThirdAccount oAuth2ThirdAccount){
+    public static UserDAO oAuth2ThirdAccountConvertToUserDAO(OAuth2ThirdAccount oAuth2ThirdAccount){
         UserDAO userDAO = new UserDAO();
 
         System.out.println(oAuth2ThirdAccount);
