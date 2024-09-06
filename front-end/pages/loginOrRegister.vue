@@ -15,11 +15,9 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted } from "vue"
-    
     definePageMeta({
-        middleware:["redirectlogin"]
-    })
+        middleware:["redirect-login"]
+    });
 </script>
 
 <style lang="scss" scoped>

@@ -186,3 +186,4 @@ server:
   front-end-url:
     base: http://localhost:3000
     login-page: /loginOrRegister/login
+    third-login-page: /loginOrRegister/thirdLogin

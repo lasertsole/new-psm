@@ -117,14 +117,20 @@ export function useFetchApi<T>(url: string, options?: object):ReturnType<typeof 
         // 处理请求错误
         },
         onResponse({ request, response, options }) {
-            let raw_data = response._data;
             // 处理响应数据
+            let raw_data = response._data;
             if(raw_data.code != 200 || raw_data.code != 302){
                 ElMessage.error(raw_data.msg);
                 localStorage.removeItem('token');
             }
             else if(raw_data.data.token){
                 localStorage.setItem('token', raw_data.data.token)
+            }
+
+            // 如果返回值有token，则更新本地token
+            let token : string | null = response.headers.get("token");
+            if(token){
+              localStorage.setItem('token', token);
             }
         },
         onResponseError({ request, response, options }) {
@@ -151,14 +157,20 @@ export async function useLazyFetchApi<T>(url: string, options?: object){
         // 处理请求错误
         },
         onResponse({ request, response, options }) {
-            let raw_data = response._data;
             // 处理响应数据
-            if(raw_data.code != 200){
+            let raw_data = response._data;
+            if(raw_data.code != 200 || raw_data.code != 302){
                 ElMessage.error(raw_data.msg);
                 localStorage.removeItem('token');
             }
             else if(raw_data.data.token){
                 localStorage.setItem('token', raw_data.data.token)
+            }
+
+            // 如果返回值有token，则更新本地token
+            let token : string | null = response.headers.get("token");
+            if(token){
+              localStorage.setItem('token', token);
             }
         },
         onResponseError({ request, response, options }) {

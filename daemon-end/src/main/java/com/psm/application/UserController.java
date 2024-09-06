@@ -47,11 +47,11 @@ public class UserController {
     };
 
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody UserDTO userDTO){
+    public ResponseDTO login(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
             // 登录
             Map<String, Object> map = userAdaptor.login(userDTO);
-
+            response.setHeader("token", (String) map.get("token"));
             return new ResponseDTO(HttpStatus.OK, "Login successful", map);
         }
         catch (InvalidParameterException e){

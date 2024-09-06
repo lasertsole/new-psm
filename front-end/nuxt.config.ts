@@ -37,9 +37,10 @@ export default defineNuxtConfig({
     },
     prerender:{ //预渲染
       routes: [
-        '/', //首页(默认渲染)
-        "/loginOrResigter/login", //登录页
-        "/loginOrResigter/register" //注册页
+        '/' //首页(默认渲染)
+        ,"/loginOrResigter/login" //登录页
+        ,"/loginOrResigter/register" //注册页
+        ,"/loginOrResigter/thirdLogin" //第三方登录回调页
       ]
     }
   },
