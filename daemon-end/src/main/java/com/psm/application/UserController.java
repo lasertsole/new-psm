@@ -3,7 +3,7 @@ package com.psm.application;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
-import com.psm.utils.DTO.ResponseDTO;
+import com.psm.infrastructure.utils.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import com.psm.domain.User.entity.LoginUser.LoginUser;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +49,7 @@ public class UserController {
             // 登录
             Map<String, Object> map = userAdaptor.login(userDTO);
             response.setHeader("token", (String) map.get("token"));
-            return new ResponseDTO(HttpStatus.OK, "Login successful", map);
+            return new ResponseDTO(HttpStatus.OK, "Login successful", map.get("user"));
         }
         catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -71,13 +68,25 @@ public class UserController {
         }
     }
 
+    // 快速登录
+    @GetMapping("/fastLogin")
+    public ResponseDTO fastLogin() {
+        try {
+            UserVO userVO = userAdaptor.getAuthorizedUser();
+            return ResponseDTO.ok("FastLogin successful", userVO);
+        }
+        catch (Exception e){
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @PostMapping("/register")
-    public ResponseDTO register(@RequestBody UserDTO userDTO){
+    public ResponseDTO register(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
             //注册
             Map<String, Object> map = userAdaptor.register(userDTO);
-
-            return new ResponseDTO(HttpStatus.OK, "Login successful", map);
+            response.setHeader("token", (String) map.get("token"));
+            return new ResponseDTO(HttpStatus.OK, "Login successful", map.get("user"));
         }
         catch (DuplicateKeyException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -140,22 +149,11 @@ public class UserController {
             // 获取用户信息
             UserVO userVO = userAdaptor.getUserByID(userDTO);
 
-            // 封装数据
-            Map<String, Object> map = new HashMap<>();
-            map.put("user", userVO);
-
-            return new ResponseDTO(HttpStatus.OK, "Get user successful", map);
+            return new ResponseDTO(HttpStatus.OK, "Get user successful", userVO);
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
-
-    // 获取当前用户信息
-    @GetMapping("/current")
-    public ResponseDTO getCurrentUser(@AuthenticationPrincipal LoginUser loginUser) {
-        Long id = loginUser.getUser().getId();
-        return getUserByID(id);
     }
 
     @GetMapping
@@ -166,10 +164,8 @@ public class UserController {
         try {
             // 获取用户信息
             List<UserVO> userVOList = userAdaptor.getUserByName(userDTO);
-            Map<String, Object> map = new HashMap<>();
-            map.put("users", userVOList);
 
-            return new ResponseDTO(HttpStatus.OK, "Get users successful", map);
+            return new ResponseDTO(HttpStatus.OK, "Get users successful", userVOList);
         }catch (IllegalArgumentException e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
         }

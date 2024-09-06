@@ -9,11 +9,11 @@ import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
-import com.psm.domain.User.repository.UserMapper;
+import com.psm.domain.User.repository.mapper.UserMapper;
 import com.psm.domain.User.service.UserService;
-import com.psm.utils.JWT.JWTUtil;
-import com.psm.utils.OSS.UploadOSSUtil;
-import com.psm.utils.Redis.RedisCache;
+import com.psm.domain.User.infrastructure.utils.JWTUtil;
+import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
+import com.psm.infrastructure.utils.Redis.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -53,6 +53,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     private RedisCache redisCache;
 
+    public UserDAO getAuthorizedUser(){
+        // 获取SecurityContextHolder中的用户id
+        UsernamePasswordAuthenticationToken authentication =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+
+        return loginUser.getUser();
+    }
+
+    public Long getAuthorizedUserId() {
+        return getAuthorizedUser().getId();
+    }
+
     @Override
     public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{
         try {
@@ -78,14 +91,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
         }catch (Exception e) {
             throw new RuntimeException("Server error when login: "+e.getMessage());
         }
-    }
-
-    public Long getAuthorizedUserId() {
-        // 获取SecurityContextHolder中的用户id
-        UsernamePasswordAuthenticationToken authentication =
-                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        return loginUser.getUser().getId();
     }
 
     @Override

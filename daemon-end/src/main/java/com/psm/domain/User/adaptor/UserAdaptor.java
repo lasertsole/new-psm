@@ -1,8 +1,9 @@
 package com.psm.domain.User.adaptor;
 
+import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
-import com.psm.utils.DTO.PageDTO;
+import com.psm.infrastructure.utils.DTO.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -14,12 +15,11 @@ import java.util.Map;
 
 public interface UserAdaptor {
     /**
-     * 登录
+     * 获取当前登录用户信息
      *
-     * @param userDTO
-     * @return String token
+     * @return UserDAO
      */
-    Map<String, Object> login(UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException;
+    UserVO getAuthorizedUser();
 
     /**
      * 获取当前登录用户id
@@ -27,6 +27,14 @@ public interface UserAdaptor {
      * @return Long
      */
     Long getAuthorizedUserId();
+
+    /**
+     * 登录
+     *
+     * @param userDTO
+     * @return String token
+     */
+    Map<String, Object> login(UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException;
 
     /**
      * 退出登录

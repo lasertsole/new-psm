@@ -1,7 +1,6 @@
 package com.psm.domain.User.entity.LoginUser;
 
-import com.psm.domain.User.entity.OAuth2User.OAuth2ThirdAccount;
-import com.psm.domain.User.entity.User.UserDAO;
+import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +8,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginThirdUser implements UserDetails {
-    private OAuth2ThirdAccount oAuth2ThirdAccount;
+    private OAuth2ThirdAccountDTO oAuth2ThirdAccount;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

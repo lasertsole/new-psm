@@ -3,10 +3,10 @@ package com.psm.application;
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.adaptor.UserAdaptor;
-import com.psm.utils.DTO.PageDTO;
+import com.psm.infrastructure.utils.DTO.PageDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
-import com.psm.utils.DTO.ResponseDTO;
-import com.psm.utils.OSS.UploadOSSUtil;
+import com.psm.infrastructure.utils.DTO.ResponseDTO;
+import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -47,12 +47,8 @@ public class SubtitlesController {
             subtitlesDTO.setUserId(userId);
             SubtitlesVO subtitlesVO = subtitlesAdaptor.getSubtitlesById(subtitlesDTO);
 
-            // 封装数据
-            Map<String, Object> map = new HashMap<>();
-            map.put("subtitles", subtitlesVO);
-
             // 返回数据
-            return new ResponseDTO(HttpStatus.OK, "Get subtitles successful", map);
+            return new ResponseDTO(HttpStatus.OK, "Get subtitles successful", subtitlesVO);
         }
         catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -67,11 +63,9 @@ public class SubtitlesController {
         try {
             // 获取视频列表
             List<SubtitlesVO> subtitlesVOList = subtitlesAdaptor.getSubtitlesListByPage(pageDTO);
-            Map<String, Object> map = new HashMap<>();
-            map.put("subtitles", subtitlesVOList);
 
             // 返回数据
-            return new ResponseDTO(HttpStatus.OK, "Get subtitles successful", map);
+            return new ResponseDTO(HttpStatus.OK, "Get subtitles successful", subtitlesVOList);
         }
         catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());

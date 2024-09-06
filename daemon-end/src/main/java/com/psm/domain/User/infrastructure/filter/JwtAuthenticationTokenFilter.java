@@ -1,8 +1,8 @@
 package com.psm.domain.User.infrastructure.filter;
 
 import com.psm.domain.User.entity.LoginUser.LoginUser;
-import com.psm.utils.JWT.JWTUtil;
-import com.psm.utils.Redis.RedisCache;
+import com.psm.domain.User.infrastructure.utils.JWTUtil;
+import com.psm.infrastructure.utils.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

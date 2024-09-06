@@ -7,7 +7,7 @@ import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
 import com.psm.domain.User.service.UserService;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
-import com.psm.utils.DTO.PageDTO;
+import com.psm.infrastructure.utils.DTO.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +27,21 @@ public class UserAdaptorImpl implements UserAdaptor {
     UserService userService;
 
     @Override
+    public UserVO getAuthorizedUser() {
+        return UserConvertor.DAOConvertToVO(userService.getAuthorizedUser());
+    }
+
+    @Override
+    public Long getAuthorizedUserId() {
+        return userService.getAuthorizedUserId();
+    }
+
+    @Override
     public Map<String, Object> login(@Valid UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException{
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getName())||
-                StringUtils.isBlank(userDTO.getPassword())
+                StringUtils.isBlank(userDTO.getName())
+                ||StringUtils.isBlank(userDTO.getPassword())
         ){
             throw new InvalidParameterException("Invalid parameter");
         }
@@ -57,11 +67,6 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public Long getAuthorizedUserId() {
-        return userService.getAuthorizedUserId();
-    }
-
-    @Override
     public void logout() {
         userService.logout();
     }
@@ -70,8 +75,9 @@ public class UserAdaptorImpl implements UserAdaptor {
     public Map<String, Object> register(@Valid UserDTO userDTO) throws DuplicateKeyException, InvalidParameterException {
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getName())||
-                StringUtils.isBlank(userDTO.getPassword())
+                StringUtils.isBlank(userDTO.getName())
+                ||StringUtils.isBlank(userDTO.getPassword())
+                ||StringUtils.isBlank(userDTO.getEmail())
         ){
             throw new InvalidParameterException("Invalid parameter");
         }
@@ -103,12 +109,12 @@ public class UserAdaptorImpl implements UserAdaptor {
     public void updateUser(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getName())&&
-                StringUtils.isBlank(userDTO.getPassword())&&
-                StringUtils.isBlank(userDTO.getPhone())&&
-                StringUtils.isBlank(userDTO.getEmail())&&
-                StringUtils.isBlank(userDTO.getProfile())&&
-                Objects.isNull(userDTO.getAvatar())
+                StringUtils.isBlank(userDTO.getName())
+                &&StringUtils.isBlank(userDTO.getPassword())
+                &&StringUtils.isBlank(userDTO.getPhone())
+                &&StringUtils.isBlank(userDTO.getEmail())
+                &&StringUtils.isBlank(userDTO.getProfile())
+                &&Objects.isNull(userDTO.getAvatar())
         )
             throw new InvalidParameterException("Invalid parameter");
 
@@ -121,8 +127,8 @@ public class UserAdaptorImpl implements UserAdaptor {
     public void updatePassword(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getPassword())||
-                StringUtils.isBlank(userDTO.getChangePassword())
+                StringUtils.isBlank(userDTO.getPassword())
+                ||StringUtils.isBlank(userDTO.getChangePassword())
         )
         {
             throw new InvalidParameterException("Invalid parameter");

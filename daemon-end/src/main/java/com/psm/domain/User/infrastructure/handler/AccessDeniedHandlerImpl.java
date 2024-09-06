@@ -1,8 +1,8 @@
 package com.psm.domain.User.infrastructure.handler;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.utils.DTO.ResponseDTO;
-import com.psm.utils.WebUtil;
+import com.psm.infrastructure.utils.DTO.ResponseDTO;
+import com.psm.infrastructure.utils.WebUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

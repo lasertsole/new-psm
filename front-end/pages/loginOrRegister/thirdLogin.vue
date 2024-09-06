@@ -47,6 +47,8 @@
     localStorage.setItem("online", "true");
     localStorage.setItem("token", getCookie("token") || "");
     deleteCookie("token");
+    // 快速登录,获取当前用户信息
+    fastLogin();
 
     $emit("online");
     navigateTo("/");

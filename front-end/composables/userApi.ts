@@ -20,7 +20,30 @@ export async function login(name:string | undefined, password:string | undefined
 
     if(process.client)
     {
-        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('online', 'true');
+    }
+
+    return true;
+}
+
+export async function fastLogin():Promise<Boolean>{
+    const res:any = await getFetchData({
+        url: '/users/fastLogin',
+        method: 'get',
+        contentType: 'application/json',
+    });
+
+    if(res.code!=200){
+        ElMessage.error('登录失败:'+res.msg);
+        if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+        localStorage.setItem('online', 'false');
+        return false;
+    }
+
+    ElMessage.success('登录成功');
+
+    if(process.client)
+    {
         localStorage.setItem('online', 'true');
     }
 
@@ -54,7 +77,6 @@ export async function register(name:string, password:string, email:string):Promi
     ElMessage.success('注册成功');
     if(process.client)
     {
-        localStorage.setItem('token', res.data.token);
         localStorage.setItem('online', 'true');
     }
 

@@ -1,6 +1,6 @@
 package com.psm.domain.User.entity.User;
 
-import com.psm.enums.SexEnum;
+import com.psm.domain.User.infrastructure.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

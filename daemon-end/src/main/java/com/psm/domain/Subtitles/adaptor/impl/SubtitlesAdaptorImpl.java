@@ -7,7 +7,7 @@ import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.Subtitles.infrastructure.SubtitlesInfrastructure;
 import com.psm.domain.Subtitles.service.SubtitlesService;
-import com.psm.utils.DTO.PageDTO;
+import com.psm.infrastructure.utils.DTO.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,8 @@
 package com.psm.domain.Subtitles.adaptor;
 
-import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.utils.DTO.PageDTO;
+import com.psm.infrastructure.utils.DTO.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.security.InvalidParameterException;

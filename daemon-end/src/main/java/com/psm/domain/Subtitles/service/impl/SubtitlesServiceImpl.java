@@ -7,20 +7,16 @@ import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.repository.SubtitlesMapper;
 import com.psm.domain.Subtitles.service.SubtitlesService;
-import com.psm.utils.DTO.ResponseDTO;
-import com.psm.utils.OSS.UploadOSSUtil;
+import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Setter
 @Service

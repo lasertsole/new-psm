@@ -1,9 +1,6 @@
 package com.psm.domain.User.infrastructure.handler;
 
-import com.alibaba.fastjson2.JSON;
-import com.psm.utils.DTO.ResponseDTO;
-import com.psm.utils.JWT.JWTUtil;
-import com.psm.utils.ResponseWrapper;
+import com.psm.domain.User.infrastructure.utils.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +14,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Component
 public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -56,7 +52,7 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             // 添加Cookie到响应
             response.addCookie(tokenCookie);
 
-            // 使用 ResponseWrapper 包装 HttpServletResponse
+            // 重定向回前端
             response.sendRedirect(frontEndBaseUrl+thirdLoginPage);
         }
     }

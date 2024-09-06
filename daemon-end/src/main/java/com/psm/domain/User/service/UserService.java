@@ -19,12 +19,11 @@ import java.util.Map;
  */
 public interface UserService extends IService<UserDAO> {
     /**
-     * 登录
+     * 获取当前登录用户信息
      *
-     * @param userDTO
-     * @return String token
+     * @return UserDAO
      */
-    Map<String, Object> login(UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException;
+    UserDAO getAuthorizedUser();
 
     /**
      * 获取当前登录用户id
@@ -32,6 +31,15 @@ public interface UserService extends IService<UserDAO> {
      * @return Long
      */
     Long getAuthorizedUserId();
+
+    /**
+     * 登录
+     *
+     * @param userDTO
+     * @return String token
+     */
+    Map<String, Object> login(UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException;
+
 
     /**
      * 退出登录

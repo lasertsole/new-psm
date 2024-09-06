@@ -3,13 +3,12 @@ package com.psm.domain.User.entity.User;
 import com.psm.annotation.validation.ValidBoolean;
 import com.psm.annotation.validation.ValidFileSize;
 import com.psm.annotation.validation.ValidImage;
-import com.psm.enums.SexEnum;
+import com.psm.domain.User.infrastructure.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.*;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
