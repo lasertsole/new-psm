@@ -53,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Autowired
     private RedisCache redisCache;
 
+    @Override
     public UserDAO getAuthorizedUser(){
         // 获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication =
@@ -62,6 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
         return loginUser.getUser();
     }
 
+    @Override
     public Long getAuthorizedUserId() {
         return getAuthorizedUser().getId();
     }
@@ -69,7 +71,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Override
     public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{
         try {
-
             //AuthenticationManager authenticate进行认证
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDTO.getName(),userDTO.getPassword());

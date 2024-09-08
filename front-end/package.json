@@ -16,6 +16,7 @@
     "nuxt": "^3.12.4",
     "socket.io-client": "^4.7.5",
     "swiper": "^8.4.7",
+    "tus-js-client": "^4.1.0",
     "vue": "latest",
     "vue-awesome-swiper": "^5.0.1",
     "xgplayer": "^3.0.20"

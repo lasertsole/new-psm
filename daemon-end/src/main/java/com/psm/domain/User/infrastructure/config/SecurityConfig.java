@@ -62,7 +62,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
-                auth -> auth.requestMatchers("/users/login","/users/register").anonymous()
+                auth -> auth.requestMatchers("/users/login", "/users/register").anonymous()
                 .anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

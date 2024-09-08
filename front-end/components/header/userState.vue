@@ -4,6 +4,7 @@
         <NuxtLink to="/loginOrRegister/login" class="login">登录</NuxtLink>
         <NuxtLink to="/loginOrRegister/register" class="register">注册</NuxtLink>
     </div>
+
     <div class="userTool" @click="drawer = true"></div>
     <el-drawer
         v-model="drawer"
@@ -33,6 +34,10 @@
 
     $on("online", () => {
         isOnline.value = true;
+    });
+
+    $on("offline", () => {
+        isOnline.value = false;
     });
 
     const drawer = ref(false)
