@@ -12,16 +12,20 @@
 <script lang="ts" setup>
   const { $on }= useNuxtApp();
   import {onMounted} from "vue"
+  const { $emit } = useNuxtApp();
 
   // 这里的代码仅在客户端执行
   onMounted(()=>{
     // localStorage.setItem("online", "false");
     userInfo.isLogin = false;
-
-    // 延时执行(加入事件循环的大事件中)
+    
+    // 延时执行(加入事件循环中)
     setTimeout(()=>{
-      // 快速登录,获取当前用户信息
-      fastLogin();
+      let isSuccess:boolean = fastLogin();
+      // 快速登录成功
+      if(isSuccess){
+        $emit("online");
+      };
     }, 0);
   });
 </script>

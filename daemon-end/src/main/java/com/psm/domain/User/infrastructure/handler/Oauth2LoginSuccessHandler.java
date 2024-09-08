@@ -18,13 +18,14 @@ import java.io.IOException;
 @Component
 public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     // 前端地址
-    @Value("${server.front-end-url.base}")
-    private String frontEndBaseUrl;
+    @Value("${server.front-end-url.socket}")
+    private String socket;
 
     // 前端登录页面
     @Value("${server.front-end-url.third-login-page}")
     private String thirdLoginPage;
 
+    // 协议
     @Value("${server.protocol}")
     private String protocol;
 
@@ -53,7 +54,7 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             response.addCookie(tokenCookie);
 
             // 重定向回前端
-            response.sendRedirect(frontEndBaseUrl+thirdLoginPage);
+            response.sendRedirect(protocol+"://"+socket+thirdLoginPage);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.psm.infrastructure.config;
 
 import com.psm.infrastructure.utils.DTO.ResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -12,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class BindExceptionHandler {
     @ExceptionHandler(BindException.class)

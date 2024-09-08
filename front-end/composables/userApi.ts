@@ -60,9 +60,7 @@ export async function fastLogin():Promise<Boolean>{
         method: 'get',
         contentType: 'application/json',
     });
-
-    console.log('fastLogin',res);
-
+    
     if(res.code!=200){
         ElMessage.error('登录失败:'+res.msg);
         if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token

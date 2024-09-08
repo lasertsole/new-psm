@@ -30,7 +30,7 @@ public class UserController {
     UserAdaptor userAdaptor;
 
     // 前端地址
-    @Value("${server.front-end-url.base}")
+    @Value("${server.front-end-url.socket}")
     private String frontEndBaseUrl;
 
     // 前端登录页面
