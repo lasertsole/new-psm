@@ -1,7 +1,39 @@
 <template>
+  <div class="thirdLogin">
+    <div class="centerBox">
+      <div class="icon"></div>
+      <div class="text">登录成功</div>
+    </div>
+  </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  @use "sass:math";
+  @import "@/common.scss";
+
+  .thirdLogin{
+    @include fixedRetangle(100%, 200px);
+    @include flexCenter();
+
+    .centerBox{
+      @include flexCenter();
+      flex-direction: column;
+
+      .icon{
+        $iconSize: 50px;
+        @include fixedSquare($iconSize);
+        background-size: $iconSize;
+        background-position: center;
+        background-image: url(/icons/loginSuccuss.svg);
+        background-repeat: no-repeat;
+      }
+
+      .text{
+        font-size: 20px;
+        margin-top: 10px;
+      }
+    }
+  }
 </style>
 
 <script lang="ts" setup>
@@ -44,7 +76,6 @@
 
   // 登录成功
   onMounted(()=>{
-    userInfo.isLogin = true;
     localStorage.setItem("token", getCookie("token") || "");
     deleteCookie("token");
     // 快速登录,获取当前用户信息
@@ -53,7 +84,6 @@
         // 快速登录成功
         if(isSuccess){
           $emit("online");
-          navigateTo("/");
         };
       }, 0);
   })

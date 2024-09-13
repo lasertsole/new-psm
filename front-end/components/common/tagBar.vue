@@ -51,8 +51,6 @@
         .full-contain{
             display: flex;
             flex-direction: row;
-            position: relative;
-            z-index: 2;
             .tabBox{
                 display: flex;
                 flex-direction: column;

@@ -7,15 +7,15 @@
         </div>
 
         <ul class="userTool" v-else>
-            <!-- <li class="profile" @mouseenter="showDetail" @mouseleave="hideDetail">
-                <img :class="{userProfile:true, show:showUserDetail}" :src="profile" @click="onClick">
+            <li class="profile" @mouseenter="showDetail" @mouseleave="hideDetail">
+                <img :class="{userProfile:true}" :src="userInfo.avatar">
                 <transition 
                     :css="false"
                     @enter="onEnter"
                     @leave="onLeave"
                 >
                     <div v-show="showUserDetail" :class="{userDetail:true}">
-                        <div class="name" @click="onClick">{{userName}}</div>
+                        <div class="name" @click="onClick">{{userInfo.name}}</div>
                         <ul class="numInfo">
                             <li>
                                 <div class="top">57</div>
@@ -27,21 +27,41 @@
                             </li>
                         </ul>
                         <ul class="option">
-                            <li><router-link to="/accountModify"><img src="icons/profile.png"><span>账户设置</span><img src="icons/arrow.svg" alt=""></router-link></li>
-                            <li><router-link to="/accountModify"><img src="icons/planning.png"><span>我的企划</span><img src="icons/arrow.svg" alt=""></router-link></li>
-                            <li><router-link to="/accountModify"><img src="icons/Vector.png"><span>我的橱窗</span><img src="icons/arrow.svg" alt=""></router-link></li>
+                            <li>
+                                <router-link to="/accountModify">
+                                    <!-- <img src="icons/profile.png"> -->
+                                    <span>账户设置</span>
+                                    <!-- <img src="icons/arrow.svg" alt=""> -->
+                                </router-link>
+                            </li>
+                            <li>
+                                <router-link to="/accountModify">
+                                    <!-- <img src="icons/planning.png"> -->
+                                    <span>我的企划</span>
+                                    <!-- <img src="icons/arrow.svg" alt=""> -->
+                                </router-link>
+                            </li>
+                            <li>
+                                <router-link to="/accountModify">
+                                    <!-- <img src="icons/Vector.png"> -->
+                                    <span>我的橱窗</span>
+                                    <!-- <img src="icons/arrow.svg" alt=""> -->
+                                </router-link>
+                            </li>
                             <hr>
                             <li @click="logout">
-                                <div><img src="icons/longArrow.svg"><span>退出登录</span></div>
+                                <div>
+                                    <!-- <img src="icons/longArrow.svg"> -->
+                                    <span>退出登录</span>
+                                </div>
                             </li>
                         </ul>
                     </div>
                 </transition>
-            </li> -->
+            </li>
             <li>动态</li>
             <li>收藏</li>
             <li>历史</li>
-            <li>创作中心</li>
             <li>投稿</li>
         </ul>
 
@@ -57,10 +77,11 @@
             <ul>
                 <template v-for="(item, index) in routerList" :key="index">
                     <li 
-                        :class="{login:item.path=='/login',register:item.path=='/register'}"
+                        :class="{login:item.path=='/loginOrRegister/login',register:item.path=='/loginOrRegister/register'}"
                         v-if="item.tarbar==true||!isOnline"
+                        @click="drawer = false"
                     >
-                        {{item.name}}
+                        <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
                     </li>
                 </template>
             </ul>
@@ -87,17 +108,70 @@
     const drawer = ref(false);
     const direction = ref<DrawerProps['direction']>('ttb');
 
+    // 获取路由列表
     const routerList:Router[] = getRouterList();
 
     /* 用户头像动画锁*/
+    let animate:any = undefined;//gsap动画容器
     let isMouseInBox:boolean = false;
     let animateLock:boolean = false;
-    // function showDetail():void{
-    //     isMouseInBox=true;
-    //     if(animateLock){return};//判断动画是否锁上
-    //     showUserDetail.value=true;
-    //     animate?.kill();
-    // }
+    /*鼠标移入时展示用户细节*/
+    const showUserDetail = ref<boolean>(false);
+    function showDetail():void{
+        isMouseInBox=true;
+        if(animateLock){return};//判断动画是否锁上
+        showUserDetail.value=true;
+        animate?.kill();
+    }
+
+    
+    /*鼠标移出时隐藏用户细节*/
+    function hideDetail():void{
+        isMouseInBox=false;
+        if(animateLock){return};//判断动画是否锁上
+        showUserDetail.value=false;
+        animate?.kill();
+    }
+
+    /*详情盒子动画钩子*/
+    function onEnter(el:any, done:Function):void{
+        animate = gsap.to(el,{
+            opacity:1,
+            top: 70,
+            duration: .3,//持续时间
+            onStart:()=>{//开始触发函数
+                animateLock=true;
+            },
+            onComplete:()=>{//结束触发函数
+                done();
+                animateLock=false;
+                if(!isMouseInBox){
+                    hideDetail();
+                }
+            }
+        });
+    }
+    function onLeave(el:any, done:Function):void{
+        animate = gsap.to(el,{
+            opacity:0,
+            top: 30,
+            duration: .3,//持续时间
+            onStart:()=>{//开始触发函数
+                animateLock=true;
+            },
+            onComplete:()=>{//结束触发函数
+                done();
+                animateLock=false;
+                if(isMouseInBox){
+                    showDetail();
+                }
+            }
+        });
+    }
+
+    function onClick():void{//点击触发事件
+        // router.replace("/personInfo");
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -153,6 +227,109 @@
                     padding: 0px;
                     position: relative;
                     $profileSize: 35px;
+
+                    .userProfile{
+                        @include fixedCircle($profileSize);
+                        z-index: 2;
+                        position: relative;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        transition: linear .3s;
+
+                        &.show{
+                            transform: scale(2) translateY(75%);
+                        }
+                    }
+
+                    .userDetail{
+                        opacity: 0;
+                        display: block;
+                        z-index: 1;
+                        position: absolute;
+                        background-color: white;
+                        @include fixedRoundedRectangle(200px,280px, 10px);
+                        top: 30px;
+                        left: math.div($profileSize, 2);
+                        transform: translateX(-50%);
+                        padding: math.div($profileSize, 2) + 25px 20px 10px;
+
+                        .name{
+                            display: flex;
+                            justify-content: center;
+                            font-weight: bolder;
+                        }
+                        .numInfo{
+                            display: flex;
+                            width: 100%;
+                            justify-content: space-around;
+                            
+                            li{
+                                cursor: pointer;
+                                width: 50%;
+
+                                &:hover{
+                                    background-color: #f5f5f5;
+                                    transition: .5s ease;
+                                }
+
+                                >div{
+                                    display: flex;
+                                    justify-content: center;
+
+                                    &.top{
+                                        font-size: 16px;
+                                        font-weight: bolder;
+                                    }
+                                    &.bottom{
+                                        font-size: 10px;
+                                        font-weight: normal;
+                                    }
+                                }
+                            }
+                        }
+
+                        .option{
+                            margin-top: 15px;
+                            li{
+                                cursor: pointer;
+                                font-weight: bold;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                
+                                a{
+                                    flex-grow: 1;
+                                }
+
+                                span{
+                                    flex-grow: 1;
+                                    margin-left: 10px;
+                                }
+
+                                &:hover{
+                                    background-color: #f5f5f5;
+                                    transition: .5s ease;
+                                }
+
+                                div,a{
+                                    font-weight: inherit;
+                                    color: black;
+                                    display: flex;
+                                    align-items: center;
+                                    span{}
+
+                                    img{
+                                        @include fixedSquare(15px);
+                                    }
+                                }
+                            }
+                        }
+
+                        hr{
+                            margin: 10px 0px;
+                        }
+                    }
                 }
             }
         }
@@ -193,6 +370,11 @@
                     &.register{
                         background-color: #00a8e9;
                         color: #ecf5ff;
+                    }
+
+                    a{
+                        @include flexCenter();
+                        @include fullInParent();
                     }
                 }
             }

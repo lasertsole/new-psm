@@ -10,7 +10,41 @@ export const userInfo = reactive<UserInfo>({
     createTime: '',
     isAdmin: false,
     isLogin: false,
-})
+});
+
+function updateUserInfo(data:UserInfo){
+    data.isAdmin && (userInfo.isAdmin = data.isAdmin);
+    data.id && (userInfo.id = data.id);
+    data.name && (userInfo.name = data.name);
+    data.email && (userInfo.email = data.email);
+    data.avatar && (userInfo.avatar = data.avatar);
+    data.profile && (userInfo.profile = data.profile);
+    data.sex && (userInfo.sex = data.sex);
+    data.createTime && (userInfo.createTime = data.createTime);
+}
+
+function clearUserInfo(){
+    userInfo.id = '';
+    userInfo.name = '';
+    userInfo.email = '';
+    userInfo.avatar = '';
+    userInfo.profile = '';
+    userInfo.sex = 0;
+    userInfo.createTime = '';
+    userInfo.isAdmin = false;
+}
+
+function loginApi(data:UserInfo){
+    userInfo.isLogin = true;
+    updateUserInfo(data);
+    navigateTo("/");
+}
+
+function logoutApi(data:UserInfo){
+    userInfo.isLogin = false;
+    clearUserInfo();
+    navigateTo("/");
+}
 
 export async function login(name:string | undefined, password:string | undefined):Promise<boolean>{
     //先清除token防止旧token影响
@@ -39,16 +73,7 @@ export async function login(name:string | undefined, password:string | undefined
     ElMessage.success('登录成功');
 
     let data = res.data;
-
-    userInfo.isLogin = true;
-    data.isAdmin && (userInfo.isAdmin = res.data.isAdmin);
-    data.id && (userInfo.id = res.data.id);
-    data.name && (userInfo.name = res.data.name);
-    data.email && (userInfo.email = res.data.email);
-    data.avatar && (userInfo.avatar = res.data.avatar);
-    data.profile && (userInfo.profile = res.data.profile);
-    data.sex && (userInfo.sex = res.data.sex);
-    data.createTime && (userInfo.createTime = res.data.createTime);
+    loginApi(data);
 
     return true;
 }
@@ -74,16 +99,7 @@ export async function fastLogin():Promise<boolean>{
     ElMessage.success('登录成功');
 
     let data = res.data;
-
-    userInfo.isLogin = true;
-    data.isAdmin && (userInfo.isAdmin = res.data.isAdmin);
-    data.id && (userInfo.id = res.data.id);
-    data.name && (userInfo.name = res.data.name);
-    data.email && (userInfo.email = res.data.email);
-    data.avatar && (userInfo.avatar = res.data.avatar);
-    data.profile && (userInfo.profile = res.data.profile);
-    data.sex && (userInfo.sex = res.data.sex);
-    data.createTime && (userInfo.createTime = res.data.createTime);
+    loginApi(data);
 
     return true;
 }
@@ -117,24 +133,15 @@ export async function register(name:string, password:string, email:string):Promi
     ElMessage.success('注册成功');
 
     let data = res.data;
-
-    userInfo.isLogin = true;
-    data.isAdmin && (userInfo.isAdmin = res.data.isAdmin);
-    data.id && (userInfo.id = res.data.id);
-    data.name && (userInfo.name = res.data.name);
-    data.email && (userInfo.email = res.data.email);
-    data.avatar && (userInfo.avatar = res.data.avatar);
-    data.profile && (userInfo.profile = res.data.profile);
-    data.sex && (userInfo.sex = res.data.sex);
-    data.createTime && (userInfo.createTime = res.data.createTime);
+    loginApi(data);
 
     return true;
 }
 
 export async function logout():Promise<boolean>{
     const res:any = await fetchApi({
-        url: '/users/register',
-        method: 'post',
+        url: '/users/logout',
+        method: 'delete',
     });
     if(res.code!=200){
         ElMessage.error('登出失败:'+res.msg);
@@ -143,11 +150,9 @@ export async function logout():Promise<boolean>{
     }
 
     ElMessage.success('登出成功');
-    if(process.client)
-    {
-        localStorage.removeItem('token');
-        localStorage.setItem('online', 'false');
-    }
+    localStorage.removeItem('token');
+    userInfo.isLogin = false;
+    clearUserInfo();
 
     return true;
 }

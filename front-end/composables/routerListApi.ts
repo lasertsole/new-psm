@@ -31,14 +31,14 @@ export const routerList:Router[] = [
     },
     {
         name: '登录',
-        path: '/login',
+        path: '/loginOrRegister/login',
         needOnLine: false,
         needOffLine: true,
         tarbar: false,
     },
     {
         name: '注册',
-        path: '/register',
+        path: '/loginOrRegister/register',
         needOnLine: false,
         needOffLine: true,
         tarbar: false,

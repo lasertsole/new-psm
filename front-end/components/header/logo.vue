@@ -26,7 +26,7 @@
         &:hover{
             color: #fb7299
         }
-        .logo-image{
+        &-image{
             @include fixedSquare(80px);
             background-image: url(/images/psmlogo.png);
             background-repeat: no-repeat;
@@ -34,7 +34,7 @@
             background-size: 90px;
             margin-right: 5px;
         }
-        .logo-text{
+        &-text{
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -64,12 +64,12 @@
     }
     @media screen and (max-width: 600px) {
         .logo{
-            .logo-image{
+            &-image{
                 @include fixedSquare(50px);
                 background-size: 56px;
                 background-position: center 4px;
             }
-            .logo-text{
+            &-text{
                 h2{
                     font-size: 17px;
                     letter-spacing:2.5px;
