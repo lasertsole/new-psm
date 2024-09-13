@@ -46,9 +46,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseURL: process.env.VITE_API_BASE_URL,
-      apiBaseURL: "/api",
-      oauth2AuthURL: process.env.VITE_OAuth2_Auth_URL//第三方登录授权地址
+      baseURL: process.env.VITE_API_BASE_URL
+      ,apiBaseURL: "/api"
+      ,oauth2AuthURL: process.env.VITE_OAuth2_Auth_URL//第三方登录授权地址
     }
   }
 })

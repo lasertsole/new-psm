@@ -44,13 +44,17 @@
 
   // 登录成功
   onMounted(()=>{
-    localStorage.setItem("online", "true");
+    userInfo.isLogin = true;
     localStorage.setItem("token", getCookie("token") || "");
     deleteCookie("token");
     // 快速登录,获取当前用户信息
-    fastLogin();
-
-    $emit("online");
-    navigateTo("/");
+    setTimeout(async ()=>{
+        let isSuccess:boolean = await fastLogin();
+        // 快速登录成功
+        if(isSuccess){
+          $emit("online");
+          navigateTo("/");
+        };
+      }, 0);
   })
 </script>
