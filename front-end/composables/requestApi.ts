@@ -2,9 +2,9 @@ import type { NitroFetchRequest } from 'nitropack';
 
 interface Params {
     url: NitroFetchRequest;
-    opts?: object;
+    opts?: { [key: string]: any } | FormData;
     method?: 'get' | 'post' | 'put' | 'delete';
-    contentType?: 'application/x-www-form-urlencoded' | 'application/json';
+    contentType?: 'application/x-www-form-urlencoded' | 'application/json' | 'multipart/form-data';
     lazy?: boolean;
 }
 
@@ -122,7 +122,10 @@ export async function fetchApi({
 
   // 设置请求参数
   let params:any = {};
-  opts = { ...opts };
+  if(contentType=='application/json'){
+    opts = { ...opts };
+  }
+  
   if (method == 'get') {
     params.query = opts;
   } else {
@@ -134,7 +137,6 @@ export async function fetchApi({
     method,
     baseURL: "/api",
     ...params,
-    contentType,
     onRequest({ options }:{ options:any }) {
       let token = localStorage.getItem('token');
       if(token){

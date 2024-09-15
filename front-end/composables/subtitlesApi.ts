@@ -12,7 +12,7 @@ export async function getSubtitlesList(page:Page):Promise<SubtitlesBox[] | null>
         pageSize = 10;
     }
 
-    const res:any = await getFetchData({
+    const res:any = await fetchApi({
         url: '/subtitles',
         method: 'get',
         opts:{

@@ -45,6 +45,10 @@ public class UserDTO implements Serializable {
     private MultipartFile avatar;
 
     @Pattern(regexp = "^[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)+$", message = "The Email format is incorrect")
+    @Size(max = 255, message = "The avatarUrl length must not exceed 255 characters")
+    private String oldAvatarUrl;
+
+    @Pattern(regexp = "^[\\w\\-]+(\\.[\\w\\-]+)*@[\\w\\-]+(\\.[\\w\\-]+)+$", message = "The Email format is incorrect")
     @Size(min = 8, max = 255, message = "The Email length must be between 8 and 255 characters")
     private String email;
 

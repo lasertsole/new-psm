@@ -7,6 +7,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,16 @@ public interface UserService extends IService<UserDAO> {
     void deleteUser();
 
     /**
-     * 更新
+     * 更新用户头像
+     *
+     * @param oldAvatarUrl
+     * @param newAvatarFile
+     * @return String
+     */
+    String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile);
+
+    /**
+     * 更新用户信息(除了密码和头像)
      *
      * @return
      */
@@ -98,7 +108,8 @@ public interface UserService extends IService<UserDAO> {
     /**
      * 按创建时间排序获取用户列表
      *
-     * @param pageDTO
+     * @param currentPage
+     * @param pageSize
      * @return
      */
     List<UserDAO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize);

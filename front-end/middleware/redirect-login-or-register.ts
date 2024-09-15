@@ -3,9 +3,11 @@ export default defineNuxtRouteMiddleware(
     {
         // 在服务器端跳过中间件
         if (process.server) return;
-        localStorage.getItem("online")&&navigateTo("/");
-        if(to.path == "/loginOrResigter"){
-            return navigateTo("/loginOrResigter/login");
+        if(userInfo.isLogin){
+            return navigateTo("/")
+        }
+        if(to.path == "/loginOrRegister"){
+            return navigateTo("/loginOrRegister/login");
         }
         else if(to.path == "/subtitles"){
             return navigateTo("/subtitles/all");

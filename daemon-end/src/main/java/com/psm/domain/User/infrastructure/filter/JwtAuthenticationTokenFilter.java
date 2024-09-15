@@ -5,6 +5,7 @@ import com.psm.domain.User.infrastructure.utils.JWTUtil;
 import com.psm.infrastructure.utils.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Setter
 @Component
 @ConfigurationProperties(prefix = "spring.security.jwt")//配置和jwt一样的过期时间

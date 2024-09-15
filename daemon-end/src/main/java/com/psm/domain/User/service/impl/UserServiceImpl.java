@@ -14,6 +14,7 @@ import com.psm.domain.User.service.UserService;
 import com.psm.domain.User.infrastructure.utils.JWTUtil;
 import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
 import com.psm.infrastructure.utils.Redis.RedisCache;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,10 +23,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements UserService {
 
@@ -60,11 +63,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
+        log.info("getAuthorizedUser: "+loginUser.getUser());
         return loginUser.getUser();
     }
 
     @Override
     public Long getAuthorizedUserId() {
+        log.info("getAuthorizedUserId: "+getAuthorizedUser().getId());
         return getAuthorizedUser().getId();
     }
 
@@ -152,6 +157,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     }
 
     @Override
+    public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile){
+        try{
+            //TODO 删除旧头像
+
+            //上传文件到oss
+            String avatarUrl = uploadOSSUtil.multipartUpload(newAvatarFile,avatarFolderPath);
+
+            //更新数据库中用户头像信息
+            Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
+            LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(UserDAO::getId,id);
+            wrapper.set(UserDAO::getAvatar, avatarUrl);
+            userMapper.update(null,wrapper);
+
+            //更新redis中用户头像信息
+            LoginUser loginUser = new LoginUser(getUserByID(id));
+            redisCache.setCacheObject("login:"+id, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+            return avatarUrl;
+        }
+        catch (Exception e){//上传失败
+            throw new RuntimeException("avatarUrl upload failed");
+        }
+    }
+
+    @Override
     public void updateUser(UserDTO userDTO) {
         try {
             //获取SecurityContextHolder中的用户id
@@ -169,15 +199,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             wrapper.set(!ObjectUtil.isEmpty(userDTO.getPhone()), UserDAO::getPhone, userDTO.getPhone());
             wrapper.set(!ObjectUtil.isEmpty(userDTO.getEmail()), UserDAO::getEmail, userDTO.getEmail());
             wrapper.set(!ObjectUtil.isEmpty(userDTO.getSex()), UserDAO::getSex, userDTO.getSex());
-            if (!Objects.isNull(userDTO.getAvatar())){//如果有avatar，则上传到OSS
-                try{
-                    String avatarUrl = uploadOSSUtil.multipartUpload(userDTO.getAvatar(),avatarFolderPath);
-                    wrapper.set(!ObjectUtil.isEmpty(userDTO.getAvatar()), UserDAO::getAvatar, avatarUrl);
-                }
-                catch (Exception e){//上传失败
-                    throw new RuntimeException("avatarUrl upload failed");
-                }
-            }
 
             userMapper.update(null,wrapper);
         } catch (Exception e) {

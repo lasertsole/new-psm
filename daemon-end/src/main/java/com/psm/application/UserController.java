@@ -88,7 +88,7 @@ public class UserController {
             response.setHeader("token", (String) map.get("token"));
             return new ResponseDTO(HttpStatus.OK, "Login successful", map.get("user"));
         }
-        catch (DuplicateKeyException e){
+        catch (DuplicateKeyException | InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
@@ -118,11 +118,28 @@ public class UserController {
         }
     }
 
+    @PutMapping("/updateAvatar")
+    public ResponseDTO updateAvatar(UserDTO userDTO) {
+        try {
+            String avatarUrl = userAdaptor.updateAvatar(userDTO);
+            return ResponseDTO.ok("Update avatar successful", avatarUrl);
+        }
+        catch (InvalidParameterException e){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        catch (Exception e){
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @PutMapping("/updateUser")
     public ResponseDTO updateUser(@RequestBody UserDTO userDTO) {
         try {
             userAdaptor.updateUser(userDTO);
             return ResponseDTO.ok("Update user successful");
+        }
+        catch (InvalidParameterException e){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -134,6 +151,9 @@ public class UserController {
         try {
             userAdaptor.updatePassword(userDTO);
             return ResponseDTO.ok("Update password successful");
+        }
+        catch (InvalidParameterException e){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -150,6 +170,9 @@ public class UserController {
             UserVO userVO = userAdaptor.getUserByID(userDTO);
 
             return new ResponseDTO(HttpStatus.OK, "Get user successful", userVO);
+        }
+        catch (InvalidParameterException e){
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

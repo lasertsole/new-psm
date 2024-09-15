@@ -1,15 +1,14 @@
 <template>
-    <NuxtLink to="/home" class="logo">
+    <div class="logo">
         <div class="logo-image"></div>
         <div class="logo-text">
             <h2>喵字幕</h2>
             <h5>MIAOZIMU.COM</h5>
         </div>
-    </NuxtLink>
+    </div>
 </template>
 
 <script lang="ts" setup>
-
 </script>
 
 <style lang="scss" scoped>
@@ -22,7 +21,6 @@
         align-items: center;
         margin-right: 10px;
         color: #fb7299;
-        cursor: pointer;
         &:hover{
             color: #fb7299
         }

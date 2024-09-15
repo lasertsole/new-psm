@@ -11,6 +11,7 @@ import com.psm.domain.User.infrastructure.Convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.User.repository.mapper.OAuth2ThirdAccountMapper;
 import com.psm.domain.User.repository.mapper.UserMapper;
 import com.psm.infrastructure.utils.Redis.RedisCache;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserService {
     @Autowired
@@ -67,35 +69,28 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
                     .and(w -> w.eq(OAuth2ThirdAccountDAO::getProviderUserId, oAuth2ThirdAccountDTO.getProviderUserId()));
             OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oauth2Mapper.selectOne(queryWrapper);
 
+
+            Long tbUserId;// 第三方账号对应的用户id
+            UserDAO userDAO;// 第三方账号对应的用户信息
             // 添加或更新改用户已在数据库内的信息
             if (Objects.isNull(oAuth2ThirdAccountDAO1)){//判断用户的第三方平台账号是否已在数据库
                 //在tb_user表插入新用户信息
-                UserDAO userDAO = OAuth2ThirdAccountConvertor.DTOConvertToUserDAO(oAuth2ThirdAccountDTO);
+                userDAO = OAuth2ThirdAccountConvertor.DTOConvertToUserDAO(oAuth2ThirdAccountDTO);
                 userDAO.setPassword(UUID.randomUUID().toString());
                 userMapper.insert(userDAO);
 
                 //得到插入tb_user表后新用户信息的id(雪花算法生成ID)
-                Long tbUserId = userDAO.getId();
+                tbUserId = userDAO.getId();
 
                 //在tb_third_party_user表中新建第三方账号，外键user_id的值为tb_user表的id
                 oAuth2ThirdAccountDAO.setUserId(tbUserId);
                 oauth2Mapper.insert(oAuth2ThirdAccountDAO);
             }
             else{
-                //将第三方账号转成UserDAO格式
-                UserDAO userDAO = OAuth2ThirdAccountConvertor.DTOConvertToUserDAO(oAuth2ThirdAccountDTO);
+                // 获取第三方账号对应的用户id
+                tbUserId = oAuth2ThirdAccountDAO1.getUserId();
 
-                //获取已在tb_third_party_user表内记录的外键
-                userDAO.setId(oAuth2ThirdAccountDAO1.getUserId());
-
-                //根据外键找到tb_user表对应的用户信息
-                LambdaUpdateWrapper<UserDAO> userUpdateWrapper = new LambdaUpdateWrapper<>();
-                userUpdateWrapper.eq(UserDAO::getId, userDAO.getId())
-                .set(UserDAO::getName, userDAO.getName())
-                .set(UserDAO::getAvatar, userDAO.getAvatar());
-
-                userMapper.update(null, userUpdateWrapper);
-
+                //更新第三方账号信息
                 OAuth2ThirdAccountDAO DAO =OAuth2ThirdAccountConvertor.DTOConvertToDAO(oAuth2ThirdAccountDTO);
                 LambdaUpdateWrapper<OAuth2ThirdAccountDAO> oAuth2ThirdAccountUpdateWrapper = new LambdaUpdateWrapper<>();
                 oAuth2ThirdAccountUpdateWrapper.eq(OAuth2ThirdAccountDAO::getRegistrationId, DAO.getRegistrationId())
@@ -104,15 +99,19 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
                 .set(!ObjectUtil.isEmpty(DAO.getCredentialsExpiresAt()), OAuth2ThirdAccountDAO::getCredentialsExpiresAt, DAO.getCredentialsExpiresAt());
 
                 oauth2Mapper.update(null, oAuth2ThirdAccountUpdateWrapper);
+
+                // 查询已有的用户信息
+                userDAO = userMapper.selectById(tbUserId);
             }
 
-            //将第三方账号OAuth2ThirdAccountDTO转成LoginUser格式
-            LoginUser loginUser = OAuth2ThirdAccountConvertor.DTOConvertToLoginUser(oAuth2ThirdAccountDTO);
-
-            String uniqueThirdId = registerationId + oAuth2ThirdAccountDTO.getProviderUserId();
+            //将userDAO转成LoginUser格式
+            LoginUser loginUser = new LoginUser(userDAO);
 
             //把完整信息存入redis，id作为key(如果原先有则覆盖)
-            redisCache.setCacheObject("login:"+uniqueThirdId,loginUser,Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+            redisCache.setCacheObject("login:"+tbUserId, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+            String uniqueThirdId = registerationId + oAuth2ThirdAccountDTO.getProviderUserId();
+            //将第三方账号信息存入redis，给Oauth2LoginSuccessHandler使用
+            redisCache.setCacheObject("third:" + uniqueThirdId, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
         }
 
         // 返回用户信息

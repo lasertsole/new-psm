@@ -15,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -106,6 +107,17 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
+    public String updateAvatar(@Valid UserDTO userDTO) throws InvalidParameterException{
+        if (
+                StringUtils.isBlank(userDTO.getOldAvatarUrl())
+                &&Objects.isNull(userDTO.getAvatar())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        return userService.updateAvatar(userDTO.getOldAvatarUrl(), userDTO.getAvatar());
+    };
+
+    @Override
     public void updateUser(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(
@@ -114,7 +126,6 @@ public class UserAdaptorImpl implements UserAdaptor {
                 &&StringUtils.isBlank(userDTO.getPhone())
                 &&StringUtils.isBlank(userDTO.getEmail())
                 &&StringUtils.isBlank(userDTO.getProfile())
-                &&Objects.isNull(userDTO.getAvatar())
         )
             throw new InvalidParameterException("Invalid parameter");
 

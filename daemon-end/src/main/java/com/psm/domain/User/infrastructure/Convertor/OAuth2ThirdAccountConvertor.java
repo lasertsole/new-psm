@@ -40,6 +40,7 @@ public class OAuth2ThirdAccountConvertor {
 
         userDAO.setName(oAuth2ThirdAccount.getName());
         userDAO.setAvatar(oAuth2ThirdAccount.getAvatar());
+        userDAO.setId(oAuth2ThirdAccount.getUserId());
 
         return userDAO;
     }

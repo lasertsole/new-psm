@@ -5,7 +5,7 @@ export const routerList:Router[] = [
         name: '首页',
         path: '/',
         needOnLine: false,
-        needOffLine: false,
+        needOffLine: true,
         tarbar: true,
     },
     {
@@ -31,14 +31,14 @@ export const routerList:Router[] = [
     },
     {
         name: '登录',
-        path: '/loginOrRegister/login',
+        path: '/login',
         needOnLine: false,
         needOffLine: true,
         tarbar: false,
     },
     {
         name: '注册',
-        path: '/loginOrRegister/register',
+        path: '/register',
         needOnLine: false,
         needOffLine: true,
         tarbar: false,

@@ -1,21 +1,21 @@
 <template>
     <div class="userState">
         <!-- 登录注册按钮 -->
-        <div v-if="!isOnline" class="loginOrRegister">
-            <NuxtLink to="/loginOrRegister/login" class="login">登录</NuxtLink>
-            <NuxtLink to="/loginOrRegister/register" class="register">注册</NuxtLink>
+        <div v-if="!userInfo.isLogin" class="loginOrRegister">
+            <NuxtLink to="/login" class="login">登录</NuxtLink>
+            <NuxtLink to="/register" class="register">注册</NuxtLink>
         </div>
 
         <ul class="userTool" v-else>
             <li class="profile" @mouseenter="showDetail" @mouseleave="hideDetail">
-                <img :class="{userProfile:true}" :src="userInfo.avatar">
+                <img :class="{userProfile:true, show:showUserDetail}" :src="userInfo.avatar" @click="toPersionInfo">
                 <transition 
                     :css="false"
                     @enter="onEnter"
                     @leave="onLeave"
                 >
                     <div v-show="showUserDetail" :class="{userDetail:true}">
-                        <div class="name" @click="onClick">{{userInfo.name}}</div>
+                        <div class="name" @click="toPersionInfo">{{userInfo.name}}</div>
                         <ul class="numInfo">
                             <li>
                                 <div class="top">57</div>
@@ -28,30 +28,30 @@
                         </ul>
                         <ul class="option">
                             <li>
-                                <router-link to="/accountModify">
-                                    <!-- <img src="icons/profile.png"> -->
+                                <router-link to="/accountInfoModify">
+                                    <img src="/icons/avatar.png">
                                     <span>账户设置</span>
-                                    <!-- <img src="icons/arrow.svg" alt=""> -->
+                                    <img src="/icons/arrow.svg" alt="">
                                 </router-link>
                             </li>
                             <li>
-                                <router-link to="/accountModify">
-                                    <!-- <img src="icons/planning.png"> -->
+                                <router-link to="/accountInfoModify">
+                                    <img src="/icons/planning.png">
                                     <span>我的企划</span>
-                                    <!-- <img src="icons/arrow.svg" alt=""> -->
+                                    <img src="/icons/arrow.svg" alt="">
                                 </router-link>
                             </li>
                             <li>
-                                <router-link to="/accountModify">
-                                    <!-- <img src="icons/Vector.png"> -->
+                                <router-link to="/accountInfoModify">
+                                    <img src="/icons/Vector.png">
                                     <span>我的橱窗</span>
-                                    <!-- <img src="icons/arrow.svg" alt=""> -->
+                                    <img src="/icons/arrow.svg" alt="">
                                 </router-link>
                             </li>
                             <hr>
                             <li @click="logout">
                                 <div>
-                                    <!-- <img src="icons/longArrow.svg"> -->
+                                    <img src="/icons/longArrow.svg">
                                     <span>退出登录</span>
                                 </div>
                             </li>
@@ -77,8 +77,8 @@
             <ul>
                 <template v-for="(item, index) in routerList" :key="index">
                     <li 
-                        :class="{login:item.path=='/loginOrRegister/login',register:item.path=='/loginOrRegister/register'}"
-                        v-if="item.tarbar==true||!isOnline"
+                        :class="{login:item.path=='/login',register:item.path=='/register'}"
+                        v-if="(item.tarbar==true||!userInfo.isLogin)&&(item.needOffLine?!userInfo.isLogin:true)"
                         @click="drawer = false"
                     >
                         <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
@@ -93,17 +93,6 @@
     import gsap from "gsap";
     import type { DrawerProps } from 'element-plus';
     import type { Router } from '@/types/router';
-
-    const isOnline = ref<boolean>(false);
-    const { $on } = useNuxtApp();
-
-    $on("online", () => {
-        isOnline.value = true;
-    });
-
-    $on("offline", () => {
-        isOnline.value = false;
-    });
 
     const drawer = ref(false);
     const direction = ref<DrawerProps['direction']>('ttb');
@@ -169,8 +158,8 @@
         });
     }
 
-    function onClick():void{//点击触发事件
-        // router.replace("/personInfo");
+    function toPersionInfo():void{//点击触发事件
+        navigateTo("/accountInfo");
     }
 </script>
 
@@ -248,7 +237,7 @@
                         z-index: 1;
                         position: absolute;
                         background-color: white;
-                        @include fixedRoundedRectangle(200px,280px, 10px);
+                        @include fixedRoundedRectangle(200px,270px, 10px);
                         top: 30px;
                         left: math.div($profileSize, 2);
                         transform: translateX(-50%);
@@ -347,34 +336,38 @@
             }
         }
         :deep(.el-drawer){
-            ul{
-                li{
-                    background-color: #ecf5ff;
-                    @include fixedRoundedRectangle(100%, 50px, 4px);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    color: #409eff;
-                    margin: 10px;
-                    transition: all 0.3s;
-                    &:hover{
-                        cursor: pointer;
-                        color: #ecf5ff;
-                        background-color: #409eff;
-                    }
-                    
-                    &.login{
-                        background-color: #fb7299;
-                        color: #ecf5ff;
-                    }
-                    &.register{
-                        background-color: #00a8e9;
-                        color: #ecf5ff;
-                    }
+            .el-drawer__body{
+                padding-top: 0px;
 
-                    a{
-                        @include flexCenter();
-                        @include fullInParent();
+                ul{
+                    li{
+                        background-color: #ecf5ff;
+                        @include fixedRoundedRectangle(100%, 50px, 4px);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        color: #409eff;
+                        margin: 10px;
+                        transition: all 0.3s;
+                        &:hover{
+                            cursor: pointer;
+                            color: #ecf5ff;
+                            background-color: #409eff;
+                        }
+                        
+                        &.login{
+                            background-color: #fb7299;
+                            color: #ecf5ff;
+                        }
+                        &.register{
+                            background-color: #00a8e9;
+                            color: #ecf5ff;
+                        }
+
+                        a{
+                            @include flexCenter();
+                            @include fullInParent();
+                        }
                     }
                 }
             }

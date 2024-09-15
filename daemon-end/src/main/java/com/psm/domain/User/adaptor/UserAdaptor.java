@@ -8,6 +8,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -59,7 +60,15 @@ public interface UserAdaptor {
     void deleteUser();
 
     /**
-     * 更新
+     * 更新用户头像
+     *
+     * @param userDTO
+     * @return
+     */
+    String updateAvatar(UserDTO userDTO) throws InvalidParameterException;
+
+    /**
+     * 更新用户信息(除了密码和头像)
      *
      * @param userDTO
      * @return

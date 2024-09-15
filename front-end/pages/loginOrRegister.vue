@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
     definePageMeta({
-        middleware:["redirect-login"]
+        middleware:["redirect-login-or-register"]
     });
 </script>
 

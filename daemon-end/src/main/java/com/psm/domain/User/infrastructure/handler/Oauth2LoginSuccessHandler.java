@@ -1,6 +1,8 @@
 package com.psm.domain.User.infrastructure.handler;
 
+import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.infrastructure.utils.JWTUtil;
+import com.psm.infrastructure.utils.Redis.RedisCache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +34,9 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @Autowired
+    private RedisCache redisCache;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (authentication instanceof OAuth2AuthenticationToken){
@@ -40,8 +45,18 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             String uniqueThirdId = registerationId + id;
 
-            String jwt = jwtUtil.createJWT(uniqueThirdId);
+            // 从redis中获取LoginUser
+            LoginUser loginUser = redisCache.getCacheObject("third:"+uniqueThirdId);
+            // 获取到LoginUser就立即删除redis中的数据
+            redisCache.deleteObject("third:"+uniqueThirdId);
 
+            // 获取用户id
+            String userId = loginUser.getUser().getId().toString();
+
+            // 使用用户id生成JWT
+            String jwt = jwtUtil.createJWT(userId);
+
+            // 创建Cookie
             Cookie tokenCookie = new Cookie("token", jwt);
             tokenCookie.setPath("/");
             if("https".equals(protocol)){

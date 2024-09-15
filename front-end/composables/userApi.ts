@@ -40,7 +40,7 @@ function loginApi(data:UserInfo){
     navigateTo("/");
 }
 
-function logoutApi(data:UserInfo){
+function logoutApi(){
     userInfo.isLogin = false;
     clearUserInfo();
     navigateTo("/");
@@ -138,6 +138,34 @@ export async function register(name:string, password:string, email:string):Promi
     return true;
 }
 
+export async function updateAvatar(avatar:Blob):Promise<Boolean>{
+    const formData = new FormData();
+    formData.append('oldAvatarUrl', userInfo.avatar||"");
+    formData.append('avatar', avatar);
+
+    const res:any = await fetchApi({
+        url: '/users/updateAvatar',
+        opts: formData,
+        method: 'put',
+        contentType: 'multipart/form-data',
+    });
+
+    if(res.code!=200){
+        let msg = res?.msg;
+        if(msg == null || msg == undefined) msg = '';
+        ElMessage.error('更新头像失败:'+ msg);
+
+        return false;
+    }
+
+    ElMessage.success('更新头像成功');
+
+    let data = res.data;
+    userInfo.avatar = data;
+
+    return true;
+}
+
 export async function logout():Promise<boolean>{
     const res:any = await fetchApi({
         url: '/users/logout',
@@ -151,8 +179,7 @@ export async function logout():Promise<boolean>{
 
     ElMessage.success('登出成功');
     localStorage.removeItem('token');
-    userInfo.isLogin = false;
-    clearUserInfo();
+    logoutApi();
 
     return true;
 }

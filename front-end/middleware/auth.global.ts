@@ -3,6 +3,8 @@ export default defineNuxtRouteMiddleware(
     {
         // 在服务器端跳过中间件
         if (process.server) return;
-        localStorage.getItem("online")&&navigateTo("/");
+        if(to.path == "/"&&userInfo.isLogin){
+            return navigateTo("/home");
+        }
     }
 );

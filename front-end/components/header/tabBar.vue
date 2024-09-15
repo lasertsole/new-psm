@@ -1,8 +1,10 @@
 <template>
     <ul class="tabBarArr">
-        <li v-for="item in routerList">
-            <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
-        </li>
+        <template  v-for="item in routerList">
+            <li v-if="item.needOffLine?!userInfo.isLogin:true" :key="item.path">
+                <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
+            </li>
+        </template>
     </ul>
 </template>
 
@@ -20,6 +22,7 @@
         flex-direction: row;
         font-size: 18px;
         align-items: center;
+
         li{
             width: 80px;
             display: flex;

@@ -2,23 +2,31 @@ import { resolve } from 'pathe'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
+  // 不使用开发工具
   devtools: { enabled: false },
+
+  // 导入第三方模块
   modules: [
     '@element-plus/nuxt'
   ],
+  //项目信息
   app:{
     head:{
       title: '喵字幕',
+      // 方便搜索引擎查找
       meta: [
           { name: "description", content: "满足翻译商稿的买卖平台"},
           { name: "keyword", content: "翻译,买卖,接单" }
       ],
+      // tab图标
       link: [
-        { rel: "icon", type: "image/x-icon", href: "tab_icon.png" }
+        { rel: "icon", type: "image/x-icon", href: "/favicon/tab_icon.png" }
       ]
     }
   },
+  // 全局css
   css:['@/main.scss'],
+
   vite: {
     resolve: {
       alias: {
@@ -27,6 +35,15 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  // 路由策略
+  routeRules: {
+    '/login': { redirect: '/loginOrRegister/login' },
+    '/register': { redirect: '/loginOrRegister/register' },
+    '/thirdLogin': { redirect: '/loginOrRegister/thirdLogin' },
+  },
+
+  // 代理
   nitro: {
     devProxy: {
       "/api": {
@@ -38,9 +55,9 @@ export default defineNuxtConfig({
     prerender:{ //预渲染
       routes: [
         '/' //首页(默认渲染)
-        ,"/loginOrResigter/login" //登录页
-        ,"/loginOrResigter/register" //注册页
-        ,"/loginOrResigter/thirdLogin" //第三方登录回调页
+        ,"/loginOrRegister/login" //登录页
+        ,"/loginOrRegister/register" //注册页
+        ,"/loginOrRegister/thirdLogin" //第三方登录回调页
       ]
     }
   },
