@@ -3,7 +3,7 @@
         <ul class="infoBox">
             <li class="profile">
                 <div class="circle">
-                    <accountInfoModifyUploadProfile></accountInfoModifyUploadProfile>
+                    <accountInfoModifyUploadAvatar></accountInfoModifyUploadAvatar>
                 </div>
             </li>
             <!-- <li>

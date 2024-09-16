@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.OSSException;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.InputStream;
@@ -29,7 +30,6 @@ public class UploadOSSUtil {
     @Autowired
     OSSUtilProperties ossUtilsProperties;
 
-    private static final ThreadLocal<Integer> threadLocal =  new ThreadLocal<Integer>();
     /**
      * 分片上传(支持断点继传)
      *
@@ -140,8 +140,14 @@ public class UploadOSSUtil {
             // 清理临时文件
             Files.deleteIfExists(tempFilePath);
         }
-    }
+    };
 
+    /**
+     * 删除单个文件
+     * @param filePath
+     * @return
+     * @throws Exception
+     */
     public Boolean deleteFile(String filePath) throws Exception {
         String endpoint = ossUtilsProperties.getEndpoint();
         String accessKeyId = ossUtilsProperties.getAccessKeyId();
@@ -177,8 +183,83 @@ public class UploadOSSUtil {
                 ossClient.shutdown();
             }
         }
-    }
+    };
 
+    /**
+     * 根据文件完整路径删除文件
+     * @param fullFilePath
+     * @param folderPath
+     * @return
+     * @throws Exception
+     */
+    public Boolean deleteFileByFullUrl(String fullFilePath, String folderPath) throws Exception {
+        //https://new-psm.oss-cn-guangzhou.aliyuncs.com/users/avatars/2024-09-16-23-15-38-c1b398860d1740da8acf54bd60f63aba.webp
+        try{
+            URL url = new URL(fullFilePath);
+            // 获取协议
+            String protocol = url.getProtocol();
+
+            // 获取主机名
+            String host = url.getHost();
+
+            // 获取路径
+            String path = url.getPath();
+
+            // 获取路径
+            String endpoint = ossUtilsProperties.getEndpoint();//endpoint.split("//")[0]
+
+            // 获取bucketName
+            String bucketName = ossUtilsProperties.getBucketName();
+
+            // 拼接templateUrl
+            String templateUrl = endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1];
+
+            // 拼接fullUrlPrefix
+            StringBuilder fullUrlPrefix = new StringBuilder();
+            fullUrlPrefix.append(protocol).append("://").append(host);
+
+            // 判断是否为模板url
+            if (!templateUrl.equals(fullUrlPrefix.toString())){
+                return false;
+            }
+
+            // 去掉开头的斜杠
+            String trimmedPath = path.startsWith("/") ? path.substring(1) : path;
+
+            // 分割路径
+            String[] pathParts = trimmedPath.split("/");
+
+            // 取前两个部分并重新拼接
+            StringBuilder extractedPath = new StringBuilder();
+            for (int i = 0; i < 2; i++) {
+                if (i > 0) {
+                    extractedPath.append("/");
+                }
+                extractedPath.append(pathParts[i]);
+            }
+
+            // 添加开头的斜杠
+            String finalPath = "/" + extractedPath.toString();
+
+            if (!finalPath.equals("/"+folderPath)){
+                return false;
+            }
+
+            // 删除文件
+            return deleteFile(trimmedPath);
+        }
+        catch (Exception e){
+            return false;
+        }
+        
+    };
+
+    /**
+     * 批量删除文件
+     * @param deletedFiles
+     * @return
+     * @throws Exception
+     */
     public Boolean deletedBatchFiles(List<String> deletedFiles) throws Exception {
         String endpoint = ossUtilsProperties.getEndpoint();
         String accessKeyId = ossUtilsProperties.getAccessKeyId();
@@ -223,5 +304,5 @@ public class UploadOSSUtil {
                 ossClient.shutdown();
             }
         }
-    }
+    };
 }

@@ -63,13 +63,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
-        log.info("getAuthorizedUser: "+loginUser.getUser());
         return loginUser.getUser();
     }
 
     @Override
     public Long getAuthorizedUserId() {
-        log.info("getAuthorizedUserId: "+getAuthorizedUser().getId());
         return getAuthorizedUser().getId();
     }
 
@@ -159,7 +157,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     @Override
     public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile){
         try{
-            //TODO 删除旧头像
+            //删除旧头像
+            uploadOSSUtil.deleteFileByFullUrl(oldAvatarUrl, avatarFolderPath);
 
             //上传文件到oss
             String avatarUrl = uploadOSSUtil.multipartUpload(newAvatarFile,avatarFolderPath);

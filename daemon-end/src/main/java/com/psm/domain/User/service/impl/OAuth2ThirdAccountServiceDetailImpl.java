@@ -8,6 +8,7 @@ import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
 import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.infrastructure.Convertor.OAuth2ThirdAccountConvertor;
+import com.psm.domain.User.infrastructure.utils.Oauth2UserIdContextHolder;
 import com.psm.domain.User.repository.mapper.OAuth2ThirdAccountMapper;
 import com.psm.domain.User.repository.mapper.UserMapper;
 import com.psm.infrastructure.utils.Redis.RedisCache;
@@ -110,8 +111,9 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
             //把完整信息存入redis，id作为key(如果原先有则覆盖)
             redisCache.setCacheObject("login:"+tbUserId, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
             String uniqueThirdId = registerationId + oAuth2ThirdAccountDTO.getProviderUserId();
-            //将第三方账号信息存入redis，给Oauth2LoginSuccessHandler使用
-            redisCache.setCacheObject("third:" + uniqueThirdId, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+
+            //把userId存入ThreadLocal, 方便Oauth2LoginSuccessHandler获取userId
+            Oauth2UserIdContextHolder.setUserId(tbUserId);
         }
 
         // 返回用户信息
