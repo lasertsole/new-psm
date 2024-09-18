@@ -1,6 +1,6 @@
-package com.psm.annotation.validation.impl;
+package com.psm.infrastructure.annotation.validation.impl;
 
-import com.psm.annotation.validation.ValidFileSize;
+import com.psm.infrastructure.annotation.validation.ValidFileSize;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,8 +1,8 @@
 package com.psm.domain.User.entity.User;
 
-import com.psm.annotation.validation.ValidBoolean;
-import com.psm.annotation.validation.ValidFileSize;
-import com.psm.annotation.validation.ValidImage;
+import com.psm.infrastructure.annotation.validation.ValidBoolean;
+import com.psm.infrastructure.annotation.validation.ValidFileSize;
+import com.psm.infrastructure.annotation.validation.ValidImage;
 import com.psm.domain.User.infrastructure.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;

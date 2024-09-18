@@ -1,6 +1,6 @@
 package com.psm.domain.Subtitles.adaptor.impl;
 
-import com.psm.annotation.spring.Adaptor;
+import com.psm.infrastructure.annotation.spring.Adaptor;
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;

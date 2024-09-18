@@ -1,8 +1,8 @@
 package com.psm.application;
 
 import com.psm.domain.User.adaptor.UserAdaptor;
+import com.psm.domain.User.entity.User.UserBO;
 import com.psm.domain.User.entity.User.UserDTO;
-import com.psm.domain.User.entity.User.UserVO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
@@ -72,8 +72,8 @@ public class UserController {
     @GetMapping("/fastLogin")
     public ResponseVO fastLogin() {
         try {
-            UserVO userVO = userAdaptor.getAuthorizedUser();
-            return ResponseVO.ok("FastLogin successful", userVO);
+            UserBO userBO = userAdaptor.getAuthorizedUser();
+            return ResponseVO.ok("FastLogin successful", userBO);
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -167,9 +167,9 @@ public class UserController {
 
         try {
             // 获取用户信息
-            UserVO userVO = userAdaptor.getUserByID(userDTO);
+            UserBO userBO = userAdaptor.getUserByID(userDTO);
 
-            return new ResponseVO(HttpStatus.OK, "Get user successful", userVO);
+            return new ResponseVO(HttpStatus.OK, "Get user successful", userBO);
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -186,9 +186,9 @@ public class UserController {
 
         try {
             // 获取用户信息
-            List<UserVO> userVOList = userAdaptor.getUserByName(userDTO);
+            List<UserBO> userBOs = userAdaptor.getUserByName(userDTO);
 
-            return new ResponseVO(HttpStatus.OK, "Get users successful", userVOList);
+            return new ResponseVO(HttpStatus.OK, "Get users successful", userBOs);
         }catch (IllegalArgumentException e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
         }

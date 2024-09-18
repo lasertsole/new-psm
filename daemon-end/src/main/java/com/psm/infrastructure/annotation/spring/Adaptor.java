@@ -1,4 +1,4 @@
-package com.psm.annotation.spring;
+package com.psm.infrastructure.annotation.spring;
 
 
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package com.psm.annotation.spring;
+package com.psm.infrastructure.annotation.spring;
 
 import org.springframework.stereotype.Component;
 
@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Component
-public @interface Infrastructure {
+public @interface Repository {
 }

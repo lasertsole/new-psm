@@ -3,6 +3,7 @@ package com.psm.application;
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
+import com.psm.domain.User.entity.User.UserBO;
 import com.psm.objectValue.SubtitlesShowBarVO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDTO;
@@ -32,8 +33,8 @@ public class SubtitlesShowBarController {
     @GetMapping
     public ResponseVO getSubtitlesShowBars(PageDTO pageDTO){
         // 获取用户列表
-        List<UserVO> userVOList = userAdaptor.getUserOrderByCreateTimeAsc(pageDTO);
-        if(userVOList == null){
+        List<UserBO> userBOs = userAdaptor.getUserOrderByCreateTimeAsc(pageDTO);
+        if(userBOs == null){
             return new ResponseVO(HttpStatus.NOT_FOUND, "Get user list failed");
         }
 
@@ -47,16 +48,16 @@ public class SubtitlesShowBarController {
         Boolean emptyFlag = true;
 
         // 遍历用户列表
-        for (UserVO userVO : userVOList) {
+        for (UserBO userBO : userBOs) {
             // 创建字幕DTO
             SubtitlesDTO subtitlesDTO = new SubtitlesDTO();
-            subtitlesDTO.setUserId(userVO.getId());
+            subtitlesDTO.setUserId(userBO.getId());
             try {
                 // 获取用户字幕
                 subtitlesVOList = subtitlesAdaptor.getSubtitlesByUserId(subtitlesDTO);
 
                 // 创建字幕Bar
-                SubtitlesShowBarVO subtitlesShowBarVO = new SubtitlesShowBarVO(userVO, subtitlesVOList);
+                SubtitlesShowBarVO subtitlesShowBarVO = new SubtitlesShowBarVO(userBO, subtitlesVOList);
 
                 // 将赋值好的字幕Bar添加到列表
                 subtitlesShowBarVOList.add(subtitlesShowBarVO);
@@ -84,8 +85,8 @@ public class SubtitlesShowBarController {
         // 获取用户
         UserDTO userDTO = new UserDTO();
         userDTO.setId(userId);
-        UserVO userVO = userAdaptor.getUserByID(userDTO);
-        if(userVO == null){
+        UserBO userBO = userAdaptor.getUserByID(userDTO);
+        if(userBO == null){
             return new ResponseVO(HttpStatus.NOT_FOUND, "Get user list failed");
         }
 
@@ -98,7 +99,7 @@ public class SubtitlesShowBarController {
             return new ResponseVO(HttpStatus.NOT_FOUND, "Get subtitles list failed");
         }
 
-        SubtitlesShowBarVO subtitlesShowBarVO = new SubtitlesShowBarVO(userVO, subtitlesVOList);
+        SubtitlesShowBarVO subtitlesShowBarVO = new SubtitlesShowBarVO(userBO, subtitlesVOList);
 
         // 返回数据
         Map<String, Object> map = new HashMap<>();

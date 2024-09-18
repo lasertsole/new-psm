@@ -1,7 +1,7 @@
 package com.psm.domain.User.adaptor;
 
+import com.psm.domain.User.entity.User.UserBO;
 import com.psm.domain.User.entity.User.UserDTO;
-import com.psm.domain.User.entity.User.UserVO;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,7 +18,7 @@ public interface UserAdaptor {
      *
      * @return UserDAO
      */
-    UserVO getAuthorizedUser();
+    UserBO getAuthorizedUser();
 
     /**
      * 获取当前登录用户id
@@ -87,7 +87,7 @@ public interface UserAdaptor {
      * @param userDTO
      * @return
      */
-    UserVO getUserByID(UserDTO userDTO) throws InvalidParameterException;
+    UserBO getUserByID(UserDTO userDTO) throws InvalidParameterException;
 
     /**
      * 通过用户名获取用户信息
@@ -95,7 +95,7 @@ public interface UserAdaptor {
      * @param userDTO
      * @return
      */
-    List<UserVO> getUserByName(UserDTO userDTO) throws InvalidParameterException;
+    List<UserBO> getUserByName(UserDTO userDTO) throws InvalidParameterException;
 
     /**
      * 按创建时间排序获取用户列表
@@ -103,5 +103,5 @@ public interface UserAdaptor {
      * @param pageDTO
      * @return
      */
-    List<UserVO> getUserOrderByCreateTimeAsc(PageDTO pageDTO);
+    List<UserBO> getUserOrderByCreateTimeAsc(PageDTO pageDTO);
 }

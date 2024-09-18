@@ -1,10 +1,10 @@
 package com.psm.domain.User.adaptor.impl;
 
-import com.psm.annotation.spring.Adaptor;
+import com.psm.domain.User.entity.User.UserBO;
+import com.psm.infrastructure.annotation.spring.Adaptor;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
-import com.psm.domain.User.entity.User.UserVO;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
 import com.psm.domain.User.service.UserService;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
@@ -30,8 +30,8 @@ public class UserAdaptorImpl implements UserAdaptor {
     UserConvertor userConvertor;
 
     @Override
-    public UserVO getAuthorizedUser() {
-        return userConvertor.DAO2VO(userService.getAuthorizedUser());
+    public UserBO getAuthorizedUser() {
+        return userConvertor.DAO2BO(userService.getAuthorizedUser());
     }
 
     @Override
@@ -62,9 +62,9 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserVO
-        UserVO userVO = userConvertor.DAO2VO(userDAO);
-        map.put("user", userVO);
+        // 将UserDAO转换为UserBO
+        UserBO userBO = userConvertor.DAO2BO(userDAO);
+        map.put("user", userBO);
 
         return map;
     }
@@ -96,9 +96,9 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserVO
-        UserVO userVO = userConvertor.DAO2VO(userDAO);
-        map.put("user", userVO);
+        // 将UserDAO转换为UserBO
+        UserBO userBO = userConvertor.DAO2BO(userDAO);
+        map.put("user", userBO);
 
         return map;
     }
@@ -152,7 +152,7 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public UserVO getUserByID(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public UserBO getUserByID(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(Objects.isNull(userDTO.getId())){
             throw new InvalidParameterException("Invalid parameter");
@@ -167,12 +167,12 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserVO
-        return userConvertor.DAO2VO(userDAO);
+        // 将UserDAO转换为UserBO
+        return userConvertor.DAO2BO(userDAO);
     }
 
     @Override
-    public List<UserVO> getUserByName(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public List<UserBO> getUserByName(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(StringUtils.isBlank(userDTO.getName())){
             throw new InvalidParameterException("Invalid parameter");
@@ -185,16 +185,16 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserVO
-        List<UserVO> userVOList = userDAOList.stream().map(userDAO -> {
-            return userConvertor.DAO2VO(userDAO);
+        // 将UserDAO转换为UserBO
+        List<UserBO> userBOs = userDAOList.stream().map(userDAO -> {
+            return userConvertor.DAO2BO(userDAO);
         }).toList();
 
-        return userVOList;
+        return userBOs;
     }
 
     @Override
-    public List<UserVO> getUserOrderByCreateTimeAsc(@Valid PageDTO pageDTO){
+    public List<UserBO> getUserOrderByCreateTimeAsc(@Valid PageDTO pageDTO){
         List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(pageDTO.getCurrentPage(),
                 pageDTO.getPageSize());
 
@@ -203,13 +203,13 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new RuntimeException("The Subtitles does not exist.");
         }
 
-        // 将DAO转换为VO
-        List<UserVO> userVOList = userDAOList.stream().map(
+        // 将DAO转换为BO
+        List<UserBO> userBOs = userDAOList.stream().map(
                 userDAO -> {
-                    return userConvertor.DAO2VO(userDAO);
+                    return userConvertor.DAO2BO(userDAO);
                 }
         ).toList();
 
-        return userVOList;
+        return userBOs;
     };
 }

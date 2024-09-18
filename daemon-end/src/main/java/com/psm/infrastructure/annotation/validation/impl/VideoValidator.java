@@ -1,13 +1,14 @@
-package com.psm.annotation.validation.impl;
+package com.psm.infrastructure.annotation.validation.impl;
 
-import com.psm.annotation.validation.ValidImage;
+import com.psm.infrastructure.annotation.validation.ValidVideo;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
-public class ImageValidator implements ConstraintValidator<ValidImage, MultipartFile> {
+public class VideoValidator implements ConstraintValidator<ValidVideo, MultipartFile> {
     private static final Tika tika = new Tika();
+
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         if (file == null || file.isEmpty()) {
@@ -16,13 +17,13 @@ public class ImageValidator implements ConstraintValidator<ValidImage, Multipart
         try {
             // 使用 FastJSON 解析 JSON 字符串
             String mimeType = tika.detect(file.getInputStream());
-            return isImage(mimeType);
+            return isVideo(mimeType);
         } catch (Exception e) {
             return false;
         }
     }
 
-    private boolean isImage(String mimeType) {
-        return mimeType.startsWith("image/");
+    private boolean isVideo(String mimeType) {
+        return mimeType.startsWith("video/");
     }
 }

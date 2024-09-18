@@ -32,9 +32,8 @@ public class ResponseVO implements Serializable {
         this.msg = "success";
     }
 
-    public ResponseVO(HttpStatus httpStatus, String msg) {
-        this.code = httpStatus.value();
-        this.msg = msg;
+    public ResponseVO(BO2VOable bo2Voable) {
+        this(bo2Voable.toVO());
     }
 
     public ResponseVO(Integer code, String msg) {
@@ -42,16 +41,26 @@ public class ResponseVO implements Serializable {
         this.msg = msg;
     }
 
-    public ResponseVO(HttpStatus httpStatus, String msg, Object data) {
-        this.code = httpStatus.value();
-        this.msg = msg;
-        this.data = data;
+    public ResponseVO(HttpStatus httpStatus, String msg) {
+        this(httpStatus.value(), msg);
     }
 
     public ResponseVO(Integer code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
+    }
+
+    public ResponseVO(HttpStatus httpStatus, String msg, Object data) {
+        this(httpStatus.value(), msg, data);
+    }
+
+    public ResponseVO(Integer code, String msg, BO2VOable bo2Voable){
+        this(code, msg, bo2Voable.toVO());
+    }
+
+    public ResponseVO(HttpStatus httpStatus, String msg, BO2VOable bo2Voable){
+        this(httpStatus.value(), msg, bo2Voable.toVO());
     }
 
     public static ResponseVO ok(String msg, Object data){
@@ -65,4 +74,6 @@ public class ResponseVO implements Serializable {
     public static ResponseVO ok(String msg){
         return new ResponseVO(HttpStatus.OK, msg);
     }
+
+    public static ResponseVO ok(BO2VOable bo2Voable){ return new ResponseVO(HttpStatus.OK, "success", bo2Voable);}
 }

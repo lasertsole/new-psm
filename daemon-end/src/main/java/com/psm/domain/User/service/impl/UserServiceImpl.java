@@ -5,11 +5,11 @@ import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
+import com.psm.domain.User.repository.LoginUserRedis;
+import com.psm.domain.User.repository.UserOSS;
 import com.psm.domain.User.repository.UserRepository;
 import com.psm.domain.User.service.UserService;
 import com.psm.domain.User.infrastructure.utils.JWTUtil;
-import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
-import com.psm.infrastructure.utils.Redis.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -32,28 +31,25 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserOSS userOSS;
+
+    @Autowired
+    private LoginUserRedis loginUserRedis;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    JWTUtil jwtUtil;
+    private JWTUtil jwtUtil;
 
     @Value("${spring.security.jwt.expiration}")
-    public Long expiration;//jwt有效期
+    private Long expiration;//jwt有效期
 
     @Autowired
-    UploadOSSUtil uploadOSSUtil;
-
-    @Value("${aliyun.oss.path.users.avatarFolderPath}")
-    String avatarFolderPath;
-
-    @Autowired
-    private RedisCache redisCache;
-
-    @Autowired
-    UserConvertor userConvertor;
+    private UserConvertor userConvertor;
 
     @Override
     public UserDAO getAuthorizedUser(){
@@ -85,7 +81,7 @@ public class UserServiceImpl implements UserService {
             String jwt = jwtUtil.createJWT(id);
 
             //把完整信息存入redis，id作为key(如果原先有则覆盖)
-            redisCache.setCacheObject("login:"+id,loginUser,Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+            loginUserRedis.addLoginUser(id, loginUser);
 
             Map<String, Object> map = new HashMap<>();
             map.put("token",jwt);
@@ -103,7 +99,7 @@ public class UserServiceImpl implements UserService {
             Long id = getAuthorizedUserId();
 
             //根据用户id删除redis中的用户信息
-            redisCache.deleteObject("login:"+id);
+            loginUserRedis.removeLoginUser(String.valueOf(id));
         }
         catch (Exception e){
             throw new RuntimeException("Server error when logout: "+e.getMessage());
@@ -144,7 +140,7 @@ public class UserServiceImpl implements UserService {
             Long id = loginUser.getUser().getId();
 
             //根据用户id删除redis中的用户信息
-            redisCache.deleteObject("login:"+id);
+            loginUserRedis.removeLoginUser(String.valueOf(id));
 
             //根据用户id删除pg中的用户信息
             userRepository.removeById(id);
@@ -157,11 +153,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile){
         try{
-            //删除旧头像
-            uploadOSSUtil.deleteFileByFullUrl(oldAvatarUrl, avatarFolderPath);
-
-            //上传文件到oss
-            String avatarUrl = uploadOSSUtil.multipartUpload(newAvatarFile,avatarFolderPath);
+            //更新oss中用户头像信息
+            String avatarUrl = userOSS.updateAvatar(oldAvatarUrl, newAvatarFile);
 
             //更新数据库中用户头像信息
             Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
@@ -172,7 +165,8 @@ public class UserServiceImpl implements UserService {
 
             //更新redis中用户头像信息
             LoginUser loginUser = new LoginUser(getUserByID(id));
-            redisCache.setCacheObject("login:"+id, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+            loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
+
             return avatarUrl;
         }
         catch (Exception e){//上传失败

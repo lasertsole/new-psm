@@ -1,6 +1,7 @@
 package com.psm.objectValue;
 
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
+import com.psm.domain.User.entity.User.UserBO;
 import com.psm.domain.User.entity.User.UserVO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
@@ -20,10 +21,10 @@ public class SubtitlesShowBarVO implements Serializable {
     UserVO userVO;
     List<SubtitlesVO> subtitlesVOList;
 
-    public SubtitlesShowBarVO(@Valid UserVO userVO, @Valid List<SubtitlesVO> subtitlesVOList) {
+    public SubtitlesShowBarVO(@Valid UserBO userBO, @Valid List<SubtitlesVO> subtitlesVOList) {
         //校验输入是否合法
         if(
-                Objects.isNull(userVO)||
+                Objects.isNull(userBO)||
                 Objects.isNull(subtitlesVOList)||
                 subtitlesVOList.isEmpty()
         ){

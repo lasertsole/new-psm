@@ -1,6 +1,6 @@
-package com.psm.annotation.validation;
+package com.psm.infrastructure.annotation.validation;
 
-import com.psm.annotation.validation.impl.BooleanValidator;
+import com.psm.infrastructure.annotation.validation.impl.BooleanValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

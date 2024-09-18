@@ -1,7 +1,7 @@
-package com.psm.annotation.validation.impl;
+package com.psm.infrastructure.annotation.validation.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.annotation.validation.ValidJson;
+import com.psm.infrastructure.annotation.validation.ValidJson;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

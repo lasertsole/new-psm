@@ -1,6 +1,6 @@
-package com.psm.annotation.validation;
+package com.psm.infrastructure.annotation.validation;
 
-import com.psm.annotation.validation.impl.ImageValidator;
+import com.psm.infrastructure.annotation.validation.impl.VideoValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -8,10 +8,10 @@ import java.lang.annotation.*;
 
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ImageValidator.class)
+@Constraint(validatedBy = VideoValidator.class)
 @Documented
-public @interface ValidImage {
-    String message() default "Invalid image format";
+public @interface ValidVideo {
+    String message() default "Invalid video format";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

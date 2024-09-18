@@ -1,7 +1,7 @@
-package com.psm.annotation.validation;
+package com.psm.infrastructure.annotation.validation;
 
 
-import com.psm.annotation.validation.impl.FileSizeValidator;
+import com.psm.infrastructure.annotation.validation.impl.FileSizeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

@@ -5,16 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.psm.infrastructure.annotation.spring.Repository;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.repository.UserRepository;
 import com.psm.domain.User.repository.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Repository
 public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserDAO> implements UserRepository {
     @Autowired
     private UserMapper userMapper;
