@@ -1,6 +1,6 @@
 package com.psm.application;
 
-import com.psm.infrastructure.utils.DTO.ResponseDTO;
+import com.psm.infrastructure.utils.VO.ResponseVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/common")
 public class CommonController {
     @GetMapping("/init")//登出
-    public ResponseDTO init()
+    public ResponseVO init()
     {
         return null;
     }

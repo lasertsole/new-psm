@@ -5,9 +5,9 @@ import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
-import com.psm.domain.User.service.UserService;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
-import com.psm.infrastructure.utils.DTO.PageDTO;
+import com.psm.domain.User.service.UserService;
+import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -27,9 +26,12 @@ public class UserAdaptorImpl implements UserAdaptor {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserConvertor userConvertor;
+
     @Override
     public UserVO getAuthorizedUser() {
-        return UserConvertor.DAOConvertToVO(userService.getAuthorizedUser());
+        return userConvertor.DAO2VO(userService.getAuthorizedUser());
     }
 
     @Override
@@ -47,7 +49,7 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
         }
 
-        UserDAO userDAO = UserConvertor.DTOConvertToDAO(userDTO);
+        UserDAO userDAO = userConvertor.DTO2DAO(userDTO);
 
         // 登录
         Map<String, Object> map = userService.login(userDTO);
@@ -61,7 +63,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserVO
-        UserVO userVO = UserConvertor.DAOConvertToVO(userDAO);
+        UserVO userVO = userConvertor.DAO2VO(userDAO);
         map.put("user", userVO);
 
         return map;
@@ -95,7 +97,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserVO
-        UserVO userVO = UserConvertor.DAOConvertToVO(userDAO);
+        UserVO userVO = userConvertor.DAO2VO(userDAO);
         map.put("user", userVO);
 
         return map;
@@ -166,7 +168,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserVO
-        return UserConvertor.DAOConvertToVO(userDAO);
+        return userConvertor.DAO2VO(userDAO);
     }
 
     @Override
@@ -185,7 +187,7 @@ public class UserAdaptorImpl implements UserAdaptor {
 
         // 将UserDAO转换为UserVO
         List<UserVO> userVOList = userDAOList.stream().map(userDAO -> {
-            return UserConvertor.DAOConvertToVO(userDAO);
+            return userConvertor.DAO2VO(userDAO);
         }).toList();
 
         return userVOList;
@@ -204,7 +206,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         // 将DAO转换为VO
         List<UserVO> userVOList = userDAOList.stream().map(
                 userDAO -> {
-                    return UserConvertor.DAOConvertToVO(userDAO);
+                    return userConvertor.DAO2VO(userDAO);
                 }
         ).toList();
 

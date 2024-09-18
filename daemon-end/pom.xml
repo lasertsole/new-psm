@@ -26,9 +26,27 @@
 		<tag/>
 		<url/>
 	</scm>
+
 	<properties>
 		<java.version>21</java.version>
+		<!--以下是依赖版本-->
+		<druid.version>1.2.20</druid.version>
+		<mybatisPlus.version>3.5.7</mybatisPlus.version>
+		<fastjson2.version>2.0.52</fastjson2.version>
+		<jjwt.version>0.12.3</jjwt.version>
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<hutool.version>5.8.25</hutool.version>
+		<!--以下是阿里云oss依赖其他依赖-->
+		<aliyunOss.version>3.17.4</aliyunOss.version>
+		<jaxb-api.version>2.3.1</jaxb-api.version>
+		<activation.version>1.1.1</activation.version>
+		<jaxb-runtime>2.3.3</jaxb-runtime>
+		<!--以上是阿里云oss依赖其他依赖-->
+		<tika.version>2.4.1</tika.version>
+		<socketio.version>1.7.7</socketio.version>
+		<tus.version>1.0.0-3.0</tus.version>
 	</properties>
+
 	<dependencies>
 
 		<!--web开发的起步依赖,但排除tomcat-->
@@ -59,14 +77,14 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid-spring-boot-3-starter</artifactId>
-			<version>1.2.20</version>
+			<version>${druid.version}</version>
 		</dependency>
 
 		<!--mybatis-plus依赖-->
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-			<version>3.5.7</version>
+			<version>${mybatisPlus.version}</version>
 		</dependency>
 
 		<!--redis起步依赖-->
@@ -103,14 +121,14 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.52</version>
+			<version>${fastjson2.version}</version>
 		</dependency>
 
 		<!--引入jjwt依赖-->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
-			<version>0.12.3</version>
+			<version>${jjwt.version}</version>
 		</dependency>
 
 		<!--引入数据校验依赖-->
@@ -126,36 +144,49 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!--pojo转化简化-->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+
 		<!--hutool工具包-->
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.8.25</version>
+			<version>${hutool.version}</version>
 		</dependency>
 
 		<!--阿里云oss依赖-->
 		<dependency>
 			<groupId>com.aliyun.oss</groupId>
 			<artifactId>aliyun-sdk-oss</artifactId>
-			<version>3.17.4</version>
+			<version>${aliyunOss.version}</version>
 		</dependency>
 
 		<!--以下是阿里云oss依赖其他依赖-->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>2.3.1</version>
+			<version>${jaxb-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
-			<version>1.1.1</version>
+			<version>${activation.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
-			<version>2.3.3</version>
+			<version>${jaxb-runtime}</version>
 		</dependency>
 		<!--以上是阿里云oss依赖其他依赖-->
 
@@ -169,14 +200,14 @@
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
-			<version>2.4.1</version>
+			<version>${tika.version}</version>
 		</dependency>
 
 		<!--引入socket.io-->
 		<dependency>
 			<groupId>com.corundumstudio.socketio</groupId>
 			<artifactId>netty-socketio</artifactId>
-			<version>1.7.7</version>
+			<version>${socketio.version}</version>
 		</dependency>
 
 		<!--以下是引入日志框架-->
@@ -234,7 +265,7 @@
 		<dependency>
 			<groupId>me.desair.tus</groupId>
 			<artifactId>tus-java-server</artifactId>
-			<version>1.0.0-3.0</version>
+			<version>${tus.version}</version>
 		</dependency>
 	</dependencies>
 

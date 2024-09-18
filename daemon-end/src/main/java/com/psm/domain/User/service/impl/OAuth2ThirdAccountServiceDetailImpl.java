@@ -1,16 +1,13 @@
 package com.psm.domain.User.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
 import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.infrastructure.Convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.User.infrastructure.utils.Oauth2UserIdContextHolder;
-import com.psm.domain.User.repository.mapper.OAuth2ThirdAccountMapper;
-import com.psm.domain.User.repository.mapper.UserMapper;
+import com.psm.domain.User.repository.OAuth2ThirdAccountRepository;
+import com.psm.domain.User.repository.UserRepository;
 import com.psm.infrastructure.utils.Redis.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +27,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserService {
     @Autowired
-    private OAuth2ThirdAccountMapper oauth2Mapper;
+    private OAuth2ThirdAccountConvertor oAuth2ThirdAccountConvertor;
 
     @Autowired
-    private UserMapper userMapper;
+    private OAuth2ThirdAccountRepository oAuth2ThirdAccountRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private RedisCache redisCache;
@@ -54,7 +54,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
             //TODO github
         } else if (registerationId.equals("gitee")) {
             oAuth2ThirdAccountDTO =
-                    OAuth2ThirdAccountConvertor.giteeConvertToOAuth2ThirdAccount(registerationId, userRequest, oAuth2User);
+                    oAuth2ThirdAccountConvertor.gitee2OAuthThirdAccount(registerationId, userRequest, oAuth2User);
         } else {
             oAuth2ThirdAccountDTO = null;
         }
@@ -62,47 +62,39 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
         // 判断是否用户是否在第三方平台有账号
         if (!Objects.isNull(oAuth2ThirdAccountDTO)){
             //将DTO转换为DAO
-            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO = OAuth2ThirdAccountConvertor.DTOConvertToDAO(oAuth2ThirdAccountDTO);
+            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO = oAuth2ThirdAccountConvertor.DTO2DAO(oAuth2ThirdAccountDTO);
 
             //查询数据库内tb_third_party_user表中是否有该第三方账号
-            LambdaQueryWrapper<OAuth2ThirdAccountDAO> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(OAuth2ThirdAccountDAO::getRegistrationId, oAuth2ThirdAccountDTO.getRegistrationId())
-                    .and(w -> w.eq(OAuth2ThirdAccountDAO::getProviderUserId, oAuth2ThirdAccountDTO.getProviderUserId()));
-            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oauth2Mapper.selectOne(queryWrapper);
-
+            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oAuth2ThirdAccountRepository.findByPrimaryKey(oAuth2ThirdAccountDAO);
 
             Long tbUserId;// 第三方账号对应的用户id
             UserDAO userDAO;// 第三方账号对应的用户信息
             // 添加或更新改用户已在数据库内的信息
             if (Objects.isNull(oAuth2ThirdAccountDAO1)){//判断用户的第三方平台账号是否已在数据库
                 //在tb_user表插入新用户信息
-                userDAO = OAuth2ThirdAccountConvertor.DTOConvertToUserDAO(oAuth2ThirdAccountDTO);
+                userDAO = oAuth2ThirdAccountConvertor.DTO2UserDAO(oAuth2ThirdAccountDTO);
                 userDAO.setPassword(UUID.randomUUID().toString());
-                userMapper.insert(userDAO);
+                userRepository.insert(userDAO);
 
                 //得到插入tb_user表后新用户信息的id(雪花算法生成ID)
                 tbUserId = userDAO.getId();
 
                 //在tb_third_party_user表中新建第三方账号，外键user_id的值为tb_user表的id
                 oAuth2ThirdAccountDAO.setUserId(tbUserId);
-                oauth2Mapper.insert(oAuth2ThirdAccountDAO);
+                oAuth2ThirdAccountRepository.insert(oAuth2ThirdAccountDAO);
             }
             else{
                 // 获取第三方账号对应的用户id
                 tbUserId = oAuth2ThirdAccountDAO1.getUserId();
 
                 //更新第三方账号信息
-                OAuth2ThirdAccountDAO DAO =OAuth2ThirdAccountConvertor.DTOConvertToDAO(oAuth2ThirdAccountDTO);
-                LambdaUpdateWrapper<OAuth2ThirdAccountDAO> oAuth2ThirdAccountUpdateWrapper = new LambdaUpdateWrapper<>();
-                oAuth2ThirdAccountUpdateWrapper.eq(OAuth2ThirdAccountDAO::getRegistrationId, DAO.getRegistrationId())
-                .and(w -> w.eq(OAuth2ThirdAccountDAO::getProviderUserId, DAO.getProviderUserId()))
-                .set(!ObjectUtil.isEmpty(DAO.getCredentials()), OAuth2ThirdAccountDAO::getCredentials, DAO.getCredentials())
-                .set(!ObjectUtil.isEmpty(DAO.getCredentialsExpiresAt()), OAuth2ThirdAccountDAO::getCredentialsExpiresAt, DAO.getCredentialsExpiresAt());
-
-                oauth2Mapper.update(null, oAuth2ThirdAccountUpdateWrapper);
+                OAuth2ThirdAccountDAO DAO = oAuth2ThirdAccountConvertor.DTO2DAO(oAuth2ThirdAccountDTO);
+                oAuth2ThirdAccountRepository.update(DAO);
 
                 // 查询已有的用户信息
-                userDAO = userMapper.selectById(tbUserId);
+                UserDAO tempUser = new UserDAO();
+                tempUser.setId(tbUserId);
+                userDAO = userRepository.selectById(tempUser);
             }
 
             //将userDAO转成LoginUser格式

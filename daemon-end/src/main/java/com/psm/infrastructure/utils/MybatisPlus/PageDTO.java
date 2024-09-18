@@ -1,12 +1,10 @@
-package com.psm.infrastructure.utils.DTO;
+package com.psm.infrastructure.utils.MybatisPlus;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor

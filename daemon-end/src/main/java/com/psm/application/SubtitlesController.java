@@ -3,9 +3,9 @@ package com.psm.application;
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.adaptor.UserAdaptor;
-import com.psm.infrastructure.utils.DTO.PageDTO;
+import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
-import com.psm.infrastructure.utils.DTO.ResponseDTO;
+import com.psm.infrastructure.utils.VO.ResponseVO;
 import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Setter
@@ -40,7 +38,7 @@ public class SubtitlesController {
     String videoFolderPath;
 
     @GetMapping("/{id}")
-    public ResponseDTO getSubtitlesById(@PathVariable Long userId) {
+    public ResponseVO getSubtitlesById(@PathVariable Long userId) {
         try {
             // 获取视频信息
             SubtitlesDTO subtitlesDTO = new SubtitlesDTO();
@@ -48,30 +46,30 @@ public class SubtitlesController {
             SubtitlesVO subtitlesVO = subtitlesAdaptor.getSubtitlesById(subtitlesDTO);
 
             // 返回数据
-            return new ResponseDTO(HttpStatus.OK, "Get subtitles successful", subtitlesVO);
+            return new ResponseVO(HttpStatus.OK, "Get subtitles successful", subtitlesVO);
         }
         catch (InvalidParameterException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     @GetMapping
-    public ResponseDTO getSubtitlesList(@ModelAttribute PageDTO pageDTO) {
+    public ResponseVO getSubtitlesList(@ModelAttribute PageDTO pageDTO) {
         try {
             // 获取视频列表
             List<SubtitlesVO> subtitlesVOList = subtitlesAdaptor.getSubtitlesListByPage(pageDTO);
 
             // 返回数据
-            return new ResponseDTO(HttpStatus.OK, "Get subtitles successful", subtitlesVOList);
+            return new ResponseVO(HttpStatus.OK, "Get subtitles successful", subtitlesVOList);
         }
         catch (InvalidParameterException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -83,21 +81,21 @@ public class SubtitlesController {
      * @throws IOException
      */
     @PostMapping("/upload")
-    public ResponseDTO addSubtitles(SubtitlesDTO subtitlesDTO) throws Exception {
+    public ResponseVO addSubtitles(SubtitlesDTO subtitlesDTO) throws Exception {
         try {
             subtitlesAdaptor.addSubtitles(subtitlesDTO);
-            return new ResponseDTO(HttpStatus.OK, "Upload subtitles successful");
+            return new ResponseVO(HttpStatus.OK, "Upload subtitles successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseDTO updateSubtitles(@PathVariable Long id, @RequestBody SubtitlesDTO subtitlesDTO) {
+    public ResponseVO updateSubtitles(@PathVariable Long id, @RequestBody SubtitlesDTO subtitlesDTO) {
         try {
             //获取当前用户ID
             Long currentUserID = userAdaptor.getAuthorizedUserId();
@@ -112,18 +110,18 @@ public class SubtitlesController {
             subtitlesAdaptor.updateSubtitles(subtitlesDTO);
 
             // 更新视频信息
-            return new ResponseDTO(HttpStatus.OK, "Update subtitles successful");
+            return new ResponseVO(HttpStatus.OK, "Update subtitles successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseDTO deleteSubtitles(@PathVariable Long id) {
+    public ResponseVO deleteSubtitles(@PathVariable Long id) {
         try {
             //获取当前用户ID
             Long currentUserID = userAdaptor.getAuthorizedUserId();
@@ -140,13 +138,13 @@ public class SubtitlesController {
             subtitlesAdaptor.deleteSubtitles(subtitlesDTO);
 
             // 返回数据
-            return new ResponseDTO(HttpStatus.OK, "Delete subtitles successful");
+            return new ResponseVO(HttpStatus.OK, "Delete subtitles successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseDTO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

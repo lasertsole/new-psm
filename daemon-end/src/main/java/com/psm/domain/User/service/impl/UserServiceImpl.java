@@ -1,15 +1,11 @@
 package com.psm.domain.User.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
-import com.psm.domain.User.repository.mapper.UserMapper;
+import com.psm.domain.User.repository.UserRepository;
 import com.psm.domain.User.service.UserService;
 import com.psm.domain.User.infrastructure.utils.JWTUtil;
 import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
@@ -30,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -55,6 +51,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    UserConvertor userConvertor;
 
     @Override
     public UserDAO getAuthorizedUser(){
@@ -115,11 +114,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     public Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException{
         try{
             //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
-            UserDAO register = UserConvertor.DTOConvertToDAO(userDTO);
+            UserDAO register = userConvertor.DTO2DAO(userDTO);
             register.setPassword(passwordEncoder.encode(register.getPassword()));
 
             //将register对象保存到数据库
-            save(register);
+            userRepository.save(register);
 
             //使用未加密密码的user对象登录
             Map<String, Object> loginMap = login(userDTO);
@@ -148,7 +147,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             redisCache.deleteObject("login:"+id);
 
             //根据用户id删除pg中的用户信息
-            userMapper.deleteById(id);
+            userRepository.removeById(id);
+
         } catch (Exception e) {
             throw new RuntimeException("Server error when deleteUser: "+e.getMessage());
         }
@@ -165,10 +165,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
             //更新数据库中用户头像信息
             Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
-            LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
-            wrapper.eq(UserDAO::getId,id);
-            wrapper.set(UserDAO::getAvatar, avatarUrl);
-            userMapper.update(null,wrapper);
+            UserDAO userDAO = new UserDAO();
+            userDAO.setId(id);
+            userDAO.setAvatar(avatarUrl);
+            userRepository.updateAvatar(userDAO);
 
             //更新redis中用户头像信息
             LoginUser loginUser = new LoginUser(getUserByID(id));
@@ -188,18 +188,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             LoginUser loginUser = (LoginUser) authentication.getPrincipal();
             Long id = loginUser.getUser().getId();
 
+            //将UserDTO转化为UserDAO
+            UserDAO userDAO = userConvertor.DTO2DAO(userDTO);
+            userDAO.setId(id);
+
             //更新用户信息
-            LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
-            wrapper.eq(UserDAO::getId,id);
+            userRepository.updateUser(userDAO);
 
-            //修改用户信息（除了密码）
-            wrapper.set(!ObjectUtil.isEmpty(userDTO.getName()), UserDAO::getName, userDTO.getName());
-            wrapper.set(!ObjectUtil.isEmpty(userDTO.getProfile()), UserDAO::getProfile, userDTO.getProfile());
-            wrapper.set(!ObjectUtil.isEmpty(userDTO.getPhone()), UserDAO::getPhone, userDTO.getPhone());
-            wrapper.set(!ObjectUtil.isEmpty(userDTO.getEmail()), UserDAO::getEmail, userDTO.getEmail());
-            wrapper.set(!ObjectUtil.isEmpty(userDTO.getSex()), UserDAO::getSex, userDTO.getSex());
-
-            userMapper.update(null,wrapper);
         } catch (Exception e) {
             throw new RuntimeException("Server error when updateUser: "+e.getMessage());
         }
@@ -218,13 +213,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
                 throw new RuntimeException("New password cannot be the same as the old password");
             }
 
-            //获取数据库中用户的password和和用户提交的password是否相同
-            LambdaQueryWrapper<UserDAO> queryWrapper = new LambdaQueryWrapper<UserDAO>();
-            queryWrapper.select(UserDAO::getPassword)
-                    .eq(UserDAO::getId, id);
-
-            List<Map<String, Object>> passwordList = userMapper.selectMaps(queryWrapper);
-            String passwordFromDB = (String) passwordList.get(0).get("password");
+            //获取数据库中用户的password
+            UserDAO userDAO = new UserDAO();
+            userDAO.setId(id);
+            String passwordFromDB = userRepository.findPasswordById(userDAO);
 
             //判断旧密码是否正确
             if(passwordEncoder.matches(password,passwordFromDB)){
@@ -237,10 +229,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
             }
 
             //将新密码覆盖数据库中的password
-            LambdaUpdateWrapper<UserDAO> uploadWrapper = new LambdaUpdateWrapper<UserDAO>();
-            uploadWrapper.eq(UserDAO::getId, id)
-                    .set(UserDAO::getPassword, passwordEncoder.encode(changePassword));
-            userMapper.update(null, uploadWrapper);
+            userDAO.setId(id);
+            userDAO.setPassword(passwordEncoder.encode(changePassword));
+            userRepository.updatePasswordById(userDAO);
+
         } catch (Exception e) {
             throw new RuntimeException("Server error when updatePassword: "+e.getMessage());
         }
@@ -250,7 +242,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     public UserDAO getUserByID(Long id) {
         try {
             //获取用户信息
-            UserDAO userDAO = getById(id);
+            UserDAO userDAO = userRepository.getById(id);
 
             //判断用户是否存在
             if(userDAO != null){
@@ -268,14 +260,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
     public List<UserDAO> getUserByName(String name) {
         try {
             //获取用户信息
-            LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
-            wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
-                    UserDAO::getCreateTime).like(UserDAO::getName, name);
-            List<UserDAO> userDAOList = userMapper.selectList(wrapper);
+            UserDAO userDAO = new UserDAO();
+            userDAO.setName(name);
+            List<UserDAO> userDAOs = userRepository.findUsersByName(userDAO);
 
             //判断用户是否存在
-            if(!userDAOList.isEmpty()){
-                return userDAOList;
+            if(!userDAOs.isEmpty()){
+                return userDAOs;
             }
             else{//用户不存在
                 throw new RuntimeException("User not found");
@@ -287,18 +278,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDAO> implements
 
     @Override
     public List<UserDAO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize){
-        //获取用户信息
-        LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
-                UserDAO::getCreateTime).orderByAsc(UserDAO::getCreateTime);
-
         //分页
         Page<UserDAO> page = new Page<>(currentPage,pageSize);
 
-        //执行查询
-        Page<UserDAO> resultPage = userMapper.selectPage(page, wrapper);
-
         //返回结果
-        return resultPage.getRecords();
+        return userRepository.getUserOrderByCreateTimeAsc(page);
     }
 }

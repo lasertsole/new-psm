@@ -3,22 +3,19 @@ package com.psm.domain.User.infrastructure.Convertor;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.entity.User.UserVO;
-import org.springframework.beans.BeanUtils;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 
-public class UserConvertor {
+@Mapper(componentModel = "spring")
+public abstract class UserConvertor {
+    public static UserConvertor instance = Mappers.getMapper(UserConvertor.class);
 
+    @Mappings(
+            @Mapping(source = "avatar", target = "avatar", ignore = true)
+    )
+    public abstract UserDAO DTO2DAO(UserDTO userDTO);
 
-    public static UserDAO DTOConvertToDAO(UserDTO userDTO){
-        UserDAO userDAO = new UserDAO();
-        BeanUtils.copyProperties(userDTO, userDAO);
-
-        return userDAO;
-    }
-
-    public static UserVO DAOConvertToVO(UserDAO userDAO){
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(userDAO, userVO);
-
-        return userVO;
-    }
+    public abstract UserVO DAO2VO(UserDAO userDAO);
 }

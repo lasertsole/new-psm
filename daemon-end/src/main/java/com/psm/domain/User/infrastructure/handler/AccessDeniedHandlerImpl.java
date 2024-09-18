@@ -1,7 +1,7 @@
 package com.psm.domain.User.infrastructure.handler;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.infrastructure.utils.DTO.ResponseDTO;
+import com.psm.infrastructure.utils.VO.ResponseVO;
 import com.psm.infrastructure.utils.WebUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,7 +17,7 @@ import java.io.IOException;
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        ResponseDTO result = new ResponseDTO(HttpStatus.FORBIDDEN, "Your permissions are insufficient");
+        ResponseVO result = new ResponseVO(HttpStatus.FORBIDDEN, "Your permissions are insufficient");
         String json = JSON.toJSONString(result);
         // 异常处理
         WebUtil.renderString(response, json);

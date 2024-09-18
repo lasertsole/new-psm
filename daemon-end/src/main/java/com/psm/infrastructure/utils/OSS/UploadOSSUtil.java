@@ -35,7 +35,7 @@ public class UploadOSSUtil {
      *
      * @param multipartFile
      * @param folderPath
-     * @return
+     * @return String
      * @throws Exception
      */
     public String multipartUpload(MultipartFile multipartFile, String folderPath) throws Exception {
@@ -117,21 +117,16 @@ public class UploadOSSUtil {
             return url;
 
         } catch (OSSException oe) {
-            log.error("Caught an OSSException, which means your request made it to OSS, "
-                    + "but was rejected with an error response for some reason.");
-            log.error("Error Message:" + oe.getErrorMessage());
-            log.error("Error Code:" + oe.getErrorCode());
-            log.error("Request ID:" + oe.getRequestId());
-            log.error("Host ID:" + oe.getHostId());
-
-            return null;
+            throw new RuntimeException("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason."
+                    + "Error Message:" + oe.getErrorMessage()
+                    + "Error Code:" + oe.getErrorCode()
+                    + "Request ID:" + oe.getRequestId()
+                    + "Host ID:" + oe.getHostId());
         } catch (Throwable ce) {
-            log.error("Caught an ClientException, which means the client encountered "
+            throw new RuntimeException("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
-            log.error("Error Message:" + ce.getMessage());
-
-            return null;
         } finally {
             // 关闭OSSClient。
             if (ossClient != null) {
@@ -145,7 +140,7 @@ public class UploadOSSUtil {
     /**
      * 删除单个文件
      * @param filePath
-     * @return
+     * @return Boolean
      * @throws Exception
      */
     public Boolean deleteFile(String filePath) throws Exception {
@@ -163,21 +158,17 @@ public class UploadOSSUtil {
 
             return true;
         } catch (OSSException oe) {
-            log.error("Caught an OSSException, which means your request made it to OSS, "
-                    + "but was rejected with an error response for some reason.");
-            log.error("Error Message:" + oe.getErrorMessage());
-            log.error("Error Code:" + oe.getErrorCode());
-            log.error("Request ID:" + oe.getRequestId());
-            log.error("Host ID:" + oe.getHostId());
-
-            return false;
+            throw new RuntimeException("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason."
+                    + "Error Message:" + oe.getErrorMessage()
+                    + "Error Code:" + oe.getErrorCode()
+                    + "Request ID:" + oe.getRequestId()
+                    + "Host ID:" + oe.getHostId());
         } catch (ClientException ce) {
-            log.error("Caught an ClientException, which means the client encountered "
+            throw new RuntimeException("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
-                    + "such as not being able to access the network.");
-            log.error("Error Message:" + ce.getMessage());
-
-            return false;
+                    + "such as not being able to access the network."
+                    + "Error Message:" + ce.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
@@ -189,7 +180,7 @@ public class UploadOSSUtil {
      * 根据文件完整路径删除文件
      * @param fullFilePath
      * @param folderPath
-     * @return
+     * @return Boolean
      * @throws Exception
      */
     public Boolean deleteFileByFullUrl(String fullFilePath, String folderPath) throws Exception {
@@ -246,7 +237,12 @@ public class UploadOSSUtil {
             }
 
             // 删除文件
-            return deleteFile(trimmedPath);
+            String accessKeyId = ossUtilsProperties.getAccessKeyId();
+            String accessKeySecret = ossUtilsProperties.getAccessKeySecret();
+            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);//开启oss客户端
+            ossClient.deleteObject(bucketName, trimmedPath);// 删除文件或目录。如果要删除目录，目录必须为空。
+
+            return true;
         }
         catch (Exception e){
             return false;
@@ -257,7 +253,7 @@ public class UploadOSSUtil {
     /**
      * 批量删除文件
      * @param deletedFiles
-     * @return
+     * @return Boolean
      * @throws Exception
      */
     public Boolean deletedBatchFiles(List<String> deletedFiles) throws Exception {
@@ -285,20 +281,17 @@ public class UploadOSSUtil {
 
             return true;
         } catch (OSSException oe) {
-            log.error("Caught an OSSException, which means your request made it to OSS, "
-                    + "but was rejected with an error response for some reason.");
-            log.error("Error Message:" + oe.getErrorMessage());
-            log.error("Error Code:" + oe.getErrorCode());
-            log.error("Request ID:" + oe.getRequestId());
-            log.error("Host ID:" + oe.getHostId());
-            return false;
+            throw new RuntimeException("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason."
+                    + "Error Message:" + oe.getErrorMessage()
+                    + "Error Code:" + oe.getErrorCode()
+                    + "Request ID:" + oe.getRequestId()
+                    + "Host ID:" + oe.getHostId());
         } catch (ClientException ce) {
-            log.error("Caught an ClientException, which means the client encountered "
+            throw new RuntimeException("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
-                    + "such as not being able to access the network.");
-            log.error("Error Message:" + ce.getMessage());
-
-            return false;
+                    + "such as not being able to access the network."
+                    + "Error Message:" + ce.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();

@@ -1,6 +1,5 @@
 package com.psm.domain.User.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,7 +17,7 @@ import java.util.Map;
  * @author moye
  * @date 2024/08/21
  */
-public interface UserService extends IService<UserDAO> {
+public interface UserService {
     /**
      * 获取当前登录用户信息
      *
