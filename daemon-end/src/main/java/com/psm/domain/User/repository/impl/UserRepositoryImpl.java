@@ -38,7 +38,7 @@ public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserDAO> impleme
     }
 
     @Override
-    public void updateUser(UserDAO userDAO){
+    public void updateInfo(UserDAO userDAO){
         LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(UserDAO::getId,userDAO.getId());
 

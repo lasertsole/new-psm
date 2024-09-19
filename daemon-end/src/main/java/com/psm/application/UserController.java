@@ -132,10 +132,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("/updateUser")
+    @PutMapping("/updateInfo")
     public ResponseVO updateUser(@RequestBody UserDTO userDTO) {
         try {
-            userAdaptor.updateUser(userDTO);
+            userAdaptor.updateInfo(userDTO);
             return ResponseVO.ok("Update user successful");
         }
         catch (InvalidParameterException e){

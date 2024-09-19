@@ -34,7 +34,7 @@ public interface UserRepository extends IService<UserDAO> {
      *
      * @param userDAO
      */
-    void updateUser(UserDAO userDAO);
+    void updateInfo(UserDAO userDAO);
 
     /**
      * 根据id查找用户密码

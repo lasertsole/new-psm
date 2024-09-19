@@ -120,7 +120,7 @@ public class UserAdaptorImpl implements UserAdaptor {
     };
 
     @Override
-    public void updateUser(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public void updateInfo(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(
                 StringUtils.isBlank(userDTO.getName())
@@ -133,7 +133,7 @@ public class UserAdaptorImpl implements UserAdaptor {
 
 
         // 修改用户
-        userService.updateUser(userDTO);
+        userService.updateInfo(userDTO);
     }
 
     @Override

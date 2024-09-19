@@ -77,7 +77,7 @@ public interface UserService {
      *
      * @return
      */
-    void updateUser(UserDTO userDTO);
+    void updateInfo(UserDTO userDTO);
 
     /**
      * 更新密码

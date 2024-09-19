@@ -3,6 +3,7 @@ import type { UserInfo } from "../types/user";
 export const userInfo = reactive<UserInfo>({
     id: '0',
     name: '',
+    phone: '',
     email: '',
     avatar: '',
     profile: '',
@@ -16,6 +17,7 @@ function updateUserInfo(data:UserInfo){
     data.isAdmin && (userInfo.isAdmin = data.isAdmin);
     data.id && (userInfo.id = data.id);
     data.name && (userInfo.name = data.name);
+    data.phone && (userInfo.phone = data.phone);
     data.email && (userInfo.email = data.email);
     data.avatar && (userInfo.avatar = data.avatar);
     data.profile && (userInfo.profile = data.profile);
@@ -27,6 +29,7 @@ function clearUserInfo(){
     userInfo.id = '';
     userInfo.name = '';
     userInfo.email = '';
+    userInfo.phone = '';
     userInfo.avatar = '';
     userInfo.profile = '';
     userInfo.sex = 0;
@@ -163,6 +166,57 @@ export async function updateAvatar(avatar:Blob):Promise<Boolean>{
     let data = res.data;
     userInfo.avatar = data;
 
+    return true;
+}
+
+export async function updateAccountInfo({name, phone, email}:UserInfo):Promise<Boolean>{
+    const res:any = await fetchApi({
+        url: '/users/updateInfo',
+        opts: {
+            name,
+            phone,
+            email
+        },
+        method: 'put',
+        contentType: 'application/json',
+    });
+
+    if(res.code!=200){
+        let msg = res?.msg;
+        if(msg == null || msg == undefined) msg = '';
+        ElMessage.error('更新账户信息失败:'+ msg);
+
+        return false;
+    }
+
+    ElMessage.success('更新账户信息成功');
+
+    const data:UserInfo = {name, phone, email};
+    updateUserInfo(data);
+    
+    return true;
+}
+
+export async function updatePassword(password : string | undefined):Promise<Boolean>{
+    const res:any = await fetchApi({
+        url: '/users/updatePassword',
+        opts: {
+            password,
+        },
+        method: 'put',
+        contentType: 'application/json',
+    });
+
+    if(res.code!=200){
+        let msg = res?.msg;
+        if(msg == null || msg == undefined) msg = '';
+        ElMessage.error('更新密码失败:'+ msg);
+
+        return false;
+    }
+
+    ElMessage.success('更新密码成功');
+    
     return true;
 }
 

@@ -164,7 +164,8 @@ public class UserServiceImpl implements UserService {
             userRepository.updateAvatar(userDAO);
 
             //更新redis中用户头像信息
-            LoginUser loginUser = new LoginUser(getUserByID(id));
+            LoginUser loginUser =loginUserRedis.getLoginUser(id.toString());
+            loginUser.getUser().setAvatar(avatarUrl);
             loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
 
             return avatarUrl;
@@ -175,7 +176,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserDTO userDTO) {
+    public void updateInfo(UserDTO userDTO) {
         try {
             //获取SecurityContextHolder中的用户id
             UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -187,7 +188,15 @@ public class UserServiceImpl implements UserService {
             userDAO.setId(id);
 
             //更新用户信息
-            userRepository.updateUser(userDAO);
+            userRepository.updateInfo(userDAO);
+
+            //更新redis中用户信息
+            if (!Objects.isNull(userDAO.getName())) loginUser.getUser().setName(userDAO.getName());
+            if (!Objects.isNull(userDAO.getProfile())) loginUser.getUser().setProfile(userDAO.getProfile());
+            if (!Objects.isNull(userDAO.getPhone())) loginUser.getUser().setPhone(userDAO.getPhone());
+            if (!Objects.isNull(userDAO.getEmail())) loginUser.getUser().setEmail(userDAO.getEmail());
+            if (!Objects.isNull(userDAO.getSex())) loginUser.getUser().setSex(userDAO.getSex());
+            loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
 
         } catch (Exception e) {
             throw new RuntimeException("Server error when updateUser: "+e.getMessage());
@@ -222,10 +231,17 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException("New password cannot be the same as the old password");
             }
 
+            String encodePassword = passwordEncoder.encode(changePassword);
+
             //将新密码覆盖数据库中的password
             userDAO.setId(id);
-            userDAO.setPassword(passwordEncoder.encode(changePassword));
+            userDAO.setPassword(encodePassword);
             userRepository.updatePasswordById(userDAO);
+
+            //更新redis中用户信息
+            loginUserRedis.getLoginUser(id.toString());
+            loginUser.getUser().setPassword(encodePassword);
+            loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
 
         } catch (Exception e) {
             throw new RuntimeException("Server error when updatePassword: "+e.getMessage());

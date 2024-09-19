@@ -6,7 +6,7 @@
                     <accountInfoModifyUploadAvatar></accountInfoModifyUploadAvatar>
                 </div>
             </li>
-            <!-- <li>
+            <li>
                 <div class="show">
                     <span class="optionName">昵称</span>
                     <div class="optionValue">
@@ -20,7 +20,7 @@
                     @leave="onLeave"
                 >
                     <div class="hide" v-show="modifyIndex==0">
-                        <button class="save" @click="modifyUserName()">保存</button>
+                        <button type="button" class="save" @click="modifyUserName()">保存</button>
                         <span class="cancel" @click="modifyIndex=-1">取消</span>
                     </div>
                 </transition>
@@ -40,7 +40,7 @@
                     @leave="onLeave"
                 >
                     <div class="hide" v-show="modifyIndex==1">
-                        <button class="save" @click="modifyUserPhoneNumber()">保存</button>
+                        <button type="button" class="save" @click="modifyUserPhoneNumber()">保存</button>
                         <span class="cancel" @click="modifyIndex=-1">取消</span>
                     </div>
                 </transition>
@@ -48,9 +48,9 @@
 
             <li>
                 <div class="show">
-                    <span class="optionName">登录密码</span>
+                    <span class="optionName">邮箱</span>
                     <div class="optionValue">
-                        <el-input v-model="temptPassword" placeholder="请输入新的登录密码" clearable type="password" :disabled="modifyIndex!=2"/>
+                        <el-input v-model="temptPassword" placeholder="尚未绑定邮箱" clearable type="password" :disabled="modifyIndex!=2"/>
                     </div>
                     <span class="modifyButton" @click="modifyIndex=2" v-show="modifyIndex!=2">修改</span>
                 </div>
@@ -60,9 +60,31 @@
                     @leave="onLeave"
                 >
                     <div class="hide" password v-show="modifyIndex==2">
+                        <div>
+                            <button type="button" class="save" @click="modifyUserPassword()">保存</button>
+                            <span class="cancel" @click="modifyIndex=-1">取消</span>
+                        </div>
+                    </div>
+                </transition>
+            </li>
+            
+            <li>
+                <div class="show">
+                    <span class="optionName">登录密码</span>
+                    <div class="optionValue">
+                        <el-input v-model="temptPassword" placeholder="请输入新的登录密码" clearable type="password" :disabled="modifyIndex!=3"/>
+                    </div>
+                    <span class="modifyButton" @click="modifyIndex=3" v-show="modifyIndex!=3">修改</span>
+                </div>
+                <transition
+                    :css="false"
+                    @enter="onEnter"
+                    @leave="onLeave"
+                >
+                    <div class="hide" password v-show="modifyIndex==3">
                         <div class="identifyPassword">
                             <span class="optionName">登录密码</span>
-                            <el-input v-model="identifyPassword" placeholder="确认新的登录密码" clearable type="password" v-show="modifyIndex==2"/>
+                            <el-input v-model="identifyPassword" placeholder="确认新的登录密码" clearable type="password" v-show="modifyIndex==3"/>
                         </div>
                         <div>
                             <button class="save" @click="modifyUserPassword()">保存</button>
@@ -70,156 +92,136 @@
                         </div>
                     </div>
                 </transition>
-            </li> -->
+            </li>
         </ul>
     </form>
 </template>
     
 <script lang="ts" setup>
-    // import gsap from "gsap";
-    // import { ElMessage } from 'element-plus';
-    // import { ref, onMounted, onUnmounted, watch, computed } from "vue";
+    import gsap from "gsap";
+    import { ElMessage } from 'element-plus';
+    import { watch } from "vue";
 
-    // const global = useGlobal();
-    // const accountInfo = global?.accountInfo;//获取用户账号信息的pinia
-    // const { userProfile, userName, userPhoneNumber } = storeToRefs(accountInfo);
-    // const Bus = global?.Bus;
 
-    // /**获取用户头像**/
-    // const serverUrl:string = global?.serverUrl;//从环境变量中获取服务器地址
-    // const profile:ComputedRef<string> = computed(()=>{//获取头像
-    //     return serverUrl+userProfile.value;
-    // })
+    /**以下为展开合上盒子时的动画特效**/
+    /*详情盒子动画钩子*/
+    let animate:any = undefined;//gsap动画容器
+    let animateLock:boolean = false;//动画锁
 
-    // /**以下为展开合上盒子时的动画特效**/
-    // /*详情盒子动画钩子*/
-    // let animate:any = undefined;//gsap动画容器
-    // let isMouseInBox:boolean = false;//鼠标是否在详情盒子中
-    // let animateLock:boolean = false;//动画锁
+    function onEnter(el:any, done:Function):void{
+        animate = gsap.to(el,{
+            opacity:1,
+            duration: .3,//持续时间
+            onStart:()=>{//开始触发函数
+                animateLock=true;
+            },
+            onComplete:()=>{//结束触发函数
+                done();
+                animateLock=false;
+            }
+        });
+    }
 
-    // function onEnter(el:any, done:Function):void{
-    //     animate = gsap.to(el,{
-    //         opacity:1,
-    //         duration: .3,//持续时间
-    //         onStart:()=>{//开始触发函数
-    //             animateLock=true;
-    //         },
-    //         onComplete:()=>{//结束触发函数
-    //             done();
-    //             animateLock=false;
-    //         }
-    //     });
-    // }
-
-    // function onLeave(el:any, done:Function):void{
-    //     animate = gsap.to(el,{
-    //         opacity:0,
-    //         duration: 0,//持续时间
-    //         onStart:()=>{//开始触发函数
-    //             animateLock=true;
-    //         },
-    //         onComplete:()=>{//结束触发函数
-    //             done();
-    //             animateLock=false;
-    //         }
-    //     });
-    // }
-    // /**以上为展开合上盒子时的动画特效**/
+    function onLeave(el:any, done:Function):void{
+        animate = gsap.to(el,{
+            opacity:0,
+            duration: 0,//持续时间
+            onStart:()=>{//开始触发函数
+                animateLock=true;
+            },
+            onComplete:()=>{//结束触发函数
+                done();
+                animateLock=false;
+            }
+        });
+    }
+    /**以上为展开合上盒子时的动画特效**/
 
 
     // /**以下为修改信息部分**/
-    // const temptUserName = ref<string>("");//临时用户名
-    // const temptUserPhoneNumber = ref<string>("");//临时用户手机号
-    // const temptPassword = ref<string>("1111");//临时用户手机号
-    // const identifyPassword = ref<string>("");
-    // const modifyIndex = ref<number>(-1);
+    const temptUserName = ref<string>(userInfo.name||"未设置");//临时用户名
+    const temptUserPhoneNumber = ref<string>("");//临时用户手机号
+    const temptUserEmail = ref<string>("");
+    const temptPassword = ref<string>("1111");//临时用户手机号
+    const identifyPassword = ref<string>("");
+    const modifyIndex = ref<number>(-1);
 
-    // watch(modifyIndex,(newValue, oldValue)=>{
-    //     temptUserName.value = userName.value;
-    //     temptUserPhoneNumber.value = userPhoneNumber.value;
-    //     if(newValue!=2){
-    //         temptPassword.value = "******";
-    //     }
-    //     else{
-    //         temptPassword.value = "";
-    //     }
-    //     identifyPassword.value = "";
-    // })
+    watch(modifyIndex,(newValue, oldValue)=>{
+        if(newValue!=2){
+            temptPassword.value = "******";
+        }
+        else{
+            temptPassword.value = "";
+        }
+        identifyPassword.value = "";
+    })
 
-    // async function modifyUserName():Promise<void>{
-    //     if(temptUserName.value.length == 0){
-    //         ElMessage.error("名字不能为空");  
-    //     }
-    //     else if(temptUserName.value.length<3||temptUserName.value.length>13){
-    //         ElMessage.error("请输入大于等于3且小于等于15长度的名字");   
-    //     }
-    //     else if(temptUserName.value == userName.value){
-    //         ElMessage.error("修改后的名字不能与原来的一样");
-    //     }
-    //     else{
-    //         let isOk = await accountInfo.changeUserName(temptUserName.value);
-    //         if(isOk){
-    //             temptUserName.value = userName.value;
-    //             modifyIndex.value = -1;
-    //         }
-    //     }
-    // }
+    const modifyUserName = debounce(async ()=>{
+        if(temptUserName.value.length == 0){
+            ElMessage.error("名字不能为空");  
+        }
+        else if(temptUserName.value.length<3||temptUserName.value.length>12){
+            ElMessage.error("请输入大于等于3且小于等于12长度的名字");   
+        }
+        else if(temptUserName.value == userInfo.name){
+            ElMessage.error("修改后的名字不能与原来的一样");
+        }
+        else{
+            let isOk = await updateAccountInfo({name:temptUserName.value});
+            if(isOk){
+                temptUserName.value = userInfo.name||"未设置";
+                modifyIndex.value = -1;
+            }
+        }
+    }, 1000);
 
-    // async function modifyUserPhoneNumber():Promise<void>{
-    //     if(temptUserPhoneNumber.value.length == 0){
-    //         ElMessage.error('手机号不能为空');
-    //     }
-    //     else if(!/^1[0-9]{10}$/.test(temptUserPhoneNumber.value)){
-    //         ElMessage.error('无效手机号');
-    //     }
-    //     else if(temptUserPhoneNumber.value == userPhoneNumber.value){
-    //         ElMessage.error("修改后的手机号不能与原来的一样");
-    //     }
-    //     else{
-    //         let isOk = await accountInfo.changeUserPhoneNumber(temptUserPhoneNumber.value);
-    //         if(isOk){
-    //             temptUserPhoneNumber.value = userPhoneNumber.value;
-    //             modifyIndex.value = -1;
-    //         }
-    //     }
-    // }
+    const modifyUserPhoneNumber = debounce(async ()=>{
+        if(temptUserPhoneNumber.value.length == 0){
+            ElMessage.error('手机号不能为空');
+        }
+        else if(!/^1[0-9]{10}$/.test(temptUserPhoneNumber.value)){
+            ElMessage.error('无效手机号');
+        }
+        else if(temptUserPhoneNumber.value == userInfo.phone){
+            ElMessage.error("修改后的手机号不能与原来的一样");
+        }
+        else{
+            let isOk = await updateAccountInfo({phone:temptUserPhoneNumber.value});
+            if(isOk){
+                temptUserPhoneNumber.value = userInfo.phone||"";
+                modifyIndex.value = -1;
+            }
+        }
+    }, 1000);
 
-    // async function modifyUserPassword():Promise<void>{
-    //     if(temptPassword.value.length<6){
-    //         ElMessage.error('密码过短');
-    //     }
-    //     else if(temptPassword.value.length>=15){
-    //         ElMessage.error('密码过长');
-    //     }
-    //     else if(temptPassword.value != identifyPassword.value){
-    //         ElMessage.error('密码和确认密码不一致');
-    //     }
-    //     else{
-    //         let isOk = await accountInfo.changeUserPassword(temptPassword.value);
-    //         if(isOk){
-    //             temptUserPhoneNumber.value = "******";
-    //             modifyIndex.value = -1;
-    //         }
-    //     }
-    // }
-    // /**以上为修改信息部分**/
-    
-    // /**********挂载触发*********/
-    // onMounted(()=>{
-    //     temptUserName.value = userName.value;//临时用户名
-    //     temptUserPhoneNumber.value = userPhoneNumber.value;//临时用户手机号
-    //     temptPassword.value = "******";//临时用户手机号
-    //     Bus.on("login",()=>{ 
-    //         temptUserName.value = userName.value;//临时用户名
-    //         temptUserPhoneNumber.value = userPhoneNumber.value;//临时用户手机号
-    //         temptPassword.value = "******";//临时用户手机号
-    //     });
-    // })
+    const modifyUserEmail = debounce(async ()=>{
+        if(temptUserEmail.value.length == 0){
+            ElMessage.error('邮箱不能为空');
+        }
+        else if(!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(temptUserEmail.value)){
+            ElMessage.error('无效邮箱');
+        }
+    })
 
-    // /**********卸载触发*********/
-    // onUnmounted(()=>{
-    //     Bus.off("login");
-    // })
+    const modifyUserPassword = debounce(async ()=>{
+        if(temptPassword.value.length<6){
+            ElMessage.error('密码过短');
+        }
+        else if(temptPassword.value.length>=15){
+            ElMessage.error('密码过长');
+        }
+        else if(temptPassword.value != identifyPassword.value){
+            ElMessage.error('密码和确认密码不一致');
+        }
+        else{
+            let isOk = await updatePassword({password: temptPassword.value});
+            if(isOk){
+                temptUserPhoneNumber.value = "******";
+                modifyIndex.value = -1;
+            }
+        }
+    }, 1000);
+    /**以上为修改信息部分**/
 </script>
 
 <style lang="scss" scoped>
@@ -319,6 +321,7 @@
                         padding: 7px 24px;
                         outline: none;
                         border: none;
+                        cursor: pointer;
 
                         &:hover{
                             background-color: #33b9ed;

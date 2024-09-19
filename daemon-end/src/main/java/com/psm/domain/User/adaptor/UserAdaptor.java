@@ -71,7 +71,7 @@ public interface UserAdaptor {
      * @param userDTO
      * @return
      */
-    void updateUser(UserDTO userDTO) throws InvalidParameterException;
+    void updateInfo(UserDTO userDTO) throws InvalidParameterException;
 
     /**
      * 更新密码
