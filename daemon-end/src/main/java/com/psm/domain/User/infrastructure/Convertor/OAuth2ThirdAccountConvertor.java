@@ -16,10 +16,9 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class OAuth2ThirdAccountConvertor {
-    public static OAuth2ThirdAccountConvertor instance = Mappers.getMapper(OAuth2ThirdAccountConvertor.class);
-
+    public static final OAuth2ThirdAccountConvertor INSTANCE = Mappers.getMapper(OAuth2ThirdAccountConvertor.class);
     public OAuth2ThirdAccountDTO gitee2OAuthThirdAccount(String registerationId, OAuth2UserRequest userRequest, OAuth2User oAuth2User){
         //创建本地应用的账户对象
         OAuth2ThirdAccountDTO account = new OAuth2ThirdAccountDTO();

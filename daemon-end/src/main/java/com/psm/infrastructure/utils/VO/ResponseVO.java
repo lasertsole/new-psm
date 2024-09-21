@@ -67,6 +67,10 @@ public class ResponseVO implements Serializable {
         return new ResponseVO(HttpStatus.OK, msg, data);
     }
 
+    public static ResponseVO ok(String msg, BO2VOable bo2Voable){
+        return new ResponseVO(HttpStatus.OK, msg, bo2Voable.toVO());
+    }
+
     public static ResponseVO ok(Object data){
         return new ResponseVO(HttpStatus.OK, "success", data);
     }
@@ -75,5 +79,5 @@ public class ResponseVO implements Serializable {
         return new ResponseVO(HttpStatus.OK, msg);
     }
 
-    public static ResponseVO ok(BO2VOable bo2Voable){ return new ResponseVO(HttpStatus.OK, "success", bo2Voable);}
+    public static ResponseVO ok(BO2VOable bo2Voable){ return new ResponseVO(HttpStatus.OK, "success", bo2Voable.toVO());}
 }

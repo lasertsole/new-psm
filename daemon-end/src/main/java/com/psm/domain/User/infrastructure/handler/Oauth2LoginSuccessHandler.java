@@ -1,6 +1,6 @@
 package com.psm.domain.User.infrastructure.handler;
 
-import com.psm.domain.User.infrastructure.utils.JWTUtil;
+import com.psm.domain.User.infrastructure.utils.JWT.JWTUtil;
 import com.psm.domain.User.infrastructure.utils.Oauth2UserIdContextHolder;
 import com.psm.infrastructure.utils.Redis.RedisCache;
 import jakarta.servlet.ServletException;

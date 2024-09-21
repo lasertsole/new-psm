@@ -26,12 +26,9 @@ public class UserAdaptorImpl implements UserAdaptor {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserConvertor userConvertor;
-
     @Override
     public UserBO getAuthorizedUser() {
-        return userConvertor.DAO2BO(userService.getAuthorizedUser());
+        return UserConvertor.INSTANCE.DAO2BO(userService.getAuthorizedUser());
     }
 
     @Override
@@ -49,7 +46,7 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
         }
 
-        UserDAO userDAO = userConvertor.DTO2DAO(userDTO);
+        UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
 
         // 登录
         Map<String, Object> map = userService.login(userDTO);
@@ -63,7 +60,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserBO
-        UserBO userBO = userConvertor.DAO2BO(userDAO);
+        UserBO userBO = UserConvertor.INSTANCE.DAO2BO(userDAO);
         map.put("user", userBO);
 
         return map;
@@ -97,7 +94,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserBO
-        UserBO userBO = userConvertor.DAO2BO(userDAO);
+        UserBO userBO = UserConvertor.INSTANCE.DAO2BO(userDAO);
         map.put("user", userBO);
 
         return map;
@@ -169,7 +166,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserBO
-        return userConvertor.DAO2BO(userDAO);
+        return UserConvertor.INSTANCE.DAO2BO(userDAO);
     }
 
     @Override
@@ -188,7 +185,7 @@ public class UserAdaptorImpl implements UserAdaptor {
 
         // 将UserDAO转换为UserBO
         List<UserBO> userBOs = userDAOList.stream().map(userDAO -> {
-            return userConvertor.DAO2BO(userDAO);
+            return UserConvertor.INSTANCE.DAO2BO(userDAO);
         }).toList();
 
         return userBOs;
@@ -207,7 +204,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         // 将DAO转换为BO
         List<UserBO> userBOs = userDAOList.stream().map(
                 userDAO -> {
-                    return userConvertor.DAO2BO(userDAO);
+                    return UserConvertor.INSTANCE.DAO2BO(userDAO);
                 }
         ).toList();
 

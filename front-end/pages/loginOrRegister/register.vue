@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item prop="password">
             <el-input
-                :maxlength="12"
+                :maxlength="26"
                 placeholder="密码"
                 type="password"
                 v-model="userInfo.password"
@@ -25,7 +25,7 @@
         </el-form-item>
         <el-form-item prop="repassword">
             <el-input
-                :maxlength="12"
+                :maxlength="26"
                 placeholder="确认密码"
                 type="password"
                 v-model="userInfo.repassword"

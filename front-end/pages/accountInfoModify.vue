@@ -32,8 +32,8 @@
                     <span class="optionName">性别</span>
                     <div class="optionValue">
                         <el-radio-group v-model="temptSex" :disabled="modifyIndex!=1">
-                            <el-radio :value="false" size="large">男</el-radio>
-                            <el-radio :value="true" size="large">女</el-radio>
+                            <el-radio :value="false">男</el-radio>
+                            <el-radio :value="true">女</el-radio>
                         </el-radio-group>
                     </div>
                     <span class="modifyButton" @click="modifyIndex=1" v-show="modifyIndex!=1">修改</span>
@@ -96,9 +96,9 @@
                 <div class="show">
                     <span class="optionName">登录密码</span>
                     <div class="optionValue">
-                        <el-input v-model="temptPassword" placeholder="请输入新的登录密码" clearable type="password" :disabled="modifyIndex!=4"/>
+                        <el-input v-model="temptPassword" placeholder="请输入原来的登录密码" clearable type="password" :disabled="modifyIndex!=4"/>
                     </div>
-                    <span class="modifyButton" @click="modifyIndex=4" v-show="modifyIndex!=4">修改</span>
+                    <span class="modifyButton" @click="(modifyIndex=4)&&(temptPassword='')" v-show="modifyIndex!=4">修改</span>
                 </div>
                 <transition
                     :css="false"
@@ -108,11 +108,16 @@
                     <div class="hide" password v-show="modifyIndex==4">
                         <div class="identifyPassword">
                             <span class="optionName">登录密码</span>
-                            <el-input v-model="identifyPassword" placeholder="确认新的登录密码" clearable type="password" v-show="modifyIndex==3"/>
+                            <el-input v-model="changePassword" placeholder="请输入新的登录密码" clearable type="password" v-show="modifyIndex==4"/>
+                            
+                        </div>
+                        <div class="identifyPassword">
+                            <span class="optionName"></span>
+                            <el-input v-model="identifychangePassword" placeholder="确认新的登录密码" clearable type="password" v-show="modifyIndex==4"/>
                         </div>
                         <div>
-                            <button class="save" @click="modifyUserPassword()">保存</button>
-                            <span class="cancel" @click="modifyIndex=-1">取消</span>
+                            <button type="button" class="save" @click="modifyUserPassword()">保存</button>
+                            <span class="cancel" @click="(modifyIndex=-1)&&(temptPassword='111111')&&(changePassword='')&&(identifychangePassword='')">取消</span>
                         </div>
                     </div>
                 </transition>
@@ -164,22 +169,13 @@
 
     // /**以下为修改信息部分**/
     const temptUserName = ref<string>(userInfo.name||"");//临时用户名
-    const temptSex = ref<boolean>((userInfo.sex)||undefined);//临时用户名
+    const temptSex = ref<boolean | undefined>(userInfo.sex!=undefined?userInfo.sex:undefined);//临时用户名
     const temptUserPhoneNumber = ref<string>(userInfo.phone||"");//临时用户手机号
     const temptUserEmail = ref<string>(userInfo.email||"");
-    const temptPassword = ref<string>("1111");//临时密码
-    const identifyPassword = ref<string>("");//确认密码
+    const temptPassword = ref<string>("111111");//临时旧密码
+    const changePassword = ref<string>("");//新密码
+    const identifychangePassword = ref<string>("");//确认新密码
     const modifyIndex = ref<number>(-1);//展开显示索引
-
-    watch(modifyIndex,(newValue, oldValue)=>{
-        if(newValue!=2){
-            temptPassword.value = "******";
-        }
-        else{
-            temptPassword.value = "";
-        }
-        identifyPassword.value = "";
-    })
 
     const modifyUserName = debounce(async ()=>{
         if(temptUserName.value.length == 0){
@@ -201,13 +197,13 @@
     }, 1000);
 
     const modifySex = debounce(async ()=>{
-        if(temptSex.value == -1){
+        if(temptSex.value == undefined){
             ElMessage.error("性别未选择");  
         }
         else{
             let isOk = await updateAccountInfo({sex:temptSex.value});
             if(isOk){
-                temptSex.value = userInfo.sex||undefined;
+                temptSex.value = userInfo.sex;
                 modifyIndex.value = -1;
             }
         }
@@ -251,19 +247,31 @@
     })
 
     const modifyUserPassword = debounce(async ()=>{
-        if(temptPassword.value.length<6){
-            ElMessage.error('密码过短');
+        if(temptPassword.value.length == 0){
+            ElMessage.error('旧密码不能为空');
         }
-        else if(temptPassword.value.length>=15){
-            ElMessage.error('密码过长');
+        else if(temptPassword.value.length<8){
+            ElMessage.error('旧密码过短');
         }
-        else if(temptPassword.value != identifyPassword.value){
-            ElMessage.error('密码和确认密码不一致');
+        else if(temptPassword.value.length>=26){
+            ElMessage.error('旧密码过长');
+        }
+        else if(changePassword.value.length == 0){
+            ElMessage.error('新密码不能为空');
+        }
+        else if(changePassword.value.length<8){
+            ElMessage.error('新密码过短');
+        }
+        else if(changePassword.value.length>=26){
+            ElMessage.error('新密码过长');
+        }
+        else if(changePassword.value != identifychangePassword.value){
+            ElMessage.error('新密码和确认密码不一致');
         }
         else{
-            let isOk = await updatePassword(temptPassword.value);
+            let isOk = await updatePassword(temptPassword.value, changePassword.value);
             if(isOk){
-                temptUserPhoneNumber.value = "******";
+                temptPassword.value = "111111";
                 modifyIndex.value = -1;
             }
         }
@@ -312,7 +320,7 @@
                 .show{
                     display: flex;
                     justify-content: space-between;
-                    align-items: flex-start;
+                    align-items: center;
                     font-size:12px;
 
                     .optionName{

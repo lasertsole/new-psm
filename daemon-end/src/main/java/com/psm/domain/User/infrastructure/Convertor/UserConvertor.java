@@ -1,22 +1,23 @@
 package com.psm.domain.User.infrastructure.Convertor;
 
-import com.psm.domain.User.entity.User.UserBO;
-import com.psm.domain.User.entity.User.UserDAO;
-import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.domain.User.entity.User.*;
 import com.psm.domain.User.infrastructure.enums.SexEnum;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
+import com.psm.domain.User.infrastructure.utils.CustomPasswordEncoder;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class UserConvertor {
-    public static UserConvertor instance = Mappers.getMapper(UserConvertor.class);
+    public static final UserConvertor INSTANCE = Mappers.getMapper(UserConvertor.class);
+
+    @Named("fromBoolean")
+    protected SexEnum fromBoolean(boolean value) {
+        return value ? SexEnum.FEMALE : SexEnum.MALE;
+    }
 
     @Mappings({
             @Mapping(source = "avatar", target = "avatar", ignore = true),
-            @Mapping(target = "sex", expression = "java(SexEnum.fromBoolean(userDTO.getSex()))")
+            @Mapping(target = "sex", qualifiedByName = "fromBoolean")
     })
     public abstract UserDAO DTO2DAO(UserDTO userDTO);
 
@@ -24,4 +25,13 @@ public abstract class UserConvertor {
             @Mapping(source = "sex.sex", target = "sex")
     })
     public abstract UserBO DAO2BO(UserDAO userDAO);
+
+    public abstract UserVO BO2VO(UserBO userBO);
+
+    public abstract CurrentUserVO BO2CurrentVO(UserBO userBO);
+
+    @AfterMapping
+    protected void afterBO2CurrentVO(@MappingTarget CurrentUserVO currentUserVO, UserBO userBO) {
+        currentUserVO.setHasPass(CustomPasswordEncoder.isBcrypt(userBO.getPassword()));
+    }
 }

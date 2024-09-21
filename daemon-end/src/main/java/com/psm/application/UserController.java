@@ -49,7 +49,8 @@ public class UserController {
             // 登录
             Map<String, Object> map = userAdaptor.login(userDTO);
             response.setHeader("token", (String) map.get("token"));
-            return new ResponseVO(HttpStatus.OK, "Login successful", map.get("user"));
+            UserBO userBO = (UserBO) map.get("user");
+            return new ResponseVO(HttpStatus.OK, "Login successful", userBO.toCurrentUserVO());
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -73,7 +74,7 @@ public class UserController {
     public ResponseVO fastLogin() {
         try {
             UserBO userBO = userAdaptor.getAuthorizedUser();
-            return ResponseVO.ok("FastLogin successful", userBO);
+            return ResponseVO.ok("FastLogin successful", userBO.toCurrentUserVO());
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -86,7 +87,8 @@ public class UserController {
             //注册
             Map<String, Object> map = userAdaptor.register(userDTO);
             response.setHeader("token", (String) map.get("token"));
-            return new ResponseVO(HttpStatus.OK, "Login successful", map.get("user"));
+            UserBO userBO = (UserBO) map.get("user");
+            return new ResponseVO(HttpStatus.OK, "Login successful", userBO.toCurrentUserVO());
         }
         catch (DuplicateKeyException | InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());

@@ -9,7 +9,7 @@ import com.psm.domain.User.repository.LoginUserRedis;
 import com.psm.domain.User.repository.UserOSS;
 import com.psm.domain.User.repository.UserDB;
 import com.psm.domain.User.service.UserService;
-import com.psm.domain.User.infrastructure.utils.JWTUtil;
+import com.psm.domain.User.infrastructure.utils.JWT.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,9 +47,6 @@ public class UserServiceImpl implements UserService {
 
     @Value("${spring.security.jwt.expiration}")
     private Long expiration;//jwt有效期
-
-    @Autowired
-    private UserConvertor userConvertor;
 
     @Override
     public UserDAO getAuthorizedUser(){
@@ -110,7 +107,7 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException{
         try{
             //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
-            UserDAO register = userConvertor.DTO2DAO(userDTO);
+            UserDAO register = UserConvertor.INSTANCE.DTO2DAO(userDTO);
             register.setPassword(passwordEncoder.encode(register.getPassword()));
 
             //将register对象保存到数据库
@@ -184,7 +181,7 @@ public class UserServiceImpl implements UserService {
             Long id = loginUser.getUser().getId();
 
             //将UserDTO转化为UserDAO
-            UserDAO userDAO = userConvertor.DTO2DAO(userDTO);
+            UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
             userDAO.setId(id);
 
             //更新用户信息
@@ -227,11 +224,7 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException("Password error");
             }
 
-            //判断新密码是否与数据库中用户的password相同
-            if(passwordEncoder.matches(changePassword,passwordFromDB)){
-                throw new RuntimeException("New password cannot be the same as the old password");
-            }
-
+            //将新密码加密
             String encodePassword = passwordEncoder.encode(changePassword);
 
             //将新密码覆盖数据库中的password

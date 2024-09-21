@@ -1,15 +1,19 @@
 package com.psm.domain.User.entity.User;
 
+import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBO implements BO2VOable<UserVO> {
+public class UserBO implements BO2VOable<UserVO>, Serializable {
+    private static final long serialVersionUID = 734750268487283107L;
+
     private Long id;
     private String name;
     private String password;
@@ -23,8 +27,10 @@ public class UserBO implements BO2VOable<UserVO> {
 
     @Override
     public UserVO toVO() {
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(this, userVO);
-        return userVO;
+        return UserConvertor.INSTANCE.BO2VO(this);
+    }
+
+    public CurrentUserVO toCurrentUserVO() {
+        return UserConvertor.INSTANCE.BO2CurrentVO(this);
     }
 }

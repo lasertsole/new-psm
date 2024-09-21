@@ -21,7 +21,7 @@ function updateUserInfo(data:UserInfo){
     data.email && (userInfo.email = data.email);
     data.avatar && (userInfo.avatar = data.avatar);
     data.profile && (userInfo.profile = data.profile);
-    data.sex && (userInfo.sex = data.sex);
+    data.sex != undefined && (userInfo.sex = data.sex);
     data.createTime && (userInfo.createTime = data.createTime);
 }
 
@@ -192,17 +192,18 @@ export async function updateAccountInfo({name, sex, phone, email}:UserInfo):Prom
 
     ElMessage.success('更新账户信息成功');
 
-    const data:UserInfo = {name, phone, email};
+    const data:UserInfo = {name, sex, phone, email};
     updateUserInfo(data);
     
     return true;
 }
 
-export async function updatePassword(password : string | undefined):Promise<Boolean>{
+export async function updatePassword(password : string, changePassword: string):Promise<Boolean>{
     const res:any = await fetchApi({
         url: '/users/updatePassword',
         opts: {
             password,
+            changePassword
         },
         method: 'put',
         contentType: 'application/json',

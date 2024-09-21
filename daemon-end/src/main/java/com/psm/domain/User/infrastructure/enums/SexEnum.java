@@ -13,8 +13,4 @@ public enum SexEnum {
     @EnumValue
     private final Boolean sex;
     private final String sexName;
-
-    public static SexEnum fromBoolean(boolean value) {
-        return value ? MALE : FEMALE;
-    }
 }

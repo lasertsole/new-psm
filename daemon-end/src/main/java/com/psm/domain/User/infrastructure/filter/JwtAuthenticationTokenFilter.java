@@ -1,7 +1,7 @@
 package com.psm.domain.User.infrastructure.filter;
 
 import com.psm.domain.User.entity.LoginUser.LoginUser;
-import com.psm.domain.User.infrastructure.utils.JWTUtil;
+import com.psm.domain.User.infrastructure.utils.JWT.JWTUtil;
 import com.psm.infrastructure.utils.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;

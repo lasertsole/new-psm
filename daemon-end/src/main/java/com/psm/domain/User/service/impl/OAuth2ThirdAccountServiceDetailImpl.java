@@ -27,9 +27,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserService {
     @Autowired
-    private OAuth2ThirdAccountConvertor oAuth2ThirdAccountConvertor;
-
-    @Autowired
     private OAuth2ThirdAccountDB oAuth2ThirdAccountDB;
 
     @Autowired
@@ -54,7 +51,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
             //TODO github
         } else if (registerationId.equals("gitee")) {
             oAuth2ThirdAccountDTO =
-                    oAuth2ThirdAccountConvertor.gitee2OAuthThirdAccount(registerationId, userRequest, oAuth2User);
+                    OAuth2ThirdAccountConvertor.INSTANCE.gitee2OAuthThirdAccount(registerationId, userRequest, oAuth2User);
         } else {
             oAuth2ThirdAccountDTO = null;
         }
@@ -62,7 +59,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
         // 判断是否用户是否在第三方平台有账号
         if (!Objects.isNull(oAuth2ThirdAccountDTO)){
             //将DTO转换为DAO
-            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO = oAuth2ThirdAccountConvertor.DTO2DAO(oAuth2ThirdAccountDTO);
+            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2DAO(oAuth2ThirdAccountDTO);
 
             //查询数据库内tb_third_party_user表中是否有该第三方账号
             OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oAuth2ThirdAccountDB.findByPrimaryKey(oAuth2ThirdAccountDAO);
@@ -72,7 +69,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
             // 添加或更新改用户已在数据库内的信息
             if (Objects.isNull(oAuth2ThirdAccountDAO1)){//判断用户的第三方平台账号是否已在数据库
                 //在tb_user表插入新用户信息
-                userDAO = oAuth2ThirdAccountConvertor.DTO2UserDAO(oAuth2ThirdAccountDTO);
+                userDAO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2UserDAO(oAuth2ThirdAccountDTO);
                 userDAO.setPassword(UUID.randomUUID().toString());
                 userDB.insert(userDAO);
 
@@ -88,7 +85,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
                 tbUserId = oAuth2ThirdAccountDAO1.getUserId();
 
                 //更新第三方账号信息
-                OAuth2ThirdAccountDAO DAO = oAuth2ThirdAccountConvertor.DTO2DAO(oAuth2ThirdAccountDTO);
+                OAuth2ThirdAccountDAO DAO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2DAO(oAuth2ThirdAccountDTO);
                 oAuth2ThirdAccountDB.update(DAO);
 
                 // 查询已有的用户信息
