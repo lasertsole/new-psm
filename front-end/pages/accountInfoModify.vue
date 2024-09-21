@@ -6,6 +6,7 @@
                     <accountInfoModifyUploadAvatar></accountInfoModifyUploadAvatar>
                 </div>
             </li>
+            
             <li>
                 <div class="show">
                     <span class="optionName">昵称</span>
@@ -28,9 +29,12 @@
 
             <li>
                 <div class="show">
-                    <span class="optionName">手机号</span>
+                    <span class="optionName">性别</span>
                     <div class="optionValue">
-                        <el-input v-model="temptUserPhoneNumber" placeholder="请输入手机号" clearable :disabled="modifyIndex!=1"/>
+                        <el-radio-group v-model="temptSex" :disabled="modifyIndex!=1">
+                            <el-radio :value="false" size="large">男</el-radio>
+                            <el-radio :value="true" size="large">女</el-radio>
+                        </el-radio-group>
                     </div>
                     <span class="modifyButton" @click="modifyIndex=1" v-show="modifyIndex!=1">修改</span>
                 </div>
@@ -40,6 +44,26 @@
                     @leave="onLeave"
                 >
                     <div class="hide" v-show="modifyIndex==1">
+                        <button type="button" class="save" @click="modifySex()">保存</button>
+                        <span class="cancel" @click="modifyIndex=-1">取消</span>
+                    </div>
+                </transition>
+            </li>
+
+            <li>
+                <div class="show">
+                    <span class="optionName">手机号</span>
+                    <div class="optionValue">
+                        <el-input v-model="temptUserPhoneNumber" placeholder="请输入手机号" clearable :disabled="modifyIndex!=2"/>
+                    </div>
+                    <span class="modifyButton" @click="modifyIndex=2" v-show="modifyIndex!=2">修改</span>
+                </div>
+                <transition 
+                    :css="false"
+                    @enter="onEnter"
+                    @leave="onLeave"
+                >
+                    <div class="hide" v-show="modifyIndex==2">
                         <button type="button" class="save" @click="modifyUserPhoneNumber()">保存</button>
                         <span class="cancel" @click="modifyIndex=-1">取消</span>
                     </div>
@@ -50,18 +74,18 @@
                 <div class="show">
                     <span class="optionName">邮箱</span>
                     <div class="optionValue">
-                        <el-input v-model="temptPassword" placeholder="尚未绑定邮箱" clearable type="password" :disabled="modifyIndex!=2"/>
+                        <el-input v-model="temptUserEmail" placeholder="尚未绑定邮箱" clearable :disabled="modifyIndex!=3"/>
                     </div>
-                    <span class="modifyButton" @click="modifyIndex=2" v-show="modifyIndex!=2">修改</span>
+                    <span class="modifyButton" @click="modifyIndex=3" v-show="modifyIndex!=3">修改</span>
                 </div>
                 <transition
                     :css="false"
                     @enter="onEnter"
                     @leave="onLeave"
                 >
-                    <div class="hide" password v-show="modifyIndex==2">
+                    <div class="hide" password v-show="modifyIndex==3">
                         <div>
-                            <button type="button" class="save" @click="modifyUserPassword()">保存</button>
+                            <button type="button" class="save" @click="modifyUserEmail()">保存</button>
                             <span class="cancel" @click="modifyIndex=-1">取消</span>
                         </div>
                     </div>
@@ -72,16 +96,16 @@
                 <div class="show">
                     <span class="optionName">登录密码</span>
                     <div class="optionValue">
-                        <el-input v-model="temptPassword" placeholder="请输入新的登录密码" clearable type="password" :disabled="modifyIndex!=3"/>
+                        <el-input v-model="temptPassword" placeholder="请输入新的登录密码" clearable type="password" :disabled="modifyIndex!=4"/>
                     </div>
-                    <span class="modifyButton" @click="modifyIndex=3" v-show="modifyIndex!=3">修改</span>
+                    <span class="modifyButton" @click="modifyIndex=4" v-show="modifyIndex!=4">修改</span>
                 </div>
                 <transition
                     :css="false"
                     @enter="onEnter"
                     @leave="onLeave"
                 >
-                    <div class="hide" password v-show="modifyIndex==3">
+                    <div class="hide" password v-show="modifyIndex==4">
                         <div class="identifyPassword">
                             <span class="optionName">登录密码</span>
                             <el-input v-model="identifyPassword" placeholder="确认新的登录密码" clearable type="password" v-show="modifyIndex==3"/>
@@ -139,12 +163,13 @@
 
 
     // /**以下为修改信息部分**/
-    const temptUserName = ref<string>(userInfo.name||"未设置");//临时用户名
-    const temptUserPhoneNumber = ref<string>("");//临时用户手机号
-    const temptUserEmail = ref<string>("");
-    const temptPassword = ref<string>("1111");//临时用户手机号
-    const identifyPassword = ref<string>("");
-    const modifyIndex = ref<number>(-1);
+    const temptUserName = ref<string>(userInfo.name||"");//临时用户名
+    const temptSex = ref<boolean>((userInfo.sex)||undefined);//临时用户名
+    const temptUserPhoneNumber = ref<string>(userInfo.phone||"");//临时用户手机号
+    const temptUserEmail = ref<string>(userInfo.email||"");
+    const temptPassword = ref<string>("1111");//临时密码
+    const identifyPassword = ref<string>("");//确认密码
+    const modifyIndex = ref<number>(-1);//展开显示索引
 
     watch(modifyIndex,(newValue, oldValue)=>{
         if(newValue!=2){
@@ -175,6 +200,19 @@
         }
     }, 1000);
 
+    const modifySex = debounce(async ()=>{
+        if(temptSex.value == -1){
+            ElMessage.error("性别未选择");  
+        }
+        else{
+            let isOk = await updateAccountInfo({sex:temptSex.value});
+            if(isOk){
+                temptSex.value = userInfo.sex||undefined;
+                modifyIndex.value = -1;
+            }
+        }
+    }, 1000);
+
     const modifyUserPhoneNumber = debounce(async ()=>{
         if(temptUserPhoneNumber.value.length == 0){
             ElMessage.error('手机号不能为空');
@@ -195,11 +233,20 @@
     }, 1000);
 
     const modifyUserEmail = debounce(async ()=>{
+        const regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+        
         if(temptUserEmail.value.length == 0){
             ElMessage.error('邮箱不能为空');
         }
-        else if(!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(temptUserEmail.value)){
+        else if(temptUserEmail.value.length < 8 || temptUserEmail.value.length > 255 || !regex.test(temptUserEmail.value)){
             ElMessage.error('无效邮箱');
+        }
+        else{
+            let isOk = await updateAccountInfo({email:temptUserEmail.value});
+            if(isOk){
+                temptUserEmail.value = userInfo.email||"";
+                modifyIndex.value = -1;
+            }
         }
     })
 
@@ -214,7 +261,7 @@
             ElMessage.error('密码和确认密码不一致');
         }
         else{
-            let isOk = await updatePassword({password: temptPassword.value});
+            let isOk = await updatePassword(temptPassword.value);
             if(isOk){
                 temptUserPhoneNumber.value = "******";
                 modifyIndex.value = -1;

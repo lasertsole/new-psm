@@ -154,12 +154,14 @@
         if (!formEl) return
         formEl.validate((valid) => {
             if (valid) {
-                register(userInfo.name, userInfo.password, userInfo.email).then(isSuccuss => {
-                    if(isSuccuss){
-                        $emit("online");
-                        router.push("/");
-                    }
-                });
+                if(userInfo.name&&userInfo.password&&userInfo.email){
+                    register(userInfo.name, userInfo.password, userInfo.email).then(isSuccuss => {
+                        if(isSuccuss){
+                            $emit("online");
+                            router.push("/");
+                        }
+                    });
+                }
             }
         })
     }, 1000);

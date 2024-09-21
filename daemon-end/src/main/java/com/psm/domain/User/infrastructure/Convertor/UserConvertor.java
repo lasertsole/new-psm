@@ -3,19 +3,25 @@ package com.psm.domain.User.infrastructure.Convertor;
 import com.psm.domain.User.entity.User.UserBO;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.domain.User.infrastructure.enums.SexEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public abstract class UserConvertor {
     public static UserConvertor instance = Mappers.getMapper(UserConvertor.class);
 
-    @Mappings(
-            @Mapping(source = "avatar", target = "avatar", ignore = true)
-    )
+    @Mappings({
+            @Mapping(source = "avatar", target = "avatar", ignore = true),
+            @Mapping(target = "sex", expression = "java(SexEnum.fromBoolean(userDTO.getSex()))")
+    })
     public abstract UserDAO DTO2DAO(UserDTO userDTO);
 
+    @Mappings({
+            @Mapping(source = "sex.sex", target = "sex")
+    })
     public abstract UserBO DAO2BO(UserDAO userDAO);
 }

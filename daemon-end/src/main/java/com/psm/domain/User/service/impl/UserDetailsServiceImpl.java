@@ -2,7 +2,7 @@ package com.psm.domain.User.service.impl;
 
 import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
-import com.psm.domain.User.repository.UserRepository;
+import com.psm.domain.User.repository.UserDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    private UserRepository userRepository;
+    private UserDB userDB;
 
     /**
      * SpringSecurity会自动调用这个方法进行用户名密码校验
@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDAO user = new UserDAO();
         user.setName(username);
 
-        UserDAO user1 = userRepository.findUserByName(user);
+        UserDAO user1 = userDB.findUserByName(user);
 
         // 如果没有查询到用户抛出异常
         if (Objects.isNull(user1)){

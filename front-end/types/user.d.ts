@@ -9,6 +9,6 @@ export type UserInfo = {
     profile?: string;
     isAdmin?: boolean;
     isLogin?: boolean;
-    sex?: number;//0:未知 1:男 2:女
+    sex?: boolean;//0:男 1:女
     createTime?: string;
 };

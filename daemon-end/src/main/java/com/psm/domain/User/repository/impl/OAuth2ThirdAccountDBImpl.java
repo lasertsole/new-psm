@@ -6,12 +6,12 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.infrastructure.annotation.spring.Repository;
 import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
-import com.psm.domain.User.repository.OAuth2ThirdAccountRepository;
+import com.psm.domain.User.repository.OAuth2ThirdAccountDB;
 import com.psm.domain.User.repository.mapper.OAuth2ThirdAccountMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository
-public class OAuth2ThirdAccountRepositoryImpl extends ServiceImpl<OAuth2ThirdAccountMapper, OAuth2ThirdAccountDAO> implements OAuth2ThirdAccountRepository {
+public class OAuth2ThirdAccountDBImpl extends ServiceImpl<OAuth2ThirdAccountMapper, OAuth2ThirdAccountDAO> implements OAuth2ThirdAccountDB {
     @Autowired
     private OAuth2ThirdAccountMapper oauth2Mapper;
 

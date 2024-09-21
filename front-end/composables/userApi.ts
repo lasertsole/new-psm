@@ -7,7 +7,7 @@ export const userInfo = reactive<UserInfo>({
     email: '',
     avatar: '',
     profile: '',
-    sex: 0,
+    sex: undefined,
     createTime: '',
     isAdmin: false,
     isLogin: false,
@@ -32,7 +32,7 @@ function clearUserInfo(){
     userInfo.phone = '';
     userInfo.avatar = '';
     userInfo.profile = '';
-    userInfo.sex = 0;
+    userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
 }
@@ -169,11 +169,12 @@ export async function updateAvatar(avatar:Blob):Promise<Boolean>{
     return true;
 }
 
-export async function updateAccountInfo({name, phone, email}:UserInfo):Promise<Boolean>{
+export async function updateAccountInfo({name, sex, phone, email}:UserInfo):Promise<Boolean>{
     const res:any = await fetchApi({
         url: '/users/updateInfo',
         opts: {
             name,
+            sex,
             phone,
             email
         },

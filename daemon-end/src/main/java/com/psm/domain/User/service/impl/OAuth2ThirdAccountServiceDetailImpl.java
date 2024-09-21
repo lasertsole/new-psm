@@ -6,8 +6,8 @@ import com.psm.domain.User.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.infrastructure.Convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.User.infrastructure.utils.Oauth2UserIdContextHolder;
-import com.psm.domain.User.repository.OAuth2ThirdAccountRepository;
-import com.psm.domain.User.repository.UserRepository;
+import com.psm.domain.User.repository.OAuth2ThirdAccountDB;
+import com.psm.domain.User.repository.UserDB;
 import com.psm.infrastructure.utils.Redis.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +30,10 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
     private OAuth2ThirdAccountConvertor oAuth2ThirdAccountConvertor;
 
     @Autowired
-    private OAuth2ThirdAccountRepository oAuth2ThirdAccountRepository;
+    private OAuth2ThirdAccountDB oAuth2ThirdAccountDB;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDB userDB;
 
     @Autowired
     private RedisCache redisCache;
@@ -65,7 +65,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
             OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO = oAuth2ThirdAccountConvertor.DTO2DAO(oAuth2ThirdAccountDTO);
 
             //查询数据库内tb_third_party_user表中是否有该第三方账号
-            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oAuth2ThirdAccountRepository.findByPrimaryKey(oAuth2ThirdAccountDAO);
+            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oAuth2ThirdAccountDB.findByPrimaryKey(oAuth2ThirdAccountDAO);
 
             Long tbUserId;// 第三方账号对应的用户id
             UserDAO userDAO;// 第三方账号对应的用户信息
@@ -74,14 +74,14 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
                 //在tb_user表插入新用户信息
                 userDAO = oAuth2ThirdAccountConvertor.DTO2UserDAO(oAuth2ThirdAccountDTO);
                 userDAO.setPassword(UUID.randomUUID().toString());
-                userRepository.insert(userDAO);
+                userDB.insert(userDAO);
 
                 //得到插入tb_user表后新用户信息的id(雪花算法生成ID)
                 tbUserId = userDAO.getId();
 
                 //在tb_third_party_user表中新建第三方账号，外键user_id的值为tb_user表的id
                 oAuth2ThirdAccountDAO.setUserId(tbUserId);
-                oAuth2ThirdAccountRepository.insert(oAuth2ThirdAccountDAO);
+                oAuth2ThirdAccountDB.insert(oAuth2ThirdAccountDAO);
             }
             else{
                 // 获取第三方账号对应的用户id
@@ -89,12 +89,12 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
 
                 //更新第三方账号信息
                 OAuth2ThirdAccountDAO DAO = oAuth2ThirdAccountConvertor.DTO2DAO(oAuth2ThirdAccountDTO);
-                oAuth2ThirdAccountRepository.update(DAO);
+                oAuth2ThirdAccountDB.update(DAO);
 
                 // 查询已有的用户信息
                 UserDAO tempUser = new UserDAO();
                 tempUser.setId(tbUserId);
-                userDAO = userRepository.selectById(tempUser);
+                userDAO = userDB.selectById(tempUser);
             }
 
             //将userDAO转成LoginUser格式

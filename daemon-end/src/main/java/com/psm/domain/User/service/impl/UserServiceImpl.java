@@ -7,7 +7,7 @@ import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
 import com.psm.domain.User.repository.LoginUserRedis;
 import com.psm.domain.User.repository.UserOSS;
-import com.psm.domain.User.repository.UserRepository;
+import com.psm.domain.User.repository.UserDB;
 import com.psm.domain.User.service.UserService;
 import com.psm.domain.User.infrastructure.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDB userDB;
 
     @Autowired
     private UserOSS userOSS;
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
             register.setPassword(passwordEncoder.encode(register.getPassword()));
 
             //将register对象保存到数据库
-            userRepository.save(register);
+            userDB.save(register);
 
             //使用未加密密码的user对象登录
             Map<String, Object> loginMap = login(userDTO);
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
             loginUserRedis.removeLoginUser(String.valueOf(id));
 
             //根据用户id删除pg中的用户信息
-            userRepository.removeById(id);
+            userDB.removeById(id);
 
         } catch (Exception e) {
             throw new RuntimeException("Server error when deleteUser: "+e.getMessage());
@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
             UserDAO userDAO = new UserDAO();
             userDAO.setId(id);
             userDAO.setAvatar(avatarUrl);
-            userRepository.updateAvatar(userDAO);
+            userDB.updateAvatar(userDAO);
 
             //更新redis中用户头像信息
             LoginUser loginUser =loginUserRedis.getLoginUser(id.toString());
@@ -188,14 +188,15 @@ public class UserServiceImpl implements UserService {
             userDAO.setId(id);
 
             //更新用户信息
-            userRepository.updateInfo(userDAO);
+            userDB.updateInfo(userDAO);
 
             //更新redis中用户信息
-            if (!Objects.isNull(userDAO.getName())) loginUser.getUser().setName(userDAO.getName());
-            if (!Objects.isNull(userDAO.getProfile())) loginUser.getUser().setProfile(userDAO.getProfile());
-            if (!Objects.isNull(userDAO.getPhone())) loginUser.getUser().setPhone(userDAO.getPhone());
-            if (!Objects.isNull(userDAO.getEmail())) loginUser.getUser().setEmail(userDAO.getEmail());
-            if (!Objects.isNull(userDAO.getSex())) loginUser.getUser().setSex(userDAO.getSex());
+            UserDAO userDAORefer = loginUser.getUser();//获取loginUser内的UserDAO引用
+            if (!Objects.isNull(userDAO.getName())) userDAORefer.setName(userDAO.getName());
+            if (!Objects.isNull(userDAO.getProfile())) userDAORefer.setProfile(userDAO.getProfile());
+            if (!Objects.isNull(userDAO.getPhone())) userDAORefer.setPhone(userDAO.getPhone());
+            if (!Objects.isNull(userDAO.getEmail())) userDAORefer.setEmail(userDAO.getEmail());
+            if (!Objects.isNull(userDAO.getSex())) userDAORefer.setSex(userDAO.getSex());
             loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
 
         } catch (Exception e) {
@@ -219,7 +220,7 @@ public class UserServiceImpl implements UserService {
             //获取数据库中用户的password
             UserDAO userDAO = new UserDAO();
             userDAO.setId(id);
-            String passwordFromDB = userRepository.findPasswordById(userDAO);
+            String passwordFromDB = userDB.findPasswordById(userDAO);
 
             //判断旧密码是否正确
             if(passwordEncoder.matches(password,passwordFromDB)){
@@ -236,7 +237,7 @@ public class UserServiceImpl implements UserService {
             //将新密码覆盖数据库中的password
             userDAO.setId(id);
             userDAO.setPassword(encodePassword);
-            userRepository.updatePasswordById(userDAO);
+            userDB.updatePasswordById(userDAO);
 
             //更新redis中用户信息
             loginUserRedis.getLoginUser(id.toString());
@@ -252,7 +253,7 @@ public class UserServiceImpl implements UserService {
     public UserDAO getUserByID(Long id) {
         try {
             //获取用户信息
-            UserDAO userDAO = userRepository.getById(id);
+            UserDAO userDAO = userDB.getById(id);
 
             //判断用户是否存在
             if(userDAO != null){
@@ -272,7 +273,7 @@ public class UserServiceImpl implements UserService {
             //获取用户信息
             UserDAO userDAO = new UserDAO();
             userDAO.setName(name);
-            List<UserDAO> userDAOs = userRepository.findUsersByName(userDAO);
+            List<UserDAO> userDAOs = userDB.findUsersByName(userDAO);
 
             //判断用户是否存在
             if(!userDAOs.isEmpty()){
@@ -292,6 +293,6 @@ public class UserServiceImpl implements UserService {
         Page<UserDAO> page = new Page<>(currentPage,pageSize);
 
         //返回结果
-        return userRepository.getUserOrderByCreateTimeAsc(page);
+        return userDB.getUserOrderByCreateTimeAsc(page);
     }
 }

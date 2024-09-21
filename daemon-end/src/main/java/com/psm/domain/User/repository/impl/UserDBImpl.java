@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.infrastructure.annotation.spring.Repository;
 import com.psm.domain.User.entity.User.UserDAO;
-import com.psm.domain.User.repository.UserRepository;
+import com.psm.domain.User.repository.UserDB;
 import com.psm.domain.User.repository.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserDAO> implements UserRepository {
+public class UserDBImpl extends ServiceImpl<UserMapper, UserDAO> implements UserDB {
     @Autowired
     private UserMapper userMapper;
 

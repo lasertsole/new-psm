@@ -1,9 +1,7 @@
 package com.psm.domain.User.entity.User;
 
-import com.psm.infrastructure.annotation.validation.ValidBoolean;
 import com.psm.infrastructure.annotation.validation.ValidFileSize;
 import com.psm.infrastructure.annotation.validation.ValidImage;
-import com.psm.domain.User.infrastructure.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,8 +50,7 @@ public class UserDTO implements Serializable {
     @Size(min = 8, max = 255, message = "The Email length must be between 8 and 255 characters")
     private String email;
 
-    @ValidBoolean
-    private SexEnum sex;
+    private Boolean sex;
 
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The profile format is incorrect")
     @Size(max = 255, message = "The profile length must not exceed 255 characters")

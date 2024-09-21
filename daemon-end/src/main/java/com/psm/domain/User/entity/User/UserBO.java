@@ -1,6 +1,5 @@
 package com.psm.domain.User.entity.User;
 
-import com.psm.domain.User.infrastructure.enums.SexEnum;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +16,7 @@ public class UserBO implements BO2VOable<UserVO> {
     private String phone;
     private String avatar;
     private String email;
-    private SexEnum sex;
+    private Boolean sex;
     private String profile;
     private String createTime;
     private String modifyTime;

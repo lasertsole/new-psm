@@ -6,7 +6,7 @@ import com.psm.domain.User.entity.User.UserDAO;
 
 import java.util.List;
 
-public interface UserRepository extends IService<UserDAO> {
+public interface UserDB extends IService<UserDAO> {
     /**
      * 插入用户
      *
