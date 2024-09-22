@@ -7,7 +7,6 @@ import com.psm.domain.User.entity.User.UserBO;
 import com.psm.objectValue.SubtitlesShowBarVO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDTO;
-import com.psm.domain.User.entity.User.UserVO;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;

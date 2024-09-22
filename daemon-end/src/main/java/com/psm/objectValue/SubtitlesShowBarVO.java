@@ -2,7 +2,7 @@ package com.psm.objectValue;
 
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.entity.User.UserBO;
-import com.psm.domain.User.entity.User.UserVO;
+import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.Objects;
 public class SubtitlesShowBarVO implements Serializable {
     private static final long serialVersionUID = -4862791505815432325L;
 
-    UserVO userVO;
+    OtherUserVO userVO;
     List<SubtitlesVO> subtitlesVOList;
 
     public SubtitlesShowBarVO(@Valid UserBO userBO, @Valid List<SubtitlesVO> subtitlesVOList) {

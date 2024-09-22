@@ -1,9 +1,10 @@
-package com.psm.domain.User.entity.User;
+package com.psm.domain.User.entity.User.UserVO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CurrentUserVO implements Serializable {
+    @Serial
     private static final long serialVersionUID = 6710910285903195194L;
 
     private Long id;

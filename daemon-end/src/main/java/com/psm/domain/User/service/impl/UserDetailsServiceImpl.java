@@ -3,6 +3,7 @@ package com.psm.domain.User.service.impl;
 import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.repository.UserDB;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-
+@Slf4j
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
@@ -40,6 +41,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //TODO 查询用户对应权限
 
         //把用户信息封装成UserDetails对象返回
-        return new LoginUser(user);
+        return new LoginUser(user1);
     }
 }

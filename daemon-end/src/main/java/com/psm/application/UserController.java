@@ -5,10 +5,9 @@ import com.psm.domain.User.entity.User.UserBO;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,10 +20,9 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
 
-@Setter
+@Slf4j
 @RestController
 @RequestMapping("/users")
-@ConfigurationProperties(prefix = "aliyun.oss.path.users")
 public class UserController {
     @Autowired
     UserAdaptor userAdaptor;

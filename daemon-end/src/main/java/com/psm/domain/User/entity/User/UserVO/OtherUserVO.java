@@ -1,16 +1,17 @@
-package com.psm.domain.User.entity.User;
+package com.psm.domain.User.entity.User.UserVO;
 
-import com.psm.domain.User.infrastructure.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserVO implements Serializable {
+public class OtherUserVO implements Serializable {
+    @Serial
     private static final long serialVersionUID = -981341206508743904L;
 
     private Long id; //id保留加速数据库查询(防止回表查询)

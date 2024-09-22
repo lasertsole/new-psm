@@ -3,6 +3,7 @@ import type { UserInfo } from "../types/user";
 export const userInfo = reactive<UserInfo>({
     id: '0',
     name: '',
+    hasPass: undefined,
     phone: '',
     email: '',
     avatar: '',
@@ -17,6 +18,7 @@ function updateUserInfo(data:UserInfo){
     data.isAdmin && (userInfo.isAdmin = data.isAdmin);
     data.id && (userInfo.id = data.id);
     data.name && (userInfo.name = data.name);
+    data.hasPass && (userInfo.hasPass = data.hasPass);
     data.phone && (userInfo.phone = data.phone);
     data.email && (userInfo.email = data.email);
     data.avatar && (userInfo.avatar = data.avatar);
@@ -28,6 +30,7 @@ function updateUserInfo(data:UserInfo){
 function clearUserInfo(){
     userInfo.id = '';
     userInfo.name = '';
+    userInfo.hasPass = undefined;
     userInfo.email = '';
     userInfo.phone = '';
     userInfo.avatar = '';

@@ -92,7 +92,7 @@
                 </transition>
             </li>
             
-            <li>
+            <li v-if="userInfo.hasPass">
                 <div class="show">
                     <span class="optionName">登录密码</span>
                     <div class="optionValue">

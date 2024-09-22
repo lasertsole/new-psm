@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{
         try {
+            log.info("login password is {}", userDTO.getPassword());
             //AuthenticationManager authenticate进行认证
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDTO.getName(),userDTO.getPassword());
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
             Map<String, Object> map = new HashMap<>();
             map.put("token",jwt);
             map.put("user",loginUserInfo);
+
             return map;
         }catch (Exception e) {
             throw new RuntimeException("Server error when login: "+e.getMessage());

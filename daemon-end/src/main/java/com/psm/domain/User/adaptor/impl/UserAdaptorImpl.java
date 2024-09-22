@@ -10,6 +10,7 @@ import com.psm.domain.User.service.UserService;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Adaptor
 public class UserAdaptorImpl implements UserAdaptor {
     @Autowired
@@ -46,13 +48,11 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
         }
 
-        UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
-
         // 登录
         Map<String, Object> map = userService.login(userDTO);
 
         // 获取用户
-        userDAO = (UserDAO) map.get("user");
+        UserDAO userDAO = (UserDAO) map.get("user");
 
         // 判断用户是否存在
         if(userDAO == null){

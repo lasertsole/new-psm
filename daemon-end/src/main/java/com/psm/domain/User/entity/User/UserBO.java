@@ -1,17 +1,21 @@
 package com.psm.domain.User.entity.User;
 
+import com.psm.domain.User.entity.User.UserVO.CurrentUserVO;
+import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
 import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBO implements BO2VOable<UserVO>, Serializable {
+public class UserBO implements BO2VOable<OtherUserVO>, Serializable {
+    @Serial
     private static final long serialVersionUID = 734750268487283107L;
 
     private Long id;
@@ -26,7 +30,7 @@ public class UserBO implements BO2VOable<UserVO>, Serializable {
     private String modifyTime;
 
     @Override
-    public UserVO toVO() {
+    public OtherUserVO toVO() {
         return UserConvertor.INSTANCE.BO2VO(this);
     }
 
