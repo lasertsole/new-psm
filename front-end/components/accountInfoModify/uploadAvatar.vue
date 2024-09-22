@@ -61,6 +61,7 @@
             @include fullInParent();
             position: relative;
             z-index:1;
+            background-color: white;
         }
 
         .mock{

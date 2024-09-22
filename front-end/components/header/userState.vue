@@ -7,8 +7,8 @@
         </div>
 
         <ul class="userTool" v-else>
-            <li class="profile" @mouseenter="showDetail" @mouseleave="hideDetail">
-                <img :class="{userProfile:true, show:showUserDetail}" :src="userInfo.avatar" @click="toPersionInfo">
+            <li class="avatar" @mouseenter="showDetail" @mouseleave="hideDetail">
+                <img :class="{userAvatar:true, show:showUserDetail}" :src="userInfo.avatar" @click="toPersionInfo">
                 <transition 
                     :css="false"
                     @enter="onEnter"
@@ -209,7 +209,7 @@
                 padding: 5px;
                 border-radius: 5px;
 
-                &.profile{
+                &.avatar{
                     cursor: pointer;
                     background-size: 100%;
                     margin-right: 20px;
@@ -217,7 +217,7 @@
                     position: relative;
                     $profileSize: 35px;
 
-                    .userProfile{
+                    .userAvatar{
                         @include fixedCircle($profileSize);
                         z-index: 2;
                         position: relative;
@@ -225,6 +225,7 @@
                         justify-content: center;
                         align-items: center;
                         transition: linear .3s;
+                        background-color: white;
 
                         &.show{
                             transform: scale(2) translateY(75%);

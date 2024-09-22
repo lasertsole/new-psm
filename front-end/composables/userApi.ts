@@ -6,7 +6,7 @@ export const userInfo = reactive<UserInfo>({
     hasPass: undefined,
     phone: '',
     email: '',
-    avatar: '',
+    avatar: '/images/defaultAvatar.png',
     profile: '',
     sex: undefined,
     createTime: '',
@@ -33,7 +33,7 @@ function clearUserInfo(){
     userInfo.hasPass = undefined;
     userInfo.email = '';
     userInfo.phone = '';
-    userInfo.avatar = '';
+    userInfo.avatar = '/images/defaultAvatar.png';
     userInfo.profile = '';
     userInfo.sex = undefined;
     userInfo.createTime = '';
@@ -221,6 +221,8 @@ export async function updatePassword(password : string, changePassword: string):
     }
 
     ElMessage.success('更新密码成功');
+    localStorage.removeItem('token');
+    logoutApi();
     
     return true;
 }

@@ -66,7 +66,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{
         try {
-            log.info("login password is {}", userDTO.getPassword());
             //AuthenticationManager authenticate进行认证
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDTO.getName(),userDTO.getPassword());
@@ -222,7 +221,7 @@ public class UserServiceImpl implements UserService {
             String passwordFromDB = userDB.findPasswordById(userDAO);
 
             //判断旧密码是否正确
-            if(passwordEncoder.matches(password,passwordFromDB)){
+            if(!passwordEncoder.matches(password,passwordFromDB)){
                 throw new RuntimeException("Password error");
             }
 

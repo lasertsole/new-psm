@@ -268,6 +268,9 @@
         else if(changePassword.value != identifychangePassword.value){
             ElMessage.error('新密码和确认密码不一致');
         }
+        else if(temptPassword.value == changePassword.value){
+            ElMessage.error('新旧密码不能一样');
+        }
         else{
             let isOk = await updatePassword(temptPassword.value, changePassword.value);
             if(isOk){
