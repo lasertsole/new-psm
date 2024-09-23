@@ -1,3 +1,7 @@
+const needAuthPages: string[] = [
+    // "/home"
+];
+
 export default defineNuxtRouteMiddleware(
     (to,from)=>
     {
@@ -5,6 +9,9 @@ export default defineNuxtRouteMiddleware(
         if (process.server) return;
         if(to.path == "/"&&userInfo.isLogin){
             return navigateTo("/home");
+        }
+        else if(needAuthPages.includes(to.path)&&!userInfo.isLogin){
+            return navigateTo("/");
         }
     }
 );

@@ -30,6 +30,9 @@ public abstract class UserConvertor {
 
     public abstract OtherUserVO BO2VO(UserBO userBO);
 
+    @Mappings({
+            @Mapping(target = "hasPass", ignore = true)
+    })
     public abstract CurrentUserVO BO2CurrentVO(UserBO userBO);
 
     @AfterMapping

@@ -38,6 +38,7 @@ export default defineNuxtConfig({
 
   // 路由策略
   routeRules: {
+    '/index': { redirect: '/' },
     '/login': { redirect: '/loginOrRegister/login' },
     '/register': { redirect: '/loginOrRegister/register' },
     '/thirdLogin': { redirect: '/loginOrRegister/thirdLogin' },

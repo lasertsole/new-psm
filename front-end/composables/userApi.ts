@@ -7,7 +7,7 @@ export const userInfo = reactive<UserInfo>({
     phone: '',
     email: '',
     avatar: '/images/defaultAvatar.png',
-    profile: '',
+    profile: '暂无简介',
     sex: undefined,
     createTime: '',
     isAdmin: false,
@@ -34,7 +34,7 @@ function clearUserInfo(){
     userInfo.email = '';
     userInfo.phone = '';
     userInfo.avatar = '/images/defaultAvatar.png';
-    userInfo.profile = '';
+    userInfo.profile = '暂无简介';
     userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
@@ -43,7 +43,7 @@ function clearUserInfo(){
 function loginApi(data:UserInfo){
     userInfo.isLogin = true;
     updateUserInfo(data);
-    navigateTo("/");
+    navigateTo("/home");
 }
 
 function logoutApi(){

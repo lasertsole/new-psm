@@ -78,7 +78,7 @@
                 <template v-for="(item, index) in routerList" :key="index">
                     <li 
                         :class="{login:item.path=='/login',register:item.path=='/register'}"
-                        v-if="(item.tarbar==true||!userInfo.isLogin)&&(item.needOffLine?!userInfo.isLogin:true)"
+                        v-if="item.tarbar==true||!userInfo.isLogin"
                         @click="drawer = false"
                     >
                         <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>

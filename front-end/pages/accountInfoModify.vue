@@ -285,6 +285,7 @@
 <style lang="scss" scoped>
     @use "sass:math";
     @import "@/common.scss";
+    
     .accountModify{
         @include fullInParent();
         background-color: #e6eaee;

@@ -1,7 +1,7 @@
 <template>
     <ul class="tabBarArr">
         <template  v-for="item in routerList">
-            <li v-if="item.needOffLine?!userInfo.isLogin:true" :key="item.path">
+            <li>
                 <NuxtLink active-class="selected" class="tabbarChildItem" :to="item.path">{{item.name}}</NuxtLink>
             </li>
         </template>
