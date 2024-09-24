@@ -48,5 +48,4 @@
             max-width: 700px;
         }
     }
-
 </style>

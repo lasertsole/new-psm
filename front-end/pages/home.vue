@@ -5,12 +5,22 @@
                 <img :src="userInfo.avatar">
             </div>
             <div class="recomment">
-                <div class="recomment-name">帕斯汐</div>
+                <div class="recomment-name">{{userInfo.name}}</div>
                 <div class="recomment-title">个人简介:</div>
-                <div class="recomment-content">{{userInfo.profile}}</div>
-            </div>
-            <div class="button-group">
-                <div class="edit">编辑信息</div>
+                <el-input
+                    class="recomment-content"
+                    v-model="tempProfile"
+                    :autosize="{ minRows: 3, maxRows: 5 }"
+                    type="textarea"
+                    size="large"
+                    placeholder="暂无简介"
+                    :disabled="!profileEditable"
+                    maxlength="255"
+                    show-word-limit
+                    resize="none"
+                    style="border-radius:5px; overflow: hidden;"
+                />
+                <el-button type="primary" @click="editProfileFunc">编辑信息</el-button>
             </div>
         </div>
         <div class="showcase">
@@ -74,6 +84,28 @@
     // import { ref } from "vue"
     // import { showCaseBoxInfo, planningBoxInfo} from "types/pageType/personSpace"
 
+    const profileEditable = ref<boolean>(false);// 是否可以编辑个人简介
+
+    const tempProfile = ref<string>(userInfo.profile||"");
+    
+    const editProfileFunc = debounce(async()=>{
+        profileEditable.value=!profileEditable.value;
+        
+        if(profileEditable.value){
+           return; 
+        }
+
+        if(tempProfile.value==userInfo.profile){
+            ElMessage.error("现简介不能和原简介相同");  
+            return;
+        }
+
+        let ok = await updateAccountInfo({profile : tempProfile.value});
+        if(ok){
+            tempProfile.value=userInfo.profile||"";
+        };
+    });
+
     // /*橱窗盒子的数据*/
     // const showCaseBoxArr = ref<showCaseBoxInfo[]>([
     //     {
@@ -119,21 +151,15 @@
 </script>
 
 <style lang="scss" scoped>
-    @mixin fixedSquare($size){
-        min-width: $size;
-        max-width: $size;
-        min-height: $size;
-        max-height: $size;
-    }
+    @use "sass:math";
+    @import "@/common.scss";
+
     @mixin fixedCircle($size){
         @include fixedSquare($size);
         overflow: hidden;
         border-radius: 50%;
     }
-    @mixin fiexedWidth($size){
-        max-width: $size;
-        min-width: $size;
-    }
+
     .personSpace{
         width: 100%;
         height: 100%;
@@ -148,12 +174,13 @@
             align-items: center;
             padding-bottom: 15px;
             border-bottom: 1px solid rgba(165, 165, 165, 0.3568627451);
+            @include fullWidth;
+            
             .avatar{
                 @include fixedCircle(100px);
                 margin-bottom: 5px;
                 img{
-                    width: 100%;
-                    height: 100%;
+                    @include fullInParent;
                     object-fit: cover;
                 }
             }
@@ -164,37 +191,25 @@
                 font-size: 12px;
                 color: gray;
                 font-weight: bold;
+                @include fixedWidth(80%);
+                
                 >*{
                     margin-bottom: 5px;
                 }
+
                 &-name{
                     font-size: 18px;
                     color: black;
                 }
+
                 &-title{
-                    margin: 0px;
+                    margin: 10px 0px;
+                    font-size: medium;
                 }
+
                 &-content{
-                    margin-top: 10px;
-                    margin-bottom: 10px;
-                    max-width: 180px;
-                }
-            }
-            .button-group{
-                min-width: 240px;
-                display: flex;
-                justify-content: center;
-                color: white;
-                div{
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: center;
-                    min-width: 100px;
-                    max-width: 100px;
-                    border-radius: 4px;
-                }
-                .edit{
-                    background-color: #00a8e9;
+                    resize: none;
+                    border: 1px solid #00a8e9;
                 }
             }
         }
@@ -211,7 +226,7 @@
                 flex-direction: row;
                 justify-content: center;
                 .box{
-                    @include fiexedWidth(250px);
+                    @include fixedWidth(250px);
                     margin: 0px 20px;
                     .top{
                         overflow: hidden;

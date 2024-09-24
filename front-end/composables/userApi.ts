@@ -7,7 +7,7 @@ export const userInfo = reactive<UserInfo>({
     phone: '',
     email: '',
     avatar: '/images/defaultAvatar.png',
-    profile: '暂无简介',
+    profile: '',
     sex: undefined,
     createTime: '',
     isAdmin: false,
@@ -34,7 +34,7 @@ function clearUserInfo(){
     userInfo.email = '';
     userInfo.phone = '';
     userInfo.avatar = '/images/defaultAvatar.png';
-    userInfo.profile = '暂无简介';
+    userInfo.profile = '';
     userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
@@ -172,14 +172,15 @@ export async function updateAvatar(avatar:Blob):Promise<Boolean>{
     return true;
 }
 
-export async function updateAccountInfo({name, sex, phone, email}:UserInfo):Promise<Boolean>{
+export async function updateAccountInfo({name, sex, phone, email, profile}:UserInfo):Promise<Boolean>{
     const res:any = await fetchApi({
         url: '/users/updateInfo',
         opts: {
             name,
             sex,
             phone,
-            email
+            email,
+            profile
         },
         method: 'put',
         contentType: 'application/json',
@@ -195,7 +196,7 @@ export async function updateAccountInfo({name, sex, phone, email}:UserInfo):Prom
 
     ElMessage.success('更新账户信息成功');
 
-    const data:UserInfo = {name, sex, phone, email};
+    const data:UserInfo = {name, sex, phone, email, profile};
     updateUserInfo(data);
     
     return true;

@@ -36,6 +36,14 @@
 @mixin fixedCircle($size){
 	@include fixedRoundedRectangle($size,$size,50%);
 }
+/*  固定充满父容器宽度 */
+@mixin fullWidth {
+	@include fixedWidth(100%);
+}
+/* 固定充满父容器高度 */
+@mixin fullHeight {
+	@include fixedHeight(100%);
+}
 /* 固定充满父容器 */
 @mixin fullInParent {
 	@include fixedSquare(100%);

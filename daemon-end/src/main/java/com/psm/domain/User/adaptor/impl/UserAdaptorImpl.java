@@ -122,7 +122,6 @@ public class UserAdaptorImpl implements UserAdaptor {
         if(
                 StringUtils.isBlank(userDTO.getName())
                 &&Objects.isNull(userDTO.getSex())
-                &&StringUtils.isBlank(userDTO.getPassword())
                 &&StringUtils.isBlank(userDTO.getPhone())
                 &&StringUtils.isBlank(userDTO.getEmail())
                 &&StringUtils.isBlank(userDTO.getProfile())
