@@ -1,74 +1,107 @@
 @use "sass:math";
+
+/* 限定宽度 */
+@mixin limitWidth($minWidth, $maxWidth) {
+	width: $maxWidth;
+	min-width: $minWidth;
+	max-width: $maxWidth;
+	width: $maxWidth;
+	box-sizing: border-box;
+}
+
+/* 限定高度 */
+@mixin limitHeight($minHeight, $maxHeight) {
+	height: $maxHeight;
+	min-height: $minHeight;
+	max-height: $maxHeight;
+	height: $maxHeight;
+	box-sizing: border-box;
+}
+
 /* 固定宽度 */
 @mixin fixedWidth($size) {
-	min-width: $size;
-	max-width: $size;
-	width: $size;
-	box-sizing: border-box;
+	@include limitWidth($size, $size);
 }
+
 /* 固定高度 */
 @mixin fixedHeight($size) {
-	min-height: $size;
-	max-height: $size;
-	height: $size;
-	box-sizing: border-box;
+	@include limitHeight($size, $size);
 }
+
+/*  固定充满父容器宽度 */
+@mixin fullWidth {
+	@include fixedWidth(100%);
+}
+
+/* 固定充满父容器高度 */
+@mixin fullHeight {
+	@include fixedHeight(100%);
+}
+
 /* 固定长方形 */
 @mixin fixedRetangle($widthSize, $heightSize){
 	@include fixedWidth($widthSize);
 	@include fixedHeight($heightSize);
 }
+
 /* 固定正方形 */
 @mixin fixedSquare($size){
 	@include fixedRetangle($size, $size);
 }
+
 /* 固定圆角矩形 */
 @mixin fixedRoundedRectangle($widthSize, $heightSize, $borderRadiusSize){
 	@include fixedRetangle($widthSize, $heightSize);
 	border-radius: $borderRadiusSize;
 }
+
+/* 固定圆角正方形 */
+@mixin fixedRoundedSquare($size, $borderRadiusSize){
+	@include fixedSquare($size);
+	border-radius: $borderRadiusSize;
+}
+
 /*固定胶囊形*/
 @mixin fixedCapsule($widthSize, $heightSize){
 	@include fixedRetangle($widthSize, $heightSize);
 	border-radius: math.div($heightSize,2);
 }
+
 /* 固定圆形 */
 @mixin fixedCircle($size){
 	@include fixedRoundedRectangle($size,$size,50%);
 }
-/*  固定充满父容器宽度 */
-@mixin fullWidth {
-	@include fixedWidth(100%);
-}
-/* 固定充满父容器高度 */
-@mixin fullHeight {
-	@include fixedHeight(100%);
-}
+
 /* 固定充满父容器 */
 @mixin fullInParent {
 	@include fixedSquare(100%);
 }
+
 /* 固定充满视口 */
 @mixin fullViewWindow{
 	width: 100vw;
 	height: 100vh;
 }
+
 /* 固定充满父容器的圆形 */
 @mixin fullInParentCircle {
 	@include fixedCircle(100%)
 }
+
 /* 放置背景图片的环境配置 */
 @mixin backgroundImgCondition(){
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 100%;
 }
+
 /* 固定充满父容器的图片 */
 @mixin imgFullInParent($imgSrc) {
 	@include fullInParent;
 	@include backgroundImgCondition;
 	background-image: url(#{$imgSrc});
 }
+
 /* 固定充满本容器的图片 */
 @mixin fullImg($imgSrc) {
 	background-image: url(#{$imgSrc});

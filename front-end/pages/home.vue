@@ -10,7 +10,7 @@
                 <el-input
                     class="recomment-content"
                     v-model="tempProfile"
-                    :autosize="{ minRows: 3, maxRows: 5 }"
+                    :autosize="{ minRows: 3 }"
                     type="textarea"
                     size="large"
                     placeholder="暂无简介"

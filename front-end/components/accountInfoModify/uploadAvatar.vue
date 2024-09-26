@@ -22,7 +22,7 @@
         // imageUrl.value = URL.createObjectURL(uploadFile.raw!);
     };
 
-    const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {//检查上传的文件是否为图片
+    const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传图片校验
         let typeArr=['image/jpeg', 'image/webp', 'image/png', 'svg+xml'];//能接收的图片文件类型
         if (typeArr.indexOf(rawFile.type)<0) {
             ElMessage.error('请输入图片类型文件');

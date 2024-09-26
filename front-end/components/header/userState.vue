@@ -28,25 +28,25 @@
                         </ul>
                         <ul class="option">
                             <li>
-                                <router-link to="/accountInfoModify">
+                                <NuxtLink to="/accountInfoModify">
                                     <img src="/icons/avatar.png">
                                     <span>账户设置</span>
                                     <img src="/icons/arrow.svg" alt="">
-                                </router-link>
+                                </NuxtLink>
                             </li>
                             <li>
-                                <router-link to="/accountInfoModify">
+                                <NuxtLink to="/accountInfoModify">
                                     <img src="/icons/planning.png">
                                     <span>我的企划</span>
                                     <img src="/icons/arrow.svg" alt="">
-                                </router-link>
+                                </NuxtLink>
                             </li>
                             <li>
-                                <router-link to="/accountInfoModify">
+                                <NuxtLink to="/accountInfoModify">
                                     <img src="/icons/Vector.png">
                                     <span>我的橱窗</span>
                                     <img src="/icons/arrow.svg" alt="">
-                                </router-link>
+                                </NuxtLink>
                             </li>
                             <hr>
                             <li @click="logout">
@@ -62,7 +62,9 @@
             <li>动态</li>
             <li>收藏</li>
             <li>历史</li>
-            <li>投稿</li>
+            <li>
+                <NuxtLink to="/videoUpload">投稿</NuxtLink>
+            </li>
         </ul>
 
         <!-- 用户头像以及菜单 -->
@@ -319,6 +321,13 @@
                         hr{
                             margin: 10px 0px;
                         }
+                    }
+                }
+
+                >a{
+                    transition: color 0.2s;
+                    &:hover{
+                        color: #00a8e9;
                     }
                 }
             }
