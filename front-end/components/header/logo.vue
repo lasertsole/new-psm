@@ -2,13 +2,15 @@
     <div class="logo">
         <div class="logo-image"></div>
         <div class="logo-text">
-            <h2>喵字幕</h2>
-            <h5>MIAOZIMU.COM</h5>
+            <h2>{{config.public.appName}}</h2>
+            <h5>{{config.public.appDomainName}}</h5>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+    import { useRuntimeConfig } from '#app';
+    const config = useRuntimeConfig();
 </script>
 
 <style lang="scss" scoped>

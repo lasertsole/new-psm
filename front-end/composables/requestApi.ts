@@ -1,4 +1,7 @@
 import type { NitroFetchRequest } from 'nitropack';
+import { useRuntimeConfig } from '#app';
+import * as tus from 'tus-js-client' // 假设 tus-js-client 是你使用的库
+import type { Upload } from 'tus-js-client';
 
 interface Params {
     url: NitroFetchRequest;
@@ -27,83 +30,6 @@ const replacePathVariables = (url: NitroFetchRequest, params: any = {}) => {
       m = regex.exec(formattedURL);
     }
     return formattedURL;
-};
-
-export async function useFetchBaseApi({
-  url,
-  opts = {},
-  method = 'get',
-  contentType = 'application/json',
-  lazy = false,
-}: Params) {
-  const requestURL = replacePathVariables(url, opts);
-  const { data } = await useFetch(requestURL, {
-    method,
-    // ofetch库会自动识别请求地址，对于url已包含域名的请求不会再拼接baseURL
-    baseURL: "/api",
-    // 是否是懒加载请求
-    lazy,
-    // onRequest相当于请求拦截
-    onRequest({ request, options }) {
-      // 设置请求头
-      options.headers = { 'Content-Type': contentType };
-      // 设置请求参数
-      if (method === 'post') {
-        options.body = { ...opts };
-      } else {
-        options.query = { ...opts };
-      }
-      let token = localStorage.getItem('token');
-      if(token){
-          options.headers = {
-              ...options.headers,
-              token
-          }
-      }
-    },
-    // onResponse相当于响应拦截
-    onResponse({ response }) {
-      // 处理响应数据
-      // 如果返回值有token，则更新本地token
-      let token : string | null = response.headers.get("token");
-      if(token){
-        localStorage.setItem('token', token);
-      }
-
-      return response;
-    },
-  });
-  // 这里data本身是个ref对象，将其内部值抛出去方便调用时获得数据。
-  return data.value;
-};
-
-export async function useFetchApi({
-    url,
-    opts = {},
-    method = 'get',
-    contentType = 'application/json',
-  }: Params) {
-  return await useFetchBaseApi({
-    url,
-    opts,
-    method,
-    contentType,
-  });
-};
-
-export async function useLazyFetchApi<T>({
-  url,
-  opts = {},
-  method = 'get',
-  contentType = 'application/json',
-}: Params){ 
-  return await useFetchBaseApi({
-    url,
-    opts,
-    method,
-    contentType,
-    lazy:true,
-  });
 };
 
 // 使用$fetch的api请求
@@ -160,3 +86,38 @@ export async function fetchApi({
 
   return res;
 };
+
+export async function tusUploadApi(file: File, url: string){
+  let upload:Upload = new tus.Upload(file, {
+    endpoint: import.meta.env.VITE_API_BASE_URL + url,
+    headers: {
+      token: localStorage.getItem('token')||""
+    },
+    retryDelays: [0, 3000, 5000, 10000, 20000],
+    metadata: {
+      filename: file.name,
+      filetype: file.type,
+    },
+    onError: function (error) {
+      console.log('Failed because: ' + error)
+    },
+    onProgress: function (bytesUploaded, bytesTotal) {
+      var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2)
+      console.log(bytesUploaded, bytesTotal, percentage + '%')
+    },
+    onSuccess: function () {
+      console.log('Download %s from %s', file.name, upload.url)
+    },
+  });
+  
+  // 查找之前的上传记录
+  upload.findPreviousUploads().then((previousUploads)=>{
+    // 如果找到了之前的上传记录，则选择第一个记录并调用
+    if (previousUploads.length) {
+      upload.resumeFromPreviousUpload(previousUploads[0])
+    }
+
+    // 开始新的上传操作
+    upload.start();
+  });
+}

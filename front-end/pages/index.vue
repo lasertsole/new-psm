@@ -2,7 +2,7 @@
    <div class="indexPage">
         <div class="top">
             <div class="info">
-               <div class="title">找好切片MAN，完成需求，一举两得</div>
+               <div class="title">定制需求，成品交易，一举两得</div>
            </div>
         </div>
         <div class="bottom">

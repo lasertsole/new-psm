@@ -16,11 +16,11 @@ public class CorsConfig implements WebMvcConfigurer {
     private String frontEndBaseUrl;
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(protocol+"://"+frontEndBaseUrl)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
+        registry.addMapping("/**")// 允许所有路径
+                .allowedOrigins(protocol+"://"+frontEndBaseUrl)// 允许前端的域名
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")// 允许的方法
+                .allowedHeaders("*") // 允许所有头部
+                .allowCredentials(true)// 是否允许发送凭证（如Cookie）
+                .maxAge(3600);// 预检请求的有效期
     }
 }

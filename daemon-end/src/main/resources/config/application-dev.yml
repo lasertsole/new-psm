@@ -18,7 +18,7 @@ spring:
 #redis的主机ip及端口
   data:
     redis:
-      host: 0.0.0.0
+      host: 127.0.0.1
       # 端口
       port: 6379
       # 数据库索引

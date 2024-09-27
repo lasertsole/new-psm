@@ -27,8 +27,8 @@ public class TusConfig {
     @Bean
     public TusFileUploadService tusFileUploadService() {
         return new TusFileUploadService()
-                .withStoragePath(tusDataPath + "/tus")
-                .withUploadUri("/upload")
+                .withStoragePath(tusDataPath + "/models")
+                .withUploadUri("/models/upload")
                 .withUploadExpirationPeriod(expirationPeriod * 1000 * 60 * 60 * 24);
     }
 }

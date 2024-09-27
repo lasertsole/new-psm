@@ -12,11 +12,11 @@ export default defineNuxtConfig({
   //项目信息
   app:{
     head:{
-      title: '喵字幕',
+      title: process.env.VITE_APP_NAME,
       // 方便搜索引擎查找
       meta: [
-          { name: "description", content: "满足翻译商稿的买卖平台"},
-          { name: "keyword", content: "翻译,买卖,接单" }
+          { name: "description", content: "定制、成品买卖平台"},
+          { name: "keyword", content: "建模,买卖,接单,定制,成品" }
       ],
       // tab图标
       link: [
@@ -64,7 +64,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseURL: process.env.VITE_API_BASE_URL
+      appName: process.env.VITE_APP_NAME
+      ,appDomainName: process.env.VITE_APP_DOMAIN_NAME
+      ,baseURL: process.env.VITE_API_BASE_URL
       ,apiBaseURL: "/api"
       ,oauth2AuthURL: process.env.VITE_OAuth2_Auth_URL//第三方登录授权地址
     }

@@ -63,7 +63,7 @@
             <li>收藏</li>
             <li>历史</li>
             <li>
-                <NuxtLink to="/videoUpload">投稿</NuxtLink>
+                <NuxtLink to="/modelUpload">投稿</NuxtLink>
             </li>
         </ul>
 

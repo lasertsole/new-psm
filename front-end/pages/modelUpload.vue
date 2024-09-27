@@ -123,6 +123,8 @@
 
     const request = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
         hadUpload.value = true;
+        await tusUploadApi(params.file,'/model/upload');
+        return;
     }
 
     const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传视频校验
