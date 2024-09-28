@@ -1,5 +1,4 @@
 import type { NitroFetchRequest } from 'nitropack';
-import { useRuntimeConfig } from '#app';
 import * as tus from 'tus-js-client' // 假设 tus-js-client 是你使用的库
 import type { Upload } from 'tus-js-client';
 
@@ -87,37 +86,53 @@ export async function fetchApi({
   return res;
 };
 
-export async function tusUploadApi(file: File, url: string){
+interface UploadParams {
+  url: string;
+  file: File;
+  progressCB?: Function;
+  successCB?: Function;
+  errorCB?: Function;
+}
+export async function tusUploadApi({
+  file, 
+  url, 
+  progressCB,
+  successCB,
+  errorCB
+}:UploadParams): Promise<void> {
   let upload:Upload = new tus.Upload(file, {
     endpoint: import.meta.env.VITE_API_BASE_URL + url,
     headers: {
       token: localStorage.getItem('token')||""
     },
+    chunkSize: 1024 * 1024,// 每个分片大小1MB
     retryDelays: [0, 3000, 5000, 10000, 20000],
     metadata: {
       filename: file.name,
       filetype: file.type,
     },
     onError: function (error) {
-      console.log('Failed because: ' + error)
+      errorCB&&errorCB(error);
     },
     onProgress: function (bytesUploaded, bytesTotal) {
       var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2)
-      console.log(bytesUploaded, bytesTotal, percentage + '%')
+      progressCB&&progressCB(percentage + '%');
     },
     onSuccess: function () {
-      console.log('Download %s from %s', file.name, upload.url)
+      successCB&&successCB();
+      upload.abort();
     },
   });
   
   // 查找之前的上传记录
-  upload.findPreviousUploads().then((previousUploads)=>{
-    // 如果找到了之前的上传记录，则选择第一个记录并调用
-    if (previousUploads.length) {
-      upload.resumeFromPreviousUpload(previousUploads[0])
-    }
+  // upload.findPreviousUploads().then((previousUploads)=>{
+  //   // 如果找到了之前的上传记录，则选择第一个记录并调用
+  //   if (previousUploads.length) {
+  //     upload.resumeFromPreviousUpload(previousUploads[0])
+  //   }
 
-    // 开始新的上传操作
-    upload.start();
-  });
+  //   // 开始新的上传操作
+  //   upload.start();
+  // });
+  upload.start();
 }

@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 @Slf4j
 public class TusConfig {
 
-    private final String tusDataPath = Paths.get("..", "tus").toAbsolutePath().toString();;
+    private final String tusDataPath = Paths.get("..", "uploads").toAbsolutePath().toString();
 
     private final Long expirationPeriod = 1L;// 超时时间设置为1天
 
@@ -27,8 +27,8 @@ public class TusConfig {
     @Bean
     public TusFileUploadService tusFileUploadService() {
         return new TusFileUploadService()
-                .withStoragePath(tusDataPath + "/models")
-                .withUploadUri("/models/upload")
+                .withStoragePath(tusDataPath)
+                .withUploadUri("/[a-zA-Z]+/upload")
                 .withUploadExpirationPeriod(expirationPeriod * 1000 * 60 * 60 * 24);
     }
 }

@@ -41,12 +41,10 @@
                     <div class="info">
                         <div class="detail">
                             <span class="name">文件名称</span>
-                            <span class="pencentage">50%</span>
+                            <span class="pencentage">{{progress}}</span>
                         </div>
                         <div class="progressBar">
-                            <div class="progress"
-                                :style="`width: 50%;`"
-                            ></div>
+                            <div class="progress"></div>
                         </div>
                     </div>
                 </div>
@@ -119,11 +117,12 @@
     import type { UploadProps } from 'element-plus';
     import { UploadFilled } from '@element-plus/icons-vue'
 
+    const progress = ref<string>('50%');
     const hadUpload = ref<boolean>(false);
 
     const request = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
         hadUpload.value = true;
-        await tusUploadApi(params.file,'/model/upload');
+        await uploadModel(params.file, progress);
         return;
     }
 
@@ -220,8 +219,10 @@
                         overflow: hidden;
                         
                         .progress{
+                            transition: width 1s linear;
                             height: 100%;
-                            width: 0%;
+                            $progressWidth: v-bind(progress);
+                            width: $progressWidth;
                             border-radius: math.div($progressHeight,2);
                             background-color: rgb(0, 160, 255);
                         }
