@@ -6,6 +6,7 @@
 ### gsap动画组件
 ### loadsh防抖与节流
 ### tus-js-client大文件分片上传
+### three.js 浏览器3D渲染
 ## 后端:
 ### springboot3.3
 ### springsecurity+OAuth2安全框架
