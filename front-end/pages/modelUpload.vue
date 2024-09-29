@@ -44,7 +44,7 @@
                             <span class="pencentage">{{progress}}</span>
                         </div>
                         <div class="progressBar">
-                            <div class="progress"></div>
+                            <div :class="{progress:true, success:progress=='100.00%'}"></div>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
     import type { UploadProps } from 'element-plus';
     import { UploadFilled } from '@element-plus/icons-vue'
 
-    const progress = ref<string>('50%');
+    const progress = ref<string>('0%');
     const hadUpload = ref<boolean>(false);
 
     const request = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
@@ -219,12 +219,16 @@
                         overflow: hidden;
                         
                         .progress{
-                            transition: width 1s linear;
+                            transition: width .3s linear;
                             height: 100%;
                             $progressWidth: v-bind(progress);
                             width: $progressWidth;
                             border-radius: math.div($progressHeight,2);
                             background-color: rgb(0, 160, 255);
+                            
+                            &.success{
+                                background-color: rgb(0, 255, 0);
+                            }
                         }
                     }
                 }

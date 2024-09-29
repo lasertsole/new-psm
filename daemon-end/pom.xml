@@ -267,6 +267,18 @@
 			<artifactId>tus-java-server</artifactId>
 			<version>${tus.version}</version>
 		</dependency>
+
+		<!-- Spring Boot Starter AOP (用于支持 @Scheduled) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
+		<!-- Spring Boot Starter Quartz (可选，用于更复杂的调度) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

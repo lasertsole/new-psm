@@ -150,6 +150,9 @@ aliyun:
 
     #oss文件路径配置
     path:
+      models:
+        imageFolderPath: models/covers
+        entityFolderPath: models/entities
       subtitles:
         imageFolderPath: subtitles/covers
         videoFolderPath: subtitles/videos

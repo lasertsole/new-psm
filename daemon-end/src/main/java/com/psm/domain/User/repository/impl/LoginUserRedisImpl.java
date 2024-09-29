@@ -34,12 +34,6 @@ public class LoginUserRedisImpl implements LoginUserRedis {
     }
 
     @Override
-    public LoginUser getLoginUser(LoginUser loginUser){
-        String id = loginUser.getUser().getId().toString();
-        return getLoginUser(id);
-    }
-
-    @Override
     public void removeLoginUser(String id){
         redisCache.deleteObject("login:"+id);
     }

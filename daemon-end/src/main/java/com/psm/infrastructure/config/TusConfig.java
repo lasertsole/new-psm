@@ -1,22 +1,24 @@
 package com.psm.infrastructure.config;
 
+import com.psm.infrastructure.utils.Tus.TusProperties;
+import com.psm.infrastructure.utils.Tus.UploadSuccessExtension;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import me.desair.tus.server.TusFileUploadService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 @Configuration
 @Slf4j
 public class TusConfig {
+    @Autowired
+    private TusProperties tusProperties;
 
-    private final String tusDataPath = Paths.get("..", "uploads").toAbsolutePath().toString();
-
-    private final Long expirationPeriod = 1L;// 超时时间设置为1天
+    @Autowired
+    private UploadSuccessExtension uploadSuccessExtension;
 
     @PreDestroy
     public void exit() throws IOException {
@@ -27,8 +29,9 @@ public class TusConfig {
     @Bean
     public TusFileUploadService tusFileUploadService() {
         return new TusFileUploadService()
-                .withStoragePath(tusDataPath)
+                .withStoragePath(tusProperties.getTusDataPath().toAbsolutePath().toString())
                 .withUploadUri("/[a-zA-Z]+/upload")
-                .withUploadExpirationPeriod(expirationPeriod * 1000 * 60 * 60 * 24);
+                .withUploadExpirationPeriod(tusProperties.getExpirationPeriod())
+                .addTusExtension(uploadSuccessExtension);
     }
 }

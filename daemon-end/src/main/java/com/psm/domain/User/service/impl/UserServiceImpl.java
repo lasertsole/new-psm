@@ -65,219 +65,177 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{
-        try {
-            //AuthenticationManager authenticate进行认证
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDTO.getName(),userDTO.getPassword());
-            Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        //AuthenticationManager authenticate进行认证
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDTO.getName(),userDTO.getPassword());
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
-            //如果认证通过了，使用id生成jwt
-            LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-            UserDAO loginUserInfo = loginUser.getUser();
-            String id = loginUserInfo.getId().toString();
-            String jwt = jwtUtil.createJWT(id);
+        //如果认证通过了，使用id生成jwt
+        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+        UserDAO loginUserInfo = loginUser.getUser();
+        String id = loginUserInfo.getId().toString();
+        String jwt = jwtUtil.createJWT(id);
 
-            //把完整信息存入redis，id作为key(如果原先有则覆盖)
-            loginUserRedis.addLoginUser(id, loginUser);
+        //把完整信息存入redis，id作为key(如果原先有则覆盖)
+        loginUserRedis.addLoginUser(id, loginUser);
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("token",jwt);
-            map.put("user",loginUserInfo);
+        Map<String, Object> map = new HashMap<>();
+        map.put("token",jwt);
+        map.put("user",loginUserInfo);
 
-            return map;
-        }catch (Exception e) {
-            throw new RuntimeException("Server error when login: "+e.getMessage());
-        }
+        return map;
     }
 
     @Override
     public void logout() {
-        try {
-            //获取SecurityContextHolder中的用户id
-            Long id = getAuthorizedUserId();
+        //获取SecurityContextHolder中的用户id
+        Long id = getAuthorizedUserId();
 
-            //根据用户id删除redis中的用户信息
-            loginUserRedis.removeLoginUser(String.valueOf(id));
-        }
-        catch (Exception e){
-            throw new RuntimeException("Server error when logout: "+e.getMessage());
-        }
+        //根据用户id删除redis中的用户信息
+        loginUserRedis.removeLoginUser(String.valueOf(id));
     }
 
     @Override
     public Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException{
-        try{
-            //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
-            UserDAO register = UserConvertor.INSTANCE.DTO2DAO(userDTO);
-            register.setPassword(passwordEncoder.encode(register.getPassword()));
+        //将前端传来的user对象拷贝到register对象中,并加密register对象的密码
+        UserDAO register = UserConvertor.INSTANCE.DTO2DAO(userDTO);
+        register.setPassword(passwordEncoder.encode(register.getPassword()));
 
-            //将register对象保存到数据库
-            userDB.save(register);
+        //将register对象保存到数据库
+        userDB.save(register);
 
-            //使用未加密密码的user对象登录
-            Map<String, Object> loginMap = login(userDTO);
+        //使用未加密密码的user对象登录
+        Map<String, Object> loginMap = login(userDTO);
 
-            if (loginMap.isEmpty()){
-                throw new RuntimeException("The user does not exist.");
-            }
-
-            return loginMap;
+        if (loginMap.isEmpty()){
+            throw new RuntimeException("The user does not exist.");
         }
-        catch (Exception e){
-            throw new RuntimeException("Server error when register: "+e.getMessage());
-        }
+
+        return loginMap;
     }
 
     @Override
     public void deleteUser() {
-        try {
-            //获取SecurityContextHolder中的用户id
-            UsernamePasswordAuthenticationToken authentication =
-                    (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-            Long id = loginUser.getUser().getId();
+        //获取SecurityContextHolder中的用户id
+        UsernamePasswordAuthenticationToken authentication =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long id = loginUser.getUser().getId();
 
-            //根据用户id删除redis中的用户信息
-            loginUserRedis.removeLoginUser(String.valueOf(id));
+        //根据用户id删除redis中的用户信息
+        loginUserRedis.removeLoginUser(String.valueOf(id));
 
-            //根据用户id删除pg中的用户信息
-            userDB.removeById(id);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Server error when deleteUser: "+e.getMessage());
-        }
+        //根据用户id删除pg中的用户信息
+        userDB.removeById(id);
     }
 
     @Override
-    public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile){
-        try{
-            //更新oss中用户头像信息
-            String avatarUrl = userOSS.updateAvatar(oldAvatarUrl, newAvatarFile);
+    public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile) throws Exception {
+        //更新oss中用户头像信息
+        String avatarUrl = userOSS.updateAvatar(oldAvatarUrl, newAvatarFile);
 
-            //更新数据库中用户头像信息
-            Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
-            UserDAO userDAO = new UserDAO();
-            userDAO.setId(id);
-            userDAO.setAvatar(avatarUrl);
-            userDB.updateAvatar(userDAO);
+        //更新数据库中用户头像信息
+        Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
+        UserDAO userDAO = new UserDAO();
+        userDAO.setId(id);
+        userDAO.setAvatar(avatarUrl);
+        userDB.updateAvatar(userDAO);
 
-            //更新redis中用户头像信息
-            LoginUser loginUser =loginUserRedis.getLoginUser(id.toString());
-            loginUser.getUser().setAvatar(avatarUrl);
-            loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
+        //更新redis中用户头像信息
+        LoginUser loginUser =loginUserRedis.getLoginUser(id.toString());
+        loginUser.getUser().setAvatar(avatarUrl);
+        loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
 
-            return avatarUrl;
-        }
-        catch (Exception e){//上传失败
-            throw new RuntimeException("avatarUrl upload failed");
-        }
+        return avatarUrl;
     }
 
     @Override
     public void updateInfo(UserDTO userDTO) {
-        try {
-            //获取SecurityContextHolder中的用户id
-            UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-            Long id = loginUser.getUser().getId();
+        //获取SecurityContextHolder中的用户id
+        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long id = loginUser.getUser().getId();
 
-            //将UserDTO转化为UserDAO
-            UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
-            userDAO.setId(id);
+        //将UserDTO转化为UserDAO
+        UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
+        userDAO.setId(id);
 
-            //更新用户信息
-            userDB.updateInfo(userDAO);
+        //更新用户信息
+        userDB.updateInfo(userDAO);
 
-            //更新redis中用户信息
-            UserDAO userDAORefer = loginUser.getUser();//获取loginUser内的UserDAO引用
-            if (!Objects.isNull(userDAO.getName())) userDAORefer.setName(userDAO.getName());
-            if (!Objects.isNull(userDAO.getProfile())) userDAORefer.setProfile(userDAO.getProfile());
-            if (!Objects.isNull(userDAO.getPhone())) userDAORefer.setPhone(userDAO.getPhone());
-            if (!Objects.isNull(userDAO.getEmail())) userDAORefer.setEmail(userDAO.getEmail());
-            if (!Objects.isNull(userDAO.getSex())) userDAORefer.setSex(userDAO.getSex());
-            loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Server error when updateUser: "+e.getMessage());
-        }
+        //更新redis中用户信息
+        UserDAO userDAORefer = loginUser.getUser();//获取loginUser内的UserDAO引用
+        if (!Objects.isNull(userDAO.getName())) userDAORefer.setName(userDAO.getName());
+        if (!Objects.isNull(userDAO.getProfile())) userDAORefer.setProfile(userDAO.getProfile());
+        if (!Objects.isNull(userDAO.getPhone())) userDAORefer.setPhone(userDAO.getPhone());
+        if (!Objects.isNull(userDAO.getEmail())) userDAORefer.setEmail(userDAO.getEmail());
+        if (!Objects.isNull(userDAO.getSex())) userDAORefer.setSex(userDAO.getSex());
+        loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
     }
 
     @Override
     public void updatePassword(String password, String changePassword) {
-        try{
-            //获取SecurityContextHolder中的用户id
-            UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-            Long id = loginUser.getUser().getId();
+        //获取SecurityContextHolder中的用户id
+        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long id = loginUser.getUser().getId();
 
-            //判断新密码是否与旧密码相同
-            if(password.equals(changePassword)){
-                throw new RuntimeException("New password cannot be the same as the old password");
-            }
-
-            //获取数据库中用户的password
-            UserDAO userDAO = new UserDAO();
-            userDAO.setId(id);
-            String passwordFromDB = userDB.findPasswordById(userDAO);
-
-            //判断旧密码是否正确
-            if(!passwordEncoder.matches(password,passwordFromDB)){
-                throw new RuntimeException("Password error");
-            }
-
-            //将新密码加密
-            String encodePassword = passwordEncoder.encode(changePassword);
-
-            //将新密码覆盖数据库中的password
-            userDAO.setId(id);
-            userDAO.setPassword(encodePassword);
-            userDB.updatePasswordById(userDAO);
-
-            //更新redis中用户信息
-            loginUserRedis.getLoginUser(id.toString());
-            loginUser.getUser().setPassword(encodePassword);
-            loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Server error when updatePassword: "+e.getMessage());
+        //判断新密码是否与旧密码相同
+        if(password.equals(changePassword)){
+            throw new RuntimeException("New password cannot be the same as the old password");
         }
+
+        //获取数据库中用户的password
+        UserDAO userDAO = new UserDAO();
+        userDAO.setId(id);
+        String passwordFromDB = userDB.findPasswordById(userDAO);
+
+        //判断旧密码是否正确
+        if(!passwordEncoder.matches(password,passwordFromDB)){
+            throw new RuntimeException("Password error");
+        }
+
+        //将新密码加密
+        String encodePassword = passwordEncoder.encode(changePassword);
+
+        //将新密码覆盖数据库中的password
+        userDAO.setId(id);
+        userDAO.setPassword(encodePassword);
+        userDB.updatePasswordById(userDAO);
+
+        //更新redis中用户信息
+        loginUserRedis.getLoginUser(id.toString());
+        loginUser.getUser().setPassword(encodePassword);
+        loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
     }
 
     @Override
     public UserDAO getUserByID(Long id) {
-        try {
-            //获取用户信息
-            UserDAO userDAO = userDB.getById(id);
+        //获取用户信息
+        UserDAO userDAO = userDB.getById(id);
 
-            //判断用户是否存在
-            if(userDAO != null){
-                return userDAO;
-            }
-            else{//用户不存在
-                throw new RuntimeException("User not found");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Server error when getUserByID: "+e.getMessage());
+        //判断用户是否存在
+        if(userDAO != null){
+            return userDAO;
+        }
+        else{//用户不存在
+            throw new RuntimeException("User not found");
         }
     }
 
     @Override
     public List<UserDAO> getUserByName(String name) {
-        try {
-            //获取用户信息
-            UserDAO userDAO = new UserDAO();
-            userDAO.setName(name);
-            List<UserDAO> userDAOs = userDB.findUsersByName(userDAO);
+        //获取用户信息
+        UserDAO userDAO = new UserDAO();
+        userDAO.setName(name);
+        List<UserDAO> userDAOs = userDB.findUsersByName(userDAO);
 
-            //判断用户是否存在
-            if(!userDAOs.isEmpty()){
-                return userDAOs;
-            }
-            else{//用户不存在
-                throw new RuntimeException("User not found");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Server error when getUserByName: "+e.getMessage());
+        //判断用户是否存在
+        if(!userDAOs.isEmpty()){
+            return userDAOs;
+        }
+        else{//用户不存在
+            throw new RuntimeException("User not found");
         }
     }
 

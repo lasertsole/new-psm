@@ -51,19 +51,19 @@ public class UserController {
             return new ResponseVO(HttpStatus.OK, "Login successful", userBO.toCurrentUserVO());
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (LockedException e){
-            return new ResponseVO(HttpStatus.TOO_MANY_REQUESTS, e.getMessage());
+            return new ResponseVO(HttpStatus.TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS");
         }
         catch (BadCredentialsException e){
-            return new ResponseVO(HttpStatus.UNAUTHORIZED, e.getMessage());
+            return new ResponseVO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
         }
         catch (DisabledException e){
-            return new ResponseVO(HttpStatus.FORBIDDEN, e.getMessage());
+            return new ResponseVO(HttpStatus.FORBIDDEN, "SERVER FORBIDDEN");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -75,7 +75,7 @@ public class UserController {
             return ResponseVO.ok("FastLogin successful", userBO.toCurrentUserVO());
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -88,11 +88,14 @@ public class UserController {
             UserBO userBO = (UserBO) map.get("user");
             return new ResponseVO(HttpStatus.OK, "Login successful", userBO.toCurrentUserVO());
         }
-        catch (DuplicateKeyException | InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
+        catch (InvalidParameterException e){
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+        }
+        catch (DuplicateKeyException e){
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "DuplicateKey");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -103,7 +106,7 @@ public class UserController {
             return ResponseVO.ok("Logout successful");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -114,7 +117,7 @@ public class UserController {
             return ResponseVO.ok("Delete user successful");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -125,10 +128,10 @@ public class UserController {
             return ResponseVO.ok("Update avatar successful", avatarUrl);
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -139,10 +142,10 @@ public class UserController {
             return ResponseVO.ok("Update user successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -153,10 +156,10 @@ public class UserController {
             return ResponseVO.ok("Update password successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -172,10 +175,10 @@ public class UserController {
             return new ResponseVO(HttpStatus.OK, "Get user successful", userBO);
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -189,8 +192,12 @@ public class UserController {
             List<UserBO> userBOs = userAdaptor.getUserByName(userDTO);
 
             return new ResponseVO(HttpStatus.OK, "Get users successful", userBOs);
-        }catch (IllegalArgumentException e){
+        }
+        catch (IllegalArgumentException e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 }

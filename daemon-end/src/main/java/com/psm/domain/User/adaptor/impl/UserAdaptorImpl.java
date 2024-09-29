@@ -106,7 +106,7 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public String updateAvatar(@Valid UserDTO userDTO) throws InvalidParameterException{
+    public String updateAvatar(@Valid UserDTO userDTO) throws InvalidParameterException, Exception{
         if (
                 StringUtils.isBlank(userDTO.getOldAvatarUrl())
                 &&Objects.isNull(userDTO.getAvatar())

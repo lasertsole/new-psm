@@ -28,7 +28,7 @@ import java.util.UUID;
 public class UploadOSSUtil {
     // 导入OSS配置
     @Autowired
-    OSSUtilProperties ossUtilsProperties;
+    OSSProperties ossUtilsProperties;
 
     /**
      * 分片上传(支持断点继传)
