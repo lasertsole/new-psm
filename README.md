@@ -5,6 +5,7 @@
 ### element-plus/nuxt 快速搭建组件库
 ### gsap动画组件
 ### loadsh防抖与节流
+### tus-js-client大文件分片上传
 ## 后端:
 ### springboot3.3
 ### springsecurity+OAuth2安全框架
@@ -12,3 +13,4 @@
 ### redis(podman) 键值型内存数据库
 ### mongodb(podman) bson型内存数据库
 ### nginx(podman) 正反向代理
+### tus-java-server大文件分片上传
