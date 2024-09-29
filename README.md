@@ -5,8 +5,9 @@
 ### element-plus/nuxt 快速搭建组件库
 ### gsap动画组件
 ### loadsh防抖与节流
-### tus-js-client大文件分片上传
 ### three.js 浏览器3D渲染
+### tus-js-client大文件分片上传
+### socket.io(client) websocket全双工通信框架
 ## 后端:
 ### springboot3.3
 ### springsecurity+OAuth2安全框架
@@ -15,3 +16,4 @@
 ### mongodb(podman) bson型内存数据库
 ### nginx(podman) 正反向代理
 ### tus-java-server大文件分片上传
+### socket.io(server) websocket全双工通信框架
