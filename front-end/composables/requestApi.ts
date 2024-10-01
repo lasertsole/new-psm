@@ -101,6 +101,7 @@ export async function tusUploadApi({
   errorCB
 }:UploadParams): Promise<void> {
   let upload:Upload = new tus.Upload(file, {
+    removeFingerprintOnSuccess : true, // 上传成功后删除指纹(localstorage缓存)
     endpoint: import.meta.env.VITE_API_BASE_URL + url,
     headers: {
       token: localStorage.getItem('token')||""

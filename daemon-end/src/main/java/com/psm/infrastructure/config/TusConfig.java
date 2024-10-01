@@ -1,6 +1,7 @@
 package com.psm.infrastructure.config;
 
 import com.psm.infrastructure.utils.Tus.TusProperties;
+import com.psm.infrastructure.utils.Tus.UploadCreationExtension;
 import com.psm.infrastructure.utils.Tus.UploadSuccessExtension;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,9 @@ public class TusConfig {
     @Autowired
     private UploadSuccessExtension uploadSuccessExtension;
 
+    @Autowired
+    private UploadCreationExtension uploadCreationExtension;
+
     @PreDestroy
     public void exit() throws IOException {
         // cleanup any expired uploads and stale locks
@@ -32,6 +36,12 @@ public class TusConfig {
                 .withStoragePath(tusProperties.getTusDataPath().toAbsolutePath().toString())
                 .withUploadUri("/[a-zA-Z]+/upload")
                 .withUploadExpirationPeriod(tusProperties.getExpirationPeriod())
+                //开启线程本地缓存，加速上传
+                .withThreadLocalCache(true)
+                //停止自带的extension Creation
+                .disableTusExtension("creation")
+                //添加自定义的extension实现
+                .addTusExtension(uploadCreationExtension)//解决通过网关转发的url和后端获取的url不一致，导致无法正常上传
                 .addTusExtension(uploadSuccessExtension);
     }
 }

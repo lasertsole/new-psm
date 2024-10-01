@@ -45,7 +45,7 @@ public class UploadSuccessExtension extends AbstractTusExtension {
         requestHandlers.add(new AbstractExtensionRequestHandler() {
             @Override
             protected void appendExtensions(StringBuilder extensionBuilder) {
-                addExtension(extensionBuilder, "addPath");
+                addExtension(extensionBuilder, "UploadSuccess");
             }
         });
         requestHandlers.add(new AbstractRequestHandler() {
