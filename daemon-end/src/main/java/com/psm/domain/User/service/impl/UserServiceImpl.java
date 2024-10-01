@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
-        return loginUser.getUser();
+        return loginUser.getUserDAO();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
         //如果认证通过了，使用id生成jwt
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        UserDAO loginUserInfo = loginUser.getUser();
+        UserDAO loginUserInfo = loginUser.getUserDAO();
         String id = loginUserInfo.getId().toString();
         String jwt = jwtUtil.createJWT(id);
 
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUser().getId();
+        Long id = loginUser.getUserDAO().getId();
 
         //根据用户id删除redis中的用户信息
         loginUserRedis.removeLoginUser(String.valueOf(id));
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
 
         //更新redis中用户头像信息
         LoginUser loginUser =loginUserRedis.getLoginUser(id.toString());
-        loginUser.getUser().setAvatar(avatarUrl);
+        loginUser.getUserDAO().setAvatar(avatarUrl);
         loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
 
         return avatarUrl;
@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
         //获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUser().getId();
+        Long id = loginUser.getUserDAO().getId();
 
         //将UserDTO转化为UserDAO
         UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
         userDB.updateInfo(userDAO);
 
         //更新redis中用户信息
-        UserDAO userDAORefer = loginUser.getUser();//获取loginUser内的UserDAO引用
+        UserDAO userDAORefer = loginUser.getUserDAO();//获取loginUser内的UserDAO引用
         if (!Objects.isNull(userDAO.getName())) userDAORefer.setName(userDAO.getName());
         if (!Objects.isNull(userDAO.getProfile())) userDAORefer.setProfile(userDAO.getProfile());
         if (!Objects.isNull(userDAO.getPhone())) userDAORefer.setPhone(userDAO.getPhone());
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
         //获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUser().getId();
+        Long id = loginUser.getUserDAO().getId();
 
         //判断新密码是否与旧密码相同
         if(password.equals(changePassword)){
@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
 
         //更新redis中用户信息
         loginUserRedis.getLoginUser(id.toString());
-        loginUser.getUser().setPassword(encodePassword);
+        loginUser.getUserDAO().setPassword(encodePassword);
         loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
     }
 

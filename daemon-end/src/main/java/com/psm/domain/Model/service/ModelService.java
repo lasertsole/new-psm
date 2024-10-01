@@ -13,8 +13,9 @@ public interface ModelService {
      *
      * @param servletRequest 浏览器请求
      * @param servletResponse 服务器响应
+     * @param userId 用户id
      */
-    void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException;
+    void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException;
 
     /**
      * 上传模型信息

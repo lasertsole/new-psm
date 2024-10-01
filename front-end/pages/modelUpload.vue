@@ -40,7 +40,7 @@
                     <div class="icon"></div>
                     <div class="info">
                         <div class="detail">
-                            <span class="name">文件名称</span>
+                            <span class="name">{{ fileName }}</span>
                             <span class="pencentage">{{progress}}</span>
                         </div>
                         <div class="progressBar">
@@ -119,6 +119,7 @@
 
     const progress = ref<string>('0%');
     const hadUpload = ref<boolean>(false);
+    const fileName = ref<string>("")
 
     const request = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
         hadUpload.value = true;
@@ -127,6 +128,7 @@
     }
 
     const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传视频校验
+        fileName.value = rawFile.name;
         let typeArr=['video/mp4'];//能接收的视频文件类型
         if (typeArr.indexOf(rawFile.type)<0) {
             ElMessage.error('请导入视频类型文件');

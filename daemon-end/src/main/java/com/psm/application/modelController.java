@@ -1,6 +1,7 @@
 package com.psm.application;
 
 import com.psm.domain.Model.adaptor.ModelAdaptor;
+import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/models")
 public class ModelController {
     @Autowired
+    private UserAdaptor userAdaptor;
+    @Autowired
     private ModelAdaptor modelAdaptor;
 
     @RequestMapping(value = {"/upload/**"}, method = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.HEAD,
@@ -21,7 +24,12 @@ public class ModelController {
     @CrossOrigin(exposedHeaders = {"Location", "Upload-Offset", "Upload-Length"})//暴露header
     public ResponseVO uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
         try {
-            modelAdaptor.uploadModelEntity(servletRequest, servletResponse);
+            //获取当前用户id
+            String userId = String.valueOf(userAdaptor.getAuthorizedUserId());
+
+            // 调用上传接口
+            modelAdaptor.uploadModelEntity(servletRequest, servletResponse, userId);
+
             return ResponseVO.ok("upload model's Entity succussful");
         }
         catch (Exception e){

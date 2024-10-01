@@ -3,6 +3,7 @@ package com.psm.domain.Model.adaptor;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
 
@@ -14,5 +15,5 @@ public interface ModelAdaptor {
      * @param servletResponse
      * @return
      */
-    void uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException;
+    void uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse, String userId) throws IOException, TusException;
 }

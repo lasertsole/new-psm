@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("tb_third_party_user")
+@TableName("tb_third_party_users")
 public class OAuth2ThirdAccountDAO implements Serializable {
     private static final long serialVersionUID = 565652969569896022L;
 

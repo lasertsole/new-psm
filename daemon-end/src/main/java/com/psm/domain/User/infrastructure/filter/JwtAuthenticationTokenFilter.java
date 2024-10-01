@@ -71,7 +71,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
 
         //如果JWT验证信息过期时间小于一小时则重置JWT
         if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= refreshExpiration/1000){
-            String jwt = jwtUtil.createJWT(loginUser.getUser().getId().toString());
+            String jwt = jwtUtil.createJWT(loginUser.getUserDAO().getId().toString());
             redisCache.setCacheObject(redisKey,loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
 
             //重置的token通过返回头的方式通知客户端

@@ -79,9 +79,6 @@ public class UploadSuccessExtension extends AbstractTusExtension {
                         return;
                     }
                 }
-
-                //将本地文件所在的文件夹路径保存在上下文
-                TargetFolderPathContextHolder.setTargetFolderPath(dirPath);
             }
         });
     }

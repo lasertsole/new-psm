@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_user")
+@TableName("tb_users")
 public class UserDAO implements Serializable {
     @Serial
     private static final long serialVersionUID = -2388883145401911525L;

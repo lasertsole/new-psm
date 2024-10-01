@@ -35,10 +35,10 @@ public class TusConfig {
         return new TusFileUploadService()
                 .withStoragePath(tusProperties.getTusDataPath().toAbsolutePath().toString())
                 .withUploadUri("/[a-zA-Z]+/upload")
-                .withUploadExpirationPeriod(tusProperties.getExpirationPeriod())
+                .withUploadExpirationPeriod(tusProperties.getExpirationPeriod())//设置过期时间,单位毫秒
                 //开启线程本地缓存，加速上传
                 .withThreadLocalCache(true)
-                //停止自带的extension Creation
+                //停止自带的extension creation
                 .disableTusExtension("creation")
                 //添加自定义的extension实现
                 .addTusExtension(uploadCreationExtension)//解决通过网关转发的url和后端获取的url不一致，导致无法正常上传

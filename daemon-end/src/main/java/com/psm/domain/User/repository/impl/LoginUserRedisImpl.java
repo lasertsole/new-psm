@@ -24,7 +24,7 @@ public class LoginUserRedisImpl implements LoginUserRedis {
 
     @Override
     public void addLoginUser(LoginUser loginUser){
-        String id = loginUser.getUser().getId().toString();
+        String id = loginUser.getUserDAO().getId().toString();
         addLoginUser(id, loginUser);
     }
 
@@ -40,7 +40,7 @@ public class LoginUserRedisImpl implements LoginUserRedis {
 
     @Override
     public void removeLoginUser(LoginUser loginUser){
-        String id = loginUser.getUser().getId().toString();
+        String id = loginUser.getUserDAO().getId().toString();
         removeLoginUser(id);
     }
 }

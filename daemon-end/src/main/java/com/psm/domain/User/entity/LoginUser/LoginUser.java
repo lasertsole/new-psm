@@ -13,7 +13,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
-    private UserDAO user;
+    private UserDAO userDAO;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -22,12 +22,12 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userDAO.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getName();
+        return userDAO.getName();
     }
 
     @Override
