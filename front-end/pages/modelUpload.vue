@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="send">
-                    <el-button type="primary" @click="uploadModelInfo">发送</el-button>
+                    <el-button type="primary" @click="sendModelInfo">发送</el-button>
                 </div>
             </div>
         </transition>
@@ -155,6 +155,10 @@
         { value: '4', label: '4' },
         { value: '5', label: '5' },
     ];
+    
+    const sendModelInfo = async ()=>{
+        uploadModelInfo();
+    }
 </script>
 
 <style lang="scss" scoped>

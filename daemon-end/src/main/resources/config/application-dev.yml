@@ -124,10 +124,12 @@ spring:
 
 #mybaitis-plus配置
 mybatis-plus:
+  workerId: 1
+  datacenterId: 1
   global-config:
     db-config:
 #      table-prefix: tb_ #数据表前缀
-
+      id-type: ASSIGN_ID # 全局配置id生成策略为雪花算法
       logic-delete-field: deleted #全局逻辑删除的实体字段名
       logic-delete-value: true #逻辑已删除值(默认为 1)
       logic-not-delete-value: false #逻辑未删除值(默认为 0)

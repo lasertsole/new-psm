@@ -1,4 +1,4 @@
-import type { UserInfo } from "../types/user";
+import type { UserInfo } from "@/types/user";
 
 export const userInfo = reactive<UserInfo>({
     id: '0',
@@ -145,6 +145,7 @@ export async function register(name:string, password:string, email:string):Promi
 }
 
 export async function updateAvatar(avatar:Blob):Promise<Boolean>{
+    if(avatar == null || avatar == undefined) return false;
     const formData = new FormData();
     formData.append('oldAvatarUrl', userInfo.avatar||"");
     formData.append('avatar', avatar);
