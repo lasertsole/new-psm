@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 public interface ModelAdaptor {
     /**
@@ -24,9 +25,8 @@ public interface ModelAdaptor {
      * 上传模型信息
      *
      * @param modelDTO  模型信息
-     * @param userId    用户id
      * @throws TusException    tus异常
      * @throws IOException     IO异常
      */
-    void uploadModelInfo(ModelDTO modelDTO, String userId) throws TusException, IOException;
+    void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException, InvalidParameterException;
 }

@@ -70,11 +70,11 @@ public class TusUtil {
     }
 
     public String getAbsolutePathName() {
-        return Paths.get(getStoragePathName()).toAbsolutePath().toString();
+        return Paths.get(getStoragePathName()).toAbsolutePath().normalize().toString();
     }
 
     public String getAbsoluteFilePathName(String fullName) {
-        return (getAbsolutePathName()+"/upload/"+fullName).toString();
+        return (getAbsolutePathName() + "/uploads/" + fullName).toString();
     }
 
     public Long getExpirationPeriod(){

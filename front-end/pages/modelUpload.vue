@@ -117,7 +117,7 @@
     import type { UploadProps } from 'element-plus';
     import { UploadFilled } from '@element-plus/icons-vue'
 
-    const progress = ref<string>('0%');
+    const progress = ref<string>('0.00%');
     const hadUpload = ref<boolean>(false);
     const fileName = ref<string>("");
     const targetFilePath = ref<string>("");

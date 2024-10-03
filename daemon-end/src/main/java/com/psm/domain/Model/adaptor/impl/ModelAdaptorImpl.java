@@ -4,12 +4,15 @@ import com.psm.domain.Model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.Model.service.ModelService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.Objects;
 
 @Adaptor
 public class ModelAdaptorImpl implements ModelAdaptor {
@@ -22,7 +25,12 @@ public class ModelAdaptorImpl implements ModelAdaptor {
     }
 
     @Override
-    public void uploadModelInfo(ModelDTO modelDTO, String userId) throws TusException, IOException {
-        modelService.uploadModelInfo(modelDTO, userId);
+    public void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException {
+        if (
+                Objects.isNull(modelDTO.getUserId())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        modelService.uploadModelInfo(modelDTO);
     };
 }

@@ -21,7 +21,7 @@ public class ModelOSSImpl implements ModelOSS {
 
     @Override
     public Map<String, String> addAllModel(String localFilePath, String userId) throws Exception {
-        uploadOSSUtil.multipartUpload(localFilePath, coverFolderPath + "/" + userId);
+        uploadOSSUtil.multipartUpload(localFilePath, entityFolderPath + "/" + userId);
         return null;
     }
 }

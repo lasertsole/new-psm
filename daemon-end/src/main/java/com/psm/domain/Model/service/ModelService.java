@@ -21,9 +21,8 @@ public interface ModelService {
      * 上传模型信息
      *
      * @param modelDTO 模型DTO对象, 包括本地模型文件路径和模型信息
-     * @param userId 用户id
      * @throws TusException tus异常
      * @throws IOException io异常
      */
-    void uploadModelInfo(ModelDTO modelDTO, String userId) throws TusException, IOException;
+    void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException;
 }

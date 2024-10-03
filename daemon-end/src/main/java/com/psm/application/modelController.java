@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.InvalidParameterException;
+
 @Slf4j
 @RestController
 @RequestMapping("/models")
@@ -42,12 +44,15 @@ public class ModelController {
     public ResponseVO uploadModelInfo(ModelDTO modelDTO){
         try {
             //获取当前用户id
-            String userId = String.valueOf(userAdaptor.getAuthorizedUserId());
+            modelDTO.setUserId(userAdaptor.getAuthorizedUserId());
 
             // 调用模型信息上传接口
-            modelAdaptor.uploadModelInfo(modelDTO, userId);
+            modelAdaptor.uploadModelInfo(modelDTO);
 
             return ResponseVO.ok("upload model's info succussful");
+        }
+        catch (InvalidParameterException e){
+            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
