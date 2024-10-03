@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="send">
-                    <el-button type="primary">发送</el-button>
+                    <el-button type="primary" @click="uploadModelInfo">发送</el-button>
                 </div>
             </div>
         </transition>
@@ -119,11 +119,12 @@
 
     const progress = ref<string>('0%');
     const hadUpload = ref<boolean>(false);
-    const fileName = ref<string>("")
+    const fileName = ref<string>("");
+    const targetFilePath = ref<string>("");
 
     const request = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
         hadUpload.value = true;
-        await uploadModel(params.file, progress);
+        await uploadModel(params.file, progress, targetFilePath);
         return;
     }
 
@@ -203,11 +204,6 @@
                         margin-bottom: 10px;
                         justify-content: space-between;
                         align-items: center;
-                        font-size: 12px;
-                        
-                        .name{
-                            
-                        }
 
                         .pencentage{
                             font-size: 12px;

@@ -20,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -4515749913236387823L;
+    private static final long serialVersionUID = -8205332676572942420L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -39,10 +39,6 @@ public class ModelDTO implements Serializable {
     @ValidImage
     @ValidFileSize(maxSize = 10 * 1024)//最大10MB
     private MultipartFile cover;
-
-    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The content format is incorrect")
-    @Size(max = 255, message = "The content length must not exceed 255 characters")
-    private String entityUrl;
 
     @ValidJson
     @Size(max = 255, message = "The category length must not exceed 255 characters")

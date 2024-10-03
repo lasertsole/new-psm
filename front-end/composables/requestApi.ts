@@ -120,6 +120,10 @@ export async function tusUploadApi({
       progressCB&&progressCB(percentage + '%');
     },
     onSuccess: function () {
+      if(upload.url==null) return;
+      const parts = upload.url.split('/');
+      const uuid = parts[parts.length - 1];
+      console.log(uuid+"/"+upload.file.name);
       successCB&&successCB();
       upload.abort();
     },

@@ -1,6 +1,6 @@
 package com.psm.domain.Model.service;
 
-import com.psm.infrastructure.utils.VO.ResponseVO;
+import com.psm.domain.Model.entity.ModelDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
@@ -20,10 +20,10 @@ public interface ModelService {
     /**
      * 上传模型信息
      *
-     * @param EntityUrl 模型实体在本地的路径
-     * @return 模型和封面在阿里云oss中的路径
-     * @throws TusException
-     * @throws IOException
+     * @param modelDTO 模型DTO对象, 包括本地模型文件路径和模型信息
+     * @param userId 用户id
+     * @throws TusException tus异常
+     * @throws IOException io异常
      */
-    String uploadModelInfo(String EntityUrl) throws TusException, IOException;
+    void uploadModelInfo(ModelDTO modelDTO, String userId) throws TusException, IOException;
 }

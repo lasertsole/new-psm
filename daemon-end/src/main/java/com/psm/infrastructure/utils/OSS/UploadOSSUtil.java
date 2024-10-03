@@ -5,12 +5,15 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.OSSException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,13 +36,14 @@ public class UploadOSSUtil {
     /**
      * 分片上传(支持断点继传)
      *
-     * @param multipartFile
-     * @param folderPath
-     * @return String
-     * @throws Exception
+     * @param multipartFile 要上传的文件
+     * @param folderPath 要上传到OSS的文件夹路径
+     * @return 文件在OSS的路径
+     * @throws Exception 抛出异常
      */
     public String multipartUpload(MultipartFile multipartFile, String folderPath) throws Exception {
 
+        // 获取oss信息
         String endpoint = ossUtilsProperties.getEndpoint();
         String accessKeyId = ossUtilsProperties.getAccessKeyId();
         String accessKeySecret = ossUtilsProperties.getAccessKeySecret();
@@ -138,10 +142,47 @@ public class UploadOSSUtil {
     };
 
     /**
+     * 本地文件上传
+     *
+     * @param localFilePath 要上传的本地文件
+     * @param folderPath 要上传到OSS的文件夹路径
+     * @return 文件在OSS的路径
+     */
+    public String multipartUpload(String localFilePath, String folderPath) throws Exception {
+        // 获取oss信息
+        String endpoint = ossUtilsProperties.getEndpoint();
+        String accessKeyId = ossUtilsProperties.getAccessKeyId();
+        String accessKeySecret = ossUtilsProperties.getAccessKeySecret();
+        String bucketName = ossUtilsProperties.getBucketName();
+
+        // 根据路径找到本地文件
+        File file = new File(localFilePath);
+
+        // 获取源文件名
+        String oriFileName = file.getName();
+
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Tika tika = new Tika();
+        String mediaType = tika.detect(fileInputStream, file.getName());
+
+        // 获取文件扩展名
+        int dotIndex = oriFileName.lastIndexOf('.');
+        String fileExtension = oriFileName.substring(dotIndex);
+
+        // 文件在OSS中的名字
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))//随机化名字
+                + "-"
+                + UUID.randomUUID().toString().replaceAll("-","")//随机化名字
+                + fileExtension;//获取扩展名
+
+        return "";
+    }
+
+    /**
      * 删除单个文件
-     * @param filePath
+     * @param filePath 要删除的文件在OSS上的路径
      * @return Boolean
-     * @throws Exception
+     * @throws Exception 抛出异常
      */
     public Boolean deleteFile(String filePath) throws Exception {
         String endpoint = ossUtilsProperties.getEndpoint();
@@ -178,13 +219,13 @@ public class UploadOSSUtil {
 
     /**
      * 根据文件完整路径删除文件
+     *
      * @param fullFilePath
      * @param folderPath
      * @return Boolean
-     * @throws Exception
+     * @throws Exception 抛出异常
      */
     public Boolean deleteFileByFullUrl(String fullFilePath, String folderPath) throws Exception {
-        //https://new-psm.oss-cn-guangzhou.aliyuncs.com/users/avatars/2024-09-16-23-15-38-c1b398860d1740da8acf54bd60f63aba.webp
         try{
             URL url = new URL(fullFilePath);
             // 获取协议

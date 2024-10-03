@@ -73,10 +73,8 @@ public class UploadSuccessExtension extends AbstractTusExtension {
                 } catch (Exception e) {
                     try {
                         uploadStorageService.terminateUpload(info);
-                        return;
                     } catch (IOException | TusException ee) {
-                        log.error("delete upload", ee);
-                        return;
+                        throw new RuntimeException("delete upload" + ee.getCause());
                     }
                 }
             }

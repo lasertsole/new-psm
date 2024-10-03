@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 @Slf4j
 @Component
@@ -25,7 +26,7 @@ public class TusUtil {
         UploadInfo info;
 
         try {
-            info = this.tusFileUploadService.getUploadInfo(uploadUrl);
+            info = tusFileUploadService.getUploadInfo(uploadUrl);
         } catch (IOException | TusException e) {
             return false;
         }
@@ -38,10 +39,42 @@ public class TusUtil {
     public String getFolderName(HttpServletRequest servletRequest) throws TusException, IOException {
         String uploadUrl = servletRequest.getRequestURI();
 
-        UploadInfo info;
-
-        info = this.tusFileUploadService.getUploadInfo(uploadUrl);
+        UploadInfo info = tusFileUploadService.getUploadInfo(uploadUrl);
         return info.getId().getOriginalObject().toString();
+    }
+
+    public String getFolderName(String fullName) {
+       return fullName.split("/")[0];
+    }
+
+    public String getFileName(HttpServletRequest servletRequest) throws TusException, IOException {
+        String uploadUrl = servletRequest.getRequestURI();
+        UploadInfo info = tusFileUploadService.getUploadInfo(uploadUrl);
+
+        return info.getFileName();
+    }
+
+    public String getFileName(String fullName) {
+        return fullName.split("/")[1];
+    }
+
+    public String getFullName(HttpServletRequest servletRequest) throws TusException, IOException {
+        String uploadUrl = servletRequest.getRequestURI();
+        UploadInfo info = tusFileUploadService.getUploadInfo(uploadUrl);
+
+        return info.getId().getOriginalObject().toString() + "/" + info.getFileName();
+    }
+
+    public String getStoragePathName() {
+        return tusProperties.getTusDataPath().toString();
+    }
+
+    public String getAbsolutePathName() {
+        return Paths.get(getStoragePathName()).toAbsolutePath().toString();
+    }
+
+    public String getAbsoluteFilePathName(String fullName) {
+        return (getAbsolutePathName()+"/upload/"+fullName).toString();
     }
 
     public Long getExpirationPeriod(){

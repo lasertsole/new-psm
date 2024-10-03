@@ -1,6 +1,7 @@
 package com.psm.domain.Model.adaptor.impl;
 
 import com.psm.domain.Model.adaptor.ModelAdaptor;
+import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.Model.service.ModelService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,4 +20,9 @@ public class ModelAdaptorImpl implements ModelAdaptor {
     public void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException {
         modelService.uploadModelEntity(servletRequest, servletResponse, userId);
     }
+
+    @Override
+    public void uploadModelInfo(ModelDTO modelDTO, String userId) throws TusException, IOException {
+        modelService.uploadModelInfo(modelDTO, userId);
+    };
 }

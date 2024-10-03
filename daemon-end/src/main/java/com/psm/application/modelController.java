@@ -1,6 +1,7 @@
 package com.psm.application;
 
 import com.psm.domain.Model.adaptor.ModelAdaptor;
+import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,13 +28,29 @@ public class ModelController {
             //获取当前用户id
             String userId = String.valueOf(userAdaptor.getAuthorizedUserId());
 
-            // 调用上传接口
+            // 调用模型上传接口
             modelAdaptor.uploadModelEntity(servletRequest, servletResponse, userId);
 
             return ResponseVO.ok("upload model's Entity succussful");
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:"+e.getCause());
+        }
+    }
+
+    @PostMapping("/uploadInfo")
+    public ResponseVO uploadModelInfo(ModelDTO modelDTO){
+        try {
+            //获取当前用户id
+            String userId = String.valueOf(userAdaptor.getAuthorizedUserId());
+
+            // 调用模型信息上传接口
+            modelAdaptor.uploadModelInfo(modelDTO, userId);
+
+            return ResponseVO.ok("upload model's info succussful");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
         }
     }
 }
