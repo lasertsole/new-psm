@@ -1,11 +1,11 @@
 import type { modelInfo } from "@/types/model";
 
-export async function uploadModel(file:File, progressRef:Ref, targetFilePathRef:Ref):Promise<void> {
+export async function uploadModel(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
     return await tusUploadApi({
         file:file, 
         url:'/models/upload', 
         progressCB:(progress:string)=>{
-            progressRef.value = progress;
+            progressFuc(progress);
         },
         successCB:()=>{
             targetFilePathRef.value = file.name;
@@ -17,9 +17,9 @@ export async function uploadModelInfo({title, content, cover, category}:modelInf
     if(!title || !content || !cover || !category) return false;
     const formData = new FormData();
     formData.append('title', title);
-    formData.append('avatar', content);
+    formData.append('content', content);
     formData.append('cover', cover);
-    formData.append('category', category);
+    formData.append('category', JSON.stringify(category));
     
     const res:any = await fetchApi({
         url: '/models/uploadInfo',

@@ -7,6 +7,7 @@ import com.psm.infrastructure.annotation.spring.Adaptor;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import me.desair.tus.server.exception.TusException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,9 +26,13 @@ public class ModelAdaptorImpl implements ModelAdaptor {
     }
 
     @Override
-    public void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException {
+    public void uploadModelInfo(@Valid ModelDTO modelDTO) throws TusException, IOException {
         if (
                 Objects.isNull(modelDTO.getUserId())
+                || StringUtils.isBlank(modelDTO.getTitle())
+                || StringUtils.isBlank(modelDTO.getContent())
+                || Objects.isNull(modelDTO.getCover())
+                || StringUtils.isBlank(modelDTO.getCategory())
         )
             throw new InvalidParameterException("Invalid parameter");
 

@@ -1,39 +1,17 @@
 <template>
     <div class="videoUpload">
-        <transition mode="out-in">
-            <el-upload
-                v-if="!hadUpload"
-                class="upload-base"
-                drag
-                :http-request="request"
-                :before-upload="beforeAvatarUpload"
-                :on-success="handleAvatarSuccess"
-                >
-                <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-                <div class="el-upload__text">
-                    <el-space direction="vertical">
-                        <el-text class="mx-1">拖拽到此处</el-text>
-                        <el-button type="primary">点击上传</el-button>
-                    </el-space>
-                </div>
-                <template #tip>
-                    <div class="el-upload__tip">
-                        <el-row justify="center">
-                            <el-text>仅支持mp4格式</el-text>
-                        </el-row>
-                    </div>
-                        <el-row justify="center">
-                            <el-text>上传视频，即表示您已同意</el-text>
-                            <el-link type="primary" href="">《用户协议》</el-link>
-                            <el-text>与</el-text>
-                            <el-link type="primary" href="">《隐私政策》</el-link>
-                        </el-row>
-                    
-                </template>
-            </el-upload>
+        <transition-group name="v">
+            <model-upload-entity
+                key="0"
+                v-show="!hadUpload"
+                @upload-start="hadUpload=true"
+                @upload-progress="progressChange"
+            >
+            </model-upload-entity>
 
             <div
-                v-else
+                key="1"
+                v-show="hadUpload"
                 class="upload-detail"
             >
                 <div class="videoProgress">
@@ -41,38 +19,36 @@
                     <div class="info">
                         <div class="detail">
                             <span class="name">{{ fileName }}</span>
-                            <span class="pencentage">{{progress}}</span>
+                            <span class="pencentage">{{ progress }}</span>
                         </div>
                         <div class="progressBar">
                             <div :class="{progress:true, success:progress=='100.00%'}"></div>
                         </div>
                     </div>
                 </div>
+                
                 <div class="cover">
                     <span>封面</span>
                     <div>
-                        <el-upload
-                            drag
-                        >
-                            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-                            <div class="el-upload__text">
-                                <el-space direction="vertical">
-                                    <el-text class="mx-1">拖拽到此处</el-text>
-                                    <el-button type="primary">点击上传</el-button>
-                                </el-space>
-                            </div>
-                        </el-upload>
+                        <model-upload-cover
+                            @upload-start="changeCover"
+                        ></model-upload-cover>
                     </div>
                 </div>
+                
                 <div class="title">
                     <span>标题</span>
-                    <el-input type="text" placeholder="请输入视频标题" />
+                    <el-input v-model="title" type="text" placeholder="请输入视频标题" maxlength="20" show-word-limit/>
                 </div>
+                
                 <div class="tag">
                     <span>标签</span>
                     <div>
-                        <el-select placeholder="原始语言" clearable>
-                        <el-option
+                        <el-select
+                            v-model="category.oriLan" 
+                            placeholder="原始语言" 
+                            clearable>
+                            <el-option
                                 v-for="item in lanOpts"
                                 :key="item.value"
                                 :label="item.label"
@@ -80,7 +56,10 @@
                             />
                         </el-select>
 
-                        <el-select placeholder="目标语言" clearable>
+                        <el-select
+                            v-model="category.tarLan" 
+                            placeholder="目标语言" 
+                            clearable>
                             <el-option
                                 v-for="item in lanOpts"
                                 :key="item.value"
@@ -90,10 +69,12 @@
                         </el-select>
                     </div>
                 </div>
+                
                 <div class="profile">
                     <span>简介</span>
                     <div>
                         <el-input
+                            v-model="content"
                             :autosize="{ minRows: 3 }"
                             type="textarea"
                             size="large"
@@ -105,59 +86,143 @@
                         />
                     </div>
                 </div>
+                
                 <div class="send">
                     <el-button type="primary" @click="sendModelInfo">发送</el-button>
                 </div>
             </div>
-        </transition>
+        </transition-group>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import type { UploadProps } from 'element-plus';
-    import { UploadFilled } from '@element-plus/icons-vue'
+    import type { Category } from "@/types/model";
 
     const progress = ref<string>('0.00%');
     const hadUpload = ref<boolean>(false);
     const fileName = ref<string>("");
-    const targetFilePath = ref<string>("");
 
-    const request = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
-        hadUpload.value = true;
-        await uploadModel(params.file, progress, targetFilePath);
+    function progressChange(pgs:any):void{
+        progress.value = pgs;
+    }
+    
+    const lanOpts = [
+        { value: 'cn', label: '中文' },
+        { value: 'en', label: '英语' },
+        { value: 'jp', label: '日语' },
+    ];
+
+    const cover = ref<Blob>();//封面
+    const title = ref<string>("");//标题
+    const content = ref<string>("");//简介
+    const category = reactive<Category>(//标签
+        {
+            tarLan:"", 
+            oriLan:""
+        }
+    );
+    
+    function changeCover(coverFile:any):void{//封面上传回调
+        cover.value = coverFile;
         return;
     }
+    
+    // 校验输入标题
+    function validateTitle(title:string):boolean{
+        const regex = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]+$");
 
-    const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传视频校验
-        fileName.value = rawFile.name;
-        let typeArr=['video/mp4'];//能接收的视频文件类型
-        if (typeArr.indexOf(rawFile.type)<0) {
-            ElMessage.error('请导入视频类型文件');
-            return false;
-        } 
-
-        if (rawFile.size / 1024 / 1024 /1024 > 2) {
-            ElMessage.error('视频大小不能超过2GB');
+        if (title == '') {
+            ElMessage.error('请输入标题');
             return false;
         }
-
+        else if (title.length > 20) {
+            ElMessage.error('标题超过20个字符');
+            return false;
+        }
+        else if(!regex.test(title)){
+            ElMessage.error('标题含有非法字符');
+            return false;
+        }
+        
         return true;
     }
 
-    const handleAvatarSuccess: UploadProps['onSuccess'] = (response,uploadFile) => {
-        // imageUrl.value = URL.createObjectURL(uploadFile.raw!);
-    };
-
-    const lanOpts = [
-        { value: '1', label: '1' },
-        { value: '2', label: '2' },
-        { value: '3', label: '3' },
-        { value: '4', label: '4' },
-        { value: '5', label: '5' },
-    ];
+    // 校验输入封面
+    function validateCover(cover:Blob|undefined):boolean{
+        if (!cover) {
+            ElMessage.error('请输入封面');
+            return false;
+        }
+        
+        return true;
+    }
     
-    const sendModelInfo = async ()=>{
-        uploadModelInfo();
+    // 校验输入简介
+    function validateContent(content:string):boolean{
+        const regex = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]+$");
+
+        if (content == '') {
+            ElMessage.error('请输入简介');
+            return false;
+        }
+        else if (content.length > 20) {
+            ElMessage.error('简介超过255个字符');
+            return false;
+        }
+        else if(!regex.test(content)){
+            ElMessage.error('简介含有非法字符');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // 校验输入标签
+    function validateCategory(category:Category):boolean{
+        let oriLanFlag:boolean = false;
+        let tarLanFlag:boolean = false;
+        
+        lanOpts.forEach(item=>{
+            if(item.value == category.oriLan){
+                oriLanFlag = true;
+            }
+            if(item.value == category.tarLan){
+                tarLanFlag = true;
+            }
+        })
+
+        if(!oriLanFlag){
+            ElMessage.error('请选择源语言');
+            return false;
+        }
+        else if(!tarLanFlag){
+            ElMessage.error('请选择目标语言');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    const sendModelInfo = async ():Promise<void>=>{
+        if(!validateCover(cover.value)){
+            return;
+        }
+        else if(!validateTitle(title.value)){
+            return;
+        }
+        else if(!validateContent(title.value)){
+            return;
+        }
+        else if(!validateCategory(category)){
+            return;
+        };
+        
+        uploadModelInfo({
+            cover: cover.value,
+            title: title.value,
+            content: content.value,
+            category: category
+        });
     }
 </script>
 
@@ -169,11 +234,6 @@
         @include fullInParent();
         @include flexCenter();
         background-color: rgb(230,234,238);
-        
-        &::v-deep(.upload-base){
-            width: 70%;
-            max-width: 700px;
-        }
 
         .upload-detail{
             @include fixedRoundedRectangle(80%, 90%, 20px);
@@ -266,14 +326,6 @@
                     margin-top: 20px;
                 }
             }
-            
-            .cover{
-                &::v-deep(.el-upload-dragger){
-                    padding: 10px;
-                    width: 50%;
-                    min-width: 280px;
-                }
-            }
 
             .tag{
                 >div{
@@ -302,18 +354,9 @@
         opacity: 0;
     }
     .v-enter-active{
-        transition: opacity .7s ease;
+        transition: all .7s ease;
     }
     .v-enter-to{
         opacity: 1;
-    }
-    .v-leave-from{
-        opacity: 1;
-    }
-    .v-leave-active{
-        transition: opacity .7s ease;
-    }
-    .v-leave-to{
-        opacity: 0;
     }
 </style>

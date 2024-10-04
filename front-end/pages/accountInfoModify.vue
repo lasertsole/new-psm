@@ -129,7 +129,6 @@
 <script lang="ts" setup>
     import gsap from "gsap";
     import { ElMessage } from 'element-plus';
-    import { watch } from "vue";
 
 
     /**以下为展开合上盒子时的动画特效**/

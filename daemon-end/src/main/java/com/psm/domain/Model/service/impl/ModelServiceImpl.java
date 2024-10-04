@@ -73,6 +73,16 @@ public class ModelServiceImpl implements ModelService {
             throw new RuntimeException("文件上传失败");
         }
 
+        try {//TODO 更新数据库
+            log.info("cover is {}", modelDTO.getCover());
+            log.info("title is {}", modelDTO.getTitle());
+            log.info("content is {}", modelDTO.getContent());
+            log.info("category is {}", modelDTO.getCategory());
+        }
+        catch (Exception e){
+            log.info("更新数据库失败{}", e);
+        }
+
         try {
             // 删除redis缓存
             modelRedis.removeUploadModel(userId);

@@ -7,5 +7,10 @@ export type modelInfo = {
     modelUrl?: string;
     cover?: Blob;
     model?: Blob;
-    category?: string;
+    category?: Category;
 };
+
+export type Category = {
+    oriLan: string;
+    tarLan: string;
+}
