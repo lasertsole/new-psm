@@ -15,10 +15,10 @@ public class ModelRedisImpl implements ModelRedis {
 
     @Autowired
     private RedisCache redisCache;
-    public void addUploadModel(String id, String folderName)
+    public void addUploadModel(String id, String fullName)
     {
         Long expiration = tusUtil.getExpirationPeriod();
-        redisCache.setCacheObject("uploadModel:"+id, folderName, Math.toIntExact(expiration / 1000), TimeUnit.SECONDS);
+        redisCache.setCacheObject("uploadModel:"+id, fullName, Math.toIntExact(expiration / 1000), TimeUnit.SECONDS);
     }
 
     public String getUploadModel(String id)

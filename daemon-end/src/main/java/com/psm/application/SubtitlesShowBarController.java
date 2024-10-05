@@ -4,7 +4,7 @@ import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.entity.User.UserBO;
-import com.psm.objectValue.SubtitlesShowBarVO;
+import com.psm.valueObject.SubtitlesShowBarVO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDTO;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;

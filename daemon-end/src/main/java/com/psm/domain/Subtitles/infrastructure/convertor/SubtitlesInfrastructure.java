@@ -1,4 +1,4 @@
-package com.psm.domain.Subtitles.infrastructure;
+package com.psm.domain.Subtitles.infrastructure.convertor;
 
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;

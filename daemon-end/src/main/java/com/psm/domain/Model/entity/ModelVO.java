@@ -1,5 +1,6 @@
 package com.psm.domain.Model.entity;
 
+import com.psm.domain.Model.valueObject.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,6 @@ public class ModelVO implements Serializable {
     private String content;
     private String cover;
     private String entity;
-    private String category;
+    private Category category;
     private String createTime;
 }

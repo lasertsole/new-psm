@@ -1,4 +1,4 @@
-package com.psm.domain.User.infrastructure.Convertor;
+package com.psm.domain.User.infrastructure.convertor;
 
 import com.psm.domain.User.entity.User.*;
 import com.psm.domain.User.entity.User.UserVO.CurrentUserVO;

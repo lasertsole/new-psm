@@ -153,13 +153,13 @@ aliyun:
     #oss文件路径配置
     path:
       models:
-        coverFolderPath: models/covers
-        entityFolderPath: models/entities
+        coverFolderPath: models/{userId}/covers
+        entityFolderPath: models/{userId}/entities
       subtitles:
-        coverFolderPath: subtitles/covers
-        videoFolderPath: subtitles/videos
+        coverFolderPath: subtitles/{userId}/covers
+        videoFolderPath: subtitles/{userId}/videos
       users:
-        avatarFolderPath: users/avatars
+        avatarFolderPath: users/{userId}/avatars
 
 # websocket配置
 socketio:

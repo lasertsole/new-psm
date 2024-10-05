@@ -311,7 +311,7 @@ public class UploadOSSUtil {
             String path = url.getPath();
 
             // 获取路径
-            String endpoint = ossUtilsProperties.getEndpoint();//endpoint.split("//")[0]
+            String endpoint = ossUtilsProperties.getEndpoint();
 
             // 获取bucketName
             String bucketName = ossUtilsProperties.getBucketName();
@@ -334,9 +334,9 @@ public class UploadOSSUtil {
             // 分割路径
             String[] pathParts = trimmedPath.split("/");
 
-            // 取前两个部分并重新拼接
+            // 取除文件名部分的其他部分，重新拼接
             StringBuilder extractedPath = new StringBuilder();
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < pathParts.length-1; i++) {
                 if (i > 0) {
                     extractedPath.append("/");
                 }
@@ -344,7 +344,7 @@ public class UploadOSSUtil {
             }
 
             // 添加开头的斜杠
-            String finalPath = "/" + extractedPath.toString();
+            String finalPath = "/" + extractedPath;
 
             if (!finalPath.equals("/"+folderPath)){
                 return false;
@@ -361,7 +361,64 @@ public class UploadOSSUtil {
         catch (Exception e){
             return false;
         }
-        
+    };
+
+    /**
+     * 根据文件完整路径删除文件夹
+     *
+     * @param folderPath 文件夹路径
+     * @return Boolean
+     * @throws Exception 抛出异常
+     */
+    public Boolean deleteFolderByFullUrl(String folderPath) throws Exception {
+        try{
+            URL url = new URL(folderPath);
+            // 获取协议
+            String protocol = url.getProtocol();
+
+            // 获取主机名
+            String host = url.getHost();
+
+            // 获取路径
+            String path = url.getPath();
+
+            // 获取路径
+            String endpoint = ossUtilsProperties.getEndpoint();
+
+            // 获取bucketName
+            String bucketName = ossUtilsProperties.getBucketName();
+
+            // 拼接templateUrl
+            String templateUrl = endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1];
+
+            // 拼接fullUrlPrefix
+            StringBuilder fullUrlPrefix = new StringBuilder();
+            fullUrlPrefix.append(protocol).append("://").append(host);
+
+            // 判断是否为模板url
+            if (!templateUrl.equals(fullUrlPrefix.toString())){
+                return false;
+            }
+
+            // 去掉开头的斜杠
+            String trimmedPath = path.startsWith("/") ? path.substring(1) : path;
+
+            // 判断是否为文件夹
+            if (trimmedPath.contains(".")){//文件结尾有"."，不是文件夹
+                return false;
+            }
+
+            // 删除文件
+            String accessKeyId = ossUtilsProperties.getAccessKeyId();
+            String accessKeySecret = ossUtilsProperties.getAccessKeySecret();
+            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);//开启oss客户端
+            ossClient.deleteObject(bucketName, trimmedPath);// 删除文件或目录。如果要删除目录，目录必须为空。
+
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     };
 
     /**

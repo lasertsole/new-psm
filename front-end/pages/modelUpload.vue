@@ -4,7 +4,7 @@
             <model-upload-entity
                 key="0"
                 v-show="!hadUpload"
-                @upload-start="hadUpload=true"
+                @upload-start="uploadStart"
                 @upload-progress="progressChange"
             >
             </model-upload-entity>
@@ -45,26 +45,30 @@
                     <span>标签</span>
                     <div>
                         <el-select
-                            v-model="category.oriLan" 
-                            placeholder="原始语言" 
-                            clearable>
+                            v-model="category.style" 
+                            placeholder="风格" 
+                            clearable
+                            placement="top"
+                        >
                             <el-option
-                                v-for="item in lanOpts"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
+                                v-for="item in styleOpts"
+                                :key="item[0]"
+                                :label="item[0]"
+                                :value="item[1]"
                             />
                         </el-select>
 
                         <el-select
-                            v-model="category.tarLan" 
-                            placeholder="目标语言" 
-                            clearable>
+                            v-model="category.type" 
+                            placeholder="类型" 
+                            clearable
+                            placement="top"
+                        >
                             <el-option
-                                v-for="item in lanOpts"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
+                                v-for="item in typeOpts"
+                                :key="item[0]"
+                                :label="item[0]"
+                                :value="item[1]"
                             />
                         </el-select>
                     </div>
@@ -97,28 +101,35 @@
 
 <script lang="ts" setup>
     import type { Category } from "@/types/model";
+    import { StyleEnum, TypeEnum } from "@/enums/models.d";
 
     const progress = ref<string>('0.00%');
     const hadUpload = ref<boolean>(false);
     const fileName = ref<string>("");
 
-    function progressChange(pgs:any):void{
+    // 开始上传模型文件回调
+    function uploadStart(fln:any):void {
+        fileName.value = fln;
+        hadUpload.value = true;
+    }
+    
+    // 进度条回调
+    function progressChange(pgs:any):void {
         progress.value = pgs;
     }
     
-    const lanOpts = [
-        { value: 'cn', label: '中文' },
-        { value: 'en', label: '英语' },
-        { value: 'jp', label: '日语' },
-    ];
+    // 样式标签列表
+    const styleOpts = Object.entries(StyleEnum);
+    // 类型标签列表
+    const typeOpts = Object.entries(TypeEnum);
 
     const cover = ref<Blob>();//封面
     const title = ref<string>("");//标题
     const content = ref<string>("");//简介
     const category = reactive<Category>(//标签
         {
-            tarLan:"", 
-            oriLan:""
+            style:"", 
+            type:""
         }
     );
     
@@ -177,26 +188,29 @@
         return true;
     }
     
-    // 校验输入标签
+    // 校验输入样式标签
     function validateCategory(category:Category):boolean{
-        let oriLanFlag:boolean = false;
-        let tarLanFlag:boolean = false;
+        let styleFlag:boolean = false;
+        let typeFlag:boolean = false;
         
-        lanOpts.forEach(item=>{
-            if(item.value == category.oriLan){
-                oriLanFlag = true;
+        styleOpts.forEach(item=>{
+            if(item[1] == category.style){
+                styleFlag = true;
             }
-            if(item.value == category.tarLan){
-                tarLanFlag = true;
-            }
-        })
+        });
 
-        if(!oriLanFlag){
-            ElMessage.error('请选择源语言');
+        typeOpts.forEach(item=>{
+            if(item[1] == category.type){
+                typeFlag = true;
+            }
+        });
+
+        if(!styleFlag){
+            ElMessage.error('请选择样式');
             return false;
         }
-        else if(!tarLanFlag){
-            ElMessage.error('请选择目标语言');
+        else if(!typeFlag){
+            ElMessage.error('请选择类型');
             return false;
         }
         
@@ -214,6 +228,9 @@
             return;
         }
         else if(!validateCategory(category)){
+            return;
+        }else if(progress.value!="100.00%"){
+            ElMessage.error('请等待文件上传完成');
             return;
         };
         

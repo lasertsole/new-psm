@@ -1,4 +1,4 @@
-package com.psm.objectValue;
+package com.psm.valueObject;
 
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.User.entity.User.UserBO;

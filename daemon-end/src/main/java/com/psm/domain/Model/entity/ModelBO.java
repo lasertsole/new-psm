@@ -1,8 +1,8 @@
 package com.psm.domain.Model.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.psm.domain.Model.infrastructure.ModelConvertor;
 import com.psm.domain.Model.valueObject.Category;
-import com.psm.infrastructure.utils.MybatisPlus.JsonTypeHandler;
+import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,12 +13,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_models")
-public class ModelDAO implements Serializable {
+public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     @Serial
-    private static final long serialVersionUID = 1229110849871658674L;
+    private static final long serialVersionUID = 6433981210940280248L;
 
-    @TableId
     private Long id;
     private Long userId;
     private String title;
@@ -26,14 +24,12 @@ public class ModelDAO implements Serializable {
     private String cover;
     private String entity;
 
-    @TableField(typeHandler = JsonTypeHandler.class)
     private Category category;
     private String createTime;
     private String modifyTime;
 
-    @TableLogic
-    private Boolean deleted;
-
-    @Version
-    private Integer version;
+    @Override
+    public ModelVO toVO() {
+        return ModelConvertor.INSTANCE.BO2VO(this);
+    }
 }

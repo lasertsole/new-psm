@@ -5,7 +5,7 @@ import com.psm.infrastructure.annotation.spring.Adaptor;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
-import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
+import com.psm.domain.User.infrastructure.convertor.UserConvertor;
 import com.psm.domain.User.service.UserService;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import io.micrometer.common.util.StringUtils;

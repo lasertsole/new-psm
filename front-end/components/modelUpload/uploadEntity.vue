@@ -39,7 +39,6 @@
     const emits = defineEmits(['upload-start','upload-progress']);
 
     const hadUpload = ref<boolean>(false);
-    const fileName = ref<string>("");
     const targetFilePath = ref<string>("");
 
     const requestModel = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
@@ -53,9 +52,8 @@
     }
 
     const beforeModelUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传视频校验
-        fileName.value = rawFile.name;
         let typeArr=['video/mp4'];//能接收的视频文件类型
-        if (typeArr.indexOf(rawFile.type)<0) {
+        if (typeArr.indexOf(rawFile.type) < 0) {
             ElMessage.error('请导入视频类型文件');
             return false;
         } 
@@ -65,7 +63,7 @@
             return false;
         }
 
-        emits("upload-start");
+        emits("upload-start", rawFile.name);
         return true;
     }
 </script>

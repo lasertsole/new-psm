@@ -5,11 +5,12 @@ import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.domain.Subtitles.infrastructure.SubtitlesInfrastructure;
+import com.psm.domain.Subtitles.infrastructure.convertor.SubtitlesInfrastructure;
 import com.psm.domain.Subtitles.service.SubtitlesService;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -17,6 +18,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Adaptor
 public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
     @Autowired
@@ -82,6 +84,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
 
     @Override
     public void addSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws DuplicateKeyException, InvalidParameterException{
+        log.info("subtitlesDTO is {}", subtitlesDTO);
         // 参数判空
         if (
                 StringUtils.isBlank(subtitlesDTO.getTitle()) ||

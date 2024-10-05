@@ -11,6 +11,6 @@ export type modelInfo = {
 };
 
 export type Category = {
-    oriLan: string;
-    tarLan: string;
+    style: string;
+    type: string;
 }

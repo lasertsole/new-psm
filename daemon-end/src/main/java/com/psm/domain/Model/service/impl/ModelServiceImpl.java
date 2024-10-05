@@ -1,6 +1,9 @@
 package com.psm.domain.Model.service.impl;
 
+import com.psm.domain.Model.entity.ModelDAO;
 import com.psm.domain.Model.entity.ModelDTO;
+import com.psm.domain.Model.infrastructure.ModelConvertor;
+import com.psm.domain.Model.repository.ModelDB;
 import com.psm.domain.Model.repository.ModelOSS;
 import com.psm.domain.Model.repository.ModelRedis;
 import com.psm.domain.Model.service.ModelService;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -30,6 +34,9 @@ public class ModelServiceImpl implements ModelService {
 
     @Autowired
     private ModelOSS modelOSS;
+
+    @Autowired
+    private ModelDB modelDB;
 
     @Override
     public void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException {
@@ -65,19 +72,23 @@ public class ModelServiceImpl implements ModelService {
             throw new RuntimeException("文件未上传完成或已过期");
 
         // 将本地文件上传到OSS
+        Map<String, String> ossResultMap;
         try {
-            modelOSS.addAllModel(tusUtil.getAbsoluteFilePathName(fullName), userId);
+            ossResultMap = modelOSS.addAllModel(tusUtil.getAbsoluteFilePathName(fullName), modelDTO.getCover(), userId);
         }
         catch (Exception e){
             System.out.println(e);
             throw new RuntimeException("文件上传失败");
         }
 
-        try {//TODO 更新数据库
-            log.info("cover is {}", modelDTO.getCover());
-            log.info("title is {}", modelDTO.getTitle());
-            log.info("content is {}", modelDTO.getContent());
-            log.info("category is {}", modelDTO.getCategory());
+        try {
+            // 将ModelDTO转换为ModelDAO
+            ModelDAO modelDAO = ModelConvertor.INSTANCE.DTO2DAO(modelDTO);
+            modelDAO.setEntity(ossResultMap.get("entityUrl"));
+            modelDAO.setCover(ossResultMap.get("coverUrl"));
+
+            // 将ModelDAO存入数据库
+            modelDB.insert(modelDAO);
         }
         catch (Exception e){
             log.info("更新数据库失败{}", e);

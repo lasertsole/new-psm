@@ -2,7 +2,7 @@ package com.psm.domain.User.entity.User;
 
 import com.psm.domain.User.entity.User.UserVO.CurrentUserVO;
 import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
-import com.psm.domain.User.infrastructure.Convertor.UserConvertor;
+import com.psm.domain.User.infrastructure.convertor.UserConvertor;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -8,18 +8,18 @@ public interface UserOSS {
      *
      * @param avatarUrl 用户头像Url
      * @return 布尔值
-     * @throws Exception
+     * @throws Exception 抛出异常
      */
-    Boolean removeAvatar(String avatarUrl) throws Exception;
+    Boolean removeAvatar(String avatarUrl, String userId) throws Exception;
 
     /**
      * 上传用户头像
      *
      * @param newAvatarFile 新用户头像文件
      * @return 存在OSS的头像Url
-     * @throws Exception
+     * @throws Exception 抛出异常
      */
-    String addAvatar(MultipartFile newAvatarFile) throws Exception;
+    String addAvatar(MultipartFile newAvatarFile, String userId) throws Exception;
 
     /**
      * 更新用户头像
@@ -28,5 +28,13 @@ public interface UserOSS {
      * @param newAvatarFile 新头像文件
      * @return 新头像存在OSS的Url
      */
-    String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile) throws Exception;
+    String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile, String userId) throws Exception;
+
+    /**
+     * 根据用户名删除模型文件夹。在删除用户时会用到，删除用户时，会直接删除用户文件夹，不管模型文件夹是否为空
+     *
+     * @return 布尔值
+     * @throws Exception 抛出异常
+     */
+    Boolean removeUserFolder(String userId) throws Exception;
 }

@@ -15,19 +15,34 @@ public class UserOSSImpl implements UserOSS {
     @Autowired
     UploadOSSUtil uploadOSSUtil;
 
+    private String proccessAvatarFolderPath(String userId){
+        return avatarFolderPath.replace("{userId}", userId);
+    };
+
     @Override
-    public Boolean removeAvatar(String avatarUrl) throws Exception {
-        return uploadOSSUtil.deleteFileByFullUrl(avatarUrl, avatarFolderPath);
+    public Boolean removeAvatar(String avatarUrl, String userId) throws Exception {
+        return uploadOSSUtil.deleteFileByFullUrl(avatarUrl, proccessAvatarFolderPath(userId));
     }
 
     @Override
-    public String addAvatar(MultipartFile newAvatarFile) throws Exception {
-        return uploadOSSUtil.multipartUpload(newAvatarFile, avatarFolderPath);
+    public String addAvatar(MultipartFile newAvatarFile, String userId) throws Exception {
+        return uploadOSSUtil.multipartUpload(newAvatarFile, proccessAvatarFolderPath(userId));
     }
 
     @Override
-    public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile) throws Exception{
-        removeAvatar(oldAvatarUrl);
-        return addAvatar(newAvatarFile);
+    public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile, String userId) throws Exception{
+        try {
+            removeAvatar(oldAvatarUrl, userId);
+        }
+        catch (Exception e){
+            throw e;
+        }
+
+        return addAvatar(newAvatarFile, userId);
+    }
+
+    @Override
+    public Boolean removeUserFolder(String userId) throws Exception{
+        return uploadOSSUtil.deleteFolderByFullUrl(proccessAvatarFolderPath(userId));
     }
 }
