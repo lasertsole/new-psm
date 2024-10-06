@@ -136,8 +136,8 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true #开启驼峰命名
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #日志配置
-  #实体类所对应的包
-  type-aliases-package: com.psm.domain
+  #实体类所对应的包（如果不配置，则需要配置TableName注解）
+#  type-aliases-package: com.psm.domain
   #扫描通用枚举的包
   type-enums-package: com.psm.domain
 
@@ -153,13 +153,13 @@ aliyun:
     #oss文件路径配置
     path:
       models:
-        coverFolderPath: models/{userId}/covers
-        entityFolderPath: models/{userId}/entities
+        coverFolderPath: "{userId}/models/covers"
+        entityFolderPath: "{userId}/models/entities"
       subtitles:
-        coverFolderPath: subtitles/{userId}/covers
-        videoFolderPath: subtitles/{userId}/videos
+        coverFolderPath: "{userId}/subtitles/covers"
+        videoFolderPath: "{userId}/subtitles/videos"
       users:
-        avatarFolderPath: users/{userId}/avatars
+        avatarFolderPath: "{userId}/users/avatars"
 
 # websocket配置
 socketio:

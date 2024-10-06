@@ -13,11 +13,11 @@
 </template>
   
 <script lang="ts" setup>
-  import { ref } from 'vue'
-  import { ElMessage } from 'element-plus'
-  import { Plus } from '@element-plus/icons-vue'
+  import { ref } from 'vue';
+  import { ElMessage } from 'element-plus';
+  import { Plus } from '@element-plus/icons-vue';
   
-  import type { UploadProps } from 'element-plus'
+  import type { UploadProps, UploadRawFile } from 'element-plus';
 
   const emits = defineEmits(['upload-start']);
   
@@ -29,7 +29,7 @@
         return;
     };
 
-    const beforeCoverUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传视频校验
+    const beforeCoverUpload: UploadProps['beforeUpload'] = (rawFile:UploadRawFile):boolean => {//上传视频校验
         let typeArr=['image/jpeg', 'image/webp', 'image/png', 'svg+xml'];//能接收的图片文件类型
         if (typeArr.indexOf(rawFile.type)<0) {
             ElMessage.error('请输入图片类型文件');

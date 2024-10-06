@@ -17,7 +17,7 @@
             <template #tip>
                 <div class="el-upload__tip">
                     <el-row justify="center">
-                        <el-text>仅支持mp4格式</el-text>
+                        <el-text>仅支持obj格式</el-text>
                     </el-row>
                 </div>
                     <el-row justify="center">
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-    import type { UploadProps } from 'element-plus';
+    import type { UploadProps, UploadRawFile } from 'element-plus';
     import { UploadFilled } from '@element-plus/icons-vue'
 
     const emits = defineEmits(['upload-start','upload-progress']);
@@ -51,15 +51,15 @@
         return;
     }
 
-    const beforeModelUpload: UploadProps['beforeUpload'] = (rawFile):boolean => {//上传视频校验
-        let typeArr=['video/mp4'];//能接收的视频文件类型
-        if (typeArr.indexOf(rawFile.type) < 0) {
-            ElMessage.error('请导入视频类型文件');
+    const beforeModelUpload: UploadProps['beforeUpload'] = (rawFile:UploadRawFile):boolean => {//上传视频校验
+        let typeArr=['obj'];//能接收的视频文件类型
+        if (typeArr.indexOf(rawFile.name.split(".")[1]) < 0) {
+            ElMessage.error('请导入模型类型文件');
             return false;
         } 
 
         if (rawFile.size / 1024 / 1024 /1024 > 2) {
-            ElMessage.error('视频大小不能超过2GB');
+            ElMessage.error('模型大小不能超过2GB');
             return false;
         }
 

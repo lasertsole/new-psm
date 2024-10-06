@@ -317,6 +317,7 @@
                         position: absolute;
                         @include fixedCircle(100px);
                         top: -40px;
+                        background-color: white;
                     }
                 }
 

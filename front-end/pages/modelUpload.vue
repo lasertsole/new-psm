@@ -269,7 +269,7 @@
 
                 .icon{
                     @include fixedSquare(50px);
-                    @include fullImg("/icons/videoFile.svg");
+                    @include fullImg("/icons/model.svg");
                 }
 
                 .info{

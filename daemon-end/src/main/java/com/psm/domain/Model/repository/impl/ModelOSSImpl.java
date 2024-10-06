@@ -24,6 +24,10 @@ public class ModelOSSImpl implements ModelOSS {
         return entityFolderPath.replace("{userId}", userId);
     }
 
+    private String proccessCoverFolderPath(String userId){
+        return coverFolderPath.replace("{userId}", userId);
+    }
+
     @Override
     public String addModelEntity(String localFilePath, String userId) throws Exception {
         return uploadOSSUtil.multipartUpload(localFilePath, proccessEntityFolderPath(userId));
@@ -48,12 +52,12 @@ public class ModelOSSImpl implements ModelOSS {
 
     @Override
     public Boolean removeCover(String coverUrl, String userId) throws Exception {
-        return uploadOSSUtil.deleteFileByFullUrl(coverUrl, proccessEntityFolderPath(userId));
+        return uploadOSSUtil.deleteFileByFullUrl(coverUrl, proccessCoverFolderPath(userId));
     }
 
     @Override
     public String addCover(MultipartFile newAvatarFile, String userId) throws Exception {
-        return uploadOSSUtil.multipartUpload(newAvatarFile, proccessEntityFolderPath(userId));
+        return uploadOSSUtil.multipartUpload(newAvatarFile, proccessCoverFolderPath(userId));
     }
 
     @Override

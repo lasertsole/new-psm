@@ -10,12 +10,14 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "dat.gui": "^0.7.9",
     "gsap": "^3.12.5",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",
     "nuxt": "^3.12.4",
     "socket.io-client": "^4.7.5",
     "swiper": "^8.4.7",
+    "three": "^0.169.0",
     "tus-js-client": "^4.1.0",
     "vue": "latest",
     "vue-awesome-swiper": "^5.0.1",

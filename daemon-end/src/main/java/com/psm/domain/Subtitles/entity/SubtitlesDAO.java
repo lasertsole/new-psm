@@ -1,8 +1,8 @@
 package com.psm.domain.Subtitles.entity;
 
-import com.alibaba.fastjson2.JSON;
+import com.psm.domain.Subtitles.valueObject.Category;
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.psm.infrastructure.utils.MybatisPlus.JsonTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,8 +26,8 @@ public class SubtitlesDAO implements Serializable {
     private String cover;
     private String video;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private String category;
+    @TableField(typeHandler = JsonTypeHandler.class)
+    private Category category;
     private String createTime;
     private String modifyTime;
 
@@ -36,16 +36,4 @@ public class SubtitlesDAO implements Serializable {
 
     @Version
     private Integer version;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Category{
-        private String oriLan = "";//原始语言
-        private String tarLan = "";//目标语言
-    }
-
-    public Category getCategory() {
-        return JSON.parseObject(category, Category.class);
-    }
 }
