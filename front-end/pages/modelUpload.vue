@@ -217,7 +217,7 @@
         return true;
     }
     
-    const sendModelInfo = async ():Promise<void>=>{
+    const sendModelInfo = debounce(async ():Promise<void>=>{
         if(!validateCover(cover.value)){
             return;
         }
@@ -240,7 +240,7 @@
             content: content.value,
             category: category
         });
-    }
+    });
 </script>
 
 <style lang="scss" scoped>
