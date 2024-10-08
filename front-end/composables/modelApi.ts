@@ -37,6 +37,7 @@ export async function uploadModelInfo({title, content, cover, category}:modelInf
     }
 
     ElMessage.success('上传模型信息成功');
+    navigateTo('/');
     
     return true;
 };

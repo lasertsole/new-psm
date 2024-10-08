@@ -1,10 +1,14 @@
 package com.psm.domain.Subtitles.valueObject;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 public class Category {
     private String oriLan = "";//原始语言

@@ -77,7 +77,6 @@ public class ModelServiceImpl implements ModelService {
             ossResultMap = modelOSS.addAllModel(tusUtil.getAbsoluteFilePathName(fullName), modelDTO.getCover(), userId);
         }
         catch (Exception e){
-            System.out.println(e);
             throw new RuntimeException("文件上传失败");
         }
 

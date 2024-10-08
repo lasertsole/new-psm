@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.entity.LoginUser.LoginUser;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.infrastructure.convertor.UserConvertor;
 import com.psm.domain.User.repository.LoginUserRedis;
+import com.psm.domain.User.repository.UserExtensionDB;
 import com.psm.domain.User.repository.UserOSS;
 import com.psm.domain.User.repository.UserDB;
 import com.psm.domain.User.service.UserService;
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private LoginUserRedis loginUserRedis;
+
+    @Autowired
+    private UserExtensionDB userExtensionDB;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -103,6 +108,9 @@ public class UserServiceImpl implements UserService {
 
         // 将register对象保存到数据库
         userDB.save(register);
+
+        // 在数据库中创建一个UserExtension记录
+        userExtensionDB.insert(new UserExtensionDAO(register.getId()));
 
         // 使用未加密密码的user对象登录
         Map<String, Object> loginMap = login(userDTO);

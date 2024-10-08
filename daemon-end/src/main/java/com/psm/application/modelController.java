@@ -3,6 +3,9 @@ package com.psm.application;
 import com.psm.domain.Model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.User.adaptor.UserAdaptor;
+import com.psm.domain.User.adaptor.UserExtensionAdapter;
+import com.psm.domain.User.entity.UserExtension.UserExtensionBO;
+import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +22,10 @@ import java.security.InvalidParameterException;
 public class ModelController {
     @Autowired
     private UserAdaptor userAdaptor;
+
+    @Autowired
+    private UserExtensionAdapter userExtensionAdapter;
+
     @Autowired
     private ModelAdaptor modelAdaptor;
 
@@ -44,10 +51,14 @@ public class ModelController {
     public ResponseVO uploadModelInfo(ModelDTO modelDTO){
         try {
             //获取当前用户id
-            modelDTO.setUserId(userAdaptor.getAuthorizedUserId());
+            Long UserId = userAdaptor.getAuthorizedUserId();
+            modelDTO.setUserId(UserId);
 
             // 调用模型信息上传接口
             modelAdaptor.uploadModelInfo(modelDTO);
+
+            // 更新数据库中用户上传模型数量+1
+            userExtensionAdapter.addOneWorkNumById(new UserExtensionDTO(UserId));
 
             return ResponseVO.ok("upload model's info succussful");
         }
