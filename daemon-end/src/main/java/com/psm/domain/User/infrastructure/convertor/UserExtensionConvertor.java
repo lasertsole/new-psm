@@ -13,4 +13,6 @@ public abstract class UserExtensionConvertor {
     public abstract UserExtensionDAO DTO2DAO(UserExtensionDTO userExtensionDTO);
 
     public abstract UserExtensionBO DAO2BO(UserExtensionDAO userExtensionDAO);
+
+    public abstract UserExtensionDTO BO2DTO(UserExtensionBO userExtensionBO);
 }

@@ -2,6 +2,7 @@ package com.psm.domain.User.entity.UserExtension;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,11 @@ public class UserExtensionDAO implements Serializable {
     @TableId
     private Long id;
     private short work_num = 0;
+    private String createTime;
+    private String modifyTime;
+
+    @Version
+    private Integer version;
 
     public UserExtensionDAO(Long id) {
         this.id = id;

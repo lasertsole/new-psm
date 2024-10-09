@@ -29,6 +29,11 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
+    public void insert(UserExtensionBO userExtensionBO) {
+        insert(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
+    }
+
+    @Override
     public UserExtensionBO selectById(@Valid UserExtensionDTO userExtensionDTO) {
         if (ObjectUtils.isNull(userExtensionDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
@@ -36,6 +41,11 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
         UserExtensionDAO userExtensionDAO = userExtensionService.selectById(userExtensionDTO.getId());
 
         return UserExtensionConvertor.INSTANCE.DAO2BO(userExtensionDAO);
+    }
+
+    @Override
+    public UserExtensionBO selectById(UserExtensionBO userExtensionBO) {
+        return selectById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
     }
 
     @Override
@@ -52,11 +62,21 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
+    public boolean updateById(UserExtensionBO userExtensionBO) {
+        return updateById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
+    }
+
+    @Override
     public short selectWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (ObjectUtils.isNull(userExtensionDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
         return userExtensionService.selectWorkNumById(userExtensionDTO.getId());
+    }
+
+    @Override
+    public short selectWorkNumById(UserExtensionBO userExtensionBO) {
+        return selectWorkNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
     }
 
     @Override
@@ -71,10 +91,20 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
+    public boolean updateWorkNumById(UserExtensionBO userExtensionBO) {
+        return updateWorkNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
+    }
+
+    @Override
     public boolean addOneWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (ObjectUtils.isNull(userExtensionDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
         return userExtensionService.addOneWorkNumById(userExtensionDTO.getId());
+    }
+
+    @Override
+    public boolean addOneWorkNumById(UserExtensionBO userExtensionBO) {
+        return addOneWorkNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
     }
 }

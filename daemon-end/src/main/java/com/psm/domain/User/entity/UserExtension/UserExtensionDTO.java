@@ -16,6 +16,8 @@ public class UserExtensionDTO implements Serializable {
 
     private Long id;
     private short work_num = 0;
+    private String createTime;
+    private String modifyTime;
 
     public UserExtensionDTO(Long id) {
         this.id = id;

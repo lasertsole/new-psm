@@ -100,10 +100,10 @@ public interface UserService {
     /**
      * 按创建时间排序获取用户列表
      *
-     * @param currentPage 当前页码
+     * @param current 当前页码
      * @param pageSize 每页用户信息条数
      * @return 用户信息列表
      */
-    List<UserDAO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize);
+    List<UserDAO> getUserOrderByCreateTimeAsc(Integer current, Integer pageSize);
 }
 

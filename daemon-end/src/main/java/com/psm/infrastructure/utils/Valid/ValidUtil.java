@@ -1,36 +1,27 @@
-package com.psm.validation;
+package com.psm.infrastructure.utils.Valid;
 
-import com.psm.domain.User.entity.User.UserDTO;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 
+import java.security.InvalidParameterException;
 import java.util.Map;
 
-@Slf4j
-@SpringBootTest
-public class validationUser {
+@Component
+public class ValidUtil {
     @Autowired
     private Validator validator;
 
-    @Test
-    void validate() {
-        // 创建UserDTO实例
-        UserDTO userDTO = new UserDTO();
-
+    public <T> void validate(Map map, Class<T> clazz) throws InstantiationException, IllegalAccessException {
         // 使用DataBinder进行绑定和验证
-        DataBinder dataBinder = new DataBinder(userDTO);
+        DataBinder dataBinder = new DataBinder(clazz.newInstance());
         dataBinder.setValidator(validator);
 
         // 绑定数据
-        dataBinder.bind(new MutablePropertyValues(
-                Map.of("email", "3132225629@qq.com", "phone", true)
-        ));
+        dataBinder.bind(new MutablePropertyValues(map));
 
         // 验证
         dataBinder.validate();
@@ -39,14 +30,13 @@ public class validationUser {
         BindingResult bindingResult = dataBinder.getBindingResult();
 
         if (bindingResult.hasErrors()) {
+            StringBuilder errLogs = new StringBuilder();
             for (org.springframework.validation.FieldError error : bindingResult.getFieldErrors()) {
                 String field = error.getField();
                 String message = error.getDefaultMessage();
-                log.error("字段 {} 验证失败: {}", field, message);
+                errLogs.append("字段 ").append(field).append(" 验证失败: ").append(message).append("   ");
             }
-        } else {
-            // 验证成功，继续处理
-            log.info("用户信息验证成功！");
+            throw new InvalidParameterException(errLogs.toString());
         }
     }
 }
