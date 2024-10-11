@@ -1,5 +1,5 @@
 import { resolve } from 'pathe'
-
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   // 不使用开发工具
@@ -7,67 +7,8 @@ export default defineNuxtConfig({
 
   // 导入第三方模块
   modules: [
-    '@element-plus/nuxt',
-    '@vite-pwa/nuxt'
+    '@element-plus/nuxt'
   ],
-  
-  pwa: {
-    strategies: 'generateSW',
-    srcDir: "service-worker",
-    filename: "sw.ts",
-    registerType: 'autoUpdate',
-    // 在 Nitro 的 routeRules 中注册 Web Manifest
-    registerWebManifestInRouteRules: true,
-    manifest: {
-      name: process.env.VITE_APP_NAME,
-      short_name: process.env.VITE_APP_NAME,
-      icons: [
-        {
-          src: '/favicon/tab_icon.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: '/favicon/tab_icon.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-      ],
-      theme_color: '#ffffff',
-      display: 'standalone',
-      start_url: '/',
-    },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
-    workbox: { // 浏览器缓存策略
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-      runtimeCaching: [
-        {
-          urlPattern: /^https:\/\/localhost\/.*/i, //TODO 修改 样式为/^https:\/\/fonts\.googleapis\.com\/.*/i
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'local-cache',
-            expiration: {
-              maxEntries: 20,
-              maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
-            },
-          }
-        }
-      ]
-    },
-    client: {
-      installPrompt: true, // 启用 beforeinstallprompt 事件拦截
-      periodicSyncForUpdates: 60, // 每 60 秒同步更新
-    },
-    devOptions: {
-      enabled: true,
-      suppressWarnings: true,
-      navigateFallback: '/',
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
-    },
-  },
   //项目信息
   app:{
     head:{
@@ -131,3 +72,4 @@ export default defineNuxtConfig({
     }
   }
 })
+

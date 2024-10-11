@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@vite-pwa/nuxt": "^0.10.5",
     "dat.gui": "^0.7.9",
     "gsap": "^3.12.5",
     "lodash-es": "^4.17.21",

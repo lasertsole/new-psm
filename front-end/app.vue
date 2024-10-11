@@ -1,6 +1,5 @@
 <template>
   <div>
-    <NuxtPwaManifest />
     <NuxtLayout>
       <NuxtPage/>
     </NuxtLayout>
@@ -14,7 +13,6 @@
   const { $on }= useNuxtApp();
   import {onMounted} from "vue"
   const { $emit } = useNuxtApp();
-  import { useRuntimeConfig } from '#imports';
 
   // 这里的代码仅在客户端执行
   onMounted(()=>{
@@ -30,8 +28,5 @@
         };
       }, 0);
     }
-
-    console.log(useNuxtApp().$pwa.swActivated);
-    
   });
 </script>
