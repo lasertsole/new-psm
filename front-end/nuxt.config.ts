@@ -6,9 +6,42 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
 
   // 导入第三方模块
-  modules: [
-    '@element-plus/nuxt'
-  ],
+  modules: ['@element-plus/nuxt', '@vite-pwa/nuxt'],
+  pwa: {
+    strategies: 'injectManifest',
+    srcDir: "service-worker",
+    filename: "sw.ts",
+    registerType: 'autoUpdate',
+    manifest: {
+      name: process.env.VITE_APP_NAME,
+      short_name: process.env.VITE_APP_NAME,
+      icons: [
+        {
+          src: '/favicon/tab_icon.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/favicon/tab_icon.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
+      theme_color: '#ffffff',
+      display: 'standalone',
+      start_url: '/',
+    },
+    injectManifest: {
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
+
   //项目信息
   app:{
     head:{
@@ -72,4 +105,3 @@ export default defineNuxtConfig({
     }
   }
 })
-
