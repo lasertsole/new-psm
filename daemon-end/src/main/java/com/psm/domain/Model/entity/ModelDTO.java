@@ -19,7 +19,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -8205332676572942420L;
+    private static final long serialVersionUID = 5254396992349622966L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -42,4 +42,6 @@ public class ModelDTO implements Serializable {
     @ValidJson
     @Size(max = 255, message = "The category length must not exceed 255 characters")
     private String category;
+
+    private boolean visable = true;
 }

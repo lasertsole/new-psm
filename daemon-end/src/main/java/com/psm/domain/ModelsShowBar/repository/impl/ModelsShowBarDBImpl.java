@@ -11,11 +11,13 @@ import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.repository.mapper.UserExtensionMapper;
 import com.psm.domain.User.repository.mapper.UserMapper;
 import com.psm.infrastructure.annotation.spring.Repository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Repository
 public class ModelsShowBarDBImpl implements ModelsShowBarDB {
     @Autowired
@@ -31,19 +33,25 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         LambdaQueryWrapper<UserExtensionDAO> userExtensionWrapper = new LambdaQueryWrapper<>();
         userExtensionWrapper.select(UserExtensionDAO::getId);
-        userExtensionWrapper.gt(UserExtensionDAO::getWork_num, 0);
+        userExtensionWrapper.gt(UserExtensionDAO::getModel_num, 0);
         userExtensionWrapper.orderByDesc(UserExtensionDAO::getCreateTime);
         Page<UserExtensionDAO> page = new Page<>(currentPage, pageSize);
         Page<UserExtensionDAO> UserExtensionDAOResultPage = userExtensionMapper.selectPage(page, userExtensionWrapper);
         List<UserExtensionDAO> UserExtensionDAOResultList = UserExtensionDAOResultPage.getRecords();
+
+        log.info("UserExtensionDAOResultList is {} ", UserExtensionDAOResultList);
 
         // 创建一个Map，用于存储用户ID和ModelsShowBarDAO的映射
         Map<Long, ModelsShowBarDAO> collect = UserExtensionDAOResultList.stream().collect(Collectors.toMap(
                 UserExtensionDAO::getId, userExtensionDAO -> new ModelsShowBarDAO()
         ));
 
+        log.info("collect is {} ", collect);
+
         // 获取用户ID列表，这个ID列表是按照时间降序排序的
         List<Long> userIds = UserExtensionDAOResultList.stream().map(UserExtensionDAO::getId).toList();
+
+        log.info("userIds is {} ", userIds);
 
         // 按照用户ID列表获取用户列表
         LambdaQueryWrapper<UserDAO> userWrapper = new LambdaQueryWrapper<>();
@@ -55,6 +63,8 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
             modelsShowBarDAO.setModelDAOs(new ArrayList<ModelDAO>());
         });
 
+        log.info("userDAOList is {}", userDAOList);
+
         // 按照用户ID列表获取作品模型列表
         LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
         modelWrapper.in(ModelDAO::getUserId, userIds);
@@ -63,6 +73,8 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
             ModelsShowBarDAO modelsShowBarDAO = collect.get(modelDAO.getUserId());
             modelsShowBarDAO.getModelDAOs().add(modelDAO);
         });
+
+        log.info("modelDAOList is {}", modelDAOList);
 
         // 返回结果
         return collect.values().stream().toList();

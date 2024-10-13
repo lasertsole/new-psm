@@ -20,7 +20,7 @@ public class UserExtensionDAO implements Serializable {
 
     @TableId
     private Long id;
-    private short work_num = 0;
+    private short model_num = 0;
     private String createTime;
     private String modifyTime;
 

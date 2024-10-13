@@ -26,7 +26,7 @@ public class ModelAdaptorImpl implements ModelAdaptor {
     }
 
     @Override
-    public void uploadModelInfo(@Valid ModelDTO modelDTO) throws TusException, IOException {
+    public void uploadModelInfo(@Valid ModelDTO modelDTO) throws Exception {
         if (
                 Objects.isNull(modelDTO.getUserId())
                 || StringUtils.isBlank(modelDTO.getTitle())

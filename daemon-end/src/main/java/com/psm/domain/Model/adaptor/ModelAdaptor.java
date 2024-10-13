@@ -28,5 +28,5 @@ public interface ModelAdaptor {
      * @throws TusException    tus异常
      * @throws IOException     IO异常
      */
-    void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException, InvalidParameterException;
+    void uploadModelInfo(ModelDTO modelDTO) throws Exception;
 }

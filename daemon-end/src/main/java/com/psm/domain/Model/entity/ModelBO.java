@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     @Serial
-    private static final long serialVersionUID = 6433981210940280248L;
+    private static final long serialVersionUID = 293082054903466358L;
 
     private Long id;
     private Long userId;
@@ -23,6 +23,7 @@ public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     private String content;
     private String cover;
     private String entity;
+    private boolean visable = true;
 
     private Category category;
     private String createTime;

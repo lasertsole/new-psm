@@ -16,4 +16,11 @@ public interface ModelDB extends IService<ModelDAO> {
      * @return 用户模型数据分页
      */
     Page<ModelDAO> getModelListByIds();
+
+    /**
+     * 删除模型数据
+     *
+     * @param modelDAO
+     */
+    void delete(ModelDAO modelDAO);
 }

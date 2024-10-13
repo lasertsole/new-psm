@@ -16,7 +16,7 @@ import java.io.Serializable;
 @TableName("tb_models")
 public class ModelDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1229110849871658674L;
+    private static final long serialVersionUID = 8959761051459803015L;
 
     @TableId
     private Long id;
@@ -25,6 +25,7 @@ public class ModelDAO implements Serializable {
     private String content;
     private String cover;
     private String entity;
+    private boolean visable = true;
 
     @TableField(typeHandler = JsonTypeHandler.class)
     private Category category;

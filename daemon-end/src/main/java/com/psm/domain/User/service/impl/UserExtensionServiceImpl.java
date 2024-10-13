@@ -37,18 +37,6 @@ public class UserExtensionServiceImpl implements UserExtensionService {
 
     public short selectWorkNumById(Long id) {
         UserExtensionDAO userExtensionDAO = new UserExtensionDAO(id);
-        return userExtensionDB.selectById(userExtensionDAO).getWork_num();
-    }
-
-    public boolean updateWorkNumById(Long id, short work_num) {
-        UserExtensionDAO userExtensionDAO = new UserExtensionDAO(id);
-        userExtensionDAO.setWork_num(work_num);
-        return userExtensionDB.updateById(userExtensionDAO);
-    }
-
-    @Synchronized
-    public boolean addOneWorkNumById(Long id) {
-        short work_num = selectWorkNumById(id);
-        return updateWorkNumById(id, (short) (work_num + 1));
+        return userExtensionDB.selectById(userExtensionDAO).getModel_num();
     }
 }

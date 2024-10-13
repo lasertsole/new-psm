@@ -2,10 +2,9 @@ package com.psm.application;
 
 import com.psm.domain.Model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.entity.ModelDTO;
+import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
 import com.psm.domain.User.adaptor.UserAdaptor;
-import com.psm.domain.User.adaptor.UserExtensionAdapter;
-import com.psm.domain.User.entity.UserExtension.UserExtensionBO;
-import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
+import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,10 +23,10 @@ public class ModelController {
     private UserAdaptor userAdaptor;
 
     @Autowired
-    private UserExtensionAdapter userExtensionAdapter;
+    private ModelAdaptor modelAdaptor;
 
     @Autowired
-    private ModelAdaptor modelAdaptor;
+    private ModelsShowBarAdaptor modelsShowBarAdaptor;
 
     @RequestMapping(value = {"/upload/**"}, method = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.HEAD,
             RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.GET})
@@ -49,18 +48,14 @@ public class ModelController {
 
     @PostMapping("/uploadInfo")
     public ResponseVO uploadModelInfo(ModelDTO modelDTO){
+        Long userId;//当前用户id
         try {
             //获取当前用户id
-            Long UserId = userAdaptor.getAuthorizedUserId();
-            modelDTO.setUserId(UserId);
+            userId = userAdaptor.getAuthorizedUserId();
+            modelDTO.setUserId(userId);
 
             // 调用模型信息上传接口
             modelAdaptor.uploadModelInfo(modelDTO);
-
-            // 更新数据库中用户上传模型数量+1
-            userExtensionAdapter.addOneWorkNumById(new UserExtensionDTO(UserId));
-
-            return ResponseVO.ok("upload model's info succussful");
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
@@ -68,5 +63,23 @@ public class ModelController {
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
         }
+
+        return ResponseVO.ok("upload model's info succussful");
     }
+
+    @GetMapping
+    public ResponseVO getModelsShowBar(
+            @ModelAttribute PageDTO pageDTO
+        ){
+        try {
+            return ResponseVO.ok(modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO));
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
+        }
+    }
+
 }

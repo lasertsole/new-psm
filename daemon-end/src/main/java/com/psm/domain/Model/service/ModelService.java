@@ -24,5 +24,13 @@ public interface ModelService {
      * @throws TusException tus异常
      * @throws IOException io异常
      */
-    void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException;
+    void uploadModelInfo(ModelDTO modelDTO) throws Exception;
+
+    /**
+     * 删除模型信息
+     *
+     * @param modelDTO 模型DTO对象, 包括模型id
+     * @throws IOException io异常
+     */
+    void removeModelInfo(ModelDTO modelDTO) throws IOException;
 }

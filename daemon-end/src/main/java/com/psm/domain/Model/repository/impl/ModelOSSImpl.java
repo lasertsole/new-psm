@@ -34,14 +34,14 @@ public class ModelOSSImpl implements ModelOSS {
     }
 
     @Override
-    public Boolean removeModelEntity(String entityUrl, String userId) throws Exception {
+    public Boolean deleteModelEntity(String entityUrl, String userId) throws Exception {
         return uploadOSSUtil.deleteFileByFullUrl(entityUrl, proccessEntityFolderPath(userId));
     }
 
     @Override
     public String updateModelEntity(String oldEntityOssUrl, String newLocalFilePath, String userId) throws Exception {
         try {
-            removeModelEntity(oldEntityOssUrl, userId);
+            deleteModelEntity(oldEntityOssUrl, userId);
         }
         catch (Exception e){
             throw e;
@@ -51,7 +51,7 @@ public class ModelOSSImpl implements ModelOSS {
     }
 
     @Override
-    public Boolean removeCover(String coverUrl, String userId) throws Exception {
+    public Boolean deleteModelCover(String coverUrl, String userId) throws Exception {
         return uploadOSSUtil.deleteFileByFullUrl(coverUrl, proccessCoverFolderPath(userId));
     }
 
@@ -63,7 +63,7 @@ public class ModelOSSImpl implements ModelOSS {
     @Override
     public String updateCover(String oldCoverUrl, MultipartFile newAvatarFile, String userId) throws Exception{
         try {
-            removeCover(oldCoverUrl, userId);
+            deleteModelCover(oldCoverUrl, userId);
         }
         catch (Exception e){
             throw e;
@@ -78,6 +78,12 @@ public class ModelOSSImpl implements ModelOSS {
         String coverUrl = addCover(coverFile, userId);
         return Map.of("entityUrl", entityUrl, "coverUrl", coverUrl);
     }
+
+    @Override
+    public void deleteAllModel(String entityUrl, String coverUrl, String userId) throws Exception {
+        deleteModelEntity(entityUrl, userId);
+        deleteModelCover(coverUrl, userId);
+    };
 
     @Override
     public Boolean removeModelFolder(String userId) throws Exception {

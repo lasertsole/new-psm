@@ -24,7 +24,7 @@ public interface ModelOSS {
      * @return 删除是否成功
      * @throws Exception 抛出异常
      */
-    Boolean removeModelEntity(String entityUrl, String userId) throws Exception;
+    Boolean deleteModelEntity(String entityUrl, String userId) throws Exception;
 
     /**
      * 更新模型实体文件
@@ -45,7 +45,7 @@ public interface ModelOSS {
      * @return 删除是否成功
      * @throws Exception 抛出异常
      */
-    Boolean removeCover(String coverUrl, String userId) throws Exception;
+    Boolean deleteModelCover(String coverUrl, String userId) throws Exception;
 
     /**
      * 上传模型封面图片
@@ -79,6 +79,16 @@ public interface ModelOSS {
      * @throws Exception 抛出异常
      */
     Map<String, String> addAllModel(String localFilePath, MultipartFile coverFile, String userId) throws Exception;
+
+    /**
+     * 删除模型文件
+     *
+     * @param entityUrl 模型实体文件在OSS中的路径
+     * @param coverUrl 模型封面图片在OSS中的路径
+     * @return 删除是否成功
+     * @throws Exception 抛出异常
+     */
+    void deleteAllModel(String entityUrl, String coverUrl, String userId) throws Exception;
 
     /**
      * 根据用户名删除模型文件夹。在删除用户时会用到，删除用户时，会直接删除用户文件夹，不管模型文件夹是否为空

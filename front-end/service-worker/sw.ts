@@ -41,7 +41,7 @@ self.addEventListener('activate', async(event)=>{
         
         //判断是否过期,如果超过缓存过期时间，则删除  (强制控制缓存时间)
         if(CACHE_TIMEOUT<timeDifference){
-            cache.delete(entry);
+            await cache.delete(entry);
         };
     }
     
@@ -57,11 +57,9 @@ self.addEventListener('fetch', async(event)=>{
             await event.respondWith(cacheFirst(req, cache));
         }
         catch(err){// 缓存和网络均失败时
-            console.log(err);
+            console.error(err);
         }
-    } else{
-        event.respondWith(fetch(req));
-    };
+    }
 });
 
 async function cacheFirst(req: Request, cache:Cache):Promise<Response> {
@@ -78,7 +76,7 @@ async function cacheFirst(req: Request, cache:Cache):Promise<Response> {
         &&
         !noCacheUrlArr.some((item)=>{return req.url.indexOf(item)!=-1}) 
     ){
-            // 更新缓存
+        // 更新缓存
         cache.put(req, resClone);
     };
 

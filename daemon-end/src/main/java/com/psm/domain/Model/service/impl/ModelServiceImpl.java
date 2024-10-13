@@ -16,6 +16,7 @@ import me.desair.tus.server.exception.TusException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Map;
@@ -61,8 +62,9 @@ public class ModelServiceImpl implements ModelService {
         };
     }
 
+    @Transactional
     @Override
-    public void uploadModelInfo(ModelDTO modelDTO) throws TusException, IOException {
+    public void uploadModelInfo(ModelDTO modelDTO) throws Exception {
         String userId = String.valueOf(modelDTO.getUserId());
 
         // 判断文件是否已上传完成且没有过期fullPath
@@ -90,7 +92,8 @@ public class ModelServiceImpl implements ModelService {
             modelDB.insert(modelDAO);
         }
         catch (Exception e){
-            log.info("更新数据库失败{}", e);
+            // 回滚OSS
+            modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), userId);
         }
 
         try {
@@ -102,8 +105,15 @@ public class ModelServiceImpl implements ModelService {
             tusFileUploadService.deleteUpload(folderName);
         }
         catch (Exception e) {
-            log.error("删除文件失败{}", e);
+            // 回滚OSS
+            modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), userId);
         }
+    }
 
+    @Override
+    public void removeModelInfo(ModelDTO modelDTO) throws IOException{
+        ModelDAO modelDAO = ModelConvertor.INSTANCE.DTO2DAO(modelDTO);
+
+        modelDB.delete(modelDAO);
     }
 }

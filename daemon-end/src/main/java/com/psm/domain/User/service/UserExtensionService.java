@@ -36,21 +36,4 @@ public interface UserExtensionService {
      * @return 用户作品数量
      */
     short selectWorkNumById(Long id);
-
-    /**
-     * 更新用户作品数量
-     *
-     * @param userId 用户ID
-     * @param work_num 作品数量
-     * @return boolean
-     */
-    boolean updateWorkNumById(Long userId, short work_num);
-
-    /**
-     * 更新用户作品数量(线程安全)
-     *
-     * @param id 用户ID
-     * @return boolean
-     */
-    boolean addOneWorkNumById(Long id);
 }

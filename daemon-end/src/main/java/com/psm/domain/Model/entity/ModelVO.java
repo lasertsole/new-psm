@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -6306745510686462610L;
+    private static final long serialVersionUID = 290416843826672398L;
 
     private Long id;
     private Long userId;
@@ -22,5 +22,6 @@ public class ModelVO implements Serializable {
     private String cover;
     private String entity;
     private Category category;
+    private boolean visable;
     private String createTime;
 }

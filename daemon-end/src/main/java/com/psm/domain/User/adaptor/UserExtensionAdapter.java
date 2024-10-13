@@ -66,36 +66,4 @@ public interface UserExtensionAdapter {
      * @return 用户作品数量
      */
     short selectWorkNumById(UserExtensionBO userExtensionBO);
-
-    /**
-     * 更新用户作品数量
-     *
-     * @param userExtensionDTO 用户作品数量DTO
-     * @return boolean
-     */
-    boolean updateWorkNumById(UserExtensionDTO userExtensionDTO);
-
-    /**
-     * 更新用户作品数量
-     *
-     * @param userExtensionBO 用户作品数量BO
-     * @return boolean
-     */
-    boolean updateWorkNumById(UserExtensionBO userExtensionBO);
-
-    /**
-     * 更新用户作品数量(线程安全)
-     *
-     * @param userExtensionDTO 用户作品数量DTO
-     * @return boolean
-     */
-    boolean addOneWorkNumById(UserExtensionDTO userExtensionDTO);
-
-    /**
-     * 更新用户作品数量(线程安全)
-     *
-     * @param userExtensionBO 用户作品数量BO
-     * @return boolean
-     */
-    boolean addOneWorkNumById(UserExtensionBO userExtensionBO);
 }

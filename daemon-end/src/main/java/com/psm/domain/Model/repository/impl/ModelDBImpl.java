@@ -1,5 +1,6 @@
 package com.psm.domain.Model.repository.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Model.entity.ModelDAO;
@@ -19,5 +20,14 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
     @Override
     public Page<ModelDAO> getModelListByIds() {
         return null;
+    }
+
+    @Override
+    public void delete(ModelDAO modelDAO) {
+        LambdaQueryWrapper<ModelDAO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ModelDAO::getUserId, modelDAO.getUserId())
+                .and(wrapper -> wrapper.eq(ModelDAO::getEntity, modelDAO.getEntity()));
+
+        modelMapper.delete(lambdaQueryWrapper);
     }
 }

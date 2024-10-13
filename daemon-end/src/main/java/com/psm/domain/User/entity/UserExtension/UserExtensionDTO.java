@@ -15,7 +15,7 @@ public class UserExtensionDTO implements Serializable {
     private static final long serialVersionUID = 1507012582578819096L;
 
     private Long id;
-    private short work_num = 0;
+    private short model_num = 0;
     private String createTime;
     private String modifyTime;
 
