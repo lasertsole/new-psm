@@ -6,6 +6,8 @@
 ### gsap动画组件
 ### loadsh防抖与节流
 ### three.js 浏览器3D渲染
+### pixi.js 游戏动画库
+### vite-pwa 全平台适配方案与离线缓存
 ### tus-js-client大文件分片上传
 ### socket.io(client) websocket全双工通信框架
 ## 后端:
