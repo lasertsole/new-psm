@@ -4,6 +4,8 @@ import com.psm.domain.Model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
 import com.psm.domain.User.adaptor.UserAdaptor;
+import com.psm.domain.User.adaptor.UserExtensionAdapter;
+import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +25,9 @@ public class ModelController {
     private UserAdaptor userAdaptor;
 
     @Autowired
+    private UserExtensionAdapter userExtensionAdapter;
+
+    @Autowired
     private ModelAdaptor modelAdaptor;
 
     @Autowired
@@ -34,10 +39,13 @@ public class ModelController {
     public ResponseVO uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
         try {
             //获取当前用户id
-            String userId = String.valueOf(userAdaptor.getAuthorizedUserId());
+            Long userId = userAdaptor.getAuthorizedUserId();
 
             // 调用模型上传接口
-            modelAdaptor.uploadModelEntity(servletRequest, servletResponse, userId);
+            modelAdaptor.uploadModelEntity(servletRequest, servletResponse, String.valueOf(userId));
+
+            // 更新数据库中用户上传模型数量+1
+            userExtensionAdapter.addOneWorkNumById(new UserExtensionDTO(userId));
 
             return ResponseVO.ok("upload model's Entity succussful");
         }

@@ -39,4 +39,25 @@ public class UserExtensionServiceImpl implements UserExtensionService {
         UserExtensionDAO userExtensionDAO = new UserExtensionDAO(id);
         return userExtensionDB.selectById(userExtensionDAO).getModel_num();
     }
+
+    public boolean updateWorkNumById(Long id, short work_num) {
+        UserExtensionDAO userExtensionDAO = new UserExtensionDAO(id);
+        userExtensionDAO.setModel_num(work_num);
+        return userExtensionDB.updateById(userExtensionDAO);
+    }
+
+    public boolean addOneWorkNumById(Long id) {
+        short work_num = selectWorkNumById(id);
+        return updateWorkNumById(id, (short) (work_num + 1));
+    }
+
+    public boolean removeOneWorkNumById(Long id) {
+        short work_num = selectWorkNumById(id);
+
+        if ( work_num == 0) return false;
+
+        if ( work_num < 0) return updateWorkNumById(id, (short) 0);
+
+        return updateWorkNumById(id, (short) (work_num - 1));
+    };
 }

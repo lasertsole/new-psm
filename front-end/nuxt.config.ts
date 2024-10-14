@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 
   // 导入第三方模块
   modules: ['@element-plus/nuxt', '@vite-pwa/nuxt'],
+  
   pwa: {
     strategies: 'injectManifest',
     srcDir: "service-worker",
@@ -30,8 +31,6 @@ export default defineNuxtConfig({
       theme_color: '#ffffff',
       display: 'standalone',
       start_url: '/',
-    },
-    injectManifest: {
     },
     devOptions: {
       enabled: true,
@@ -79,13 +78,6 @@ export default defineNuxtConfig({
 
   // 代理
   nitro: {
-    devProxy: {
-      "/api": {
-        target: process.env.VITE_API_BASE_URL, // 这里是接口地址
-        changeOrigin: true,
-        prependPath: true,
-      },
-    },
     prerender:{ //预渲染
       routes: [
         '/' //首页(默认渲染)

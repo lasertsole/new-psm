@@ -17,8 +17,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")// 允许所有路径
-                .allowedOrigins(protocol+"://"+frontEndBaseUrl)// 允许前端的域名
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")// 允许的方法
+//                .allowedOrigins(protocol+"://"+frontEndBaseUrl)// 允许前端的域名
+                .allowedOriginPatterns("*")//TODO 上线时要修改 允许前端的域名
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")// 允许的方法
                 .allowedHeaders("*") // 允许所有头部
                 .allowCredentials(true)// 是否允许发送凭证（如Cookie）
                 .maxAge(3600);// 预检请求的有效期

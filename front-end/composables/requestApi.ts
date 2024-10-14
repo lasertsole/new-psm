@@ -10,27 +10,6 @@ interface Params {
     lazy?: boolean;
 }
 
-const replacePathVariables = (url: NitroFetchRequest, params: any = {}) => {
-    if (Object.keys(params).length === 0) {
-      return url;
-    }
-    const regex = /\/:(\w+)/gm;
-    let formattedURL = url as string;
-    let m = regex.exec(formattedURL);
-    while (m) {
-      if (m.index === regex.lastIndex) {
-        regex.lastIndex += 1;
-      }
-      if (params[m[1]] === undefined) {
-        throw new Error(`"${m[1]}" is not provided in params`);
-      }
-      formattedURL = formattedURL.replace(`:${m[1]}`, params[m[1]]);
-      delete params[m[1]];
-      m = regex.exec(formattedURL);
-    }
-    return formattedURL;
-};
-
 // 使用$fetch的api请求
 export async function fetchApi({
   url,
@@ -60,7 +39,7 @@ export async function fetchApi({
   // 发出请求
   let res = await $fetch(url,{
     method,
-    baseURL: "/api",
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     ...params,
     onRequest({ options }:{ options:any }) {
       let token = localStorage.getItem('token');
