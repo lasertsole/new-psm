@@ -93,12 +93,6 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
-		<!--mongodb起步依赖-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-
 		<!--用于用户密码加密的依赖-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>

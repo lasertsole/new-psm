@@ -6,7 +6,10 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
 
   // 导入第三方模块
-  modules: ['@element-plus/nuxt', '@vite-pwa/nuxt'],
+  modules: [
+    '@element-plus/nuxt'
+    ,'@vite-pwa/nuxt'
+  ],
   
   pwa: {
     strategies: 'injectManifest',

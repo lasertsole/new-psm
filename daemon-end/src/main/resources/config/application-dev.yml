@@ -40,27 +40,6 @@ spring:
           min-idle: 0
         #连接超时时间
         timeout: 2000a
-    mongodb:
-      uri: mongodb://admin:123456@localhost:27017/showcase
-      # 是否自动创建索引
-      auto-index-creation: true
-      connection-string:
-        #最大连接数
-        max-connections-per-host: 100
-        #最大等待时间
-        max-wait-time-ms: 5000
-        #心跳频率
-        heartbeat-frequency-ms: 10000
-        #心跳连接超时时间
-        heartbeat-connect-timeout-ms: 20000
-        #连接超时时间
-        connect-timeout-ms: 10000
-        #socket超时时间
-        socket-timeout-ms: 0
-        #socket保持连接
-        socket-keep-alive: true
-        #服务器选择超时时间
-        server-selection-timeout-ms: 10000
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
