@@ -1,7 +1,9 @@
 package com.psm.domain.Model.adaptor.impl;
 
 import com.psm.domain.Model.adaptor.ModelAdaptor;
+import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDTO;
+import com.psm.domain.Model.infrastructure.ModelConvertor;
 import com.psm.domain.Model.service.ModelService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
 import io.micrometer.common.util.StringUtils;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.Map;
 import java.util.Objects;
 
 @Adaptor
@@ -26,7 +29,7 @@ public class ModelAdaptorImpl implements ModelAdaptor {
     }
 
     @Override
-    public void uploadModelInfo(@Valid ModelDTO modelDTO) throws Exception {
+    public ModelBO uploadModelInfo(@Valid ModelDTO modelDTO) throws Exception {
         if (
                 Objects.isNull(modelDTO.getUserId())
                 || StringUtils.isBlank(modelDTO.getTitle())
@@ -36,6 +39,11 @@ public class ModelAdaptorImpl implements ModelAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        modelService.uploadModelInfo(modelDTO);
+        Map<String, Long> map = modelService.uploadModelInfo(modelDTO);
+        ModelBO modelBO = ModelConvertor.INSTANCE.DTO2BO(modelDTO);
+        modelBO.setId(map.get("modelId"));
+        modelBO.setStorage(map.get("modelStorage"));
+
+        return modelBO;
     };
 }

@@ -1,6 +1,7 @@
 package com.psm.domain.User.adaptor;
 
 import com.psm.domain.User.entity.UserExtension.UserExtensionBO;
+import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
 import jakarta.validation.Valid;
 
@@ -54,24 +55,24 @@ public interface UserExtensionAdapter {
     /**
      * 根据id查询用户作品数量
      *
-     * @param userExtensionDTO 用户扩展信息DTO
-     * @return 用户作品数量
+     * @param userExtensionDTO 用户扩展信息DTO实体
+     * @return 用户作品数量DAO
      */
-    short selectWorkNumById(UserExtensionDTO userExtensionDTO);
+    UserExtensionDAO selectWorkNumById(UserExtensionDTO userExtensionDTO);
 
     /**
      * 根据id查询用户作品数量
      *
-     * @param userExtensionBO 用户扩展信息BO
-     * @return 用户作品数量
+     * @param userExtensionBO 用户扩展信息BO实体
+     * @return 用户作品数量DAO
      */
-    short selectWorkNumById(UserExtensionBO userExtensionBO);
+    UserExtensionDAO selectWorkNumById(UserExtensionBO userExtensionBO);
 
 
     /**
      * 更新用户作品数量
      *
-     * @param userExtensionDTO 用户作品数量DTO
+     * @param userExtensionDTO 用户作品DTO实体
      * @return boolean
      */
     boolean updateWorkNumById(UserExtensionDTO userExtensionDTO);
@@ -79,24 +80,109 @@ public interface UserExtensionAdapter {
     /**
      * 更新用户作品数量
      *
-     * @param userExtensionBO 用户作品数量BO
+     * @param userExtensionBO 用户作品BO实体
      * @return boolean
      */
     boolean updateWorkNumById(UserExtensionBO userExtensionBO);
 
     /**
-     * 更新用户作品数量(线程安全)
+     * 更新用户作品数量
      *
-     * @param userExtensionDTO 用户作品数量DTO
+     * @param id 用户id
      * @return boolean
      */
-    boolean addOneWorkNumById(UserExtensionDTO userExtensionDTO);
+    boolean addOneModelNumById(Long id);
 
     /**
-     * 更新用户作品数量(线程安全)
+     * 更新用户作品数量
      *
-     * @param userExtensionBO 用户作品数量BO
+     * @param userExtensionDTO 用户作品DTO实体
      * @return boolean
      */
-    boolean addOneWorkNumById(UserExtensionBO userExtensionBO);
+    boolean addOneModelNumById(UserExtensionDTO userExtensionDTO);
+
+    /**
+     * 删除用户作品数量
+     *
+     * @param id 用户ID
+     * @return boolean
+     */
+    boolean removeOneModelNumById(Long id);
+
+    /**
+     * 删除用户作品数量
+     *
+     * @param userExtensionDTO 用户作品DTO实体
+     * @return boolean
+     */
+    boolean removeOneModelNumById(UserExtensionDTO userExtensionDTO);
+
+    /**
+     * 更新用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return boolean
+     */
+    Long updateOneModelStorageById(Long id, Long storage);
+
+    /**
+     * 更新用户已用的存储空间
+     *
+     * @param userExtensionDTO 用户作品DTO实体
+     * @return boolean
+     */
+    Long updateOneModelStorageById(UserExtensionDTO userExtensionDTO);
+
+    /**
+     * 增加用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long addOneModelStorageById(Long id, Long storage);
+
+    /**
+     * 增加用户已用的存储空间
+     *
+     * @param userExtensionDTO 用户作品DTO实体
+     * @return 已用的存储空间
+     */
+    Long addOneModelStorageById(UserExtensionDTO userExtensionDTO);
+
+    /**
+     * 减少用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long minusOneModelStorageById(Long id, Long storage);
+
+    /**
+     * 减少用户已用的存储空间
+     *
+     * @param userExtensionDTO 用户作品DTO实体
+     * @return 已用的存储空间
+     */
+    Long minusOneModelStorageById(UserExtensionDTO userExtensionDTO);
+
+    /**
+     * 增加用户作品数量
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return boolean
+     */
+    Long addOneModelById(Long id, Long storage);
+
+    /**
+     * 减少用户作品数量
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return boolean
+     */
+    Long removeOneModelById(Long id, Long storage);
 }

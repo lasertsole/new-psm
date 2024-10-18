@@ -23,7 +23,8 @@ public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     private String content;
     private String cover;
     private String entity;
-    private boolean visable = true;
+    private Short visible = 0;
+    private Long storage;
 
     private Category category;
     private String createTime;

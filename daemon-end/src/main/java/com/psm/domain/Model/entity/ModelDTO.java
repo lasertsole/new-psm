@@ -3,6 +3,7 @@ package com.psm.domain.Model.entity;
 import com.psm.infrastructure.annotation.validation.ValidFileSize;
 import com.psm.infrastructure.annotation.validation.ValidImage;
 import com.psm.infrastructure.annotation.validation.ValidJson;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -43,5 +44,7 @@ public class ModelDTO implements Serializable {
     @Size(max = 255, message = "The category length must not exceed 255 characters")
     private String category;
 
-    private boolean visable = true;
+    @Min(value = 0, message = "The visable must be greater than or equal to 0")
+    @Max(value = 2, message = "The visable must be less than or equal to 2")
+    private short visible;
 }

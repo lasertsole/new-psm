@@ -2,6 +2,7 @@ package com.psm.domain.Model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.psm.domain.Model.valueObject.Category;
+import com.psm.infrastructure.enums.VisibleEnum;
 import com.psm.infrastructure.utils.MybatisPlus.JsonTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.io.Serializable;
 @TableName("tb_models")
 public class ModelDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 8959761051459803015L;
+    private static final long serialVersionUID = -4754691025351912230L;
 
     @TableId
     private Long id;
@@ -25,7 +26,8 @@ public class ModelDAO implements Serializable {
     private String content;
     private String cover;
     private String entity;
-    private boolean visable = true;
+    private VisibleEnum visible;
+    private Long storage;
 
     @TableField(typeHandler = JsonTypeHandler.class)
     private Category category;

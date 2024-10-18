@@ -1,5 +1,6 @@
 package com.psm.domain.Model.adaptor;
 
+import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ public interface ModelAdaptor {
      * @param modelDTO  模型信息
      * @throws TusException    tus异常
      * @throws IOException     IO异常
+     * @return 模型BO实体
      */
-    void uploadModelInfo(ModelDTO modelDTO) throws Exception;
+    ModelBO uploadModelInfo(ModelDTO modelDTO) throws Exception;
 }

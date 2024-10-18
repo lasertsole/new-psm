@@ -44,7 +44,7 @@ public interface UserAdaptor {
      * 注册
      *
      * @param userDTO 用户DTO实体
-     * @return 用户登录信息的键值对，其中token为令牌，user为用户信息
+     * @return 用户登录信息的键值对，其中token为令牌，user为用户BO信息
      */
     Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException;
 

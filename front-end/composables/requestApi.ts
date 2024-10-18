@@ -39,7 +39,7 @@ export async function fetchApi({
   // 发出请求
   let res = await $fetch(url,{
     method,
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BACK_URL,
     ...params,
     onRequest({ options }:{ options:any }) {
       let token = localStorage.getItem('token');
@@ -81,7 +81,7 @@ export async function tusUploadApi({
 }:UploadParams): Promise<void> {
   let upload:Upload = new tus.Upload(file, {
     removeFingerprintOnSuccess : true, // 上传成功后删除指纹(localstorage缓存)
-    endpoint: import.meta.env.VITE_API_BASE_URL + url,
+    endpoint: import.meta.env.VITE_API_BACK_URL + url,
     headers: {
       token: localStorage.getItem('token')||""
     },

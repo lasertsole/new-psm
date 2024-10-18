@@ -1,11 +1,11 @@
 package com.psm.application;
 
 import com.psm.domain.Model.adaptor.ModelAdaptor;
+import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.adaptor.UserExtensionAdapter;
-import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,9 +44,6 @@ public class ModelController {
             // 调用模型上传接口
             modelAdaptor.uploadModelEntity(servletRequest, servletResponse, String.valueOf(userId));
 
-            // 更新数据库中用户上传模型数量+1
-            userExtensionAdapter.addOneWorkNumById(new UserExtensionDTO(userId));
-
             return ResponseVO.ok("upload model's Entity succussful");
         }
         catch (Exception e){
@@ -62,8 +59,15 @@ public class ModelController {
             userId = userAdaptor.getAuthorizedUserId();
             modelDTO.setUserId(userId);
 
-            // 调用模型信息上传接口
-            modelAdaptor.uploadModelInfo(modelDTO);
+            // 调用模型信息上传接口,获取上传后的模型id
+            ModelBO modelBO = modelAdaptor.uploadModelInfo(modelDTO);
+
+            // 获取上传后模型大小
+            Long modelSize = modelBO.getStorage();
+
+            // 更新数据库中用户上传模型数量+1, 增加用户已用的存储空间为当前文件大小
+            userExtensionAdapter.addOneModelById(userId, modelSize);
+
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
@@ -72,7 +76,7 @@ public class ModelController {
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
         }
 
-        return ResponseVO.ok("upload model's info succussful");
+        return ResponseVO.ok("upload model's info successful");
     }
 
     @GetMapping

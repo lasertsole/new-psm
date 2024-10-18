@@ -53,7 +53,7 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
         if (
                 ObjectUtils.isNull(userExtensionDTO.getId())
                 || (
-                        ObjectUtils.isNull(userExtensionDTO.getModel_num())
+                        ObjectUtils.isNull(userExtensionDTO.getModelNum())
                 )
         )
             throw new InvalidParameterException("Invalid parameter");
@@ -67,7 +67,7 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
-    public short selectWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
+    public UserExtensionDAO selectWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (ObjectUtils.isNull(userExtensionDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
@@ -75,7 +75,7 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
-    public short selectWorkNumById(UserExtensionBO userExtensionBO) {
+    public UserExtensionDAO selectWorkNumById(UserExtensionBO userExtensionBO) {
         return selectWorkNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
     }
 
@@ -84,11 +84,11 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     public boolean updateWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (
                 ObjectUtils.isNull(userExtensionDTO.getId())
-                        && ObjectUtils.isNull(userExtensionDTO.getModel_num())
+                        && ObjectUtils.isNull(userExtensionDTO.getModelNum())
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        return userExtensionService.updateWorkNumById(userExtensionDTO.getId(), userExtensionDTO.getModel_num());
+        return userExtensionService.updateModelNumById(userExtensionDTO.getId(), userExtensionDTO.getModelNum());
     }
 
     @Override
@@ -97,15 +97,88 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
-    public boolean addOneWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
-        if (ObjectUtils.isNull(userExtensionDTO.getId()))
-            throw new InvalidParameterException("Invalid parameter");
-
-        return userExtensionService.addOneWorkNumById(userExtensionDTO.getId());
+    public boolean addOneModelNumById(Long id) {
+        return userExtensionService.addOneModelNumById(id);
     }
 
     @Override
-    public boolean addOneWorkNumById(UserExtensionBO userExtensionBO) {
-        return addOneWorkNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
+    public boolean addOneModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
+        if (ObjectUtils.isNull(userExtensionDTO.getId()))
+            throw new InvalidParameterException("Invalid parameter");
+
+        return addOneModelNumById(userExtensionDTO.getId());
+    }
+
+    @Override
+    public boolean removeOneModelNumById(Long id) {
+        return userExtensionService.removeOneModelNumById(id);
+    }
+
+    @Override
+    public boolean removeOneModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
+        if (ObjectUtils.isNull(userExtensionDTO.getId()))
+            throw new InvalidParameterException("Invalid parameter");
+
+        return removeOneModelNumById(userExtensionDTO.getId());
+    }
+
+    @Override
+    public Long updateOneModelStorageById(Long id, Long storage) {
+        return userExtensionService.updateOneModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long updateOneModelStorageById(@Valid UserExtensionDTO userExtensionDTO) {
+        if (
+                ObjectUtils.isNull(userExtensionDTO.getId())
+                && ObjectUtils.isNull(userExtensionDTO.getModelCurStorage())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        return updateOneModelStorageById(userExtensionDTO.getId(), userExtensionDTO.getModelCurStorage());
+    }
+
+    @Override
+    public Long addOneModelStorageById(Long id, Long storage) {
+        return userExtensionService.addOneModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long addOneModelStorageById(@Valid UserExtensionDTO userExtensionDTO) {
+        if (
+                ObjectUtils.isNull(userExtensionDTO.getId())
+                        && ObjectUtils.isNull(userExtensionDTO.getModelCurStorage())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        return addOneModelStorageById(userExtensionDTO.getId(), userExtensionDTO.getModelCurStorage());
+    }
+
+    @Override
+    public Long minusOneModelStorageById(Long id, Long storage) {
+        return userExtensionService.minusOneModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long minusOneModelStorageById(@Valid UserExtensionDTO userExtensionDTO) {
+        if (
+                ObjectUtils.isNull(userExtensionDTO.getId())
+                && ObjectUtils.isNull(userExtensionDTO.getModelCurStorage())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        return minusOneModelStorageById(userExtensionDTO.getId(), userExtensionDTO.getModelCurStorage());
+    }
+
+    @Override
+    public Long addOneModelById(Long id, Long storage) {
+        addOneModelNumById(id);
+        return addOneModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long removeOneModelById(Long id, Long storage) {
+        removeOneModelNumById(id);
+        return minusOneModelStorageById(id, storage);
     }
 }

@@ -33,9 +33,9 @@ public interface UserExtensionService {
      * 根据id查询用户作品数量
      *
      * @param id 用户ID
-     * @return 用户作品数量
+     * @return 用户扩展信息DAO
      */
-    short selectWorkNumById(Long id);
+    UserExtensionDAO selectWorkNumById(Long id);
 
     /**
      * 更新用户作品数量
@@ -44,7 +44,7 @@ public interface UserExtensionService {
      * @param work_num 作品数量
      * @return boolean
      */
-    boolean updateWorkNumById(Long userId, short work_num);
+    boolean updateModelNumById(Long userId, short work_num);
 
     /**
      * 更新用户作品数量
@@ -52,7 +52,7 @@ public interface UserExtensionService {
      * @param id 用户ID
      * @return boolean
      */
-    boolean addOneWorkNumById(Long id);
+    boolean addOneModelNumById(Long id);
 
     /**
      * 删除用户作品数量
@@ -60,5 +60,32 @@ public interface UserExtensionService {
      * @param id 用户ID
      * @return boolean
      */
-    boolean removeOneWorkNumById(Long id);
+    boolean removeOneModelNumById(Long id);
+
+    /**
+     * 更新用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return boolean
+     */
+    Long updateOneModelStorageById(Long id, Long storage);
+
+    /**
+     * 增加用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long addOneModelStorageById(Long id, Long storage);
+
+    /**
+     * 减少用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long minusOneModelStorageById(Long id, Long storage);
 }

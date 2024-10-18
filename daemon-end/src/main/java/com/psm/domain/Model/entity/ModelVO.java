@@ -22,6 +22,7 @@ public class ModelVO implements Serializable {
     private String cover;
     private String entity;
     private Category category;
-    private boolean visable;
+    private Short visible;
+    private Long storage;
     private String createTime;
 }

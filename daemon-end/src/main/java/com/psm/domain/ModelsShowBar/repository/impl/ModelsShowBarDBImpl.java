@@ -33,7 +33,7 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         LambdaQueryWrapper<UserExtensionDAO> userExtensionWrapper = new LambdaQueryWrapper<>();
         userExtensionWrapper.select(UserExtensionDAO::getId);
-        userExtensionWrapper.gt(UserExtensionDAO::getModel_num, 0);
+        userExtensionWrapper.gt(UserExtensionDAO::getModelNum, 0);
         userExtensionWrapper.orderByDesc(UserExtensionDAO::getCreateTime);
         Page<UserExtensionDAO> page = new Page<>(currentPage, pageSize);
         Page<UserExtensionDAO> UserExtensionDAOResultPage = userExtensionMapper.selectPage(page, userExtensionWrapper);

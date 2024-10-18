@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface ModelService {
     /**
@@ -23,8 +24,9 @@ public interface ModelService {
      * @param modelDTO 模型DTO对象, 包括本地模型文件路径和模型信息
      * @throws TusException tus异常
      * @throws IOException io异常
+     * @return Map,其中modelId为模型id, modelStorage为模型大小
      */
-    void uploadModelInfo(ModelDTO modelDTO) throws Exception;
+    Map<String, Long> uploadModelInfo(ModelDTO modelDTO) throws Exception;
 
     /**
      * 删除模型信息

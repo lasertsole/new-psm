@@ -8,6 +8,7 @@ import me.desair.tus.server.upload.UploadInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -79,5 +80,20 @@ public class TusUtil {
 
     public Long getExpirationPeriod(){
         return tusProperties.getExpirationPeriod();
+    }
+
+    public Long getFileSize(String fullName) {
+        // 获取文件绝对路径
+        String absoluteFilePathName = getAbsoluteFilePathName(fullName);
+
+        // 创建 File 对象
+        File file = new File(absoluteFilePathName);
+
+        // 检查文件是否存在
+        if (!file.exists() || !file.isFile()) {
+            throw new RuntimeException("文件不存在或无法访问");
+        }
+
+        return file.length();
     }
 }
