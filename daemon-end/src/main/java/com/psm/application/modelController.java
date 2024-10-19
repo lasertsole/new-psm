@@ -4,6 +4,7 @@ import com.psm.domain.Model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDTO;
 import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
+import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarBO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.adaptor.UserExtensionAdapter;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -80,18 +82,19 @@ public class ModelController {
     }
 
     @GetMapping
-    public ResponseVO getModelsShowBar(
-            @ModelAttribute PageDTO pageDTO
-        ){
-        try {
-            return ResponseVO.ok(modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO));
-        }
-        catch (InvalidParameterException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
-        }
+    public ResponseVO getModelsShowBar(@ModelAttribute PageDTO pageDTO) {
+        List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
+        return ResponseVO.ok(modelsShowBarBOS);
+//        try {
+//            List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
+//            return ResponseVO.ok(modelsShowBarBOS);
+//        }
+//        catch (InvalidParameterException e) {
+//            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+//        }
+//        catch (Exception e){
+//            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
+//        }
     }
 
 }

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserExtensionBO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 8062732191014847229L;
+    private static final long serialVersionUID = -3752993483667036339L;
 
     private Long id;
     private Short modelNum;

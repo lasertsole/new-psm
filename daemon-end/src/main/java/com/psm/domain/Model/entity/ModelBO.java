@@ -1,6 +1,6 @@
 package com.psm.domain.Model.entity;
 
-import com.psm.domain.Model.infrastructure.ModelConvertor;
+import com.psm.domain.Model.infrastructure.convertor.ModelConvertor;
 import com.psm.domain.Model.valueObject.Category;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     @Serial
-    private static final long serialVersionUID = 293082054903466358L;
+    private static final long serialVersionUID = -5438707322519502525L;
 
     private Long id;
     private Long userId;

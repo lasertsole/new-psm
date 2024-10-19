@@ -1,4 +1,4 @@
-package com.psm.domain.Model.infrastructure;
+package com.psm.domain.Model.infrastructure.convertor;
 
 import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Model.entity.ModelBO;

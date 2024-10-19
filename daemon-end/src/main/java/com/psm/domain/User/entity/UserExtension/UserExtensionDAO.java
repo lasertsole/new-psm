@@ -16,7 +16,7 @@ import java.io.Serializable;
 @TableName("tb_users_extension")
 public class UserExtensionDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 3628427399383031148L;
+    private static final long serialVersionUID = -6574331886886511700L;
 
     @TableId
     private Long id;

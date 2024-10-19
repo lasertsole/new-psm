@@ -1,7 +1,9 @@
 package com.psm.domain.ModelsShowBar.adaptor.impl;
 
 import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
+import com.psm.domain.ModelsShowBar.infrastructure.convertor.ModelsShowBarConvertor;
 import com.psm.domain.ModelsShowBar.service.ModelsShowBarService;
+import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarBO;
 import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarDAO;
 import com.psm.infrastructure.annotation.spring.Adaptor;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
@@ -19,13 +21,16 @@ public class ModelsShowBarAdaptorImpl implements ModelsShowBarAdaptor {
     private ModelsShowBarService modelsShowBarService;
 
     @Override
-    public List<ModelsShowBarDAO> selectModelsShowBarOrderByCreateTimeDesc(@Valid PageDTO pageDTO) {
+    public List<ModelsShowBarBO> selectModelsShowBarOrderByCreateTimeDesc(@Valid PageDTO pageDTO) {
         if (
                 ObjectUtils.isEmpty(pageDTO.getCurrentPage())
                 && ObjectUtils.isEmpty(pageDTO.getPageSize())
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        return modelsShowBarService.selectModelsShowBarOrderByCreateTimeDesc(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+        List<ModelsShowBarDAO> modelsShowBarDAOS = modelsShowBarService.selectModelsShowBarOrderByCreateTimeDesc(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+
+        ModelsShowBarConvertor modelsShowBarConvertor = ModelsShowBarConvertor.INSTANCE;
+        return modelsShowBarDAOS.stream().map(modelsShowBarConvertor::DAO2BO).toList();
     }
 }

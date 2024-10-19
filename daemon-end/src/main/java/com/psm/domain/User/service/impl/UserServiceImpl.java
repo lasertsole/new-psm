@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -101,6 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException{
         // 将前端传来的user对象拷贝到register对象中,并加密register对象的密码
         UserDAO register = UserConvertor.INSTANCE.DTO2DAO(userDTO);

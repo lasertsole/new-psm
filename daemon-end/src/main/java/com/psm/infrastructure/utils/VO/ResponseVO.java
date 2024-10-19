@@ -2,10 +2,13 @@ package com.psm.infrastructure.utils.VO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
+import java.util.List;
 
+@Slf4j
 @Data
 @NoArgsConstructor
 public class ResponseVO implements Serializable {
@@ -26,14 +29,29 @@ public class ResponseVO implements Serializable {
      */
     private Object data = null;
 
+    protected static Object processData(Object data) {
+        if(data instanceof BO2VOable) {
+            data = ((BO2VOable) data).toVO();
+        }
+        else if (data instanceof List) {
+            data = ((List) data).stream().map(item -> {
+                if(item instanceof BO2VOable) {
+                    return ((BO2VOable) item).toVO();
+                }
+                else{
+                    return item;
+                }
+            }).toList();
+        }
+
+        return data;
+    }
+
     public ResponseVO(Object data) {
+        data = processData(data);
         this.code = HttpStatus.OK.value();
         this.data = data;
         this.msg = "success";
-    }
-
-    public ResponseVO(BO2VOable bo2Voable) {
-        this(bo2Voable.toVO());
     }
 
     public ResponseVO(Integer code, String msg) {
@@ -48,36 +66,17 @@ public class ResponseVO implements Serializable {
     public ResponseVO(Integer code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
+        data = processData(data);
         this.data = data;
     }
 
-    public ResponseVO(HttpStatus httpStatus, String msg, Object data) {
-        this(httpStatus.value(), msg, data);
-    }
+    public ResponseVO(HttpStatus httpStatus, String msg, Object data) { this(httpStatus.value(), msg, data);}
 
-    public ResponseVO(Integer code, String msg, BO2VOable bo2Voable){
-        this(code, msg, bo2Voable.toVO());
-    }
+    public static ResponseVO ok(Object data){ return new ResponseVO(HttpStatus.OK, "success", data);}
 
-    public ResponseVO(HttpStatus httpStatus, String msg, BO2VOable bo2Voable){
-        this(httpStatus.value(), msg, bo2Voable.toVO());
-    }
+    public static ResponseVO ok(String msg){ return new ResponseVO(HttpStatus.OK, msg);}
 
     public static ResponseVO ok(String msg, Object data){
         return new ResponseVO(HttpStatus.OK, msg, data);
     }
-
-    public static ResponseVO ok(String msg, BO2VOable bo2Voable){
-        return new ResponseVO(HttpStatus.OK, msg, bo2Voable.toVO());
-    }
-
-    public static ResponseVO ok(Object data){
-        return new ResponseVO(HttpStatus.OK, "success", data);
-    }
-
-    public static ResponseVO ok(String msg){
-        return new ResponseVO(HttpStatus.OK, msg);
-    }
-
-    public static ResponseVO ok(BO2VOable bo2Voable){ return new ResponseVO(HttpStatus.OK, "success", bo2Voable.toVO());}
 }

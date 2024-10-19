@@ -17,7 +17,7 @@ import java.io.Serializable;
 @TableName("tb_models")
 public class ModelDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -4754691025351912230L;
+    private static final long serialVersionUID = 4967272192276572886L;
 
     @TableId
     private Long id;

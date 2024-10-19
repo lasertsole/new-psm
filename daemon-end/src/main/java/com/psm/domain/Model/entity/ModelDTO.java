@@ -20,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 5254396992349622966L;
+    private static final long serialVersionUID = 7158768495320685031L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;

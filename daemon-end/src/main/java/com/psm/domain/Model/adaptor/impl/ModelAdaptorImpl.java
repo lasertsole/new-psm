@@ -3,7 +3,7 @@ package com.psm.domain.Model.adaptor.impl;
 import com.psm.domain.Model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDTO;
-import com.psm.domain.Model.infrastructure.ModelConvertor;
+import com.psm.domain.Model.infrastructure.convertor.ModelConvertor;
 import com.psm.domain.Model.service.ModelService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
 import io.micrometer.common.util.StringUtils;

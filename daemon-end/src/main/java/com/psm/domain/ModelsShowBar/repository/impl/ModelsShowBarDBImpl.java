@@ -39,19 +39,16 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         Page<UserExtensionDAO> UserExtensionDAOResultPage = userExtensionMapper.selectPage(page, userExtensionWrapper);
         List<UserExtensionDAO> UserExtensionDAOResultList = UserExtensionDAOResultPage.getRecords();
 
-        log.info("UserExtensionDAOResultList is {} ", UserExtensionDAOResultList);
+        // 如果用户列表为空，则返回空列表
+        if (UserExtensionDAOResultList.isEmpty()) return Collections.emptyList();
 
         // 创建一个Map，用于存储用户ID和ModelsShowBarDAO的映射
         Map<Long, ModelsShowBarDAO> collect = UserExtensionDAOResultList.stream().collect(Collectors.toMap(
                 UserExtensionDAO::getId, userExtensionDAO -> new ModelsShowBarDAO()
         ));
 
-        log.info("collect is {} ", collect);
-
         // 获取用户ID列表，这个ID列表是按照时间降序排序的
         List<Long> userIds = UserExtensionDAOResultList.stream().map(UserExtensionDAO::getId).toList();
-
-        log.info("userIds is {} ", userIds);
 
         // 按照用户ID列表获取用户列表
         LambdaQueryWrapper<UserDAO> userWrapper = new LambdaQueryWrapper<>();
@@ -59,11 +56,9 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         List<UserDAO> userDAOList = userMapper.selectList(userWrapper);
         userDAOList.stream().forEach(userDAO -> {
             ModelsShowBarDAO modelsShowBarDAO = collect.get(userDAO.getId());
-            modelsShowBarDAO.setUserDAO(userDAO);
-            modelsShowBarDAO.setModelDAOs(new ArrayList<ModelDAO>());
+            modelsShowBarDAO.setUser(userDAO);
+            modelsShowBarDAO.setModels(new ArrayList<ModelDAO>());
         });
-
-        log.info("userDAOList is {}", userDAOList);
 
         // 按照用户ID列表获取作品模型列表
         LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
@@ -71,10 +66,8 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         List<ModelDAO> modelDAOList = modelMapper.selectList(modelWrapper);
         modelDAOList.stream().forEach(modelDAO -> {
             ModelsShowBarDAO modelsShowBarDAO = collect.get(modelDAO.getUserId());
-            modelsShowBarDAO.getModelDAOs().add(modelDAO);
+            modelsShowBarDAO.getModels().add(modelDAO);
         });
-
-        log.info("modelDAOList is {}", modelDAOList);
 
         // 返回结果
         return collect.values().stream().toList();
