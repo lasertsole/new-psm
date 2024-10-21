@@ -48,7 +48,7 @@ public class UserExtensionServiceImpl implements UserExtensionService {
     @Override
     public boolean updateModelNumById(Long id, short work_num) {
         UserExtensionDAO userExtensionDAO = new UserExtensionDAO(id);
-        userExtensionDAO.setModelNum(work_num);
+        userExtensionDAO.setPublicModelNum(work_num);
 
         return userExtensionDB.updateById(userExtensionDAO);
     }
@@ -56,7 +56,7 @@ public class UserExtensionServiceImpl implements UserExtensionService {
     @Override
     public boolean addOneModelNumById(Long id) {
         UserExtensionDAO userExtensionDAO = selectWorkNumById(id);
-        short work_num = userExtensionDAO.getModelNum();
+        short work_num = userExtensionDAO.getPublicModelNum();
 
         return updateModelNumById(id, (short) (work_num + 1));
     }
@@ -64,7 +64,7 @@ public class UserExtensionServiceImpl implements UserExtensionService {
     @Override
     public boolean removeOneModelNumById(Long id) {
         UserExtensionDAO userExtensionDAO = selectWorkNumById(id);
-        short work_num = userExtensionDAO.getModelNum();
+        short work_num = userExtensionDAO.getPublicModelNum();
 
         if ( work_num == 0) return false;
 

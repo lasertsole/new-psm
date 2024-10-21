@@ -75,7 +75,7 @@ public interface UserExtensionAdapter {
      * @param userExtensionDTO 用户作品DTO实体
      * @return boolean
      */
-    boolean updateWorkNumById(UserExtensionDTO userExtensionDTO);
+    boolean updateModelNumById(UserExtensionDTO userExtensionDTO);
 
     /**
      * 更新用户作品数量
@@ -83,7 +83,7 @@ public interface UserExtensionAdapter {
      * @param userExtensionBO 用户作品BO实体
      * @return boolean
      */
-    boolean updateWorkNumById(UserExtensionBO userExtensionBO);
+    boolean updateModelNumById(UserExtensionBO userExtensionBO);
 
     /**
      * 更新用户作品数量
@@ -91,7 +91,7 @@ public interface UserExtensionAdapter {
      * @param id 用户id
      * @return boolean
      */
-    boolean addOneModelNumById(Long id);
+    boolean addOnePublicModelNumById(Long id);
 
     /**
      * 更新用户作品数量
@@ -99,7 +99,7 @@ public interface UserExtensionAdapter {
      * @param userExtensionDTO 用户作品DTO实体
      * @return boolean
      */
-    boolean addOneModelNumById(UserExtensionDTO userExtensionDTO);
+    boolean addOnePublicModelNumById(UserExtensionDTO userExtensionDTO);
 
     /**
      * 删除用户作品数量
@@ -107,7 +107,7 @@ public interface UserExtensionAdapter {
      * @param id 用户ID
      * @return boolean
      */
-    boolean removeOneModelNumById(Long id);
+    boolean removeOnePublicModelNumById(Long id);
 
     /**
      * 删除用户作品数量
@@ -115,7 +115,7 @@ public interface UserExtensionAdapter {
      * @param userExtensionDTO 用户作品DTO实体
      * @return boolean
      */
-    boolean removeOneModelNumById(UserExtensionDTO userExtensionDTO);
+    boolean removeOnePublicModelNumById(UserExtensionDTO userExtensionDTO);
 
     /**
      * 更新用户已用的存储空间
@@ -167,22 +167,4 @@ public interface UserExtensionAdapter {
      * @return 已用的存储空间
      */
     Long minusOneModelStorageById(UserExtensionDTO userExtensionDTO);
-
-    /**
-     * 增加用户作品数量
-     *
-     * @param id 用户ID
-     * @param storage 存储空间
-     * @return boolean
-     */
-    Long addOneModelById(Long id, Long storage);
-
-    /**
-     * 减少用户作品数量
-     *
-     * @param id 用户ID
-     * @param storage 存储空间
-     * @return boolean
-     */
-    Long removeOneModelById(Long id, Long storage);
 }

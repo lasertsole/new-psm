@@ -13,13 +13,14 @@ export async function uploadModel(file:File, progressFuc:Function, targetFilePat
     });
 };
 
-export async function uploadModelInfo({title, content, cover, category}:modelInfo):Promise<Boolean> {
-    if(!title || !content || !cover || !category) return false;
+export async function uploadModelInfo({title, content, cover, category, visible}:modelInfo):Promise<Boolean> {
+    if(!title || !content || !cover || !category || !visible) return false;
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
     formData.append('cover', cover);
     formData.append('category', JSON.stringify(category));
+    formData.append('visible', visible);
     
     const res:any = await fetchApi({
         url: '/models/uploadInfo',

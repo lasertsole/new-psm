@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum VisibleEnum {
-    PRIVATE(0,"未公开"),
+    PUBLIC(0,"公开"),
     PROTECTED(1,"半公开"),
-    PUBLIC(2,"公开");
+    PRIVATE(2,"未公开");
 
     @EnumValue
-    private final Integer visible;
-    private final String visibleName;
+    private final Integer value;
+    private final String name;
 }

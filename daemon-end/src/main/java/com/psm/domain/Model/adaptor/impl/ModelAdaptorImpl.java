@@ -36,6 +36,7 @@ public class ModelAdaptorImpl implements ModelAdaptor {
                 || StringUtils.isBlank(modelDTO.getContent())
                 || Objects.isNull(modelDTO.getCover())
                 || StringUtils.isBlank(modelDTO.getCategory())
+                || Objects.isNull(modelDTO.getVisible())
         )
             throw new InvalidParameterException("Invalid parameter");
 

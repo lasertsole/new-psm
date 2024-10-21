@@ -24,7 +24,7 @@ public abstract class UserConvertor {
     public abstract UserDAO DTO2DAO(UserDTO userDTO);
 
     @Mappings({
-            @Mapping(source = "sex.sex", target = "sex")
+            @Mapping(source = "sex.value", target = "sex")
     })
     public abstract UserBO DAO2BO(UserDAO userDAO);
 

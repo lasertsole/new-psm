@@ -7,6 +7,7 @@ import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
 import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarBO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.adaptor.UserExtensionAdapter;
+import com.psm.infrastructure.enums.VisibleEnum;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -67,9 +69,13 @@ public class ModelController {
             // 获取上传后模型大小
             Long modelSize = modelBO.getStorage();
 
-            // 更新数据库中用户上传模型数量+1, 增加用户已用的存储空间为当前文件大小
-            userExtensionAdapter.addOneModelById(userId, modelSize);
+            // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1,
+            if (Objects.equals(modelBO.getVisible(), VisibleEnum.PUBLIC.getValue())) {
+                userExtensionAdapter.addOnePublicModelNumById(userId);
+            }
 
+            // 增加用户已用的存储空间为当前文件大小
+            userExtensionAdapter.addOneModelStorageById(userId, modelSize);
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
@@ -83,18 +89,16 @@ public class ModelController {
 
     @GetMapping
     public ResponseVO getModelsShowBar(@ModelAttribute PageDTO pageDTO) {
-        List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
-        return ResponseVO.ok(modelsShowBarBOS);
-//        try {
-//            List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
-//            return ResponseVO.ok(modelsShowBarBOS);
-//        }
-//        catch (InvalidParameterException e) {
-//            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-//        }
-//        catch (Exception e){
-//            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
-//        }
+        try {
+            List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
+            return ResponseVO.ok(modelsShowBarBOS);
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
+        }
     }
 
 }

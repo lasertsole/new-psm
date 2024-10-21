@@ -35,6 +35,25 @@
                         ></model-upload-cover>
                     </div>
                 </div>
+
+                <div class="visible">
+                    <span>可见性</span>
+                    <div>
+                        <el-select
+                            v-model="visible" 
+                            placeholder="请选择作品可见性" 
+                            clearable
+                            placement="top"
+                        >
+                            <el-option
+                                    v-for="item in visibleOpts"
+                                    :key="item[0]"
+                                    :label="item[0]"
+                                    :value="item[1]"
+                                />
+                        </el-select>
+                    </div>
+                </div>
                 
                 <div class="title">
                     <span>标题</span>
@@ -102,6 +121,7 @@
 <script lang="ts" setup>
     import type { Category } from "@/types/model";
     import { StyleEnum, TypeEnum } from "@/enums/models.d";
+    import { VisibleEnum } from "@/enums/visible.d";
 
     const progress = ref<string>('0.00%');
     const hadUpload = ref<boolean>(false);
@@ -118,12 +138,15 @@
         progress.value = pgs;
     }
     
+    // 可见性列表
+    const visibleOpts = Object.entries(VisibleEnum).filter((item)=>{ return !/^\d+$/.test(item[0]) });
     // 样式标签列表
     const styleOpts = Object.entries(StyleEnum);
     // 类型标签列表
     const typeOpts = Object.entries(TypeEnum);
 
     const cover = ref<Blob>();//封面
+    const visible = ref<string>("");//可见性
     const title = ref<string>("");//标题
     const content = ref<string>("");//简介
     const category = reactive<Category>(//标签
@@ -162,6 +185,15 @@
     function validateCover(cover:Blob|undefined):boolean{
         if (!cover) {
             ElMessage.error('请输入封面');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function validateVisible(visible:number|undefined):boolean{
+        if (typeof visible != 'number') {
+            ElMessage.error('请选择可见性');
             return false;
         }
         
@@ -221,6 +253,9 @@
         if(!validateCover(cover.value)){
             return;
         }
+        else if(!validateVisible(visible.value)){
+            return;
+        }
         else if(!validateTitle(title.value)){
             return;
         }
@@ -238,7 +273,8 @@
             cover: cover.value,
             title: title.value,
             content: content.value,
-            category: category
+            category: category,
+            visible: visible.value.toString()
         });
     });
 </script>
@@ -253,7 +289,7 @@
         background-color: rgb(230,234,238);
 
         .upload-detail{
-            @include fixedRoundedRectangle(80%, 90%, 20px);
+            @include fixedRoundedRectangle(80%, 95%, 20px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -345,6 +381,21 @@
             }
 
             .tag{
+                >div{
+                    display: flex;
+                    
+                    &::v-deep(.el-select){
+                        $gapWidth: 20px;
+                        width: calc(50% - math.div($gapWidth,2));
+
+                        &:not(:last-of-type){
+                            margin-right: $gapWidth;
+                        }
+                    }
+                }
+            }
+
+            .visible{
                 >div{
                     display: flex;
                     

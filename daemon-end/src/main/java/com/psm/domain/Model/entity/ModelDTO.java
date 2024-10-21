@@ -46,5 +46,5 @@ public class ModelDTO implements Serializable {
 
     @Min(value = 0, message = "The visable must be greater than or equal to 0")
     @Max(value = 2, message = "The visable must be less than or equal to 2")
-    private short visible;
+    private Integer visible;
 }

@@ -15,7 +15,7 @@ public class UserExtensionBO implements Serializable {
     private static final long serialVersionUID = -3752993483667036339L;
 
     private Long id;
-    private Short modelNum;
+    private Short publicModelNum;
     private Long modelCurStorage;
     private Long modelMaxStorage;
     private String createTime;

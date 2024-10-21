@@ -11,6 +11,6 @@ public enum SexEnum {
     FEMALE(true,"女");
 
     @EnumValue
-    private final Boolean sex;
-    private final String sexName;
+    private final Boolean value;
+    private final String name;
 }

@@ -53,7 +53,7 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
         if (
                 ObjectUtils.isNull(userExtensionDTO.getId())
                 || (
-                        ObjectUtils.isNull(userExtensionDTO.getModelNum())
+                        ObjectUtils.isNull(userExtensionDTO.getPublicModelNum())
                 )
         )
             throw new InvalidParameterException("Invalid parameter");
@@ -81,45 +81,45 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
 
 
     @Override
-    public boolean updateWorkNumById(@Valid UserExtensionDTO userExtensionDTO) {
+    public boolean updateModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (
                 ObjectUtils.isNull(userExtensionDTO.getId())
-                        && ObjectUtils.isNull(userExtensionDTO.getModelNum())
+                        && ObjectUtils.isNull(userExtensionDTO.getPublicModelNum())
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        return userExtensionService.updateModelNumById(userExtensionDTO.getId(), userExtensionDTO.getModelNum());
+        return userExtensionService.updateModelNumById(userExtensionDTO.getId(), userExtensionDTO.getPublicModelNum());
     }
 
     @Override
-    public boolean updateWorkNumById(UserExtensionBO userExtensionBO) {
-        return updateWorkNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
+    public boolean updateModelNumById(UserExtensionBO userExtensionBO) {
+        return updateModelNumById(UserExtensionConvertor.INSTANCE.BO2DTO(userExtensionBO));
     }
 
     @Override
-    public boolean addOneModelNumById(Long id) {
+    public boolean addOnePublicModelNumById(Long id) {
         return userExtensionService.addOneModelNumById(id);
     }
 
     @Override
-    public boolean addOneModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
+    public boolean addOnePublicModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (ObjectUtils.isNull(userExtensionDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
-        return addOneModelNumById(userExtensionDTO.getId());
+        return addOnePublicModelNumById(userExtensionDTO.getId());
     }
 
     @Override
-    public boolean removeOneModelNumById(Long id) {
+    public boolean removeOnePublicModelNumById(Long id) {
         return userExtensionService.removeOneModelNumById(id);
     }
 
     @Override
-    public boolean removeOneModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
+    public boolean removeOnePublicModelNumById(@Valid UserExtensionDTO userExtensionDTO) {
         if (ObjectUtils.isNull(userExtensionDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
-        return removeOneModelNumById(userExtensionDTO.getId());
+        return removeOnePublicModelNumById(userExtensionDTO.getId());
     }
 
     @Override
@@ -168,17 +168,5 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
             throw new InvalidParameterException("Invalid parameter");
 
         return minusOneModelStorageById(userExtensionDTO.getId(), userExtensionDTO.getModelCurStorage());
-    }
-
-    @Override
-    public Long addOneModelById(Long id, Long storage) {
-        addOneModelNumById(id);
-        return addOneModelStorageById(id, storage);
-    }
-
-    @Override
-    public Long removeOneModelById(Long id, Long storage) {
-        removeOneModelNumById(id);
-        return minusOneModelStorageById(id, storage);
     }
 }

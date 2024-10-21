@@ -8,6 +8,7 @@ export type modelInfo = {
     cover?: Blob;
     model?: Blob;
     category?: Category;
+    visible?: string;
 };
 
 export type Category = {

@@ -11,6 +11,7 @@ import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.repository.mapper.UserExtensionMapper;
 import com.psm.domain.User.repository.mapper.UserMapper;
 import com.psm.infrastructure.annotation.spring.Repository;
+import com.psm.infrastructure.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +34,7 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         LambdaQueryWrapper<UserExtensionDAO> userExtensionWrapper = new LambdaQueryWrapper<>();
         userExtensionWrapper.select(UserExtensionDAO::getId);
-        userExtensionWrapper.gt(UserExtensionDAO::getModelNum, 0);
+        userExtensionWrapper.gt(UserExtensionDAO::getPublicModelNum, VisibleEnum.PUBLIC);
         userExtensionWrapper.orderByDesc(UserExtensionDAO::getCreateTime);
         Page<UserExtensionDAO> page = new Page<>(currentPage, pageSize);
         Page<UserExtensionDAO> UserExtensionDAOResultPage = userExtensionMapper.selectPage(page, userExtensionWrapper);

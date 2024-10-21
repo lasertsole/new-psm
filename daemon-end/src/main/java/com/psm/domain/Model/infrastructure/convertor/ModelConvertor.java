@@ -53,7 +53,7 @@ public abstract class ModelConvertor {
     public abstract ModelBO DTO2BO(ModelDTO modelDTO);
 
     @Mappings({
-            @Mapping(source = "visible.visible", target = "visible")
+            @Mapping(source = "visible.value", target = "visible")
     })
     public abstract ModelBO DAO2BO(ModelDAO modelDAO);
 
