@@ -7,10 +7,12 @@
 ### loadsh防抖与节流
 ### three.js 浏览器3D渲染
 ### pixi.js 游戏动画库
+### pwa & service-worker 全平台适配与浏览器cache storage缓存
 ### vite-pwa 全平台适配方案与离线缓存
 ### tus-js-client大文件分片上传
 ### socket.io(client) websocket全双工通信框架
 ## 后端:
+### DDD充血模型的六边形架构
 ### springboot3.3
 ### springsecurity+OAuth2安全框架
 ### postgresql(podman)最先进的关系型数据库
