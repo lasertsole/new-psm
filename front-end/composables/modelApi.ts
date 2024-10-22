@@ -1,4 +1,4 @@
-import type { modelInfo } from "@/types/model";
+import type { ModelInfo, ModelsShowBarPage } from "@/types/model";
 
 export async function uploadModel(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
     return await tusUploadApi({
@@ -13,7 +13,7 @@ export async function uploadModel(file:File, progressFuc:Function, targetFilePat
     });
 };
 
-export async function uploadModelInfo({title, content, cover, category, visible}:modelInfo):Promise<Boolean> {
+export async function uploadModelInfo({title, content, cover, category, visible}:ModelInfo):Promise<Boolean> {
     if(!title || !content || !cover || !category || !visible) return false;
     const formData = new FormData();
     formData.append('title', title);
@@ -41,4 +41,14 @@ export async function uploadModelInfo({title, content, cover, category, visible}
     navigateTo('/');
     
     return true;
+};
+
+
+export async function getModelsShowBar({currentPage, pageSize}:ModelsShowBarPage):Promise<ModelInfo[]> {
+    const res:any = await fetchApi({
+        url: '/models',
+        method: 'get',
+    });
+
+    return res.data;
 };

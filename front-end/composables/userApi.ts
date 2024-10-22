@@ -234,6 +234,7 @@ export async function logout():Promise<boolean>{
         url: '/users/logout',
         method: 'delete',
     });
+    
     if(res.code!=200){
         ElMessage.error('登出失败:'+res.msg);
 

@@ -1,4 +1,6 @@
-export type modelInfo = {
+import type { Page } from "@/types/common";
+
+export type ModelInfo = {
     id?: string;
     userId?: string;
     title?: string;
@@ -14,4 +16,8 @@ export type modelInfo = {
 export type Category = {
     style: string;
     type: string;
+}
+
+export type ModelsShowBarPage = Page & {
+    
 }

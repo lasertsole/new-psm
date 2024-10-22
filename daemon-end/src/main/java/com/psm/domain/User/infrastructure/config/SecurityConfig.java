@@ -1,8 +1,10 @@
 package com.psm.domain.User.infrastructure.config;
 
 import com.psm.domain.User.infrastructure.filter.JwtAuthenticationTokenFilter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,10 +26,18 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
+@Setter
 @Configuration
 @EnableWebSecurity
+@ConfigurationProperties(prefix = "spring.security.request-matcher")
 public class SecurityConfig {
+
+    private List<String> anonymous;
+
+    private List<String> permitAll;
+
     @Autowired
     UserDetailsService userDetailsService;
 
@@ -92,8 +102,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
-                auth -> auth.requestMatchers("/users/login", "/users/register").anonymous()
-                .anyRequest().authenticated());
+                auth -> auth.requestMatchers(anonymous.toArray(String[]::new)).anonymous()
+                        .requestMatchers(permitAll.toArray(String[]::new)).permitAll()
+                        .anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);

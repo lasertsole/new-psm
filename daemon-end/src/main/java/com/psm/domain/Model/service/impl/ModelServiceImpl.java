@@ -65,6 +65,8 @@ public class ModelServiceImpl implements ModelService {
     @Transactional
     @Override
     public Map<String, Long> uploadModelInfo(ModelDTO modelDTO) throws Exception {
+        log.info("visible is {}", modelDTO.getVisible());
+
         String userId = String.valueOf(modelDTO.getUserId());
 
         // 判断文件是否已上传完成且没有过期fullPath

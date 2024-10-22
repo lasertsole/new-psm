@@ -24,13 +24,13 @@
             tabName:PrimarySort[0],
             index:0,
             paddingRight:"37.5px",
-            path:"/subtitles/all"
+            path:"/model3DShow/all"
         },
         {
             tabName:PrimarySort[1],
             index:1,
             paddingLeft:"37.5px",
-            path:"/subtitles/follow"
+            path:"/model3DShow/follow"
         },
     ]);
 

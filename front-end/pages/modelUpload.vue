@@ -191,8 +191,8 @@
         return true;
     }
     
-    function validateVisible(visible:number|undefined):boolean{
-        if (typeof visible != 'number') {
+    function validateVisible(visible:string|undefined):boolean{
+        if (visible === '') {
             ElMessage.error('请选择可见性');
             return false;
         }
