@@ -24,9 +24,7 @@
                 <modelShowWorkBox
                     :ID="item.id"
                     :title="item.title"
-                    :content="item.content"
                     :cover="item.cover"
-                    :entity="item.entity"
                     :category="item.category"
                 >
                 </modelShowWorkBox>
@@ -36,8 +34,10 @@
 </template>
 
 <script setup lang="ts">
+    import type { ModelInfo } from "@/types/model";
+    
     const props = defineProps({
-        boxInfo:{type:Object as PropType<any>, required: true}
+        boxInfo:{type:Object as ModelInfo, required: true}
     });
 </script>
 

@@ -87,4 +87,8 @@
         };
       }, 0);
   })
+
+  definePageMeta({
+      name: "thirdLogin"
+  });
 </script>

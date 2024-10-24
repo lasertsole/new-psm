@@ -15,8 +15,8 @@ public class ModelVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 6383509354550523034L;
 
-    private Long id;
-    private Long userId;
+    private String id;
+    private String userId;
     private String title;
     private String content;
     private String cover;

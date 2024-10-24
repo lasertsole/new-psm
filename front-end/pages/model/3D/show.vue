@@ -18,23 +18,19 @@
     import type { TagBarItem, FilterItem } from "@/types/common";
     import { PrimarySort } from "@/enums/subtitles.d";
     import { SortWay } from "@/enums/subtitles.d";
-
-    definePageMeta({
-        middleware:["redirect-model-show"]
-    });
     
     const tabList = ref<TagBarItem[]>([
         {
             tabName:PrimarySort[0],
             index:0,
             paddingRight:"37.5px",
-            path:"/model3DShow/all"
+            path:"/model/3D/show/all"
         },
         {
             tabName:PrimarySort[1],
             index:1,
             paddingLeft:"37.5px",
-            path:"/model3DShow/follow"
+            path:"/model/3D/show/follow"
         },
     ]);
 
@@ -78,9 +74,16 @@
             ]
         }
     );
+
+    definePageMeta({
+        name: 'model-3D-show'
+    });
 </script>
 
 <style lang="scss" scoped>
+    @use "sass:math";
+    @import "@/common.scss";
+    
     .showcase{
         width: 100%;
         height: 100%;

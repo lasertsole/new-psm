@@ -105,49 +105,10 @@
             tempProfile.value=userInfo.profile||"";
         };
     });
-
-    // /*橱窗盒子的数据*/
-    // const showCaseBoxArr = ref<showCaseBoxInfo[]>([
-    //     {
-    //         imgSrc: "Carousel/bg-1.jpg",
-    //         describt: "虚拟主播 视频封面（16:10）"
-    //     },
-    //     {
-    //         imgSrc: "Carousel/bg-1.jpg",
-    //         describt: "虚拟主播 视频封面（16:10）"
-    //     },
-    //     {
-    //         imgSrc: "Carousel/bg-1.jpg",
-    //         describt: "虚拟主播 视频封面（16:10）"
-    //     }
-    // ])
-    //  /*企划盒子的数据*/
-    //  const planningBoxArr = ref<planningBoxInfo[]>([
-    //     {
-    //         title:"双人联动轴",
-    //         describe:"双人轴 带点日语和英语 需要和谐部分词汇",
-    //         imgSrc:"Carousel/bg-1.jpg",
-    //         type:"美工",
-    //         calendar:"2023-5-10",
-    //         price:"￥150-250",
-    //     },
-    //     {
-    //         title:"双人联动轴",
-    //         describe:"双人轴 带点日语和英语 需要和谐部分词汇",
-    //         imgSrc:"Carousel/bg-1.jpg",
-    //         type:"美工",
-    //         calendar:"2023-5-10",
-    //         price:"￥150-250",
-    //     },
-    //     {
-    //         title:"双人联动轴",
-    //         describe:"双人轴 带点日语和英语 需要和谐部分词汇",
-    //         imgSrc:"Carousel/bg-1.jpg",
-    //         type:"美工",
-    //         calendar:"2023-5-10",
-    //         price:"￥150-250",
-    //     }
-    // ])
+    
+    definePageMeta({
+        name: 'home'
+    });
 </script>
 
 <style lang="scss" scoped>

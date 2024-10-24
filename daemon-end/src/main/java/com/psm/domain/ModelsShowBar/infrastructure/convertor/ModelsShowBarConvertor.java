@@ -57,7 +57,13 @@ public abstract class ModelsShowBarConvertor {
     protected List<BriefModelVO> ModelsBO2VO(List<ModelBO> modelBOs) {
         return modelBOs.stream().map((modelBO)->{
             BriefModelVO briefModelVO = new BriefModelVO();
-            BeanUtils.copyProperties(modelBO, briefModelVO);
+
+            briefModelVO.setId(modelBO.getId().toString());
+            briefModelVO.setTitle(modelBO.getTitle());
+            briefModelVO.setCover(modelBO.getCover());
+            briefModelVO.setCategory(modelBO.getCategory());
+            briefModelVO.setCreateTime(modelBO.getCreateTime());
+
             return briefModelVO;
         }).toList();
     }

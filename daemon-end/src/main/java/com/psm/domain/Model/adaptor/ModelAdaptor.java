@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 public interface ModelAdaptor {
     /**
@@ -37,4 +38,16 @@ public interface ModelAdaptor {
      * @return 模型BO
      */
     ModelBO selectById(ModelDTO modelDTO);
+
+    /**
+     * 根据模型ID查询模型
+     *
+     * @param id        模型ID
+     * @param visible   可见性
+     * @return 模型BO
+     * @throws InvalidParameterException   参数无效异常
+     * @throws InstantiationException      实例化异常
+     * @throws IllegalAccessException      非法访问异常
+     */
+    ModelBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException;
 }

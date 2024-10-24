@@ -63,6 +63,7 @@
     import { useRouter } from '#app'
 
     definePageMeta({
+        name: "login",
         keepalive:true,
         pageTransition:{
             name: 'slide-right',

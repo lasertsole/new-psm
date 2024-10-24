@@ -10,7 +10,7 @@ export const routerList:Router[] = [
     },
     {
         name: '3D',
-        path: '/model3DShow',
+        path: '/model/3D/show',
         needOnLine: false,
         needOffLine: false,
         tarbar: true,

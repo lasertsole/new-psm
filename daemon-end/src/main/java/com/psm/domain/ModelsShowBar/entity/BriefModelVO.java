@@ -15,7 +15,7 @@ public class BriefModelVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 4977840824752597601L;
 
-    private Long id;
+    private String id;
     private String title;
     private String cover;
     private Category category;

@@ -53,12 +53,27 @@
 </template>
 
 <script setup lang="ts">
+  import type { ModelInfo } from "@/types/model";
 
+  // 获取当前路由对象
+  const route = useRoute();
+
+  // 从 query 参数中获取 id
+  const id = route.query.id;
+  
+  onMounted(async ()=>{
+    getModelByModelId({modelId: id})
+  });
+  
+
+  definePageMeta({
+    name: 'model-3D-detailShow'
+  });
 </script>
 
 <style lang="scss" scoped>
-  @use "sass:math";
-  @import "commonScss";
+    @use "sass:math";
+    @import "@/common.scss";
 
   .showcaseDetail{
     width: 100%;

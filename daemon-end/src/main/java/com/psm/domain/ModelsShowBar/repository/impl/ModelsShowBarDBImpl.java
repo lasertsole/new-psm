@@ -69,6 +69,7 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
                 ModelDAO::getCreateTime);
         List<ModelDAO> modelDAOList = modelMapper.selectList(modelWrapper);
 
+        // 将作品模型列表添加到对应的ModelsShowBarDAO中
         modelDAOList.forEach(modelDAO -> {
             ModelsShowBarDAO modelsShowBarDAO = collect.get(modelDAO.getUserId());
             modelsShowBarDAO.getModels().add(modelDAO);

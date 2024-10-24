@@ -14,7 +14,11 @@
     const ModelShowItems:Ref<ModelInfo[]> = ref<ModelInfo[]>([] as ModelInfo[]);
     
     onMounted(async ()=>{
-        ModelShowItems.value = await getModelsShowBar({currentPage:1, pageSize:10}); 
+        ModelShowItems.value = await getModelsShowBars({currentPage:1, pageSize:10});
+    });
+
+    definePageMeta({
+        name: 'model-3D-show-all'
     });
 </script>
 

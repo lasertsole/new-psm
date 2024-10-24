@@ -9,8 +9,5 @@ export default defineNuxtRouteMiddleware(
         if(to.path == "/loginOrRegister"){
             return navigateTo("/loginOrRegister/login");
         }
-        else if(to.path == "/subtitles"){
-            return navigateTo("/subtitles/all");
-        }
     }
 );

@@ -107,6 +107,7 @@ export default defineNuxtConfig({
     '/login': { redirect: '/loginOrRegister/login' },
     '/register': { redirect: '/loginOrRegister/register' },
     '/thirdLogin': { redirect: '/loginOrRegister/thirdLogin' },
+    '/model/3D/show': { redirect: '/model/3D/show/all' },
   },
 
   // 代理

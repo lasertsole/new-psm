@@ -46,8 +46,15 @@ public abstract class ModelConvertor {
 
     public abstract ModelBO DAO2BO(ModelDAO modelDAO);
 
+    @Named("longToString")
+    public String longToString(Long num) {
+        return num.toString();
+    }
+
     @Mappings({
-            @Mapping(source = "visible.value", target = "visible")
+            @Mapping(source = "visible.value", target = "visible"),
+            @Mapping(target = "id", qualifiedByName = "longToString"),
+            @Mapping(target = "userId", qualifiedByName = "longToString")
     })
     public abstract ModelVO BO2VO(ModelBO modelBO);
 }

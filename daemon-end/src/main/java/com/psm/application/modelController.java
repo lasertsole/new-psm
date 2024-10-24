@@ -97,7 +97,7 @@ public class ModelController {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
         }
     }
 
@@ -107,13 +107,15 @@ public class ModelController {
             ModelDTO modelDTO = new ModelDTO();
             modelDTO.setId(id);
             modelDTO.setVisible(VisibleEnum.PUBLIC.getValue());
-            return ResponseVO.ok(modelAdaptor.selectById(modelDTO));
+            ModelBO modelBO = modelAdaptor.selectById(modelDTO);
+
+            return ResponseVO.ok(modelBO);
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
         }
     }
 }

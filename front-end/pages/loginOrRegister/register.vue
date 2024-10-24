@@ -60,6 +60,7 @@
     import type { UserInfo } from "@/types/user";
 
     definePageMeta({
+        name: "register",
         keepalive:true,
         pageTransition:{
             name: 'slide-right',

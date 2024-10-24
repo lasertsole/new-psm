@@ -28,10 +28,19 @@ public abstract class UserConvertor {
     })
     public abstract UserBO DAO2BO(UserDAO userDAO);
 
+    @Named("longToString")
+    public String longToString(Long num) {
+        return num.toString();
+    }
+
+    @Mappings({
+            @Mapping(target = "id", qualifiedByName = "longToString")
+    })
     public abstract OtherUserVO BO2VO(UserBO userBO);
 
     @Mappings({
-            @Mapping(target = "hasPass", ignore = true)
+            @Mapping(target = "hasPass", ignore = true),
+            @Mapping(target = "id", qualifiedByName = "longToString")
     })
     public abstract CurrentUserVO BO2CurrentVO(UserBO userBO);
 

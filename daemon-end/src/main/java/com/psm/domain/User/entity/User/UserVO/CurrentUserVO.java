@@ -15,7 +15,7 @@ public class CurrentUserVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 6710910285903195194L;
 
-    private Long id;
+    private String id;
     private String name;
     private Boolean hasPass;
     private String phone;

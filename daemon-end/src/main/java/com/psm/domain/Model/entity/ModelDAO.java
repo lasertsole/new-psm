@@ -19,8 +19,7 @@ import java.io.Serializable;
 @TableName(value = "tb_models", autoResultMap = true)
 public class ModelDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 4967272192276572886L;
-    private static final Logger log = LoggerFactory.getLogger(ModelDAO.class);
+    private static final long serialVersionUID = 3090621278404553476L;
 
     @TableId
     private Long id;

@@ -44,8 +44,7 @@ export async function uploadModelInfo({title, content, cover, category, visible}
 };
 
 
-export async function getModelsShowBar({currentPage, pageSize}:ModelsShowBarPage):Promise<ModelInfo[]> {
-    
+export async function getModelsShowBars({currentPage, pageSize}:ModelsShowBarPage):Promise<ModelInfo[]> {
     const res:any = await fetchApi({
         url: '/models',
         method: 'get',
@@ -53,3 +52,12 @@ export async function getModelsShowBar({currentPage, pageSize}:ModelsShowBarPage
     
     return res.data;
 };
+
+export async function getModelByModelId({ modelId }:{modelId:number}) {
+    const res:any = await fetchApi({
+        url: `/models/${modelId}`,
+        method: 'get',
+    });
+    
+    return res.data;
+}

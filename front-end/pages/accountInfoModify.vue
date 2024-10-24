@@ -279,6 +279,10 @@
         }
     }, 1000);
     /**以上为修改信息部分**/
+
+    definePageMeta({
+        name: 'accountInfoModify'
+    });
 </script>
 
 <style lang="scss" scoped>

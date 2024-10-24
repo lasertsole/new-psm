@@ -277,6 +277,10 @@
             visible: visible.value.toString()
         });
     });
+
+    definePageMeta({
+        name: 'model-3D-upload'
+    });
 </script>
 
 <style lang="scss" scoped>

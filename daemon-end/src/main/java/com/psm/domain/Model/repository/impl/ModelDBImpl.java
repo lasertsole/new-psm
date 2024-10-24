@@ -1,15 +1,16 @@
 package com.psm.domain.Model.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Model.entity.ModelDAO;
 import com.psm.domain.Model.repository.ModelDB;
 import com.psm.domain.Model.repository.mapper.ModelMapper;
 import com.psm.infrastructure.annotation.spring.Repository;
 import com.psm.infrastructure.enums.VisibleEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Slf4j
 @Repository
 public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements ModelDB {
     @Autowired
@@ -29,9 +30,11 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
     @Override
     public ModelDAO selectById(Long modelId, VisibleEnum visibleEnum) {
         LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
+        modelWrapper.eq(ModelDAO::getId, modelId);
         modelWrapper.ge(ModelDAO::getVisible, visibleEnum);
         modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover, ModelDAO::getCategory,
                 ModelDAO::getCreateTime);
-        return modelMapper.selectOne(modelWrapper);
+
+        return modelMapper.selectById(modelId);
     }
 }
