@@ -7,6 +7,7 @@ import com.psm.domain.Model.entity.ModelDAO;
 import com.psm.domain.Model.repository.ModelDB;
 import com.psm.domain.Model.repository.mapper.ModelMapper;
 import com.psm.infrastructure.annotation.spring.Repository;
+import com.psm.infrastructure.enums.VisibleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository
@@ -16,12 +17,6 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
 
     @Override
     public void insert(ModelDAO modelDAO) { modelMapper.insert(modelDAO); }
-
-    @Override
-    public Page<ModelDAO> getModelListByIds() {
-        return null;
-    }
-
     @Override
     public void delete(ModelDAO modelDAO) {
         LambdaQueryWrapper<ModelDAO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -29,5 +24,14 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
                 .and(wrapper -> wrapper.eq(ModelDAO::getEntity, modelDAO.getEntity()));
 
         modelMapper.delete(lambdaQueryWrapper);
+    }
+
+    @Override
+    public ModelDAO selectById(Long modelId, VisibleEnum visibleEnum) {
+        LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
+        modelWrapper.ge(ModelDAO::getVisible, visibleEnum);
+        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover, ModelDAO::getCategory,
+                ModelDAO::getCreateTime);
+        return modelMapper.selectOne(modelWrapper);
     }
 }

@@ -1,8 +1,6 @@
 package com.psm.domain.ModelsShowBar.valueObject;
 
-import com.psm.domain.Model.entity.ModelBO;
-import com.psm.domain.Model.entity.ModelVO;
-import com.psm.domain.User.entity.User.UserBO;
+import com.psm.domain.ModelsShowBar.entity.BriefModelVO;
 import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,10 +16,10 @@ import java.util.Objects;
 @NoArgsConstructor
 public class ModelsShowBarVO implements Serializable{ // VO实体不具有值对象性质，可以通过set方法赋值，方便快速构建
     @Serial
-    private static final long serialVersionUID = -7722104080157413205L;
+    private static final long serialVersionUID = -9167306602106926094L;
 
     private OtherUserVO user;
-    private List<ModelVO> models;
+    private List<BriefModelVO> models;
 
     // 值对象禁止二次赋值
     public void setUser(OtherUserVO user) {
@@ -29,7 +27,7 @@ public class ModelsShowBarVO implements Serializable{ // VO实体不具有值对
     }
 
     // 值对象禁止二次赋值
-    public void setModels(List<ModelVO> models) {
+    public void setModels(List<BriefModelVO> models) {
         if (Objects.isNull(this.models)) this.models = models;
     }
 }

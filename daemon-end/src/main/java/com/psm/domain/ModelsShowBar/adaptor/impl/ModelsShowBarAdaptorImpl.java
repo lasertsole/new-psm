@@ -8,6 +8,7 @@ import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarDAO;
 import com.psm.infrastructure.annotation.spring.Adaptor;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.util.ObjectUtils;
@@ -15,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 import java.security.InvalidParameterException;
 import java.util.List;
 
+@Slf4j
 @Adaptor
 public class ModelsShowBarAdaptorImpl implements ModelsShowBarAdaptor {
     @Autowired
@@ -28,7 +30,7 @@ public class ModelsShowBarAdaptorImpl implements ModelsShowBarAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        List<ModelsShowBarDAO> modelsShowBarDAOS = modelsShowBarService.selectModelsShowBarOrderByCreateTimeDesc(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+        List<ModelsShowBarDAO> modelsShowBarDAOS = modelsShowBarService.getModelsShowBarOrderByCreateTimeDesc(pageDTO.getCurrentPage(), pageDTO.getPageSize());
 
         ModelsShowBarConvertor modelsShowBarConvertor = ModelsShowBarConvertor.INSTANCE;
         return modelsShowBarDAOS.stream().map(modelsShowBarConvertor::DAO2BO).toList();

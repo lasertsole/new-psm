@@ -1,6 +1,7 @@
 package com.psm.infrastructure.utils.MybatisPlus;
 
 import com.alibaba.fastjson2.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
@@ -11,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Slf4j
 @MappedTypes({Object.class})
 public class JsonTypeHandler extends BaseTypeHandler<Object> {
 

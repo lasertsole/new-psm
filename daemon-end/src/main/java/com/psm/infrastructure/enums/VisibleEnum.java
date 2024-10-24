@@ -14,4 +14,16 @@ public enum VisibleEnum {
     @EnumValue
     private final Integer value;
     private final String name;
+
+    public static VisibleEnum fromInteger(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        for (VisibleEnum visibleEnum : values()) {
+            if (visibleEnum.getValue().equals(value)) {
+                return visibleEnum;
+            }
+        }
+        throw new IllegalArgumentException("未知的值: " + value);
+    }
 }

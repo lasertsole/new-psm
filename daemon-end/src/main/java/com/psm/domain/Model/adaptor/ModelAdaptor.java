@@ -2,13 +2,11 @@ package com.psm.domain.Model.adaptor;
 
 import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDTO;
-import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 public interface ModelAdaptor {
     /**
@@ -31,4 +29,12 @@ public interface ModelAdaptor {
      * @return 模型BO实体
      */
     ModelBO uploadModelInfo(ModelDTO modelDTO) throws Exception;
+
+    /**
+     * 根据模型ID查询模型
+     *
+     * @param modelDTO  模型信息
+     * @return 模型BO
+     */
+    ModelBO selectById(ModelDTO modelDTO);
 }

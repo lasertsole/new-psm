@@ -45,10 +45,11 @@ export async function uploadModelInfo({title, content, cover, category, visible}
 
 
 export async function getModelsShowBar({currentPage, pageSize}:ModelsShowBarPage):Promise<ModelInfo[]> {
+    
     const res:any = await fetchApi({
         url: '/models',
         method: 'get',
     });
-
+    
     return res.data;
 };

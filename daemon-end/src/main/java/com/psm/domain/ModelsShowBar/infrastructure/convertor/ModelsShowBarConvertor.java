@@ -2,8 +2,8 @@ package com.psm.domain.ModelsShowBar.infrastructure.convertor;
 
 import com.psm.domain.Model.entity.ModelBO;
 import com.psm.domain.Model.entity.ModelDAO;
-import com.psm.domain.Model.entity.ModelVO;
 import com.psm.domain.Model.infrastructure.convertor.ModelConvertor;
+import com.psm.domain.ModelsShowBar.entity.BriefModelVO;
 import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
 import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarBO;
 import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarDAO;
@@ -17,6 +17,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 
@@ -53,8 +54,12 @@ public abstract class ModelsShowBarConvertor {
     }
 
     @Named("ModelsBO2VO")
-    protected List<ModelVO> ModelsBO2VO(List<ModelBO> modelBOs) {
-        return modelBOs.stream().map(modelConvertor::BO2VO).toList();
+    protected List<BriefModelVO> ModelsBO2VO(List<ModelBO> modelBOs) {
+        return modelBOs.stream().map((modelBO)->{
+            BriefModelVO briefModelVO = new BriefModelVO();
+            BeanUtils.copyProperties(modelBO, briefModelVO);
+            return briefModelVO;
+        }).toList();
     }
 
     @Mappings({

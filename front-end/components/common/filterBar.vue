@@ -26,7 +26,7 @@
     import { ref, defineProps, defineEmits, watch } from "vue";
 
     const props = defineProps({
-        filterItem:{type:Object as PropType<FilterItem>, required: true},
+        filterItem:{ type:Object as PropType<FilterItem>, required: true },
     });
     
 

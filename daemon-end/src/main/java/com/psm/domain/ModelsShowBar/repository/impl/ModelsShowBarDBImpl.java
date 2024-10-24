@@ -34,7 +34,7 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         LambdaQueryWrapper<UserExtensionDAO> userExtensionWrapper = new LambdaQueryWrapper<>();
         userExtensionWrapper.select(UserExtensionDAO::getId);
-        userExtensionWrapper.gt(UserExtensionDAO::getPublicModelNum, VisibleEnum.PUBLIC);
+        userExtensionWrapper.gt(UserExtensionDAO::getPublicModelNum, 0);
         userExtensionWrapper.orderByDesc(UserExtensionDAO::getCreateTime);
         Page<UserExtensionDAO> page = new Page<>(currentPage, pageSize);
         Page<UserExtensionDAO> UserExtensionDAOResultPage = userExtensionMapper.selectPage(page, userExtensionWrapper);
@@ -64,8 +64,12 @@ public class ModelsShowBarDBImpl implements ModelsShowBarDB {
         // 按照用户ID列表获取作品模型列表
         LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
         modelWrapper.in(ModelDAO::getUserId, userIds);
+        modelWrapper.eq(ModelDAO::getVisible, VisibleEnum.PUBLIC);
+        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover, ModelDAO::getCategory,
+                ModelDAO::getCreateTime);
         List<ModelDAO> modelDAOList = modelMapper.selectList(modelWrapper);
-        modelDAOList.stream().forEach(modelDAO -> {
+
+        modelDAOList.forEach(modelDAO -> {
             ModelsShowBarDAO modelsShowBarDAO = collect.get(modelDAO.getUserId());
             modelsShowBarDAO.getModels().add(modelDAO);
         });

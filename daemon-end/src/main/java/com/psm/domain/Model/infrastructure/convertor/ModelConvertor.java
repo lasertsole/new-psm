@@ -25,37 +25,29 @@ public abstract class ModelConvertor {
         return category;
     }
 
-    @Named("fromShort")
+    @Named("fromInteger")
     public VisibleEnum fromShort(Integer visable) {
-        switch (visable) {
-            case 0:
-                return VisibleEnum.PRIVATE;
-            case 1:
-                return VisibleEnum.PROTECTED;
-            case 2:
-                return VisibleEnum.PUBLIC;
-            default:
-                return VisibleEnum.PRIVATE;
-        }
+        return VisibleEnum.fromInteger(visable);
     }
 
     @Mappings({
             @Mapping(source = "cover", target = "cover", ignore = true),
             @Mapping(target = "category", qualifiedByName = "fromString"),
-            @Mapping(target = "visible", qualifiedByName = "fromShort")
+            @Mapping(target = "visible", qualifiedByName = "fromInteger")
     })
     public abstract ModelDAO DTO2DAO(ModelDTO modelDTO);
 
     @Mappings({
             @Mapping(target = "cover", ignore = true),
-            @Mapping(target = "category", ignore = true)
+            @Mapping(target = "category", ignore = true),
+            @Mapping(target = "visible", qualifiedByName = "fromInteger")
     })
     public abstract ModelBO DTO2BO(ModelDTO modelDTO);
+
+    public abstract ModelBO DAO2BO(ModelDAO modelDAO);
 
     @Mappings({
             @Mapping(source = "visible.value", target = "visible")
     })
-    public abstract ModelBO DAO2BO(ModelDAO modelDAO);
-
     public abstract ModelVO BO2VO(ModelBO modelBO);
 }

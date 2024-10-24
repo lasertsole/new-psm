@@ -19,6 +19,10 @@
     import { PrimarySort } from "@/enums/subtitles.d";
     import { SortWay } from "@/enums/subtitles.d";
 
+    definePageMeta({
+        middleware:["redirect-model-show"]
+    });
+    
     const tabList = ref<TagBarItem[]>([
         {
             tabName:PrimarySort[0],

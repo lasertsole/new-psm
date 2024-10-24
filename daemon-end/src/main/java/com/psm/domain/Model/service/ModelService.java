@@ -1,6 +1,8 @@
 package com.psm.domain.Model.service;
 
+import com.psm.domain.Model.entity.ModelDAO;
 import com.psm.domain.Model.entity.ModelDTO;
+import com.psm.infrastructure.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
@@ -35,4 +37,13 @@ public interface ModelService {
      * @throws IOException io异常
      */
     void removeModelInfo(ModelDTO modelDTO) throws IOException;
+
+    /**
+     * 根据模型ID查询模型
+     *
+     * @param modelId 模型ID
+     * @param visibleEnum 可见性等级枚举
+     * @return 模型DAO
+     */
+    ModelDAO selectById(Long modelId, VisibleEnum visibleEnum);
 }

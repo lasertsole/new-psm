@@ -88,7 +88,7 @@ public class ModelController {
     }
 
     @GetMapping
-    public ResponseVO getModelsShowBar(@ModelAttribute PageDTO pageDTO) {
+    public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO) {
         try {
             List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
             return ResponseVO.ok(modelsShowBarBOS);
@@ -97,8 +97,23 @@ public class ModelController {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseVO getModelByModelId(@PathVariable Long id) {
+        try {
+            ModelDTO modelDTO = new ModelDTO();
+            modelDTO.setId(id);
+            modelDTO.setVisible(VisibleEnum.PUBLIC.getValue());
+            return ResponseVO.ok(modelAdaptor.selectById(modelDTO));
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
+        }
+    }
 }

@@ -16,7 +16,7 @@ public class ModelsShowBarServiceImpl implements ModelsShowBarService {
     private ModelsShowBarDB modelsShowBarDB;
 
     @Override
-    public List<ModelsShowBarDAO> selectModelsShowBarOrderByCreateTimeDesc(Integer currentPage, Integer pageSize) {
+    public List<ModelsShowBarDAO> getModelsShowBarOrderByCreateTimeDesc(Integer currentPage, Integer pageSize) {
         return modelsShowBarDB.selectModelsShowBarOrderByCreateTimeDesc(currentPage, pageSize);
     }
 }

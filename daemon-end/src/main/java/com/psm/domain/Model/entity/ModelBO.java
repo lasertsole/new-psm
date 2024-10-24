@@ -2,6 +2,7 @@ package com.psm.domain.Model.entity;
 
 import com.psm.domain.Model.infrastructure.convertor.ModelConvertor;
 import com.psm.domain.Model.valueObject.Category;
+import com.psm.infrastructure.enums.VisibleEnum;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     private String content;
     private String cover;
     private String entity;
-    private Integer visible;
+    private VisibleEnum visible;
     private Long storage;
 
     private Category category;

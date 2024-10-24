@@ -2,44 +2,43 @@
     <div class="itemBox">
         <div class="author_info">
             <div class="base">
-                <!-- <div class="profile">
-                    <img :src="`${serverUrl+boxInfo.profile}`">
+                <div class="profile">
+                    <img :src="`${boxInfo.user.avatar}`">
                 </div>
                 <div class="honour">
-                    <div class="name">{{boxInfo.userName}}</div>
-                    <div class="commentNum">{{boxInfo.commentNum}}条评论</div>
-                    <div class="certificate">
-                        <div v-for="(item, index) in JSON.parse(boxInfo.honor?<string>boxInfo.honor:'[]').slice(0,2)">{{item}}</div>
-                    </div>
-                </div> -->
+                    <div class="name">{{boxInfo.user.name}}</div>
+                    <div class="publicModelNum">{{boxInfo.models.length}} 个公开模型</div>
+                </div>
             </div>
             <div class="recomment">
                 <div class="left">简介:</div>
-                <!-- <div class="right">{{boxInfo.authorBrief}}</div> -->
+                <div class="right">{{boxInfo.user.profile}}</div>
             </div>
             <div class="interesting">
                 <div class="following">关注</div>
                 <div class="directMessage">私信</div>
             </div>
         </div>
-        <!-- <div class="author_works">
-            <template v-for="subItem in JSON.parse(<string>props.boxInfo.works)">
-                <workBox
-                    :ID="subItem.ID"
-                    :abstractInfo="subItem.abstractInfo"
-                    :price="subItem.price"
-                    :imgPath="subItem.imgPath"
-                    :videoPath="subItem.videoPath"
+        <div class="author_works">
+            <template v-for="(item, index) in boxInfo.models">
+                <modelShowWorkBox
+                    :ID="item.id"
+                    :title="item.title"
+                    :content="item.content"
+                    :cover="item.cover"
+                    :entity="item.entity"
+                    :category="item.category"
                 >
-                </workBox>
+                </modelShowWorkBox>
             </template>
-        </div> -->
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    const props = defineProps({boxInfo:{type:Object as PropType<any>, required: true}});
-    console.log(props.boxInfo);
+    const props = defineProps({
+        boxInfo:{type:Object as PropType<any>, required: true}
+    });
 </script>
 
 <style lang="scss" scoped>
@@ -85,12 +84,7 @@
                         font-size: 15px;
                         font-weight: bold;
                     }
-                    .commentNum{
-                        color: #707070;
-                        font-size: 10px;
-                        line-height: 15px;
-                    }
-                    .certificate{
+                    .publicModelNum{
                         color: #707070;
                         font-size: 10px;
                         line-height: 15px;

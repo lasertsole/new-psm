@@ -7,6 +7,7 @@ import com.psm.domain.Model.repository.ModelDB;
 import com.psm.domain.Model.repository.ModelOSS;
 import com.psm.domain.Model.repository.ModelRedis;
 import com.psm.domain.Model.service.ModelService;
+import com.psm.infrastructure.enums.VisibleEnum;
 import com.psm.infrastructure.utils.Tus.TusUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -127,8 +128,11 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public void removeModelInfo(ModelDTO modelDTO) throws IOException{
-        ModelDAO modelDAO = ModelConvertor.INSTANCE.DTO2DAO(modelDTO);
+        modelDB.delete(ModelConvertor.INSTANCE.DTO2DAO(modelDTO));
+    }
 
-        modelDB.delete(modelDAO);
+    @Override
+    public ModelDAO selectById(Long modelId, VisibleEnum visibleEnum) {
+        return modelDB.selectById(modelId, visibleEnum);
     }
 }
