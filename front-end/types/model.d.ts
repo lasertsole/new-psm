@@ -5,10 +5,8 @@ export type ModelInfo = {
     userId?: string;
     title?: string;
     content?: string;
-    coverUrl?: string;
-    modelUrl?: string;
-    cover?: Blob;
-    model?: Blob;
+    cover?: Blob | string;
+    entity?: Blob | string;
     category?: Category;
     visible?: string;
 };

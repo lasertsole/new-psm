@@ -5,49 +5,35 @@
     <div class="page">
       <!-- 左栏 -->
       <div class="leftBar">
-          <!-- <div class="runningVideo"
-              ref="videoControllBoxDom"
-          >
-              <xgplayerOfVideo
-                  v-if="result"
-                  :imgPath="serverUrl+params?.imgPath"
-                  :videoPath="serverUrl+params?.videoPath"
-                  :PIPController="PIPController"
-              >
-              </xgplayerOfVideo>
-          </div>
+        <div class="runningVideo"
+            ref="videoControllBoxDom"
+        >
+            <commonModel
+              v-if="modelInfo && modelInfo.entity"
+              :entity="(modelInfo.entity as string)"
+            ></CommonModel>
+        </div>
 
-          <div class="tabBar" ref="tabBarDiv">
-              <tabBar 
-                  :tabList="tabList"
-                  @changeClassifyIndex="changeClassifyIndex"
-                  :focusIndex="classifyIndex"
-              ></tabBar>
-              <div class="report">举报橱窗</div>
-          </div>
-          <div class="detailBox" ref="detailBox">
-              <showcaseDetailInfo :info="params?.mainInfo&&JSON.parse(params.mainInfo).detail"></showcaseDetailInfo>
-              <createPhase :info="params?.mainInfo&&JSON.parse(params.mainInfo).phrase"></createPhase>
-              <commendOfShowcase :article="`2`"></commendOfShowcase>
-          </div> -->
+        <div class="tabBar" ref="tabBarDiv">
+            <!-- <tabBar 
+                :tabList="tabList"
+                @changeClassifyIndex="changeClassifyIndex"
+                :focusIndex="classifyIndex"
+            ></tabBar> -->
+            <div class="report">举报橱窗</div>
+        </div>
+        <div class="detailBox" ref="detailBox">
+            <!-- <showcaseDetailInfo :info="params?.mainInfo&&JSON.parse(params.mainInfo).detail"></showcaseDetailInfo>
+            <createPhase :info="params?.mainInfo&&JSON.parse(params.mainInfo).phrase"></createPhase>
+            <commendOfShowcase :article="`2`"></commendOfShowcase> -->
+        </div>
       </div>
 
       <!-- 右栏 -->
       <div class="rightBar">
-          <!-- <summaryInfo
-              v-if="params"
-              :abstractInfo="params?.abstractInfo"
-              :profile="serverUrl+params?.profile"
-              :userName="params?.userName"
-              :commentNum="params?.commentNum"
-              :price="params?.price"
-              :primary="params?.primarySort"
-              :last="params?.lastSort"
-              :isIdle="params?.isIdle"
-              :canQuicky="params?.canQuicky"
-          >
-          </summaryInfo> -->
+        
       </div>
+      
     </div>
   </div>
 </template>
@@ -61,8 +47,12 @@
   // 从 query 参数中获取 id
   const id = route.query.id;
   
+  const modelInfo = ref<ModelInfo>();
   onMounted(async ()=>{
-    getModelByModelId({modelId: id})
+    let res : ModelInfo = await getModelByModelId({modelId: id as string});
+    if(res){
+      modelInfo.value = res;
+    }
   });
   
 
@@ -84,7 +74,6 @@
     display: flex;
     flex-wrap: wrap;//使page填满整个容器的关键属性
     justify-content: center;
-    overflow: scroll;
     box-sizing: border-box;
     .page{
         @include fixedWidth(1000px);

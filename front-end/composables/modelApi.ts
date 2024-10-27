@@ -53,7 +53,7 @@ export async function getModelsShowBars({currentPage, pageSize}:ModelsShowBarPag
     return res.data;
 };
 
-export async function getModelByModelId({ modelId }:{modelId:number}) {
+export async function getModelByModelId({ modelId }:{modelId:string}):Promise<ModelInfo> {
     const res:any = await fetchApi({
         url: `/models/${modelId}`,
         method: 'get',

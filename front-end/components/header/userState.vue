@@ -63,7 +63,7 @@
             <li>收藏</li>
             <li>历史</li>
             <li>
-                <NuxtLink to="/model/3D/Upload">投稿</NuxtLink>
+                <NuxtLink :to="{name:'model-3D-upload'}">投稿</NuxtLink>
             </li>
         </ul>
 
