@@ -10,6 +10,8 @@ import com.psm.infrastructure.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Slf4j
 @Repository
 public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements ModelDB {
@@ -36,5 +38,15 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
                 ModelDAO::getCreateTime);
 
         return modelMapper.selectById(modelId);
+    }
+
+    @Override
+    public List<ModelDAO> selectByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+        LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
+        modelWrapper.in(ModelDAO::getUserId, userIds);
+        modelWrapper.eq(ModelDAO::getVisible, visibleEnum);
+        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover, ModelDAO::getCategory,
+                ModelDAO::getCreateTime);
+        return modelMapper.selectList(modelWrapper);
     }
 }

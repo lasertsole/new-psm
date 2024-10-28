@@ -81,7 +81,15 @@ public interface UserAdaptor {
      * @param userDTO 用户DTO实体, 应包含 用户ID
      * @return 用户BO实体
      */
-    UserBO getUserByID(UserDTO userDTO) throws InvalidParameterException;
+    UserBO getUserById(UserDTO userDTO) throws InvalidParameterException;
+
+    /**
+     * 通过用户ID获取用户信息
+     *
+     * @param id 用户ID
+     * @return 用户BO实体
+     */
+    UserBO getUserById(Long id) throws InvalidParameterException;
 
     /**
      * 通过用户名获取用户信息
@@ -92,10 +100,26 @@ public interface UserAdaptor {
     List<UserBO> getUserByName(UserDTO userDTO) throws InvalidParameterException;
 
     /**
+     * 通过用户名获取用户信息
+     *
+     * @param name 用户名
+     * @return 用户BO实体列表
+     */
+    List<UserBO> getUserByName(String name) throws InvalidParameterException;
+
+    /**
      * 按创建时间排序获取用户列表
      *
      * @param pageDTO 分页信息，应包含 当前页码 和 每页大小
      * @return 用户BO实体列表
      */
     List<UserBO> getUserOrderByCreateTimeAsc(PageDTO pageDTO);
+
+    /**
+     * 根据id列表查找用户
+     *
+     * @param ids id列表
+     * @return 用户DAO实体列表
+     */
+    List<UserBO> getUserByIds(List<Long> ids);
 }

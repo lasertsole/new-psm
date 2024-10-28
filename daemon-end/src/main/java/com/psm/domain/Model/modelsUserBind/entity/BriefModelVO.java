@@ -1,4 +1,4 @@
-package com.psm.domain.Model.modelsShowBar.entity;
+package com.psm.domain.Model.modelsUserBind.entity;
 
 import com.psm.domain.Model.model.valueObject.Category;
 import lombok.AllArgsConstructor;

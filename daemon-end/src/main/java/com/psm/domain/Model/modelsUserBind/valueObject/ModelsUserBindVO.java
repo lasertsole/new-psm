@@ -1,6 +1,6 @@
-package com.psm.domain.Model.modelsShowBar.valueObject;
+package com.psm.domain.Model.modelsUserBind.valueObject;
 
-import com.psm.domain.Model.modelsShowBar.entity.BriefModelVO;
+import com.psm.domain.Model.modelsUserBind.entity.BriefModelVO;
 import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModelsShowBarVO implements Serializable{ // VO实体不具有值对象性质，可以通过set方法赋值，方便快速构建
+public class ModelsUserBindVO implements Serializable{ // VO实体不具有值对象性质，可以通过set方法赋值，方便快速构建
     @Serial
     private static final long serialVersionUID = -9167306602106926094L;
 

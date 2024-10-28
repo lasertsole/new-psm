@@ -3,7 +3,10 @@ package com.psm.domain.User.adaptor;
 import com.psm.domain.User.entity.UserExtension.UserExtensionBO;
 import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
+import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 public interface UserExtensionAdapter {
     /**
@@ -167,4 +170,12 @@ public interface UserExtensionAdapter {
      * @return 已用的存储空间
      */
     Long minusOneModelStorageById(UserExtensionDTO userExtensionDTO);
+
+    /**
+     * 根据id查询用户的作品数量
+     *
+     * @param pageDTO 分页参数
+     * @return 用户扩展表信息列表
+     */
+    List<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(PageDTO pageDTO);
 }

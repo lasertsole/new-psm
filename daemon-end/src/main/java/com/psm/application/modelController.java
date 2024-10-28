@@ -3,10 +3,12 @@ package com.psm.application;
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDTO;
-import com.psm.domain.Model.modelsShowBar.adaptor.ModelsShowBarAdaptor;
-import com.psm.domain.Model.modelsShowBar.valueObject.ModelsShowBarBO;
+import com.psm.domain.Model.modelUserBind.valueObject.ModelUserBindBO;
+import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.adaptor.UserExtensionAdapter;
+import com.psm.domain.User.entity.User.UserBO;
+import com.psm.domain.User.entity.UserExtension.UserExtensionBO;
 import com.psm.infrastructure.enums.VisibleEnum;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
@@ -18,8 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -34,9 +36,6 @@ public class ModelController {
     @Autowired
     private ModelAdaptor modelAdaptor;
 
-    @Autowired
-    private ModelsShowBarAdaptor modelsShowBarAdaptor;
-
     @RequestMapping(value = {"/upload/**"}, method = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.HEAD,
             RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.GET})
     @CrossOrigin(exposedHeaders = {"Location", "Upload-Offset", "Upload-Length"})//暴露header
@@ -48,7 +47,7 @@ public class ModelController {
             // 调用模型上传接口
             modelAdaptor.uploadModelEntity(servletRequest, servletResponse, String.valueOf(userId));
 
-            return ResponseVO.ok("upload model's Entity succussful");
+            return ResponseVO.ok("upload model's Entity successful");
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:"+e.getCause());
@@ -90,7 +89,39 @@ public class ModelController {
     @GetMapping
     public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO) {
         try {
-            List<ModelsShowBarBO> modelsShowBarBOS = modelsShowBarAdaptor.selectModelsShowBarOrderByCreateTimeDesc(pageDTO);
+            // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
+            List<UserExtensionBO> userExtensionBOResultList = userExtensionAdapter.getHasPublicModelOrderByCreateTimeDesc(pageDTO);
+
+            // 如果用户列表为空，则返回空列表
+            if (userExtensionBOResultList.isEmpty()) return ResponseVO.ok(Collections.emptyList());
+
+            // 创建一个Map，用于存储用户ID和ModelsShowBarDAO的映射
+            Map<Long, ModelsUserBindBO> collect = userExtensionBOResultList.stream().collect(Collectors.toMap(
+                    UserExtensionBO::getId, userExtensionDAO -> new ModelsUserBindBO()
+            ));
+
+            // 获取用户ID列表，这个ID列表是按照时间降序排序的
+            List<Long> userIds = UserExtensionBO.getModelIds(userExtensionBOResultList);
+
+            // 按照用户ID列表获取用户列表
+            List<UserBO> userBOList = userAdaptor.getUserByIds(userIds);
+            userBOList.forEach(userBO -> {
+                ModelsUserBindBO modelsShowBarBO = collect.get(userBO.getId());
+                modelsShowBarBO.setUser(userBO);
+                modelsShowBarBO.setModels(new ArrayList<ModelBO>());
+            });
+
+            // 按照用户ID列表获取作品模型列表
+            List<ModelBO> modelBOList = modelAdaptor.getByUserIds(userIds, VisibleEnum.PUBLIC);
+
+            // 将作品模型列表添加到对应的ModelsShowBarDAO中
+            modelBOList.forEach(modelBO -> {
+                ModelsUserBindBO modelsShowBarBO = collect.get(modelBO.getUserId());
+                modelsShowBarBO.getModels().add(modelBO);
+            });
+
+            List<ModelsUserBindBO> modelsShowBarBOS = collect.values().stream().toList();
+
             return ResponseVO.ok(modelsShowBarBOS);
         }
         catch (InvalidParameterException e) {
@@ -104,12 +135,17 @@ public class ModelController {
     @GetMapping("/{id}")
     public ResponseVO getModelByModelId(@PathVariable Long id) {
         try {
+            // 获取模型
             ModelDTO modelDTO = new ModelDTO();
             modelDTO.setId(id);
             modelDTO.setVisible(VisibleEnum.PUBLIC.getValue());
             ModelBO modelBO = modelAdaptor.selectById(modelDTO);
 
-            return ResponseVO.ok(modelBO);
+            // 获取用户信息
+            Long userId = modelBO.getUserId();
+            UserBO userBO = userAdaptor.getUserById(userId);
+
+            return ResponseVO.ok(new ModelUserBindBO(userBO, modelBO));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

@@ -170,7 +170,7 @@ public class UserController {
 
         try {
             // 获取用户信息
-            UserBO userBO = userAdaptor.getUserByID(userDTO);
+            UserBO userBO = userAdaptor.getUserById(userDTO);
 
             return new ResponseVO(HttpStatus.OK, "Get user successful", userBO);
         }

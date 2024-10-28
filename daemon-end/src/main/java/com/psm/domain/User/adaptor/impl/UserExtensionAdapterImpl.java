@@ -8,11 +8,13 @@ import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
 import com.psm.domain.User.infrastructure.convertor.UserExtensionConvertor;
 import com.psm.domain.User.service.UserExtensionService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
+import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.InvalidParameterException;
+import java.util.List;
 
 @Slf4j
 @Adaptor
@@ -168,5 +170,18 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
             throw new InvalidParameterException("Invalid parameter");
 
         return minusOneModelStorageById(userExtensionDTO.getId(), userExtensionDTO.getModelCurStorage());
+    }
+
+    @Override
+    public List<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(@Valid PageDTO pageDTO) {
+        if (
+                org.springframework.util.ObjectUtils.isEmpty(pageDTO.getCurrentPage())
+                        && org.springframework.util.ObjectUtils.isEmpty(pageDTO.getPageSize())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        List<UserExtensionDAO> hasPublicModelOrderByCreateTimeDesc = userExtensionService.getHasPublicModelOrderByCreateTimeDesc(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+        UserExtensionConvertor userExtensionConvertor = UserExtensionConvertor.INSTANCE;
+        return hasPublicModelOrderByCreateTimeDesc.stream().map(userExtensionConvertor::DAO2BO).toList();
     }
 }

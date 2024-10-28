@@ -5,6 +5,8 @@ import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.entity.UserExtension.UserExtensionDTO;
 import lombok.Synchronized;
 
+import java.util.List;
+
 public interface UserExtensionService {
     /**
      * 插入用户扩展信息
@@ -88,4 +90,13 @@ public interface UserExtensionService {
      * @return 已用的存储空间
      */
     Long minusOneModelStorageById(Long id, Long storage);
+
+    /**
+     * 根据id查询用户的作品数量
+     *
+     * @param currentPage 当前页码
+     * @param pageSize 一页显示多少条
+     * @return 用户扩展表信息列表
+     */
+    List<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize);
 }

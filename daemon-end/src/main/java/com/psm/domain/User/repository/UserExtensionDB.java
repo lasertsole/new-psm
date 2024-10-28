@@ -3,6 +3,8 @@ package com.psm.domain.User.repository;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.User.entity.UserExtension.UserExtensionDAO;
 
+import java.util.List;
+
 public interface UserExtensionDB extends IService<UserExtensionDAO>{
     /**
      * 插入用户扩展信息
@@ -26,4 +28,13 @@ public interface UserExtensionDB extends IService<UserExtensionDAO>{
      * @return boolean
      */
     boolean updateById(UserExtensionDAO userExtensionDAO);
+
+    /**
+     * 根据id查询用户的作品数量
+     *
+     * @param currentPage 当前页码
+     * @param pageSize 一页显示多少条
+     * @return 用户扩展表信息列表
+     */
+    List<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize);
 }

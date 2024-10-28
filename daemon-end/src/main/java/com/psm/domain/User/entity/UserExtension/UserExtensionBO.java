@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +24,9 @@ public class UserExtensionBO implements Serializable {
 
     public UserExtensionBO(Long id) {
         this.id = id;
+    }
+
+    public static List<Long> getModelIds(List<UserExtensionBO> userExtensionBOs) {
+        return userExtensionBOs.stream().map(UserExtensionBO::getId).toList();
     }
 }

@@ -83,7 +83,6 @@
           justify-content: space-between;
           .avatar{
             @include fixedCircle(60px);
-            background-color: aqua;
           }
         }
 

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -62,7 +63,7 @@ public class ModelAdaptorImpl implements ModelAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        ModelDAO modelDAO = modelService.selectById(modelDTO.getId(), VisibleEnum.fromInteger(modelDTO.getVisible()));
+        ModelDAO modelDAO = modelService.getById(modelDTO.getId(), VisibleEnum.fromInteger(modelDTO.getVisible()));
 
         return ModelConvertor.INSTANCE.DAO2BO(modelDAO);
     }
@@ -72,8 +73,16 @@ public class ModelAdaptorImpl implements ModelAdaptor {
         ValidUtil validUtil = new ValidUtil();
         validUtil.validate(Map.of("id", id, "visible", visible), ModelDTO.class);
 
-        ModelDAO modelDAO = modelService.selectById(id, VisibleEnum.fromInteger(visible));
+        ModelDAO modelDAO = modelService.getById(id, VisibleEnum.fromInteger(visible));
 
         return ModelConvertor.INSTANCE.DAO2BO(modelDAO);
+    }
+
+    @Override
+    public List<ModelBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+        List<ModelDAO> modelDAOs = modelService.getByUserIds(userIds, visibleEnum);
+        ModelConvertor modelConvertor = ModelConvertor.INSTANCE;
+
+        return modelDAOs.stream().map(modelConvertor::DAO2BO).toList();
     }
 }

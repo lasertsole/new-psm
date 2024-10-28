@@ -1,5 +1,6 @@
 package com.psm.domain.User.repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.User.entity.User.UserDAO;
@@ -73,5 +74,13 @@ public interface UserDB extends IService<UserDAO> {
      * @param page 分页信息
      * @return 按照创建时间升序排列的用户列表
      */
-    List<UserDAO> getUserOrderByCreateTimeAsc (Page<UserDAO> page);
+    List<UserDAO> selectUserOrderByCreateTimeAsc (Page<UserDAO> page);
+
+    /**
+     * 根据id列表查找用户
+     *
+     * @param ids id列表
+     * @return 用户DAO实体列表
+     */
+    List<UserDAO> selectUserByIds(List<Long> ids);
 }

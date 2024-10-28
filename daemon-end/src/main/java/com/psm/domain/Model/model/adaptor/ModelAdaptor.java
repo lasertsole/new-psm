@@ -1,13 +1,16 @@
 package com.psm.domain.Model.model.adaptor;
 
 import com.psm.domain.Model.model.entity.ModelBO;
+import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.infrastructure.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.List;
 
 public interface ModelAdaptor {
     /**
@@ -50,4 +53,13 @@ public interface ModelAdaptor {
      * @throws IllegalAccessException      非法访问异常
      */
     ModelBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException;
+
+    /**
+     * 根据模型ID查询模型
+     *
+     * @param userIds 用户ID列表
+     * @param visibleEnum 可见性等级枚举
+     * @return 模型BO
+     */
+    List<ModelBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
 }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public interface ModelService {
@@ -45,5 +46,14 @@ public interface ModelService {
      * @param visibleEnum 可见性等级枚举
      * @return 模型DAO
      */
-    ModelDAO selectById(Long modelId, VisibleEnum visibleEnum);
+    ModelDAO getById(Long modelId, VisibleEnum visibleEnum);
+
+    /**
+     * 根据模型ID查询模型
+     *
+     * @param userIds 用户ID列表
+     * @param visibleEnum 可见性等级枚举
+     * @return 模型DAO
+     */
+    List<ModelDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
 }

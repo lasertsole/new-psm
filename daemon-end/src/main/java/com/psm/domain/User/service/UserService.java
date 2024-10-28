@@ -105,5 +105,13 @@ public interface UserService {
      * @return 用户信息列表
      */
     List<UserDAO> getUserOrderByCreateTimeAsc(Integer current, Integer pageSize);
+
+    /**
+     * 根据id列表查找用户
+     *
+     * @param ids id列表
+     * @return 用户DAO实体列表
+     */
+    List<UserDAO> getUserByIds(List<Long> ids);
 }
 

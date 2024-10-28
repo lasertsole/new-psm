@@ -149,7 +149,7 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public UserBO getUserByID(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public UserBO getUserById(@Valid UserDTO userDTO) throws InvalidParameterException {
         // 参数判空
         if(Objects.isNull(userDTO.getId())){
             throw new InvalidParameterException("Invalid parameter");
@@ -157,6 +157,19 @@ public class UserAdaptorImpl implements UserAdaptor {
 
         // 获取用户
         Long id = userDTO.getId();
+        UserDAO userDAO = userService.getUserByID(id);
+
+        // 判断用户是否存在
+        if(Objects.isNull(userDAO)){
+            throw new RuntimeException("The user does not exist.");
+        }
+
+        // 将UserDAO转换为UserBO
+        return UserConvertor.INSTANCE.DAO2BO(userDAO);
+    }
+
+    @Override
+    public UserBO getUserById(Long id) throws InvalidParameterException {
         UserDAO userDAO = userService.getUserByID(id);
 
         // 判断用户是否存在
@@ -183,11 +196,20 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将UserDAO转换为UserBO
-        List<UserBO> userBOs = userDAOList.stream().map(userDAO -> {
-            return UserConvertor.INSTANCE.DAO2BO(userDAO);
-        }).toList();
+        return userDAOList.stream().map(UserConvertor.INSTANCE::DAO2BO).toList();
+    }
 
-        return userBOs;
+    @Override
+    public List<UserBO> getUserByName(String name) throws InvalidParameterException {
+        List<UserDAO> userDAOList = userService.getUserByName(name);
+
+        // 判断用户是否存在
+        if(Objects.isNull(userDAOList)){
+            throw new RuntimeException("The user does not exist.");
+        }
+
+        // 将UserDAO转换为UserBO
+        return userDAOList.stream().map(UserConvertor.INSTANCE::DAO2BO).toList();
     }
 
     @Override
@@ -201,12 +223,17 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         // 将DAO转换为BO
-        List<UserBO> userBOs = userDAOList.stream().map(
-                userDAO -> {
-                    return UserConvertor.INSTANCE.DAO2BO(userDAO);
-                }
+        return userDAOList.stream().map(
+                UserConvertor.INSTANCE::DAO2BO
         ).toList();
+    }
 
-        return userBOs;
-    };
+    @Override
+    public List<UserBO> getUserByIds(List<Long> ids) {
+        List<UserDAO> userDAOList = userService.getUserByIds(ids);
+        // 将DAO转换为BO
+        return userDAOList.stream().map(
+                UserConvertor.INSTANCE::DAO2BO
+        ).toList();
+    }
 }

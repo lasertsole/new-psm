@@ -85,7 +85,7 @@ public class UserDBImpl extends ServiceImpl<UserMapper, UserDAO> implements User
     }
 
     @Override
-    public List<UserDAO> getUserOrderByCreateTimeAsc (Page<UserDAO> page){
+    public List<UserDAO> selectUserOrderByCreateTimeAsc (Page<UserDAO> page) {
         LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
                 UserDAO::getCreateTime).orderByAsc(UserDAO::getCreateTime);
@@ -94,5 +94,13 @@ public class UserDBImpl extends ServiceImpl<UserMapper, UserDAO> implements User
         Page<UserDAO> resultPage = userMapper.selectPage(page, wrapper);
 
         return resultPage.getRecords();
+    }
+
+    @Override
+    public List<UserDAO> selectUserByIds(List<Long> ids) {
+        // 按照用户ID列表获取用户列表
+        LambdaQueryWrapper<UserDAO> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.in(UserDAO::getId, ids);
+        return userMapper.selectList(userWrapper);
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -132,7 +133,12 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public ModelDAO selectById(Long modelId, VisibleEnum visibleEnum) {
+    public ModelDAO getById(Long modelId, VisibleEnum visibleEnum) {
         return modelDB.selectById(modelId, visibleEnum);
+    }
+
+    @Override
+    public List<ModelDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+        return modelDB.selectByUserIds(userIds, visibleEnum);
     }
 }

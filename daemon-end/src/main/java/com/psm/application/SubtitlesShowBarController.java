@@ -84,7 +84,7 @@ public class SubtitlesShowBarController {
         // 获取用户
         UserDTO userDTO = new UserDTO();
         userDTO.setId(userId);
-        UserBO userBO = userAdaptor.getUserByID(userDTO);
+        UserBO userBO = userAdaptor.getUserById(userDTO);
         if(userBO == null){
             return new ResponseVO(HttpStatus.NOT_FOUND, "Get user list failed");
         }

@@ -1,13 +1,12 @@
-package com.psm.domain.Model.modelsShowBar.infrastructure.convertor;
+package com.psm.domain.Model.modelsUserBind.infrastructure.convertor;
 
-import com.psm.domain.Model.modelsShowBar.valueObject.ModelsShowBarBO;
-import com.psm.domain.Model.modelsShowBar.valueObject.ModelsShowBarDAO;
+import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
-import com.psm.domain.Model.modelsShowBar.entity.BriefModelVO;
+import com.psm.domain.Model.modelsUserBind.entity.BriefModelVO;
 import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
-import com.psm.domain.Model.modelsShowBar.valueObject.ModelsShowBarVO;
+import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindVO;
 import com.psm.domain.User.entity.User.UserBO;
 import com.psm.domain.User.entity.User.UserDAO;
 import com.psm.domain.User.infrastructure.convertor.UserConvertor;
@@ -22,12 +21,12 @@ import java.util.List;
 
 @Slf4j
 @Mapper
-public abstract class ModelsShowBarConvertor {
+public abstract class ModelsUserBindConvertor {
     private static final ModelConvertor modelConvertor = ModelConvertor.INSTANCE;
 
     private static final UserConvertor userConvertor = UserConvertor.INSTANCE;
 
-    public static final ModelsShowBarConvertor INSTANCE = Mappers.getMapper(ModelsShowBarConvertor.class);
+    public static final ModelsUserBindConvertor INSTANCE = Mappers.getMapper(ModelsUserBindConvertor.class);
 
     protected UserBO UserDAO2BO(UserDAO userDAO) {
         return userConvertor.DAO2BO(userDAO);
@@ -36,16 +35,6 @@ public abstract class ModelsShowBarConvertor {
     protected List<ModelBO> ModelsDAO2BO(List<ModelDAO> modelDAOs) {
         return modelDAOs.stream().map(modelConvertor::DAO2BO).toList();
     }
-
-    public ModelsShowBarBO DAO2BO(ModelsShowBarDAO modelsShowBarDAO) { //值对象只能通过构造方法赋值，不能通过set方法赋值, 所以需要手动赋值
-        UserDAO userDAO = modelsShowBarDAO.getUser();
-        List<ModelDAO> modelDAOs = modelsShowBarDAO.getModels();
-
-        UserBO userBO = UserDAO2BO(userDAO);
-        List<ModelBO> modelBOs = ModelsDAO2BO(modelDAOs);
-
-        return new ModelsShowBarBO(userBO, modelBOs);
-    };
 
     @Named("UserBO2VO")
     protected OtherUserVO UserBO2VO(UserBO userBO) {
@@ -71,5 +60,5 @@ public abstract class ModelsShowBarConvertor {
             @Mapping(target = "user", qualifiedByName = "UserBO2VO"),
             @Mapping(target = "models", qualifiedByName = "ModelsBO2VO")
     })
-    public abstract ModelsShowBarVO BO2VO(ModelsShowBarBO modelsShowBarBO);
+    public abstract ModelsUserBindVO BO2VO(ModelsUserBindBO modelsUserBindBO);
 }

@@ -10,6 +10,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public abstract class UserConvertor {
+
     public static final UserConvertor INSTANCE = Mappers.getMapper(UserConvertor.class);
 
     @Named("fromBoolean")

@@ -258,6 +258,11 @@ public class UserServiceImpl implements UserService {
         Page<UserDAO> page = new Page<>(currentPage,pageSize);
 
         // 返回结果
-        return userDB.getUserOrderByCreateTimeAsc(page);
+        return userDB.selectUserOrderByCreateTimeAsc(page);
+    }
+
+    @Override
+    public List<UserDAO> getUserByIds(List<Long> ids) {
+        return userDB.selectUserByIds(ids);
     }
 }
