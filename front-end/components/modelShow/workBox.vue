@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-    import { defineProps } from "vue";
+    import { defineProps, type PropType } from "vue";
     import type { Category } from "@/types/model";
     import { Picture as IconPicture } from '@element-plus/icons-vue';
 
@@ -19,13 +19,13 @@
         ID:{ type: String, required: true },
         title:{ type: String, required: true },
         cover:{ type: String, required: true },
-        category:{ type: Object as Category, required: true }
+        category:{ type: Object as PropType<Category>, required: true }
     });
 
     function jumpToShowcaseDetail():void{
         navigateTo({ 
             name: 'model-3D-detailShow',
-            query:{
+            params:{
                 id:props.ID,
             }
         });

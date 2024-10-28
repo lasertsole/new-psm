@@ -1,10 +1,10 @@
 package com.psm.application;
 
-import com.psm.domain.Model.adaptor.ModelAdaptor;
-import com.psm.domain.Model.entity.ModelBO;
-import com.psm.domain.Model.entity.ModelDTO;
-import com.psm.domain.ModelsShowBar.adaptor.ModelsShowBarAdaptor;
-import com.psm.domain.ModelsShowBar.valueObject.ModelsShowBarBO;
+import com.psm.domain.Model.model.adaptor.ModelAdaptor;
+import com.psm.domain.Model.model.entity.ModelBO;
+import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.modelsShowBar.adaptor.ModelsShowBarAdaptor;
+import com.psm.domain.Model.modelsShowBar.valueObject.ModelsShowBarBO;
 import com.psm.domain.User.adaptor.UserAdaptor;
 import com.psm.domain.User.adaptor.UserExtensionAdapter;
 import com.psm.infrastructure.enums.VisibleEnum;
