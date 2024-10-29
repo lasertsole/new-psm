@@ -69,8 +69,6 @@
 
             @media screen and (max-width: 800px) and (min-width: 600px) {
                 padding: 0px 0px;
-                .left{
-                }
             }
             @media screen and (max-width: 600px) {
                 padding: 0px 15px;

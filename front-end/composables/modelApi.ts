@@ -1,4 +1,4 @@
-import type { ModelInfo, ModelsShowBarPage } from "@/types/model";
+import type { ModelInfo, ModelsShowBarPage, ModelInfoDetail } from "@/types/model";
 
 export async function uploadModel(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
     return await tusUploadApi({
@@ -53,7 +53,7 @@ export async function getModelsShowBars({currentPage, pageSize}:ModelsShowBarPag
     return res.data;
 };
 
-export async function getModelByModelId({ modelId }:{modelId:string}):Promise<ModelInfo> {
+export async function getModelByModelId({ modelId }:{modelId:string}):Promise<ModelInfoDetail> {
     const res:any = await fetchApi({
         url: `/models/${modelId}`,
         method: 'get',

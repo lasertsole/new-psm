@@ -1,12 +1,11 @@
 <template>
-  <div class="demo" ref="demo" @dblclick="fullScreenOrNot"></div>
+  <div class="demo" ref="demo"></div>
 </template>
 
 <script lang="ts" setup>
   import * as THREE from 'three';
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
   import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-  import gasp from "gsap";
   
   const props = defineProps({
     entity: {type: String, required: false}
@@ -38,7 +37,7 @@
         antialias:true // 开启抗锯齿
       });
       renderer.setSize(demo.value!.offsetWidth, demo.value!.offsetHeight);
-      demo.value.appendChild(renderer.domElement);
+      demo.value?.appendChild(renderer.domElement);
 
       // 初始化控制器
       const controls = new OrbitControls(camera, renderer.domElement);
@@ -48,7 +47,7 @@
       const objLoader = new OBJLoader();
       objLoader.load(
         '/model/model.obj',
-        (obj)=>{
+        (obj:any)=>{
           obj.scale.set(0.01,0.01,0.01);
           obj.position.set(0,0,0);
           scene.add(obj);
@@ -60,6 +59,16 @@
       light.position.set(0, 20, 0);
       scene.add(light);
 
+      // 增加灯光
+      const pointLight = new THREE.PointLight(0xff0000, 1);//增加环境光,0.1强度（无光源，四面八方都是
+      const smallBall= new THREE.Mesh(
+        new THREE.SphereGeometry(0.1,20, 20),
+        new THREE.MeshBasicMaterial({color: 0xff0000})
+      );
+      smallBall.position.set(2, 2, 2);
+      smallBall.add(pointLight);
+      scene.add(smallBall);//环境光不需要设置位置
+      
       // 渲染函数
       function render() {
         requestAnimationFrame(render);
