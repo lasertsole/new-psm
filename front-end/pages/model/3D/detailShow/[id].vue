@@ -22,20 +22,48 @@
       
       <div class="main">
         <commonModel
+          class="entity"
           v-if="modelInfo && modelInfo.entity"
           :entity="(modelInfo.entity as string)"
         ></CommonModel>
 
         <div class="info">
+          <div class="createTime">
+            上传时间: {{ modelInfo 
+            && modelInfo.createTime 
+            && new Date(modelInfo?.createTime).toLocaleDateString('zh-CN', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric'
+            }) }}
+          </div>
+
+          <div class="category">
+            <span class="style">风格: {{ reverseStyleEnum[modelInfo?.category.style] }}</span>
+            <span class="type">类型: {{ reverseTypeEnum[modelInfo?.category.type] }}</span>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { ModelInfoDetail } from "@/types/model";
+  import type { UserInfo } from "@/types/user";
+  import { StyleEnum, TypeEnum } from "@/enums/models.d";
+  import type { ModelInfoDetail, ModelInfo } from "@/types/model";
 
+  // 手动实现反向映射
+  const reverseStyleEnum: { [key: string]: StyleEnum } = {};
+  for (const key in StyleEnum) {
+    reverseStyleEnum[StyleEnum[key]] = key;
+  }
+  const reverseTypeEnum: { [key: string]: StyleEnum } = {};
+  for (const key in TypeEnum) {
+    reverseTypeEnum[TypeEnum[key]] = key;
+  }
+  
   // 获取当前路由对象
   const route = useRoute();
 
@@ -44,9 +72,9 @@
   
   const modelInfoDetail = ref<ModelInfoDetail>();
 
-  const authorInfo = computed(()=>{return modelInfoDetail.value?.user;});
+  const authorInfo: ComputedRef<UserInfo | undefined> = computed(()=>{return modelInfoDetail.value?.user;});
 
-  const modelInfo = computed(()=>{return modelInfoDetail.value?.model;});
+  const modelInfo: ComputedRef<ModelInfo | undefined> = computed(()=>{return modelInfoDetail.value?.model;});
 
   onMounted(async ()=>{
     let res : ModelInfoDetail = await getModelByModelId({modelId: id as string});
@@ -66,14 +94,14 @@
   @import "@/common.scss";
 
   .showcaseDetail{
-    @include fullInParent();
+    @include fullWidth();
     display: flex;
     justify-content: center;
     overflow: auto;
     background-color: rgba(222, 222, 222, .75);
 
     .page{
-      @include fixedRetangle(65%, 100%);
+      @include fixedWidth(65%);
       margin: 60px 4px 80px;
 
       >div{
@@ -130,18 +158,39 @@
               cursor: pointer;
           }
           .follow{
-              background-color: #fb7299;
+            background-color: #fb7299;
           }
           .sms{
-              background-color: #00a8e9;
+            background-color: #00a8e9;
           }
         }
       }
       
       .main{
         @include fullWidth();
-        @include fixedHeight(550px);
         margin-top: 20px;
+
+        .entity{
+          @include fixedHeight(550px);
+        }
+        
+        .info{
+          padding: 20px;
+          font-size: 12px;
+          color: #9b9b9b;
+          display: flex;
+          justify-content: space-between;
+
+          .createTime{
+            margin-bottom: 10px;
+          }
+          
+          .category{
+            .style{
+              margin-right: 10px;
+            }
+          }
+        }
       }
 
       @media screen and (max-width: 800px) and (min-width: 600px) {
@@ -162,24 +211,6 @@
           margin-top: 0px;
         }
       }
-    }
-
-    /* 滚动条整体部分 */
-    &::-webkit-scrollbar {
-      width: 10px; /* 滚动条的宽度 */
-      height: 10px; /* 水平滚动条的高度 */
-    }
-
-    /* 滚动条的滑块部分 */
-    &::-webkit-scrollbar-thumb {
-      background-color: darkgrey; /* 滑块的颜色 */
-      border-radius: 10px; /* 滑块的圆角 */
-    }
-
-    /* 滚动条的轨道部分 */
-    &::-webkit-scrollbar-track {
-      background-color: lightgrey; /* 轨道的颜色 */
-      border-radius: 10px; /* 轨道的圆角 */
     }
   }
 </style>

@@ -2,7 +2,7 @@ package com.psm.domain.Model.modelsUserBind.valueObject;
 
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.modelsUserBind.infrastructure.convertor.ModelsUserBindConvertor;
-import com.psm.domain.User.entity.User.UserBO;
+import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;

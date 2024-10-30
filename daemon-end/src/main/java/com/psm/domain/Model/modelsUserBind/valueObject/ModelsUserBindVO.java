@@ -1,7 +1,7 @@
 package com.psm.domain.Model.modelsUserBind.valueObject;
 
 import com.psm.domain.Model.modelsUserBind.entity.BriefModelVO;
-import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
+import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

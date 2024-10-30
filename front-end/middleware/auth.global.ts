@@ -1,6 +1,9 @@
-const needAuthPages: string[] = [
-    // "/home"
+const needAuthPages: string[] = [// 示例需要认证的页面路径的正则表达式数组
+    "/model/3D/detailShow/.*"
 ];
+
+// 将多条正则表达式转换为一条正则表达式
+const needAuthRegex = new RegExp(`^(${needAuthPages.join('|')})$`);
 
 export default defineNuxtRouteMiddleware(
     (to,from)=>
@@ -10,7 +13,8 @@ export default defineNuxtRouteMiddleware(
         if(to.path == "/"&&userInfo.isLogin){
             return navigateTo("/home");
         }
-        else if(needAuthPages.includes(to.path)&&!userInfo.isLogin){
+        else if(needAuthRegex.test(to.path)&&!userInfo.isLogin){
+            ElMessage.warning("此页面需要登录");
             return navigateTo("/");
         }
     }

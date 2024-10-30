@@ -2,7 +2,7 @@ package com.psm.application;
 
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.domain.User.adaptor.UserAdaptor;
+import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;

@@ -1,8 +1,8 @@
 package com.psm.application;
 
-import com.psm.domain.User.adaptor.UserAdaptor;
-import com.psm.domain.User.entity.User.UserBO;
-import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.domain.User.user.adaptor.UserAdaptor;
+import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

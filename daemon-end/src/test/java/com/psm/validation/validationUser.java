@@ -1,6 +1,6 @@
 package com.psm.validation;
 
-import com.psm.domain.User.entity.User.UserDTO;
+import com.psm.domain.User.user.entity.User.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.MutablePropertyValues;

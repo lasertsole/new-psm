@@ -10,6 +10,7 @@ export type ModelInfo = {
     entity?: Blob | string;
     category?: Category;
     visible?: string;
+    createTime?: string;
 };
 
 export type Category = {

@@ -43,31 +43,43 @@
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true; // 开启阻尼
       
+      //URL.createObjectURL
+      
       // 初始化loader
       const objLoader = new OBJLoader();
-      objLoader.load(
-        '/model/model.obj',
-        (obj:any)=>{
-          obj.scale.set(0.01,0.01,0.01);
-          obj.position.set(0,0,0);
-          scene.add(obj);
-        },
-      );
+      fetch(
+        props.entity, { mode: 'no-cors' }
+      ).then(response => {
+        console.log(response.blob());
+        return response.blob();
+      }).then(blob => {
+        // 将 Blob 转换为 URL
+        const url = URL.createObjectURL(blob);
+        console.log(url);
+        console.log(url.split('blob:')[1]);
+        objLoader.load(
+          url.split(':'),
+          (obj:any)=>{
+            obj.scale.set(0.01,0.01,0.01);
+            obj.position.set(0,0,0);
+            scene.add(obj);
+            
+            // 释放 URL
+            URL.revokeObjectURL(url);
+          },
+        );
+      }).catch(error => {
+        ElMessage.error('Failed to fetch the OBJ file', error);
+      });
       
       // 添加平行光
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(0, 20, 0);
       scene.add(light);
 
-      // 增加灯光
-      const pointLight = new THREE.PointLight(0xff0000, 1);//增加环境光,0.1强度（无光源，四面八方都是
-      const smallBall= new THREE.Mesh(
-        new THREE.SphereGeometry(0.1,20, 20),
-        new THREE.MeshBasicMaterial({color: 0xff0000})
-      );
-      smallBall.position.set(2, 2, 2);
-      smallBall.add(pointLight);
-      scene.add(smallBall);//环境光不需要设置位置
+      // 增加环境灯光
+      const pointLight = new THREE.PointLight(0xffffff, 1);//增加环境光,0.1强度（无光源，四面八方都是
+      scene.add(pointLight);
       
       // 渲染函数
       function render() {

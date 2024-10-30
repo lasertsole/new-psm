@@ -1,8 +1,8 @@
 package com.psm.domain.SubtitlesShowBar.valueObject;
 
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.domain.User.entity.User.UserBO;
-import com.psm.domain.User.entity.User.UserVO.OtherUserVO;
+import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.Getter;
