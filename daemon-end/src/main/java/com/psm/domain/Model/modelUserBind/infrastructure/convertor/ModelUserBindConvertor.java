@@ -6,7 +6,7 @@ import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
 import com.psm.domain.Model.modelUserBind.valueObject.ModelUserBindBO;
 import com.psm.domain.Model.modelUserBind.valueObject.ModelUserBindVO;
 import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
+import com.psm.domain.User.user.entity.User.UserVO;
 import com.psm.domain.User.user.infrastructure.convertor.UserConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
@@ -25,8 +25,8 @@ public abstract class ModelUserBindConvertor {
     public static final ModelUserBindConvertor INSTANCE = Mappers.getMapper(ModelUserBindConvertor.class);
 
     @Named("UserBO2VO")
-    protected OtherUserVO UserBO2VO(UserBO userBO) {
-        return userConvertor.BO2VO(userBO);
+    protected UserVO UserBO2VO(UserBO userBO) {
+        return userConvertor.BO2OtherVO(userBO);
     }
 
     @Named("ModelBO2VO")

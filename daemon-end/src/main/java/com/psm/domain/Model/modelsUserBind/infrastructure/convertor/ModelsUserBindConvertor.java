@@ -5,10 +5,10 @@ import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
-import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindVO;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserVO;
 import com.psm.domain.User.user.infrastructure.convertor.UserConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
@@ -37,8 +37,8 @@ public abstract class ModelsUserBindConvertor {
     }
 
     @Named("UserBO2VO")
-    protected OtherUserVO UserBO2VO(UserBO userBO) {
-        return userConvertor.BO2VO(userBO);
+    protected UserVO UserBO2VO(UserBO userBO) {
+        return userConvertor.BO2OtherVO(userBO);
     }
 
     @Named("ModelsBO2VO")

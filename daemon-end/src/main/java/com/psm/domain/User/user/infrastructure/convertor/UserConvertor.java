@@ -3,8 +3,7 @@ package com.psm.domain.User.user.infrastructure.convertor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.domain.User.user.entity.User.UserVO.CurrentUserVO;
-import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
+import com.psm.domain.User.user.entity.User.UserVO;
 import com.psm.domain.User.user.infrastructure.enums.SexEnum;
 import com.psm.domain.User.user.infrastructure.utils.BcryptEncoderUtil;
 import org.mapstruct.*;
@@ -37,18 +36,21 @@ public abstract class UserConvertor {
     }
 
     @Mappings({
-            @Mapping(target = "id", qualifiedByName = "longToString")
+        @Mapping(target = "hasPass", ignore = true),
+        @Mapping(target = "id", qualifiedByName = "longToString"),
+        @Mapping(target = "phone", ignore = true),
+        @Mapping(target = "email", ignore = true)
     })
-    public abstract OtherUserVO BO2VO(UserBO userBO);
+    public abstract UserVO BO2OtherVO(UserBO userBO);
 
     @Mappings({
-            @Mapping(target = "hasPass", ignore = true),
-            @Mapping(target = "id", qualifiedByName = "longToString")
+        @Mapping(target = "hasPass", ignore = true),
+        @Mapping(target = "id", qualifiedByName = "longToString"),
     })
-    public abstract CurrentUserVO BO2CurrentVO(UserBO userBO);
+    public abstract UserVO BO2CurrentVO(UserBO userBO);
 
     @AfterMapping
-    protected void afterBO2CurrentVO(@MappingTarget CurrentUserVO currentUserVO, UserBO userBO) {
+    protected void afterBO2CurrentVO(@MappingTarget UserVO currentUserVO, UserBO userBO) {
         currentUserVO.setHasPass(BcryptEncoderUtil.isBcrypt(userBO.getPassword()));
     }
 }

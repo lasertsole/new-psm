@@ -1,5 +1,5 @@
 <template>
-  <div class="showcaseDetail"
+  <div class="detailShow"
       ref="rootDom"
   >
     <div class="page">
@@ -38,9 +38,11 @@
             }) }}
           </div>
 
-          <div class="category">
-            <span class="style">风格: {{ reverseStyleEnum[modelInfo?.category.style] }}</span>
-            <span class="type">类型: {{ reverseTypeEnum[modelInfo?.category.type] }}</span>
+          <div class="category"
+            v-if="modelInfo"
+          >
+            <span class="style">风格: {{ modelInfo.category&&styleEnumObject[modelInfo.category.style] }}</span>
+            <span class="type">类型: {{ modelInfo.category&&typeEnumObject[modelInfo.category.type] }}</span>
           </div>
         </div>
 
@@ -54,15 +56,9 @@
   import { StyleEnum, TypeEnum } from "@/enums/models.d";
   import type { ModelInfoDetail, ModelInfo } from "@/types/model";
 
-  // 手动实现反向映射
-  const reverseStyleEnum: { [key: string]: StyleEnum } = {};
-  for (const key in StyleEnum) {
-    reverseStyleEnum[StyleEnum[key]] = key;
-  }
-  const reverseTypeEnum: { [key: string]: StyleEnum } = {};
-  for (const key in TypeEnum) {
-    reverseTypeEnum[TypeEnum[key]] = key;
-  }
+  // 将枚举转换为对象
+  const styleEnumObject = Object.fromEntries(Object.entries(StyleEnum).map(([k, v]) => [v, k]));
+  const typeEnumObject = Object.fromEntries(Object.entries(TypeEnum).map(([k, v]) => [v, k]));
   
   // 获取当前路由对象
   const route = useRoute();
@@ -93,11 +89,11 @@
   @use "sass:math";
   @import "@/common.scss";
 
-  .showcaseDetail{
+  .detailShow{
     @include fullWidth();
+    min-height: 100%;
     display: flex;
     justify-content: center;
-    overflow: auto;
     background-color: rgba(222, 222, 222, .75);
 
     .page{

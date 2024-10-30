@@ -1,4 +1,4 @@
-package com.psm.domain.User.user.entity.User.UserVO;
+package com.psm.domain.User.user.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -13,9 +13,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CurrentUserVO implements Serializable {
+public class UserVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -1255229981356906416L;
+    private static final long serialVersionUID = 2550332823179953513L;
 
     private String id;
     private String name;

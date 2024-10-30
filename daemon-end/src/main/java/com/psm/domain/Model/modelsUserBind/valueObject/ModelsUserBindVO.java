@@ -1,7 +1,7 @@
 package com.psm.domain.Model.modelsUserBind.valueObject;
 
 import com.psm.domain.Model.model.entity.ModelVO;
-import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
+import com.psm.domain.User.user.entity.User.UserVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +18,11 @@ public class ModelsUserBindVO implements Serializable{ // VO实体不具有值�
     @Serial
     private static final long serialVersionUID = 1466315409607067190L;
 
-    private OtherUserVO user;
+    private UserVO user;
     private List<ModelVO> models;
 
     // 值对象禁止二次赋值
-    public void setUser(OtherUserVO user) {
+    public void setUser(UserVO user) {
         if (Objects.isNull(this.user)) this.user = user;
     }
 
