@@ -1,5 +1,6 @@
 package com.psm.domain.User.user.entity.User;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.infrastructure.annotation.validation.ValidFileSize;
 import com.psm.infrastructure.annotation.validation.ValidImage;
 import lombok.AllArgsConstructor;
@@ -15,9 +16,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 8784318945543437174L;
+    private static final long serialVersionUID = 3129738011696186066L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;

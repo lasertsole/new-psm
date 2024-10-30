@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ModelUserBindBO implements Serializable, BO2VOable<ModelUserBindVO> { // BO实体具有值对象性质，只能通过构造方法赋值，不能通过set方法赋值
     @Serial
-    private static final long serialVersionUID = 5180264857710896278L;
+    private static final long serialVersionUID = -3884711101587218176L;
 
     UserBO user;
     ModelBO model;

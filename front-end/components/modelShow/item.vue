@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
     import type { ModelInfos } from "@/types/model";
-import type { PropType } from "vue";
+    import type { PropType } from "vue";
     
     const props = defineProps({
         boxInfo:{type:Object as PropType<ModelInfos>, required: true}

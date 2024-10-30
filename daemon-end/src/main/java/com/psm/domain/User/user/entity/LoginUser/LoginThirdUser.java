@@ -7,12 +7,17 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginThirdUser implements UserDetails {
+public class LoginThirdUser implements UserDetails, Serializable {
+    @Serial
+    private static final long serialVersionUID = -979521410864292039L;
+
     private OAuth2ThirdAccountDTO oAuth2ThirdAccount;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

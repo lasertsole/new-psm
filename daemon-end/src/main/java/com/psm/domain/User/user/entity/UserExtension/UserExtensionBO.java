@@ -1,5 +1,6 @@
 package com.psm.domain.User.user.entity.UserExtension;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserExtensionBO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -3752993483667036339L;
+    private static final long serialVersionUID = -6961178143881514621L;
 
     private Long id;
     private Short publicModelNum;

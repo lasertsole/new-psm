@@ -67,8 +67,6 @@ public class ModelServiceImpl implements ModelService {
     @Transactional
     @Override
     public Map<String, Long> uploadModelInfo(ModelDTO modelDTO) throws Exception {
-        log.info("visible is {}", modelDTO.getVisible());
-
         String userId = String.valueOf(modelDTO.getUserId());
 
         // 判断文件是否已上传完成且没有过期fullPath
@@ -89,6 +87,7 @@ public class ModelServiceImpl implements ModelService {
             throw new RuntimeException("文件上传失败");
         }
 
+        // 将ModelDAO存入数据库
         Long modelId; // 定义模型ID
         try {
             // 将ModelDTO转换为ModelDAO
@@ -98,6 +97,7 @@ public class ModelServiceImpl implements ModelService {
             modelDAO.setStorage(fileSize);
 
             // 将ModelDAO存入数据库
+            log.info("modelDAO is {}", modelDAO);
             modelDB.insert(modelDAO);
             modelId = modelDAO.getId();
         }

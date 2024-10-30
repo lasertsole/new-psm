@@ -1,5 +1,6 @@
 package com.psm.domain.Model.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.infrastructure.annotation.validation.ValidFileSize;
 import com.psm.infrastructure.annotation.validation.ValidImage;
 import com.psm.infrastructure.annotation.validation.ValidJson;
@@ -18,9 +19,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ModelDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 7158768495320685031L;
+    private static final long serialVersionUID = -4377624191532031433L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;

@@ -1,5 +1,6 @@
 package com.psm.domain.Model.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
 import com.psm.domain.Model.model.valueObject.Category;
 import com.psm.infrastructure.enums.VisibleEnum;
@@ -14,9 +15,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ModelBO implements BO2VOable<ModelVO>, Serializable {
     @Serial
-    private static final long serialVersionUID = -5438707322519502525L;
+    private static final long serialVersionUID = -8473171808333662751L;
 
     private Long id;
     private Long userId;

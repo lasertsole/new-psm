@@ -9,9 +9,9 @@
 
 <script setup lang="ts">
     import { onMounted } from "vue";
-    import type { ModelInfo } from "@/types/model";
+    import type { ModelInfos } from "@/types/model";
     
-    const ModelShowItems:Ref<ModelInfo[]> = ref<ModelInfo[]>([] as ModelInfo[]);
+    const ModelShowItems:Ref<ModelInfos[]> = ref<ModelInfos[]>([] as ModelInfos[]);
     
     onMounted(async ()=>{
         ModelShowItems.value = await getModelsShowBars({currentPage:1, pageSize:10});

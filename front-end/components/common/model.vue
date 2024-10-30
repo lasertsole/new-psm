@@ -47,16 +47,14 @@
       
       // 初始化loader
       const objLoader = new OBJLoader();
-      fetch(
-        props.entity, { mode: 'no-cors' }
-      ).then(response => {
-        console.log(response.blob());
+      fetch('https://new-psm.oss-cn-guangzhou.aliyuncs.com/338125235918344192/models/entities/2024-10-30-18-34-40-86cf403207ca4ed49a8094b1a035a021.obj')
+      .then(response => {
+        console.log(response)
         return response.blob();
       }).then(blob => {
         // 将 Blob 转换为 URL
         const url = URL.createObjectURL(blob);
-        console.log(url);
-        console.log(url.split('blob:')[1]);
+
         objLoader.load(
           url.split(':'),
           (obj:any)=>{

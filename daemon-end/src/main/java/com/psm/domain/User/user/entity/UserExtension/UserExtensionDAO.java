@@ -3,6 +3,7 @@ package com.psm.domain.User.user.entity.UserExtension;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +15,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("tb_users_extension")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserExtensionDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -6574331886886511700L;
+    private static final long serialVersionUID = 8485047296412780734L;
 
     @TableId
     private Long id;

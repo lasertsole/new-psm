@@ -8,6 +8,7 @@ interface Params {
     method?: 'get' | 'post' | 'put' | 'delete';
     contentType?: 'application/x-www-form-urlencoded' | 'application/json' | 'multipart/form-data';
     lazy?: boolean;
+    headeropts?: { [key: string]: any };
 }
 
 // 替换路径变量
@@ -38,6 +39,7 @@ export async function fetchApi({
   opts = {},
   method = 'get',
   contentType = 'application/json',
+  headeropts = {},
 }: Params){
 
   // 设置请求头
@@ -67,8 +69,9 @@ export async function fetchApi({
       let token = localStorage.getItem('token');
       if(token){
           options.headers = {
-              ...options.headers,
-              token
+            ...options.headers,
+            ...headeropts,
+            token
           }
       }
     },

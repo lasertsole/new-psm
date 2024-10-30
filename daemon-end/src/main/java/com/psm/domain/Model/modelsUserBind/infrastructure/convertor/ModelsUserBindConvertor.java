@@ -1,10 +1,10 @@
 package com.psm.domain.Model.modelsUserBind.infrastructure.convertor;
 
+import com.psm.domain.Model.model.entity.ModelVO;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
-import com.psm.domain.Model.modelsUserBind.entity.BriefModelVO;
 import com.psm.domain.User.user.entity.User.UserVO.OtherUserVO;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindVO;
 import com.psm.domain.User.user.entity.User.UserBO;
@@ -42,9 +42,9 @@ public abstract class ModelsUserBindConvertor {
     }
 
     @Named("ModelsBO2VO")
-    protected List<BriefModelVO> ModelsBO2VO(List<ModelBO> modelBOs) {
+    protected List<ModelVO> ModelsBO2VO(List<ModelBO> modelBOs) {
         return modelBOs.stream().map((modelBO)->{
-            BriefModelVO briefModelVO = new BriefModelVO();
+            ModelVO briefModelVO = new ModelVO();
 
             briefModelVO.setId(modelBO.getId().toString());
             briefModelVO.setTitle(modelBO.getTitle());
