@@ -1,5 +1,6 @@
 package com.psm.application;
 
+import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
@@ -25,7 +26,10 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserAdaptor userAdaptor;
+    private UserAdaptor userAdaptor;
+
+    @Autowired
+    private FollowerAdaptor followerAdaptor;
 
     // 前端地址
     @Value("${server.front-end-url.socket}")
@@ -41,6 +45,13 @@ public class UserController {
         response.sendRedirect(frontEndBaseUrl+loginPage);
     };
 
+    /**
+     * 用户登录
+     *
+     * @param userDTO 用户DTO对象，包括用户名、密码
+     * @param response HttpServletResponse对象，用于设置token
+     * @return ResponseVO
+     */
     @PostMapping("/login")
     public ResponseVO login(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
@@ -67,7 +78,11 @@ public class UserController {
         }
     }
 
-    // 快速登录
+    /**
+     * 快速登录，用于前端自动登录
+     *
+     * @return ResponseVO
+     */
     @GetMapping("/fastLogin")
     public ResponseVO fastLogin() {
         try {
@@ -79,6 +94,13 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户注册
+     *
+     * @param userDTO 用户DTO对象，包括用户名、密码、邮箱、手机号等
+     * @param response HttpServletResponse对象，用于设置token
+     * @return ResponseVO
+     */
     @PostMapping("/register")
     public ResponseVO register(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
@@ -99,6 +121,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户下线
+     *
+     * @return ResponseVO
+     */
     @DeleteMapping("/logout")
     public ResponseVO logout() {
         try {
@@ -110,6 +137,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户注销
+     *
+     * @return ResponseVO
+     */
     @DeleteMapping("/deleteUser")
     public ResponseVO deleteUser() {
         try {
@@ -121,6 +153,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 更新用户头像
+     *
+     * @param userDTO 用户DTO对象，包括用户ID、头像URL等
+     * @return ResponseVO
+     */
     @PutMapping("/updateAvatar")
     public ResponseVO updateAvatar(UserDTO userDTO) {
         try {
@@ -135,6 +173,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 更新用户信息
+     *
+     * @param userDTO 用户DTO对象，包括用户ID、用户名、邮箱、手机号等
+     * @return ResponseVO
+     */
     @PutMapping("/updateInfo")
     public ResponseVO updateUser(@RequestBody UserDTO userDTO) {
         try {
@@ -149,6 +193,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 更新用户密码
+     *
+     * @param userDTO 用户DTO对象，包括用户ID、旧密码、新密码等
+     * @return ResponseVO
+     */
     @PutMapping("/updatePassword")
     public ResponseVO updatePassword(@RequestBody UserDTO userDTO) {
         try {
@@ -163,6 +213,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 根据用户ID获取用户信息
+     *
+     * @param id 用户ID
+     * @return ResponseVO
+     */
     @GetMapping("/{id}")
     public ResponseVO getUserByID(@PathVariable Long id) {
         UserDTO userDTO = new UserDTO();
@@ -182,6 +238,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 根据用户名获取用户信息
+     *
+     * @param name 用户名
+     * @return ResponseVO
+     */
     @GetMapping
     public ResponseVO getUserByName(@RequestParam String name) {
         UserDTO userDTO = new UserDTO();

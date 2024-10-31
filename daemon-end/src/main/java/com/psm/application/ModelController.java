@@ -36,6 +36,13 @@ public class ModelController {
     @Autowired
     private ModelAdaptor modelAdaptor;
 
+    /**
+     * 模型上传接口
+     *
+     * @param servletRequest HTTP request objects.
+     * @param servletResponse HTTP response objects.
+     * @return ResponseVO
+     */
     @RequestMapping(value = {"/upload/**"}, method = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.HEAD,
             RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.GET})
     @CrossOrigin(exposedHeaders = {"Location", "Upload-Offset", "Upload-Length"})//暴露header
@@ -54,6 +61,12 @@ public class ModelController {
         }
     }
 
+    /**
+     * 模型信息上传接口
+     *
+     * @param modelDTO 模型信息
+     * @return ResponseVO
+     */
     @PostMapping("/uploadInfo")
     public ResponseVO uploadModelInfo(ModelDTO modelDTO){
         Long userId;//当前用户id
@@ -86,6 +99,11 @@ public class ModelController {
         return ResponseVO.ok("upload model's info successful");
     }
 
+    /**
+     * 获取所有公开模型
+     *
+     * @return ResponseVO
+     */
     @GetMapping
     public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO) {
         try {
@@ -132,6 +150,12 @@ public class ModelController {
         }
     }
 
+    /**
+     * 获取单个作品模型
+     *
+     * @param id 作品模型ID
+     * @return ResponseVO
+     */
     @GetMapping("/{id}")
     public ResponseVO getModelByModelId(@PathVariable Long id) {
         try {

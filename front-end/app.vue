@@ -12,7 +12,6 @@
 
 <script lang="ts" setup>
   const { $on }= useNuxtApp();
-  import { onMounted } from "vue";
   const { $emit } = useNuxtApp();
 
   // 这里的代码仅在客户端执行

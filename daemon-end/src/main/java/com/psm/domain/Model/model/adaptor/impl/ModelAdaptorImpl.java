@@ -13,9 +13,8 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import me.desair.tus.server.exception.TusException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -24,9 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Adaptor
 public class ModelAdaptorImpl implements ModelAdaptor {
-    private static final Logger log = LoggerFactory.getLogger(ModelAdaptorImpl.class);
+    @Autowired
+    ValidUtil validUtil;
+
     @Autowired
     ModelService modelService;
 
@@ -70,7 +72,6 @@ public class ModelAdaptorImpl implements ModelAdaptor {
 
     @Override
     public ModelBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException {
-        ValidUtil validUtil = new ValidUtil();
         validUtil.validate(Map.of("id", id, "visible", visible), ModelDTO.class);
 
         ModelDAO modelDAO = modelService.getById(id, VisibleEnum.fromInteger(visible));
