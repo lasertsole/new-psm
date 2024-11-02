@@ -12,9 +12,10 @@
     import type { ModelInfos } from "@/types/model";
     
     const ModelShowItems:Ref<ModelInfos[]> = ref<ModelInfos[]>([] as ModelInfos[]);
-    
+
+    // 服务器渲染请求
+    ModelShowItems.value = await getModelsShowBars({currentPage:1, pageSize:10});
     onMounted(async ()=>{
-        ModelShowItems.value = await getModelsShowBars({currentPage:1, pageSize:10});
     });
 
     definePageMeta({

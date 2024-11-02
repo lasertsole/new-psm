@@ -9,6 +9,7 @@ import com.psm.domain.User.user.infrastructure.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.io.Serial;
 import java.io.Serializable;

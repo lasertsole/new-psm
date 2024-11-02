@@ -24,29 +24,21 @@ public abstract class ModelUserBindConvertor {
 
     public static final ModelUserBindConvertor INSTANCE = Mappers.getMapper(ModelUserBindConvertor.class);
 
-    @Named("UserBO2VO")
-    protected UserVO UserBO2VO(UserBO userBO) {
-        return userConvertor.BO2OtherVO(userBO);
-    }
+    public ModelUserBindVO BO2VO(ModelUserBindBO modelUserBindBO) {
+        UserBO userBO = modelUserBindBO.getUser();
+        ModelBO modelBO = modelUserBindBO.getModel();
 
-    @Named("ModelBO2VO")
-    protected ModelVO ModelsBO2VO(ModelBO modelBO) {
-        ModelVO briefModelVO = new ModelVO();
+        UserVO userVO = userConvertor.BO2OtherVO(userBO);
+        ModelVO modelVO = new ModelVO();
 
-        briefModelVO.setId(modelBO.getId().toString());
-        briefModelVO.setTitle(modelBO.getTitle());
-        briefModelVO.setContent(modelBO.getContent());
-        briefModelVO.setCover(modelBO.getCover());
-        briefModelVO.setEntity(modelBO.getEntity());
-        briefModelVO.setCategory(modelBO.getCategory());
-        briefModelVO.setCreateTime(modelBO.getCreateTime());
+        modelVO.setId(modelBO.getId().toString());
+        modelVO.setTitle(modelBO.getTitle());
+        modelVO.setContent(modelBO.getContent());
+        modelVO.setCover(modelBO.getCover());
+        modelVO.setEntity(modelBO.getEntity());
+        modelVO.setCategory(modelBO.getCategory());
+        modelVO.setCreateTime(modelBO.getCreateTime());
 
-        return briefModelVO;
-    }
-
-    @Mappings({
-            @Mapping(target = "user", qualifiedByName = "UserBO2VO"),
-            @Mapping(target = "model", qualifiedByName = "ModelBO2VO")
-    })
-    public abstract ModelUserBindVO BO2VO(ModelUserBindBO modelUserBindBO);
+        return new ModelUserBindVO(userVO, modelVO);
+    };
 }

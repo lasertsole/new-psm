@@ -78,7 +78,6 @@
       modelInfoDetail.value = res;
     }
   });
-  
 
   definePageMeta({
     name: 'model-3D-detailShow'

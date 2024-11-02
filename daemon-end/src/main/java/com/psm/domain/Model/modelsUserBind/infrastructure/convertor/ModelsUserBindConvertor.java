@@ -28,37 +28,23 @@ public abstract class ModelsUserBindConvertor {
 
     public static final ModelsUserBindConvertor INSTANCE = Mappers.getMapper(ModelsUserBindConvertor.class);
 
-    protected UserBO UserDAO2BO(UserDAO userDAO) {
-        return userConvertor.DAO2BO(userDAO);
-    }
+    public ModelsUserBindVO BO2VO(ModelsUserBindBO modelsUserBindBO) {
+        UserBO userBO = modelsUserBindBO.getUser();
+        List<ModelBO> modelBOs = modelsUserBindBO.getModels();
 
-    protected List<ModelBO> ModelsDAO2BO(List<ModelDAO> modelDAOs) {
-        return modelDAOs.stream().map(modelConvertor::DAO2BO).toList();
-    }
+        UserVO userVO = userConvertor.BO2OtherVO(userBO);
+        List<ModelVO> modelVOs =modelBOs.stream().map((modelBO)->{
+            ModelVO modelVO = new ModelVO();
 
-    @Named("UserBO2VO")
-    protected UserVO UserBO2VO(UserBO userBO) {
-        return userConvertor.BO2OtherVO(userBO);
-    }
+            modelVO.setId(modelBO.getId().toString());
+            modelVO.setTitle(modelBO.getTitle());
+            modelVO.setCover(modelBO.getCover());
+            modelVO.setCategory(modelBO.getCategory());
+            modelVO.setCreateTime(modelBO.getCreateTime());
 
-    @Named("ModelsBO2VO")
-    protected List<ModelVO> ModelsBO2VO(List<ModelBO> modelBOs) {
-        return modelBOs.stream().map((modelBO)->{
-            ModelVO briefModelVO = new ModelVO();
-
-            briefModelVO.setId(modelBO.getId().toString());
-            briefModelVO.setTitle(modelBO.getTitle());
-            briefModelVO.setCover(modelBO.getCover());
-            briefModelVO.setCategory(modelBO.getCategory());
-            briefModelVO.setCreateTime(modelBO.getCreateTime());
-
-            return briefModelVO;
+            return modelVO;
         }).toList();
-    }
 
-    @Mappings({
-            @Mapping(target = "user", qualifiedByName = "UserBO2VO"),
-            @Mapping(target = "models", qualifiedByName = "ModelsBO2VO")
-    })
-    public abstract ModelsUserBindVO BO2VO(ModelsUserBindBO modelsUserBindBO);
+        return new ModelsUserBindVO(userVO, modelVOs);
+    };
 }

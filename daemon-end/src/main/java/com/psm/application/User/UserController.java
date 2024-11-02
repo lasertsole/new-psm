@@ -1,4 +1,4 @@
-package com.psm.application;
+package com.psm.application.User;
 
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;

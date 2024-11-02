@@ -1,26 +1,13 @@
-package com.psm.application;
+package com.psm.application.User;
 
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
-import com.psm.domain.User.follower.entity.FollowerBO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.List;
-import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/followers")
@@ -85,7 +72,7 @@ public class FollowerController {
      * @return ResponseVO
      */
     @GetMapping("/self")
-    public ResponseVO checkFollower() {
+    public ResponseVO checkFollowers() {
         try {
             // 获取当前用户id
             Long tgtUserId = userAdaptor.getAuthorizedUserId();
@@ -104,14 +91,14 @@ public class FollowerController {
      * 关注用户
      * @return ResponseVO
      */
-    @PostMapping
-    public ResponseVO followingUser(@RequestBody UserDTO userDTO) {
+    @PostMapping("/{tgtUserId}")
+    public ResponseVO followingUser(@PathVariable Long tgtUserId) {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
             // 关注用户
-            followerAdaptor.addFollower(userDTO.getId(), srcUserId);
+            followerAdaptor.addFollower(tgtUserId, srcUserId);
 
             return ResponseVO.ok("Get users successful");
         }
@@ -127,13 +114,13 @@ public class FollowerController {
      * 取消关注用户
      * @return ResponseVO
      */
-    @DeleteMapping
-    public ResponseVO unFollowingUser(@RequestBody UserDTO userDTO) {
+    @DeleteMapping("/{tgtUserId}")
+    public ResponseVO unFollowingUser(@PathVariable Long tgtUserId) {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
-            followerAdaptor.removeByTgUserIdAndSrcUserId(userDTO.getId(), srcUserId);
+            followerAdaptor.removeByTgUserIdAndSrcUserId(tgtUserId, srcUserId);
 
             return ResponseVO.ok("Unfollow user successful");
         }

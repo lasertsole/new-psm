@@ -1,6 +1,6 @@
 package com.psm.ModelShowBar;
 
-import com.psm.application.ModelController;
+import com.psm.application.Model.ModelController;
 import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

@@ -4,23 +4,19 @@ import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.modelsUserBind.infrastructure.convertor.ModelsUserBindConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.utils.VO.BO2VOable;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ModelsUserBindBO implements Serializable, BO2VOable<ModelsUserBindVO> { // BO实体具有值对象性质，只能通过构造方法赋值，不能通过set方法赋值
+@Value
+public class ModelsUserBindBO implements Serializable, BO2VOable<ModelsUserBindVO> {
     @Serial
-    private static final long serialVersionUID = 6836217302198536772L;
+    private static final long serialVersionUID = 2452678106298460928L;
 
-    private UserBO user;
-    private List<ModelBO> models;
+    UserBO user;
+    List<ModelBO> models;
 
     @Override
     public ModelsUserBindVO toVO() {

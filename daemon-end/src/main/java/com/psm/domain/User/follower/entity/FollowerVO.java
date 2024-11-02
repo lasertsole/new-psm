@@ -14,12 +14,12 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FollowerVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -8444683690763097007L;
+    private static final long serialVersionUID = -8040996100086553973L;
 
-    private Long id;
+    private String id;
 
-    private Long tgtUserId;
-    private Long srcUserId;
+    private String tgtUserId;
+    private String srcUserId;
 
     private String createTime;
 }

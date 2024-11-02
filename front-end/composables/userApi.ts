@@ -25,7 +25,7 @@ function updateUserInfo(data:UserInfo){
     data.profile && (userInfo.profile = data.profile);
     data.sex != undefined && (userInfo.sex = data.sex);
     data.createTime && (userInfo.createTime = data.createTime);
-}
+};
 
 function clearUserInfo(){
     userInfo.id = '';
@@ -38,19 +38,19 @@ function clearUserInfo(){
     userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
-}
+};
 
 function loginApi(data:UserInfo){
     userInfo.isLogin = true;
     updateUserInfo(data);
     navigateTo("/home");
-}
+};
 
 function logoutApi(){
     userInfo.isLogin = false;
     clearUserInfo();
     navigateTo("/");
-}
+};
 
 export async function login(name:string | undefined, password:string | undefined):Promise<boolean>{
     //先清除token防止旧token影响
@@ -76,13 +76,13 @@ export async function login(name:string | undefined, password:string | undefined
         return false;
     }
 
-    ElMessage.success('登录成功');
-
     let data = res.data;
     loginApi(data);
 
+    ElMessage.success('登录成功');
+
     return true;
-}
+};
 
 export async function fastLogin():Promise<boolean>{
     const res:any = await fetchApi({
@@ -102,18 +102,18 @@ export async function fastLogin():Promise<boolean>{
         return false;
     }
 
-    ElMessage.success('登录成功');
-
     let data = res.data;
     loginApi(data);
 
+    ElMessage.success('登录成功');
+
     return true;
-}
+};
 
 export async function thirdPartyLogin(path:string):Promise<void>{
     let opts = useRuntimeConfig().public;
     window.location.href = opts.baseURL + opts.oauth2AuthURL + "/gitee";
-}
+};
 
 export async function register(name:string, password:string, email:string):Promise<Boolean>{
     const res:any = await fetchApi({
@@ -136,13 +136,13 @@ export async function register(name:string, password:string, email:string):Promi
         return false;
     }
 
-    ElMessage.success('注册成功');
-
     let data = res.data;
     loginApi(data);
 
+    ElMessage.success('注册成功');
+
     return true;
-}
+};
 
 export async function updateAvatar(avatar:Blob):Promise<Boolean>{
     if(avatar == null || avatar == undefined) return false;
@@ -165,13 +165,13 @@ export async function updateAvatar(avatar:Blob):Promise<Boolean>{
         return false;
     }
 
-    ElMessage.success('更新头像成功');
-
     let data = res.data;
     userInfo.avatar = data;
 
+    ElMessage.success('更新头像成功');
+
     return true;
-}
+};
 
 export async function updateAccountInfo({name, sex, phone, email, profile}:UserInfo):Promise<Boolean>{
     const res:any = await fetchApi({
@@ -195,13 +195,13 @@ export async function updateAccountInfo({name, sex, phone, email, profile}:UserI
         return false;
     }
 
-    ElMessage.success('更新账户信息成功');
-
     const data:UserInfo = {name, sex, phone, email, profile};
     updateUserInfo(data);
     
+    ElMessage.success('更新账户信息成功');
+
     return true;
-}
+};
 
 export async function updatePassword(password : string, changePassword: string):Promise<Boolean>{
     const res:any = await fetchApi({
@@ -222,12 +222,13 @@ export async function updatePassword(password : string, changePassword: string):
         return false;
     }
 
-    ElMessage.success('更新密码成功');
     localStorage.removeItem('token');
     logoutApi();
+
+    ElMessage.success('更新密码成功');
     
     return true;
-}
+};
 
 export async function logout():Promise<boolean>{
     const res:any = await fetchApi({
@@ -241,9 +242,10 @@ export async function logout():Promise<boolean>{
         return false;
     }
 
-    ElMessage.success('登出成功');
     localStorage.removeItem('token');
     logoutApi();
 
+    ElMessage.success('登出成功');
+
     return true;
-}
+};

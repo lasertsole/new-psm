@@ -1,4 +1,4 @@
-package com.psm.infrastructure.utils;
+package com.psm.infrastructure.utils.Web;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

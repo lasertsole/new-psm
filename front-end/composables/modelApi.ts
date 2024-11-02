@@ -61,4 +61,4 @@ export async function getModelByModelId({ modelId }:{modelId:string}):Promise<Mo
     });
     
     return res.data;
-}
+};

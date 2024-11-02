@@ -1,4 +1,4 @@
-package com.psm.application;
+package com.psm.application.Chat;
 
 import com.psm.domain.Chat.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;

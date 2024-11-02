@@ -1,10 +1,12 @@
-package com.psm.application;
+package com.psm.application.Model;
 
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDTO;
 import com.psm.domain.Model.modelUserBind.valueObject.ModelUserBindBO;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
+import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
+import com.psm.domain.User.follower.entity.FollowerBO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
 import com.psm.domain.User.user.entity.User.UserBO;
@@ -35,6 +37,9 @@ public class ModelController {
 
     @Autowired
     private ModelAdaptor modelAdaptor;
+
+    @Autowired
+    private FollowerAdaptor followerAdaptor;
 
     /**
      * 模型上传接口
@@ -114,19 +119,17 @@ public class ModelController {
             if (userExtensionBOResultList.isEmpty()) return ResponseVO.ok(Collections.emptyList());
 
             // 创建一个Map，用于存储用户ID和ModelsShowBarDAO的映射
-            Map<Long, ModelsUserBindBO> collect = userExtensionBOResultList.stream().collect(Collectors.toMap(
-                    UserExtensionBO::getId, userExtensionDAO -> new ModelsUserBindBO()
-            ));
+            Map<Long, ModelsUserBindBO> collect = new HashMap<>();
+            userExtensionBOResultList.forEach(userExtensionBO -> collect.putIfAbsent(userExtensionBO.getId(), null));
+
 
             // 获取用户ID列表，这个ID列表是按照时间降序排序的
             List<Long> userIds = UserExtensionBO.getModelIds(userExtensionBOResultList);
 
-            // 按照用户ID列表获取用户列表
+            // 按照用户ID列表获取用户BO实体列表
             List<UserBO> userBOList = userAdaptor.getUserByIds(userIds);
             userBOList.forEach(userBO -> {
-                ModelsUserBindBO modelsShowBarBO = collect.get(userBO.getId());
-                modelsShowBarBO.setUser(userBO);
-                modelsShowBarBO.setModels(new ArrayList<ModelBO>());
+                collect.put(userBO.getId(), new ModelsUserBindBO(userBO, new ArrayList<>()));
             });
 
             // 按照用户ID列表获取作品模型列表
@@ -146,7 +149,7 @@ public class ModelController {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e.getCause());
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
         }
     }
 
@@ -168,6 +171,9 @@ public class ModelController {
             // 获取用户信息
             Long userId = modelBO.getUserId();
             UserBO userBO = userAdaptor.getUserById(userId);
+
+//            FollowerBO followerBO = followerAdaptor.getByTgUserIdAndSrcUserId(userId, userAdaptor.getAuthorizedUserId());
+//            log.info("followerBO is {}", followerBO);
 
             return ResponseVO.ok(new ModelUserBindBO(userBO, modelBO));
         }

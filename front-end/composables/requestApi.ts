@@ -44,10 +44,10 @@ export async function fetchApi({
 
   // 设置请求头
   const headers:any = {};
-  if(localStorage.getItem('token')){
+
+  if(!process.server&&localStorage.getItem('token')){
     headers.token = localStorage.getItem('token');
   }
-
   // 设置请求参数
   let params:any = {};
   if(contentType=='application/json'){
@@ -66,7 +66,7 @@ export async function fetchApi({
     baseURL: import.meta.env.VITE_API_BACK_URL,
     ...params,
     onRequest({ options }:{ options:any }) {
-      let token = localStorage.getItem('token');
+      let token = !process.server&&localStorage.getItem('token');
       if(token){
           options.headers = {
             ...options.headers,
@@ -74,8 +74,11 @@ export async function fetchApi({
             token
           }
       }
+      return;
     },
     onResponse({ response }:{ response:any }) {
+      if(process.server) return response;
+
       // 处理响应数据
       // 如果返回值有token，则更新本地token
       let token : string | null = response.headers.get("token");
