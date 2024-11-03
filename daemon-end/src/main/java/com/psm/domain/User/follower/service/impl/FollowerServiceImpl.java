@@ -5,6 +5,7 @@ import com.psm.domain.User.follower.repository.FollowerDB;
 import com.psm.domain.User.follower.service.FollowerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class FollowerServiceImpl implements FollowerService {
     }
 
     @Override
-    public Long addFollower(Long tgtUserId, Long srcUserId) {
+    public Long addFollower(Long tgtUserId, Long srcUserId) throws DuplicateKeyException {
         // 创建 FollowerDAO 对象
         FollowerDAO followerDAO = new FollowerDAO();
         followerDAO.setTgtUserId(tgtUserId);

@@ -12,4 +12,5 @@ export type UserInfo = {
     isLogin?: boolean;
     sex?: boolean;//0:男 1:女
     createTime?: string;
+    isFollowed?: boolean;
 };

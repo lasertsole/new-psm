@@ -5,6 +5,7 @@ import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,18 +93,21 @@ public class FollowerController {
      * @return ResponseVO
      */
     @PostMapping("/{tgtUserId}")
-    public ResponseVO followingUser(@PathVariable Long tgtUserId) {
+    public ResponseVO followUser(@PathVariable Long tgtUserId) throws InstantiationException, IllegalAccessException {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
             // 关注用户
-            followerAdaptor.addFollower(tgtUserId, srcUserId);
+            followerAdaptor.addFollowing(tgtUserId, srcUserId);
 
             return ResponseVO.ok("Get users successful");
         }
+        catch (DuplicateKeyException e){
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "DuplicateKey");
+        }
         catch (IllegalArgumentException e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "Invalid parameter");
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
@@ -115,17 +119,17 @@ public class FollowerController {
      * @return ResponseVO
      */
     @DeleteMapping("/{tgtUserId}")
-    public ResponseVO unFollowingUser(@PathVariable Long tgtUserId) {
+    public ResponseVO unFollowUser(@PathVariable Long tgtUserId) {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
-            followerAdaptor.removeByTgUserIdAndSrcUserId(tgtUserId, srcUserId);
+            followerAdaptor.removeFollowing(tgtUserId, srcUserId);
 
             return ResponseVO.ok("Unfollow user successful");
         }
         catch (IllegalArgumentException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "Invalid parameter");
         }
         catch (Exception e) {
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());

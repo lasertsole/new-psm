@@ -3,10 +3,10 @@ package com.psm.application.Model;
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDTO;
-import com.psm.domain.Model.modelUserBind.valueObject.ModelUserBindBO;
+import com.psm.domain.Model.modelExtendedUserBind.valueObject.ModelExtendedUserBindBO;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
-import com.psm.domain.User.follower.entity.FollowerBO;
+import com.psm.domain.User.follower.valueObject.ExtendedUserBO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
 import com.psm.domain.User.user.entity.User.UserBO;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -172,10 +171,14 @@ public class ModelController {
             Long userId = modelBO.getUserId();
             UserBO userBO = userAdaptor.getUserById(userId);
 
-//            FollowerBO followerBO = followerAdaptor.getByTgUserIdAndSrcUserId(userId, userAdaptor.getAuthorizedUserId());
-//            log.info("followerBO is {}", followerBO);
+            // 判断是否已关注
+            Boolean isFollowed = followerAdaptor.isFollowed(userId, userAdaptor.getAuthorizedUserId());
 
-            return ResponseVO.ok(new ModelUserBindBO(userBO, modelBO));
+            // 构建扩展用户信息
+            ExtendedUserBO extendedUserBO = ExtendedUserBO.from(userBO, isFollowed);
+
+            // 返回
+            return ResponseVO.ok(ModelExtendedUserBindBO.from(extendedUserBO, modelBO));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

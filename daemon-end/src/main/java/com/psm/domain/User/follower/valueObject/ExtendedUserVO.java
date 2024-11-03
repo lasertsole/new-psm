@@ -1,5 +1,6 @@
 package com.psm.domain.User.follower.valueObject;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.user.entity.User.UserVO;
 import lombok.Value;
 
@@ -7,10 +8,52 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Value
-public class ExtendedUserVO implements Serializable {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ExtendedUserVO extends UserVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -7517841450890343992L;
+    private static final long serialVersionUID = -2853192938223143416L;
 
-    UserVO user;
-    String followed;
+    Boolean isFollowed;
+
+    // 全参构造函数
+    public ExtendedUserVO(
+        String id,
+        String name,
+        Boolean hasPass,
+        String phone,
+        String avatar,
+        String email,
+        Boolean sex,
+        String profile,
+        String createTime,
+        Boolean followed)
+    {
+        super(
+            id,
+            name,
+            hasPass,
+            phone,
+            avatar,
+            email,
+            sex,
+            profile,
+            createTime
+        );
+        this.isFollowed = followed;
+    }
+
+    public ExtendedUserVO(UserVO userVO, Boolean followed) {
+        super(
+            userVO.getId().toString(),
+            userVO.getName(),
+            null,
+            userVO.getPhone(),
+            userVO.getAvatar(),
+            userVO.getEmail(),
+            userVO.getSex(),
+            userVO.getProfile(),
+            userVO.getCreateTime()
+        );
+        this.isFollowed = followed;
+    }
 }

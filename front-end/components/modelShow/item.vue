@@ -14,10 +14,6 @@
                 <div class="left">简介:</div>
                 <div class="right">{{boxInfo.user.profile}}</div>
             </div>
-            <div class="action">
-                <div class="follow">关注</div>
-                <div class="sms">私信</div>
-            </div>
         </div>
         <div class="author_works">
             <template v-for="(item, index) in boxInfo.models" :key="item.id">
@@ -120,25 +116,6 @@
                         table-layout: fixed; word-break:break-all;
                         word-wrap:break-word;
                     }
-                }
-            }
-            
-            .action{
-                display: flex;
-                flex-direction: row;
-                justify-content: space-around;
-                color: white;
-                margin-top: 2px;
-                >div{
-                    padding: 2px 10px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-                .follow{
-                    background-color: #fb7299;
-                }
-                .sms{
-                    background-color: #00a8e9;
                 }
             }
         }

@@ -15,6 +15,7 @@
 
     // 服务器渲染请求
     ModelShowItems.value = await getModelsShowBars({currentPage:1, pageSize:10});
+    
     onMounted(async ()=>{
     });
 

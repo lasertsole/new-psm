@@ -276,7 +276,7 @@
             category: category,
             visible: visible.value.toString()
         });
-    });
+    }, 1000);
 
     definePageMeta({
         name: 'model-3D-upload'

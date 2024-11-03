@@ -1,6 +1,7 @@
 package com.psm.domain.User.follower.service;
 
 import com.psm.domain.User.follower.entity.FollowerDAO;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public interface FollowerService {
      * @param srcUserId 来源用户id
      * @return 关注记录id
      */
-    Long addFollower(Long tgtUserId, Long srcUserId);
+    Long addFollower(Long tgtUserId, Long srcUserId) throws DuplicateKeyException;
 
     /**
      * 根据目标用户id和来源用户id获取关注记录

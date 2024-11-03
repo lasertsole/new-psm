@@ -15,7 +15,7 @@
         </div>
         
         <div class="action">
-            <div class="follow">关注</div>
+            <div class="follow" @click="triggerFollow()">{{isFollowing?'已关注':'关注'}}</div>
             <div class="sms">私信</div>
         </div>
       </div>
@@ -59,23 +59,37 @@
   // 将枚举转换为对象
   const styleEnumObject = Object.fromEntries(Object.entries(StyleEnum).map(([k, v]) => [v, k]));
   const typeEnumObject = Object.fromEntries(Object.entries(TypeEnum).map(([k, v]) => [v, k]));
-  
+
   // 获取当前路由对象
   const route = useRoute();
 
   // 从 query 参数中获取 id
   const id = route.params.id;
-  
+
   const modelInfoDetail = ref<ModelInfoDetail>();
 
   const authorInfo: ComputedRef<UserInfo | undefined> = computed(()=>{return modelInfoDetail.value?.user;});
 
   const modelInfo: ComputedRef<ModelInfo | undefined> = computed(()=>{return modelInfoDetail.value?.model;});
 
+  const isFollowing: Ref<boolean> = ref<boolean>(false);
+
+  const triggerFollow = debounce(async ():Promise<void>=> {
+    if(!authorInfo.value) return;
+
+    if(!isFollowing.value) {
+      if(await followUser(authorInfo.value.id!)) isFollowing.value = !isFollowing.value;
+    }
+    else {
+      if(await unFollowUser(authorInfo.value.id!)) isFollowing.value = !isFollowing.value;
+    }
+  }, 1000);
+
   onMounted(async ()=>{
     let res : ModelInfoDetail = await getModelByModelId({modelId: id as string});
     if(res){
       modelInfoDetail.value = res;
+      isFollowing.value = res.user.isFollowed!;
     }
   });
 
@@ -148,9 +162,11 @@
           color: white;
           margin-top: 2px;
           >div{
-              padding: 2px 10px;
-              border-radius: 4px;
-              cursor: pointer;
+            @include fixedRetangle(52px, 26px);
+            @include flexCenter();
+            
+            border-radius: 4px;
+            cursor: pointer;
           }
           .follow{
             background-color: #fb7299;

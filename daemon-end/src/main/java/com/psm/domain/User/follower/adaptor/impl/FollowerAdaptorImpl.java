@@ -43,10 +43,11 @@ public class FollowerAdaptorImpl implements FollowerAdaptor {
     }
 
     @Override
-    public Long addFollower(@Valid FollowerDTO followerDTO) {
+    public Long addFollowing(@Valid FollowerDTO followerDTO) {
         if(
                 Objects.isNull(followerDTO.getTgtUserId())
-                ||Objects.isNull(followerDTO.getSrcUserId())
+                || Objects.isNull(followerDTO.getSrcUserId())
+                || followerDTO.getTgtUserId().equals(followerDTO.getSrcUserId())
         )
             throw new InvalidParameterException("Invalid parameter");
 
@@ -54,8 +55,10 @@ public class FollowerAdaptorImpl implements FollowerAdaptor {
     }
 
     @Override
-    public Long addFollower(Long tgtUserId, Long srcUserId) throws InstantiationException, IllegalAccessException {
+    public Long addFollowing(Long tgtUserId, Long srcUserId) throws InstantiationException, IllegalAccessException {
         validUtil.validate(Map.of("tgtUserId", tgtUserId, "srcUserId", srcUserId), FollowerDTO.class);
+
+        if(tgtUserId.equals(srcUserId)) throw new InvalidParameterException("Invalid parameter");
 
         return followerService.addFollower(tgtUserId, srcUserId);
     }
@@ -64,7 +67,7 @@ public class FollowerAdaptorImpl implements FollowerAdaptor {
     public FollowerBO getByTgUserIdAndSrcUserId(@Valid FollowerDTO followerDTO) {
         if(
                 Objects.isNull(followerDTO.getTgtUserId())
-                        ||Objects.isNull(followerDTO.getSrcUserId())
+                ||Objects.isNull(followerDTO.getSrcUserId())
         )
             throw new InvalidParameterException("Invalid parameter");
 
@@ -79,10 +82,21 @@ public class FollowerAdaptorImpl implements FollowerAdaptor {
     }
 
     @Override
-    public void removeByTgUserIdAndSrcUserId(@Valid FollowerDTO followerDTO) {
+    public Boolean isFollowed(FollowerDTO followerDTO) {
+        return followerService.getByTgUserIdAndSrcUserId(followerDTO.getTgtUserId(), followerDTO.getSrcUserId()) != null;
+    }
+
+    @Override
+    public Boolean isFollowed(Long tgtUserId, Long srcUserId) throws InstantiationException, IllegalAccessException {
+        return followerService.getByTgUserIdAndSrcUserId(tgtUserId, srcUserId) != null;
+    }
+
+    @Override
+    public void removeFollowing(@Valid FollowerDTO followerDTO) {
         if(
                 Objects.isNull(followerDTO.getTgtUserId())
                 ||Objects.isNull(followerDTO.getSrcUserId())
+                || followerDTO.getTgtUserId().equals(followerDTO.getSrcUserId())
         )
             throw new InvalidParameterException("Invalid parameter");
 
@@ -90,8 +104,10 @@ public class FollowerAdaptorImpl implements FollowerAdaptor {
     }
 
     @Override
-    public void removeByTgUserIdAndSrcUserId(Long tgtUserId, Long srcUserId) throws InstantiationException, IllegalAccessException {
+    public void removeFollowing(Long tgtUserId, Long srcUserId) throws InstantiationException, IllegalAccessException {
         validUtil.validate(Map.of("tgtUserId", tgtUserId, "srcUserId", srcUserId), FollowerDTO.class);
+
+        if(tgtUserId.equals(srcUserId)) throw new InvalidParameterException("Invalid parameter");
 
         followerService.removeByTgUserIdAndSrcUserId(tgtUserId, srcUserId);
     }

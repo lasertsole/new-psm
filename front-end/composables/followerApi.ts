@@ -1,6 +1,11 @@
 import type { UserInfo } from "@/types/user";
 
-export async function followingUser(id:string):Promise<boolean> {
+export async function followUser(id:string):Promise<boolean> {
+    if(userInfo.id==id) {
+        ElMessage.warning('不能关注自己');
+        return false;
+    }
+
     const res:any = await fetchApi({
         url: `/followers/${id}`,
         method: 'post',
@@ -19,7 +24,12 @@ export async function followingUser(id:string):Promise<boolean> {
     return true;
 };
 
-export async function unFollowingUser(id:string):Promise<boolean> {
+export async function unFollowUser(id:string):Promise<boolean> {
+    if(userInfo.id==id) {
+        ElMessage.warning('不能取消关注自己');
+        return false;
+    }
+
     const res:any = await fetchApi({
         url: `/followers/${id}`,
         method: 'delete',
