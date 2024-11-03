@@ -7,7 +7,7 @@ import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.Subtitles.infrastructure.convertor.SubtitlesInfrastructure;
 import com.psm.domain.Subtitles.service.SubtitlesService;
-import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
+import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
     public List<SubtitlesVO> getSubtitlesListByPage(@Valid PageDTO pageDTO) throws InvalidParameterException{
         // 获取字幕盒子
         List<SubtitlesDAO> subtitlesDAOList = subtitlesService.getSubtitlesListByPage(
-                pageDTO.getCurrentPage(),
-                pageDTO.getPageSize());
+                pageDTO.getCurrent(),
+                pageDTO.getPage());
         // 判断字幕盒子是否存在
         if(subtitlesDAOList == null){
             throw new RuntimeException("The Subtitles does not exist.");

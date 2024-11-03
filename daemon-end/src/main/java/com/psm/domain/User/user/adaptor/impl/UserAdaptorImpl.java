@@ -7,7 +7,7 @@ import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.infrastructure.convertor.UserConvertor;
 import com.psm.domain.User.user.service.UserService;
-import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
+import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -214,8 +214,8 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public List<UserBO> getUserOrderByCreateTimeAsc(@Valid PageDTO pageDTO){
-        List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(pageDTO.getCurrentPage(),
-                pageDTO.getPageSize());
+        List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(pageDTO.getCurrent(),
+                pageDTO.getPage());
 
         // 判断用户列表是否存在
         if(userDAOList == null){

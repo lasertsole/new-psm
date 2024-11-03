@@ -1,5 +1,6 @@
 package com.psm.domain.User.user.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
 import com.psm.domain.User.user.infrastructure.convertor.UserExtensionConvertor;
@@ -8,8 +9,6 @@ import com.psm.domain.User.user.service.UserExtensionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -105,7 +104,7 @@ public class UserExtensionServiceImpl implements UserExtensionService {
     }
 
     @Override
-    public List<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize) {
+    public Page<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize) {
         return userExtensionDB.getHasPublicModelOrderByCreateTimeDesc(currentPage, pageSize);
     }
 

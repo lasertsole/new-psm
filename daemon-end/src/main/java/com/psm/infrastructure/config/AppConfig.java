@@ -3,11 +3,15 @@ package com.psm.infrastructure.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
+@EnableAsync
 @Configuration
 public class AppConfig {
     /**
@@ -35,6 +39,13 @@ public class AppConfig {
 
         // 拒绝策略
         threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+
+        // 设置虚拟线程工厂
+        threadPoolTaskExecutor.setThreadFactory(runnable -> {
+            Thread thread = Thread.ofVirtual().name("async-thread-").unstarted(runnable);
+            return thread;
+        });
+
         // 初始化
         threadPoolTaskExecutor.initialize();
 

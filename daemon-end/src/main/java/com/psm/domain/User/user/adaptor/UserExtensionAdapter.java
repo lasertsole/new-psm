@@ -1,12 +1,11 @@
 package com.psm.domain.User.user.adaptor;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
-import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
+import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
 import jakarta.validation.Valid;
-
-import java.util.List;
 
 public interface UserExtensionAdapter {
     /**
@@ -177,5 +176,5 @@ public interface UserExtensionAdapter {
      * @param pageDTO 分页参数
      * @return 用户扩展表信息列表
      */
-    List<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(PageDTO pageDTO);
+    Page<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(PageDTO pageDTO);
 }

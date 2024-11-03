@@ -1,6 +1,8 @@
 package com.psm.domain.User.user.adaptor.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
@@ -8,7 +10,7 @@ import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
 import com.psm.domain.User.user.infrastructure.convertor.UserExtensionConvertor;
 import com.psm.domain.User.user.service.UserExtensionService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
-import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
+import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,15 +175,22 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     }
 
     @Override
-    public List<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(@Valid PageDTO pageDTO) {
+    public Page<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(@Valid PageDTO pageDTO) {
         if (
-                org.springframework.util.ObjectUtils.isEmpty(pageDTO.getCurrentPage())
-                        && org.springframework.util.ObjectUtils.isEmpty(pageDTO.getPageSize())
+                org.springframework.util.ObjectUtils.isEmpty(pageDTO.getCurrent())
+                        && org.springframework.util.ObjectUtils.isEmpty(pageDTO.getPage())
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        List<UserExtensionDAO> hasPublicModelOrderByCreateTimeDesc = userExtensionService.getHasPublicModelOrderByCreateTimeDesc(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+        // 获取UserExtensionBO列表
+        Page<UserExtensionDAO> hasPublicModelOrderByCreateTimeDesc = userExtensionService.getHasPublicModelOrderByCreateTimeDesc(pageDTO.getCurrent(), pageDTO.getPage());
         UserExtensionConvertor userExtensionConvertor = UserExtensionConvertor.INSTANCE;
-        return hasPublicModelOrderByCreateTimeDesc.stream().map(userExtensionConvertor::DAO2BO).toList();
+        List<UserExtensionBO> UserExtensionBOs = hasPublicModelOrderByCreateTimeDesc.getRecords().stream().map(userExtensionConvertor::DAO2BO).toList();
+
+        // 将DAO转换为BO
+        Page<UserExtensionBO> userExtensionBOPage = new Page<>();
+        BeanUtil.copyProperties(hasPublicModelOrderByCreateTimeDesc, userExtensionBOPage);
+        userExtensionBOPage.setRecords(UserExtensionBOs);
+        return userExtensionBOPage;
     }
 }

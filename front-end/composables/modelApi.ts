@@ -45,7 +45,7 @@ export async function uploadModelInfo({title, content, cover, category, visible}
 };
 
 
-export async function getModelsShowBars({currentPage, pageSize}:Page):Promise<ModelInfos[]> {
+export async function getModelsShowBars({current, size}:Page<ModelInfos>):Promise<Page<ModelInfos>> {
     const res:any = await fetchApi({
         url: '/models',
         method: 'get',

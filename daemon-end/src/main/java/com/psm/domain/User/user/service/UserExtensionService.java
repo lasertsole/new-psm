@@ -1,10 +1,9 @@
 package com.psm.domain.User.user.service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
-
-import java.util.List;
 
 public interface UserExtensionService {
     /**
@@ -95,7 +94,7 @@ public interface UserExtensionService {
      *
      * @param currentPage 当前页码
      * @param pageSize 一页显示多少条
-     * @return 用户扩展表信息列表
+     * @return 用户扩展表信息页
      */
-    List<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize);
+    Page<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize);
 }

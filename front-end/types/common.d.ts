@@ -1,6 +1,9 @@
-export type Page = {
-    currentPage?: number | undefined;
-    pageSize?: number | undefined;
+export type Page<T> = {
+    current?: number;
+    size?: number;
+    total?: number;
+    records?: T[];
+    pages?: number;
 };
 
 export type TagBarItem = {

@@ -10,8 +10,6 @@ import com.psm.infrastructure.annotation.spring.Repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 @Slf4j
 @Repository
 public class UserExtensionDBImpl extends ServiceImpl<UserExtensionMapper, UserExtensionDAO> implements UserExtensionDB {
@@ -19,10 +17,10 @@ public class UserExtensionDBImpl extends ServiceImpl<UserExtensionMapper, UserEx
     private UserExtensionMapper userExtensionMapper;
 
     @Override
-    public void insert(UserExtensionDAO userExtension) {userExtensionMapper.insert(userExtension);}
+    public void insert(UserExtensionDAO userExtension) { userExtensionMapper.insert(userExtension); }
 
     @Override
-    public UserExtensionDAO selectById(UserExtensionDAO userExtension) {return userExtensionMapper.selectById(userExtension.getId());}
+    public UserExtensionDAO selectById(UserExtensionDAO userExtension) { return userExtensionMapper.selectById(userExtension.getId()); }
 
     @Override
     public boolean updateById(UserExtensionDAO userExtension) {
@@ -31,14 +29,13 @@ public class UserExtensionDBImpl extends ServiceImpl<UserExtensionMapper, UserEx
     }
 
     @Override
-    public List<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize) {
+    public Page<UserExtensionDAO> getHasPublicModelOrderByCreateTimeDesc(Integer currentPage, Integer pageSize) {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         LambdaQueryWrapper<UserExtensionDAO> userExtensionWrapper = new LambdaQueryWrapper<>();
         userExtensionWrapper.select(UserExtensionDAO::getId);
         userExtensionWrapper.gt(UserExtensionDAO::getPublicModelNum, 0);
         userExtensionWrapper.orderByDesc(UserExtensionDAO::getCreateTime);
         Page<UserExtensionDAO> page = new Page<>(currentPage, pageSize);
-        Page<UserExtensionDAO> UserExtensionDAOResultPage = userExtensionMapper.selectPage(page, userExtensionWrapper);
-        return UserExtensionDAOResultPage.getRecords();
+        return userExtensionMapper.selectPage(page, userExtensionWrapper);
     };
 }

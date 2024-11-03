@@ -155,9 +155,7 @@ public class UserServiceImpl implements UserService {
         userDB.updateAvatar(userDAO);
 
         // 更新redis中用户头像信息
-        LoginUser loginUser =loginUserRedis.getLoginUser(id.toString());
-        loginUser.getUserDAO().setAvatar(avatarUrl);
-        loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
+        loginUserRedis.updateLoginUser(userDAO);
 
         return avatarUrl;
     }
@@ -177,13 +175,7 @@ public class UserServiceImpl implements UserService {
         userDB.updateInfo(userDAO);
 
         // 更新redis中用户信息
-        UserDAO userDAORefer = loginUser.getUserDAO();//获取loginUser内的UserDAO引用
-        if (!Objects.isNull(userDAO.getName())) userDAORefer.setName(userDAO.getName());
-        if (!Objects.isNull(userDAO.getProfile())) userDAORefer.setProfile(userDAO.getProfile());
-        if (!Objects.isNull(userDAO.getPhone())) userDAORefer.setPhone(userDAO.getPhone());
-        if (!Objects.isNull(userDAO.getEmail())) userDAORefer.setEmail(userDAO.getEmail());
-        if (!Objects.isNull(userDAO.getSex())) userDAORefer.setSex(userDAO.getSex());
-        loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
+        loginUserRedis.updateLoginUser(userDAO);
     }
 
     @Override
@@ -217,9 +209,7 @@ public class UserServiceImpl implements UserService {
         userDB.updatePasswordById(userDAO);
 
         // 更新redis中用户信息
-        loginUserRedis.getLoginUser(id.toString());
-        loginUser.getUserDAO().setPassword(encodePassword);
-        loginUserRedis.addLoginUser(String.valueOf(id), loginUser);
+        loginUserRedis.updateLoginUser(userDAO);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.psm.application.Model;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDTO;
@@ -12,11 +13,12 @@ import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
 import com.psm.infrastructure.enums.VisibleEnum;
-import com.psm.infrastructure.utils.MybatisPlus.PageDTO;
+import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
 import com.psm.infrastructure.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -111,19 +113,22 @@ public class ModelController {
     @GetMapping
     public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO) {
         try {
-            // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
-            List<UserExtensionBO> userExtensionBOResultList = userExtensionAdapter.getHasPublicModelOrderByCreateTimeDesc(pageDTO);
+            // 获取发过模型的用户BO页
+            Page<UserExtensionBO> userExtensionBOPage = userExtensionAdapter.getHasPublicModelOrderByCreateTimeDesc(pageDTO);
+
+            // 按照用户BO页获取发过模型的用户的ID列表,并按时间降序排序
+            List<UserExtensionBO> userExtensionBOs = userExtensionBOPage.getRecords();
 
             // 如果用户列表为空，则返回空列表
-            if (userExtensionBOResultList.isEmpty()) return ResponseVO.ok(Collections.emptyList());
+            if (userExtensionBOs.isEmpty()) return ResponseVO.ok(Collections.emptyList());
 
             // 创建一个Map，用于存储用户ID和ModelsShowBarDAO的映射
             Map<Long, ModelsUserBindBO> collect = new HashMap<>();
-            userExtensionBOResultList.forEach(userExtensionBO -> collect.putIfAbsent(userExtensionBO.getId(), null));
+            userExtensionBOs.forEach(userExtensionBO -> collect.putIfAbsent(userExtensionBO.getId(), null));
 
 
             // 获取用户ID列表，这个ID列表是按照时间降序排序的
-            List<Long> userIds = UserExtensionBO.getModelIds(userExtensionBOResultList);
+            List<Long> userIds = UserExtensionBO.getModelIds(userExtensionBOs);
 
             // 按照用户ID列表获取用户BO实体列表
             List<UserBO> userBOList = userAdaptor.getUserByIds(userIds);
@@ -140,9 +145,13 @@ public class ModelController {
                 modelsShowBarBO.getModels().add(modelBO);
             });
 
-            List<ModelsUserBindBO> modelsShowBarBOS = collect.values().stream().toList();
+            // 将结果转换为PageVO并返回
+            List<ModelsUserBindBO> modelsUserBindBOs = collect.values().stream().toList();
+            Page<ModelsUserBindBO> modelsUserBindBOPageVO = new Page<>();
+            BeanUtils.copyProperties(userExtensionBOPage, modelsUserBindBOPageVO);
+            modelsUserBindBOPageVO.setRecords(modelsUserBindBOs);
 
-            return ResponseVO.ok(modelsShowBarBOS);
+            return ResponseVO.ok(modelsUserBindBOPageVO);
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

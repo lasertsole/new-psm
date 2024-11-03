@@ -16,6 +16,7 @@ import me.desair.tus.server.TusFileUploadService;
 import me.desair.tus.server.exception.TusException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

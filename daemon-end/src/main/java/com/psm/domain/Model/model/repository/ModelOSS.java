@@ -14,7 +14,7 @@ public interface ModelOSS {
      * @return 模型实体文件在OSS中的路径
      * @throws Exception 抛出异常
      */
-    public String addModelEntity(String localFilePath, String userId) throws Exception;
+    String addModelEntity(String localFilePath, String userId) throws Exception;
 
     /**
      * 删除模型实体文件

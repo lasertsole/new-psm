@@ -1,8 +1,11 @@
 package com.psm.infrastructure.utils.VO;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.psm.infrastructure.utils.MybatisPlus.Page.PageVO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
@@ -42,6 +45,23 @@ public class ResponseVO implements Serializable {
                     return item;
                 }
             }).toList();
+        }
+        else if (data instanceof Page<?>) {
+            Page<?> page = (Page<?>) data;
+            List records = page.getRecords().stream().map(item -> {
+                if(item instanceof BO2VOable) {
+                    return ((BO2VOable) item).toVO();
+                }
+                else{
+                    return item;
+                }
+            }).toList();
+
+            PageVO pageVO =  new PageVO();
+            BeanUtils.copyProperties(page, pageVO);
+            pageVO.setRecords(records);
+
+            data = pageVO;
         }
 
         return data;
