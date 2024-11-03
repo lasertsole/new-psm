@@ -15,7 +15,7 @@
 ### DDD充血模型的六边形架构
 ### springboot3.3
 ### springsecurity+OAuth2安全框架
-### postgresql(podman)最先进的关系型数据库
+### postgresql(podman)下一代单体关系型数据库
 ### redis(podman) 键值型内存数据库
 ### mongodb(podman) bson型内存数据库
 ### nginx(podman) 正反向代理
