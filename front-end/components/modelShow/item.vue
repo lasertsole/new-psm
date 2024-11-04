@@ -3,7 +3,7 @@
         <div class="author_info">
             <div class="base">
                 <div class="profile">
-                    <img :src="`${boxInfo.user.avatar}`">
+                    <img :src="`${boxInfo.user.avatar||'/images/defaultAvatar.png'}`">
                 </div>
                 <div class="honour">
                     <div class="name">{{boxInfo.user.name}}</div>

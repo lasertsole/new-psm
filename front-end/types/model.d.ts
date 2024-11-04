@@ -1,4 +1,3 @@
-import type { Page } from "@/types/common";
 import type { UserInfo } from "@/types/user";
 
 export type ModelInfo = {

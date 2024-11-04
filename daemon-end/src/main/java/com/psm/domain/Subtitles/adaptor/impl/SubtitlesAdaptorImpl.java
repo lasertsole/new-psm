@@ -29,7 +29,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         // 获取字幕盒子
         List<SubtitlesDAO> subtitlesDAOList = subtitlesService.getSubtitlesListByPage(
                 pageDTO.getCurrent(),
-                pageDTO.getPage());
+                pageDTO.getSize());
         // 判断字幕盒子是否存在
         if(subtitlesDAOList == null){
             throw new RuntimeException("The Subtitles does not exist.");

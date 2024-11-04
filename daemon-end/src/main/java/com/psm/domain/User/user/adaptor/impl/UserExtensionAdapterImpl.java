@@ -178,12 +178,12 @@ public class UserExtensionAdapterImpl implements UserExtensionAdapter {
     public Page<UserExtensionBO> getHasPublicModelOrderByCreateTimeDesc(@Valid PageDTO pageDTO) {
         if (
                 org.springframework.util.ObjectUtils.isEmpty(pageDTO.getCurrent())
-                        && org.springframework.util.ObjectUtils.isEmpty(pageDTO.getPage())
+                && org.springframework.util.ObjectUtils.isEmpty(pageDTO.getSize())
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 获取UserExtensionBO列表
-        Page<UserExtensionDAO> hasPublicModelOrderByCreateTimeDesc = userExtensionService.getHasPublicModelOrderByCreateTimeDesc(pageDTO.getCurrent(), pageDTO.getPage());
+        Page<UserExtensionDAO> hasPublicModelOrderByCreateTimeDesc = userExtensionService.getHasPublicModelOrderByCreateTimeDesc(pageDTO.getCurrent(), pageDTO.getSize());
         UserExtensionConvertor userExtensionConvertor = UserExtensionConvertor.INSTANCE;
         List<UserExtensionBO> UserExtensionBOs = hasPublicModelOrderByCreateTimeDesc.getRecords().stream().map(userExtensionConvertor::DAO2BO).toList();
 

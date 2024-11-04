@@ -1,6 +1,7 @@
 package com.psm.infrastructure.utils.VO;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.infrastructure.utils.MybatisPlus.Page.PageVO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,14 +9,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 @Slf4j
 @Data
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseVO implements Serializable {
-    private static final long serialVersionUID = -378144855071152805L;
+    @Serial
+    private static final long serialVersionUID = -8677493536001866352L;
 
     /**
      *状态码

@@ -214,8 +214,9 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public List<UserBO> getUserOrderByCreateTimeAsc(@Valid PageDTO pageDTO){
-        List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(pageDTO.getCurrent(),
-                pageDTO.getPage());
+        List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(
+                pageDTO.getCurrent(),
+                pageDTO.getSize());
 
         // 判断用户列表是否存在
         if(userDAOList == null){

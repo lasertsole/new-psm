@@ -1,16 +1,28 @@
 <template>
-    <div class="showcase">
-        <CommonTagBar
-            :tabList="tabList"
+    <div class="show"
+        ref="show"
+    >
+        <div class="tagBar"
+            ref="tagBar"
         >
-        </CommonTagBar>
+            <CommonTagBar
+                :tabList="tabList"
+            >
+            </CommonTagBar>
+        </div>
 
-        <CommonFilterBar
-            :filterItem="filterItem"
+        <div class="filterBar"
+            ref="filterBar"
         >
-        </CommonFilterBar>
+            <CommonFilterBar
+                :filterItem="filterItem"
+            >
+            </CommonFilterBar>
+        </div>
 
-        <NuxtPage keepalive/>
+        <div class="content" ref="content">
+            <NuxtPage keepalive/>
+        </div>
     </div>
 </template>
 
@@ -74,6 +86,31 @@
             ]
         }
     );
+    
+    const show: Ref<HTMLElement> = ref<HTMLElement>();
+    const tagBar: Ref<HTMLElement> = ref<HTMLElement>();
+    const filterBar: Ref<HTMLElement> = ref<HTMLElement>();
+    const content: Ref<HTMLElement> = ref<HTMLElement>();
+    const contentHeight: Ref<string> = ref<string>('');
+
+    function computeHeight(): void {
+        contentHeight.value = show.value.parentElement.clientHeight
+        - window.getComputedStyle(show.value).paddingTop.replace('px','')
+        - window.getComputedStyle(show.value).paddingBottom.replace('px','')
+        - tagBar.value.clientHeight
+        - filterBar.value.clientHeight
+        + 'px';
+    }
+
+    onActivated (()=>{
+        computeHeight();
+
+        window.addEventListener('resize',computeHeight);
+    });
+
+    onDeactivated (()=>{
+        window.removeEventListener('resize',computeHeight);
+    });
 
     definePageMeta({
         name: 'model-3D-show'
@@ -84,13 +121,22 @@
     @use "sass:math";
     @import "@/common.scss";
     
-    .showcase{
-        width: 100%;
-        height: 100%;
+    .show{
+        @include fullWidth();
+        min-height: 100%;
         box-sizing: border-box;
         overflow-y: auto;
         padding: 30px 80px;
         display: flex;
         flex-direction: column;
+
+        .content{
+            $contentHeight: v-bind(contentHeight);
+            height: $contentHeight;
+        }
+
+        .pagination{
+            align-self: center;
+        }
     }
 </style>

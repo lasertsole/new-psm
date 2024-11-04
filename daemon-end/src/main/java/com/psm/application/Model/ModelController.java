@@ -88,7 +88,8 @@ public class ModelController {
             Long modelSize = modelBO.getStorage();
 
             // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1,
-            if (Objects.equals(modelBO.getVisible(), VisibleEnum.PUBLIC.getValue())) {
+            log.info("modelBO.getVisible() is {}", modelBO.getVisible());
+            if (Objects.equals(modelBO.getVisible(), VisibleEnum.PUBLIC)) {
                 userExtensionAdapter.addOnePublicModelNumById(userId);
             }
 

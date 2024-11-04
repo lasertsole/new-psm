@@ -49,6 +49,10 @@ export async function getModelsShowBars({current, size}:Page<ModelInfos>):Promis
     const res:any = await fetchApi({
         url: '/models',
         method: 'get',
+        opts:{
+            current,
+            size
+        }
     });
     
     return res.data;
