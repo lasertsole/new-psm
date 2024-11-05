@@ -5,7 +5,11 @@
     <div class="page">
       <div class="userBar">
         <div class="info" v-if="authorInfo">
-          <img :src="authorInfo.avatar||'/images/defaultAvatar.png'" class="avatar"/>
+          <CommonAvatar
+            class="avatar"
+            :src="authorInfo.avatar"
+          >
+          </CommonAvatar>
           
           <div class="text">
             <div class="name">{{authorInfo.name}}</div>

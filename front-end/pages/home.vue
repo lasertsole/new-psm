@@ -2,7 +2,10 @@
     <div class="personSpace">
         <div class="personAbtract">
             <div class="avatar">
-                <img :src="userInfo.avatar">
+                <CommonAvatar
+                    :src="userInfo.avatar"
+                >
+                </CommonAvatar>
             </div>
             <div class="recomment">
                 <div class="recomment-name">{{userInfo.name}}</div>

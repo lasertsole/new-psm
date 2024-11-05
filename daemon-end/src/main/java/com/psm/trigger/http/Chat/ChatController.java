@@ -1,4 +1,4 @@
-package com.psm.trigger.mvc.Chat;
+package com.psm.trigger.http.Chat;
 
 import com.psm.domain.Chat.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;

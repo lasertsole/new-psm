@@ -1,4 +1,4 @@
-package com.psm.trigger.mvc.Model;
+package com.psm.trigger.http.Model;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;

@@ -8,7 +8,12 @@
 
         <ul class="userTool" v-else>
             <li class="avatar" @mouseenter="showDetail" @mouseleave="hideDetail">
-                <img :class="{userAvatar:true, show:showUserDetail}" :src="userInfo.avatar" @click="toPersionInfo">
+                <CommonAvatar
+                    :class="{userAvatar:true, show:showUserDetail}"
+                    :src="userInfo.avatar"
+                    @click="toPersionInfo"
+                >
+                </CommonAvatar>
                 <transition 
                     :css="false"
                     @enter="onEnter"
@@ -49,7 +54,7 @@
                                 </NuxtLink>
                             </li>
                             <hr>
-                            <li @click="logout">
+                            <li @click="clickLogout">
                                 <div>
                                     <img src="/icons/longArrow.svg">
                                     <span>退出登录</span>
@@ -76,6 +81,7 @@
             :modal="true"
             size="auto"
         >
+
             <ul>
                 <template v-for="(item, index) in routerList" :key="index">
                     <li 
@@ -87,6 +93,7 @@
                     </li>
                 </template>
             </ul>
+
         </el-drawer>
     </div>
 </template>
@@ -160,8 +167,13 @@
         });
     }
 
-    function toPersionInfo():void{//点击触发事件
+    function toPersionInfo():void { //点击触发事件
         navigateTo("/accountInfo");
+    }
+
+    const { $emit } = useNuxtApp();
+    function clickLogout():void { //点击下线事件
+        logout()&&$emit("offline");
     }
 </script>
 
@@ -345,6 +357,7 @@
                 background-color: #d3d3d3;
             }
         }
+
         :deep(.el-drawer){
             .el-drawer__body{
                 padding-top: 0px;

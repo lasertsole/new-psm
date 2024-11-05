@@ -3,7 +3,10 @@
         <div class="author_info">
             <div class="base">
                 <div class="profile">
-                    <img :src="`${boxInfo.user.avatar||'/images/defaultAvatar.png'}`">
+                    <CommonAvatar
+                        :src="boxInfo.user.avatar"
+                    >
+                    </CommonAvatar>
                 </div>
                 <div class="honour">
                     <div class="name">{{boxInfo.user.name}}</div>
@@ -17,14 +20,14 @@
         </div>
         <div class="author_works">
             <template v-for="(item, index) in boxInfo.models" :key="item.id">
-                <modelShowWorkBox
+                <ModelShowWorkBox
                     :ID="item.id||''"
                     :title="item.title||''"
                     :cover="typeof(item.cover) === 'string' ? item.cover : ''"
                     :style="item.style||''"
                     :type="item.type||''"
                 >
-                </modelShowWorkBox>
+                </ModelShowWorkBox>
             </template>
         </div>
     </div>

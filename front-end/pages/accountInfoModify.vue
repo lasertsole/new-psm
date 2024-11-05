@@ -129,6 +129,7 @@
 <script lang="ts" setup>
     import gsap from "gsap";
     import { ElMessage } from 'element-plus';
+    const { $on }= useNuxtApp();
 
 
     /**以下为展开合上盒子时的动画特效**/
@@ -175,6 +176,30 @@
     const changePassword = ref<string>("");//新密码
     const identifychangePassword = ref<string>("");//确认新密码
     const modifyIndex = ref<number>(-1);//展开显示索引
+
+    // 登录时刷新
+    $on("online", ()=>{
+        temptUserName.value = userInfo.name||"";
+        temptSex.value = userInfo.sex!=undefined?userInfo.sex:undefined
+        temptUserPhoneNumber.value = userInfo.phone||""
+        temptUserEmail.value = userInfo.email||"";
+        temptPassword.value = "111111";
+        changePassword.value = "";
+        identifychangePassword.value = "";
+        modifyIndex.value = -1;
+    });
+
+    // 登出时刷新
+    $on("offline", ()=>{
+        temptUserName.value = "";
+        temptSex.value = undefined
+        temptUserPhoneNumber.value = ""
+        temptUserEmail.value = "";
+        temptPassword.value = "";
+        changePassword.value = "";
+        identifychangePassword.value = "";
+        modifyIndex.value = -1;
+    });
 
     const modifyUserName = debounce(async ()=>{
         if(temptUserName.value.length == 0){

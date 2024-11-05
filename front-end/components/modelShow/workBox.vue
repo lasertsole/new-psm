@@ -1,12 +1,6 @@
 <template>
     <div class="workBox" @click="jumpToShowcaseDetail()">
-        <el-image :src="cover" fit="cover">
-            <template #error>
-                <div class="image-slot">
-                    <el-icon><icon-picture/></el-icon>
-                </div>
-            </template>
-        </el-image>
+        <CommonImage :src="cover"></CommonImage>
     </div>
 </template>
 

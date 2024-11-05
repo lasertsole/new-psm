@@ -1,17 +1,25 @@
 <template>
-    <el-upload
+    <div
         class="avatar-uploader"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
-        :http-request="request"
     >
-        <img :src="userInfo.avatar" class="avatar"/>
-        <div class="mock">
-            <div class="rowLine"></div>
-            <div class="columnLine"></div>
-        </div>
-    </el-upload>
+        <el-upload
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+            :http-request="request"
+        >
+            <CommonAvatar
+                class="avatar"
+                :src="userInfo.avatar"
+            >
+            </CommonAvatar>
+            
+            <div class="mock">
+                <div class="rowLine"></div>
+                <div class="columnLine"></div>
+            </div>
+        </el-upload>
+    </div>
 </template>
   
 <script lang="ts" setup>

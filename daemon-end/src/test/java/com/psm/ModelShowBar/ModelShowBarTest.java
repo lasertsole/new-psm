@@ -1,6 +1,6 @@
 package com.psm.ModelShowBar;
 
-import com.psm.trigger.mvc.Model.ModelController;
+import com.psm.trigger.http.Model.ModelController;
 import com.psm.types.utils.page.PageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
