@@ -21,7 +21,8 @@
                     :ID="item.id||''"
                     :title="item.title||''"
                     :cover="typeof(item.cover) === 'string' ? item.cover : ''"
-                    :category="item.category||{style: '', type: ''}"
+                    :style="item.style||''"
+                    :type="item.type||''"
                 >
                 </modelShowWorkBox>
             </template>

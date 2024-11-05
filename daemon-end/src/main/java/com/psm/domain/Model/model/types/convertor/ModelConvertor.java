@@ -19,12 +19,6 @@ import org.mapstruct.factory.Mappers;
 public abstract class ModelConvertor {
     public static final ModelConvertor INSTANCE = Mappers.getMapper(ModelConvertor.class);
 
-    @Named("fromString")
-    protected Category fromBoolean(String value) {
-        Category category = JSON.parseObject(value, Category.class);
-        return category;
-    }
-
     @Named("fromInteger")
     public VisibleEnum fromShort(Integer visable) {
         return VisibleEnum.fromInteger(visable);
@@ -32,14 +26,12 @@ public abstract class ModelConvertor {
 
     @Mappings({
             @Mapping(source = "cover", target = "cover", ignore = true),
-            @Mapping(target = "category", qualifiedByName = "fromString"),
             @Mapping(target = "visible", qualifiedByName = "fromInteger")
     })
     public abstract ModelDAO DTO2DAO(ModelDTO modelDTO);
 
     @Mappings({
             @Mapping(target = "cover", ignore = true),
-            @Mapping(target = "category", ignore = true),
             @Mapping(target = "visible", qualifiedByName = "fromInteger")
     })
     public abstract ModelBO DTO2BO(ModelDTO modelDTO);

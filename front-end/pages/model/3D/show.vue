@@ -87,16 +87,18 @@
         }
     );
     
-    const show: Ref<HTMLElement> = ref<HTMLElement>();
-    const tagBar: Ref<HTMLElement> = ref<HTMLElement>();
-    const filterBar: Ref<HTMLElement> = ref<HTMLElement>();
-    const content: Ref<HTMLElement> = ref<HTMLElement>();
+    const show: Ref<HTMLElement | undefined> = ref<HTMLElement>();
+    const tagBar: Ref<HTMLElement | undefined> = ref<HTMLElement>();
+    const filterBar: Ref<HTMLElement | undefined> = ref<HTMLElement>();
+    const content: Ref<HTMLElement | undefined> = ref<HTMLElement>();
     const contentHeight: Ref<string> = ref<string>('');
 
     function computeHeight(): void {
-        contentHeight.value = show.value.parentElement.clientHeight
-        - window.getComputedStyle(show.value).paddingTop.replace('px','')
-        - window.getComputedStyle(show.value).paddingBottom.replace('px','')
+        if(!show.value||!tagBar.value||!filterBar.value) return
+
+        contentHeight.value = show.value.parentElement!.clientHeight
+        - Number(window.getComputedStyle(show.value).paddingTop.replace('px',''))
+        - Number(window.getComputedStyle(show.value).paddingBottom.replace('px',''))
         - tagBar.value.clientHeight
         - filterBar.value.clientHeight
         + 'px';

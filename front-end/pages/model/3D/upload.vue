@@ -64,7 +64,7 @@
                     <span>标签</span>
                     <div>
                         <el-select
-                            v-model="category.style" 
+                            v-model="style" 
                             placeholder="风格" 
                             clearable
                             placement="top"
@@ -78,7 +78,7 @@
                         </el-select>
 
                         <el-select
-                            v-model="category.type" 
+                            v-model="type" 
                             placeholder="类型" 
                             clearable
                             placement="top"
@@ -119,7 +119,6 @@
 </template>
 
 <script lang="ts" setup>
-    import type { Category } from "@/types/model";
     import { StyleEnum, TypeEnum } from "@/enums/models.d";
     import { VisibleEnum } from "@/enums/visible.d";
 
@@ -149,12 +148,8 @@
     const visible = ref<string>("");//可见性
     const title = ref<string>("");//标题
     const content = ref<string>("");//简介
-    const category = reactive<Category>(//标签
-        {
-            style:"", 
-            type:""
-        }
-    );
+    const style = ref<string>("");//模型风格
+    const type = ref<string>("");// 模型类型
     
     function changeCover(coverFile:any):void{//封面上传回调
         cover.value = coverFile;
@@ -221,18 +216,18 @@
     }
     
     // 校验输入样式标签
-    function validateCategory(category:Category):boolean{
+    function validateCategory(style:string, type:string):boolean{
         let styleFlag:boolean = false;
         let typeFlag:boolean = false;
         
         styleOpts.forEach(item=>{
-            if(item[1] == category.style){
+            if(item[1] == style){
                 styleFlag = true;
             }
         });
 
         typeOpts.forEach(item=>{
-            if(item[1] == category.type){
+            if(item[1] == type){
                 typeFlag = true;
             }
         });
@@ -262,7 +257,7 @@
         else if(!validateContent(title.value)){
             return;
         }
-        else if(!validateCategory(category)){
+        else if(!validateCategory(style.value, type.value)){
             return;
         }else if(progress.value!="100.00%"){
             ElMessage.error('请等待文件上传完成');
@@ -273,7 +268,8 @@
             cover: cover.value,
             title: title.value,
             content: content.value,
-            category: category,
+            style: style.value,
+            type: type.value,
             visible: visible.value.toString()
         });
     }, 1000);

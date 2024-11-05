@@ -2,7 +2,7 @@ package com.psm.domain.User.user.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
-import com.psm.infrastructure.utils.VO.BO2VOable;
+import com.psm.types.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

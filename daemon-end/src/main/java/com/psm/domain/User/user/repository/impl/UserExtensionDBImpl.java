@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.infrastructure.dbMapper.UserExtensionMapper;
 import com.psm.domain.User.user.repository.UserExtensionDB;
-import com.psm.infrastructure.annotation.spring.Repository;
+import com.psm.app.annotation.spring.Repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 

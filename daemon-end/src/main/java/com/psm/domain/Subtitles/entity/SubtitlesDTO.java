@@ -1,10 +1,10 @@
 package com.psm.domain.Subtitles.entity;
 
-import com.psm.infrastructure.annotation.validation.ValidFileSize;
-import com.psm.infrastructure.annotation.validation.ValidImage;
-import com.psm.infrastructure.annotation.validation.ValidJson;
+import com.psm.app.annotation.validation.ValidFileSize;
+import com.psm.app.annotation.validation.ValidImage;
+import com.psm.app.annotation.validation.ValidJson;
 
-import com.psm.infrastructure.annotation.validation.ValidVideo;
+import com.psm.app.annotation.validation.ValidVideo;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

@@ -41,8 +41,8 @@
           <div class="category"
             v-if="modelInfo"
           >
-            <span class="style">风格: {{ modelInfo.category&&styleEnumObject[modelInfo.category.style] }}</span>
-            <span class="type">类型: {{ modelInfo.category&&typeEnumObject[modelInfo.category.type] }}</span>
+            <span class="style">风格: {{ modelInfo.style&&styleEnumObject[modelInfo.style] }}</span>
+            <span class="type">类型: {{ modelInfo.type&&typeEnumObject[modelInfo.type] }}</span>
           </div>
         </div>
 

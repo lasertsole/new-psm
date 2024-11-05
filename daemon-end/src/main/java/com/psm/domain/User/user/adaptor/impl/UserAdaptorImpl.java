@@ -1,13 +1,13 @@
 package com.psm.domain.User.user.adaptor.impl;
 
 import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.infrastructure.annotation.spring.Adaptor;
+import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.service.UserService;
-import com.psm.types.entity.page.PageDTO;
+import com.psm.types.utils.page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

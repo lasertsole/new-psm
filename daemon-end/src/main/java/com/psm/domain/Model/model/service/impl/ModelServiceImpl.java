@@ -97,7 +97,6 @@ public class ModelServiceImpl implements ModelService {
             modelDAO.setStorage(fileSize);
 
             // 将ModelDAO存入数据库
-            log.info("modelDAO is {}", modelDAO);
             modelDB.insert(modelDAO);
             modelId = modelDAO.getId();
         }

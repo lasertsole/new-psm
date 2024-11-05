@@ -1,7 +1,7 @@
 package com.psm.ModelShowBar;
 
 import com.psm.trigger.mvc.Model.ModelController;
-import com.psm.types.entity.page.PageDTO;
+import com.psm.types.utils.page.PageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
-import com.psm.types.entity.page.PageDTO;
+import com.psm.types.utils.page.PageDTO;
 import jakarta.validation.Valid;
 
 public interface UserExtensionAdapter {

@@ -4,7 +4,7 @@ import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.infrastructure.utils.VO.ResponseVO;
+import com.psm.types.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

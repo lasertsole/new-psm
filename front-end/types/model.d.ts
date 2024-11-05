@@ -7,15 +7,11 @@ export type ModelInfo = {
     content?: string;
     cover?: Blob | string;
     entity?: Blob | string;
-    category?: Category;
+    style: string;
+    type: string;
     visible?: string;
     createTime?: string;
 };
-
-export type Category = {
-    style: string;
-    type: string;
-}
 
 export type ModelInfos = {
     user: UserInfo;

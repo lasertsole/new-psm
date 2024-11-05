@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.User.user.repository.UserDB;
-import com.psm.infrastructure.annotation.spring.Repository;
+import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.infrastructure.dbMapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

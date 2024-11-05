@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.modelsUserBind.types.convertor.ModelsUserBindConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.infrastructure.utils.VO.BO2VOable;
+import com.psm.types.utils.VO.BO2VOable;
 import lombok.Value;
 
 import java.io.Serial;

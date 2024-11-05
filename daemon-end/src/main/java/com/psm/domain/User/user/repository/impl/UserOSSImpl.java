@@ -1,6 +1,6 @@
 package com.psm.domain.User.user.repository.impl;
 
-import com.psm.infrastructure.annotation.spring.Repository;
+import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.repository.UserOSS;
 import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
 import org.springframework.beans.factory.annotation.Autowired;

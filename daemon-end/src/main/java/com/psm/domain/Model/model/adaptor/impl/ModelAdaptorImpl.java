@@ -6,9 +6,9 @@ import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.entity.ModelDTO;
 import com.psm.domain.Model.model.types.convertor.ModelConvertor;
 import com.psm.domain.Model.model.service.ModelService;
-import com.psm.infrastructure.annotation.spring.Adaptor;
+import com.psm.app.annotation.spring.Adaptor;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.infrastructure.utils.Valid.ValidUtil;
+import com.psm.types.utils.Valid.ValidUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +44,8 @@ public class ModelAdaptorImpl implements ModelAdaptor {
                 || StringUtils.isBlank(modelDTO.getTitle())
                 || StringUtils.isBlank(modelDTO.getContent())
                 || Objects.isNull(modelDTO.getCover())
-                || StringUtils.isBlank(modelDTO.getCategory())
+                || StringUtils.isBlank(modelDTO.getStyle())
+                || StringUtils.isBlank(modelDTO.getType())
                 || Objects.isNull(modelDTO.getVisible())
         )
             throw new InvalidParameterException("Invalid parameter");

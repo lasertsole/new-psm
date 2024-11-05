@@ -1,7 +1,7 @@
 package com.psm.domain.User.follower.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.infrastructure.utils.VO.BO2VOable;
+import com.psm.types.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

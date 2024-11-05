@@ -5,7 +5,7 @@ import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.entity.User.UserVO;
 import com.psm.domain.User.user.types.enums.SexEnum;
-import com.psm.domain.User.user.infrastructure.utils.BcryptEncoderUtil;
+import com.psm.domain.User.user.types.security.utils.BcryptEncoderUtil;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

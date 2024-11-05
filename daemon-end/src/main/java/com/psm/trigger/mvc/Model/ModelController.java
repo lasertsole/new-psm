@@ -13,8 +13,8 @@ import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.types.entity.page.PageDTO;
-import com.psm.infrastructure.utils.VO.ResponseVO;
+import com.psm.types.utils.page.PageDTO;
+import com.psm.types.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -87,8 +87,7 @@ public class ModelController {
             // 获取上传后模型大小
             Long modelSize = modelBO.getStorage();
 
-            // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1,
-            log.info("modelBO.getVisible() is {}", modelBO.getVisible());
+            // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
             if (Objects.equals(modelBO.getVisible(), VisibleEnum.PUBLIC)) {
                 userExtensionAdapter.addOnePublicModelNumById(userId);
             }

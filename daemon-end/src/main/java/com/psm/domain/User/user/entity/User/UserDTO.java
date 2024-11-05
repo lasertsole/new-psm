@@ -1,8 +1,8 @@
 package com.psm.domain.User.user.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.infrastructure.annotation.validation.ValidFileSize;
-import com.psm.infrastructure.annotation.validation.ValidImage;
+import com.psm.app.annotation.validation.ValidFileSize;
+import com.psm.app.annotation.validation.ValidImage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

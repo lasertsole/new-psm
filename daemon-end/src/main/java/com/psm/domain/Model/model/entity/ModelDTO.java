@@ -1,9 +1,9 @@
 package com.psm.domain.Model.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.infrastructure.annotation.validation.ValidFileSize;
-import com.psm.infrastructure.annotation.validation.ValidImage;
-import com.psm.infrastructure.annotation.validation.ValidJson;
+import com.psm.app.annotation.validation.ValidFileSize;
+import com.psm.app.annotation.validation.ValidImage;
+import com.psm.app.annotation.validation.ValidJson;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +22,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ModelDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -4377624191532031433L;
+    private static final long serialVersionUID = -5726532450004978706L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -42,9 +42,11 @@ public class ModelDTO implements Serializable {
     @ValidFileSize(maxSize = 10 * 1024)//最大10MB
     private MultipartFile cover;
 
-    @ValidJson
-    @Size(max = 255, message = "The category length must not exceed 255 characters")
-    private String category;
+    @Size(max = 15, message = "The category length must not exceed 15 characters")
+    private String style;//模型风格
+
+    @Size(max = 15, message = "The category length must not exceed 15 characters")
+    private String type;//模型类型
 
     @Min(value = 0, message = "The visable must be greater than or equal to 0")
     @Max(value = 2, message = "The visable must be less than or equal to 2")

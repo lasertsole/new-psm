@@ -18,7 +18,7 @@ import java.io.Serializable;
 @TableName(value = "tb_models", autoResultMap = true)
 public class ModelDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -2594689620389781412L;
+    private static final long serialVersionUID = 9181763329672463766L;
 
     @TableId
     private Long id;
@@ -30,8 +30,8 @@ public class ModelDAO implements Serializable {
     private VisibleEnum visible;
     private Long storage;
 
-    @TableField(typeHandler = JsonTypeHandler.class)
-    private Category category;
+    private String style;//模型风格
+    private String type;//模型类型
     private String createTime;
     private String modifyTime;
 

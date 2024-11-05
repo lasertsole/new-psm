@@ -12,14 +12,14 @@
 
 <script setup lang="ts">
     import { defineProps, type PropType } from "vue";
-    import type { Category } from "@/types/model";
     import { Picture as IconPicture } from '@element-plus/icons-vue';
 
     const props = defineProps({
         ID:{ type: String, required: true },
         title:{ type: String, required: true },
         cover:{ type: String, required: true },
-        category:{ type: Object as PropType<Category>, required: true }
+        style:{ type: String, required: true },
+        type:{ type: String, required: true },
     });
 
     function jumpToShowcaseDetail():void{

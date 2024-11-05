@@ -1,13 +1,13 @@
 package com.psm.domain.Subtitles.adaptor.impl;
 
-import com.psm.infrastructure.annotation.spring.Adaptor;
+import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.Subtitles.types.convertor.SubtitlesInfrastructure;
 import com.psm.domain.Subtitles.service.SubtitlesService;
-import com.psm.types.entity.page.PageDTO;
+import com.psm.types.utils.page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

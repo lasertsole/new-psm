@@ -15,7 +15,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ModelVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 2062472239288579355L;
+    private static final long serialVersionUID = 7517370696763321983L;
 
     private String id;
     private String userId;
@@ -23,7 +23,8 @@ public class ModelVO implements Serializable {
     private String content;
     private String cover;
     private String entity;
-    private Category category;
+    private String style;//模型风格
+    private String type;//模型类型
     private Integer visible;
     private Long storage;
     private String createTime;

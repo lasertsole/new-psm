@@ -11,7 +11,7 @@ import com.psm.domain.User.user.repository.UserExtensionDB;
 import com.psm.domain.User.user.repository.UserOSS;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.UserService;
-import com.psm.domain.User.user.infrastructure.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.types.security.utils.JWT.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

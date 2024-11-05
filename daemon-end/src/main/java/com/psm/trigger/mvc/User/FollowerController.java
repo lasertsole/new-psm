@@ -2,7 +2,7 @@ package com.psm.trigger.mvc.User;
 
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.infrastructure.utils.VO.ResponseVO;
+import com.psm.types.utils.VO.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;

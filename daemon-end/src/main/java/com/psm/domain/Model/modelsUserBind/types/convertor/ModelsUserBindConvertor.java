@@ -34,7 +34,8 @@ public abstract class ModelsUserBindConvertor {
             modelVO.setId(modelBO.getId().toString());
             modelVO.setTitle(modelBO.getTitle());
             modelVO.setCover(modelBO.getCover());
-            modelVO.setCategory(modelBO.getCategory());
+            modelVO.setStyle(modelBO.getStyle());
+            modelVO.setType(modelBO.getType());
             modelVO.setCreateTime(modelBO.getCreateTime());
 
             return modelVO;

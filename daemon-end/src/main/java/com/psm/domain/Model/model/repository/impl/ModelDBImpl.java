@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.infrastructure.dbMapper.ModelMapper;
 import com.psm.domain.Model.model.repository.ModelDB;
-import com.psm.infrastructure.annotation.spring.Repository;
+import com.psm.app.annotation.spring.Repository;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,8 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
         LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
         modelWrapper.eq(ModelDAO::getId, modelId);
         modelWrapper.ge(ModelDAO::getVisible, visibleEnum);
-        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover, ModelDAO::getCategory,
-                ModelDAO::getCreateTime);
+        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover,
+                ModelDAO::getStyle, ModelDAO::getType, ModelDAO::getCreateTime);
 
         return modelMapper.selectById(modelId);
     }
@@ -45,8 +45,8 @@ public class ModelDBImpl extends ServiceImpl<ModelMapper, ModelDAO> implements M
         LambdaQueryWrapper<ModelDAO> modelWrapper = new LambdaQueryWrapper<>();
         modelWrapper.in(ModelDAO::getUserId, userIds);
         modelWrapper.eq(ModelDAO::getVisible, visibleEnum);
-        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover, ModelDAO::getCategory,
-                ModelDAO::getCreateTime);
+        modelWrapper.select(ModelDAO::getId, ModelDAO::getUserId, ModelDAO::getTitle, ModelDAO::getCover,
+                ModelDAO::getStyle, ModelDAO::getType, ModelDAO::getCreateTime);
         return modelMapper.selectList(modelWrapper);
     }
 }
