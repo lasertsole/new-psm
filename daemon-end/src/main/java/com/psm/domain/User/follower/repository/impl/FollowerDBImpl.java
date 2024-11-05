@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.User.follower.entity.FollowerDAO;
 import com.psm.domain.User.follower.repository.FollowerDB;
-import com.psm.domain.User.follower.infrastructure.dbMapper.FollowerMapper;
+import com.psm.infrastructure.DB.FollowerMapper;
 import com.psm.app.annotation.spring.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 

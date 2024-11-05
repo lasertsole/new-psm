@@ -2,8 +2,8 @@ package com.psm.domain.Model.model.repository.impl;
 
 import com.psm.domain.Model.model.repository.ModelRedis;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.infrastructure.utils.Redis.RedisCache;
-import com.psm.infrastructure.utils.Tus.TusUtil;
+import com.psm.infrastructure.Redis.RedisCache;
+import com.psm.infrastructure.Tus.Tus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
@@ -11,13 +11,13 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class ModelRedisImpl implements ModelRedis {
     @Autowired
-    TusUtil tusUtil;
+    Tus tus;
 
     @Autowired
     private RedisCache redisCache;
     public void addUploadModel(String id, String fullName)
     {
-        Long expiration = tusUtil.getExpirationPeriod();
+        Long expiration = tus.getExpirationPeriod();
         redisCache.setCacheObject("uploadModel:"+id, fullName, Math.toIntExact(expiration / 1000), TimeUnit.SECONDS);
     }
 

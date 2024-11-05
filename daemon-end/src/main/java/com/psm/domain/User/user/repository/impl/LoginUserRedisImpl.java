@@ -4,7 +4,7 @@ import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.infrastructure.utils.Redis.RedisCache;
+import com.psm.infrastructure.Redis.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -2,7 +2,7 @@ package com.psm.domain.User.user.types.security.filter;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.types.security.utils.JWT.JWTUtil;
-import com.psm.infrastructure.utils.Redis.RedisCache;
+import com.psm.infrastructure.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

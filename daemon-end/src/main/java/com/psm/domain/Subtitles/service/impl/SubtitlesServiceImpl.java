@@ -7,7 +7,7 @@ import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.repository.SubtitlesMapper;
 import com.psm.domain.Subtitles.service.SubtitlesService;
-import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
+import com.psm.infrastructure.OSS.UploadOSS;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
     private SubtitlesMapper showcaseMapper;
 
     @Autowired
-    UploadOSSUtil uploadOSSUtil;
+    UploadOSS uploadOSS;
 
     String imageFolderPath;
 
@@ -76,7 +76,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
 
             // 上传封面
             try{
-                coverUrl = uploadOSSUtil.multipartUpload(subtitlesDTO.getCover(),imageFolderPath);
+                coverUrl = uploadOSS.multipartUpload(subtitlesDTO.getCover(),imageFolderPath);
             }
             catch (Exception e){
                 throw new RuntimeException("Cover upload failed");
@@ -84,11 +84,11 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
 
             // 上传视频
             try{
-                videoUrl = uploadOSSUtil.multipartUpload(subtitlesDTO.getCover(),videoFolderPath);
+                videoUrl = uploadOSS.multipartUpload(subtitlesDTO.getCover(),videoFolderPath);
             }
             catch (Exception e){
                 String coverOSSPath = new URL(coverUrl).getPath().substring(1);
-                uploadOSSUtil.deleteFile(coverOSSPath);
+                uploadOSS.deleteFile(coverOSSPath);
 
                 throw new RuntimeException("Video upload failed");
             }

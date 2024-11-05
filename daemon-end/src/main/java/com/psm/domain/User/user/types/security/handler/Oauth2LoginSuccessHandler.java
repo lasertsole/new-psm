@@ -2,7 +2,7 @@ package com.psm.domain.User.user.types.security.handler;
 
 import com.psm.domain.User.user.types.security.utils.JWT.JWTUtil;
 import com.psm.domain.User.user.types.security.utils.Oauth2UserIdContextHolder;
-import com.psm.infrastructure.utils.Redis.RedisCache;
+import com.psm.infrastructure.Redis.RedisCache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

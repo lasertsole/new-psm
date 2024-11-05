@@ -111,7 +111,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO) {
+    public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO, @ModelAttribute ModelDTO modelDTO) {
         try {
             // 获取发过模型的用户BO页
             Page<UserExtensionBO> userExtensionBOPage = userExtensionAdapter.getHasPublicModelOrderByCreateTimeDesc(pageDTO);
@@ -145,13 +145,14 @@ public class ModelController {
                 modelsShowBarBO.getModels().add(modelBO);
             });
 
-            // 将结果转换为PageVO并返回
+            // 复制需要返回的页信息
             List<ModelsUserBindBO> modelsUserBindBOs = collect.values().stream().toList();
-            Page<ModelsUserBindBO> modelsUserBindBOPageVO = new Page<>();
-            BeanUtils.copyProperties(userExtensionBOPage, modelsUserBindBOPageVO);
-            modelsUserBindBOPageVO.setRecords(modelsUserBindBOs);
+            Page<ModelsUserBindBO> modelsUserBindBOPage = new Page<>();
+            BeanUtils.copyProperties(userExtensionBOPage, modelsUserBindBOPage);
+            modelsUserBindBOPage.setRecords(modelsUserBindBOs);
 
-            return ResponseVO.ok(modelsUserBindBOPageVO);
+            // 将结果返回
+            return ResponseVO.ok(modelsUserBindBOPage);
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

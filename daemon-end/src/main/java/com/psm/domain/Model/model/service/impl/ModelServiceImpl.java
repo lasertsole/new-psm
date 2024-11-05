@@ -8,7 +8,7 @@ import com.psm.domain.Model.model.repository.ModelDB;
 import com.psm.domain.Model.model.repository.ModelOSS;
 import com.psm.domain.Model.model.service.ModelService;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.infrastructure.utils.Tus.TusUtil;
+import com.psm.infrastructure.Tus.Tus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class ModelServiceImpl implements ModelService {
     private TusFileUploadService tusFileUploadService;
 
     @Autowired
-    TusUtil tusUtil;
+    Tus tus;
 
     @Autowired
     private ModelRedis modelRedis;
@@ -49,7 +49,7 @@ public class ModelServiceImpl implements ModelService {
 
             //如果redis有值则删除原先的文件，防止重复上传
             if (fullName != null){
-                String folderName = tusUtil.getFolderName(fullName);
+                String folderName = tus.getFolderName(fullName);
                 tusFileUploadService.deleteUpload(folderName);
             }
         }
@@ -58,8 +58,8 @@ public class ModelServiceImpl implements ModelService {
         tusFileUploadService.process(servletRequest, servletResponse);
 
         //判断是否上传完成, 如果是则将文件名存入redis
-        if (tusUtil.isUploadCompleted(servletRequest)){
-            String fullName = tusUtil.getFullName(servletRequest);
+        if (tus.isUploadCompleted(servletRequest)){
+            String fullName = tus.getFullName(servletRequest);
             modelRedis.addUploadModel(userId, fullName);
         };
     }
@@ -76,12 +76,12 @@ public class ModelServiceImpl implements ModelService {
             throw new RuntimeException("文件未上传完成或已过期");
 
         // 获取文件大小,单位Byte
-        Long fileSize = tusUtil.getFileSize(fullName);
+        Long fileSize = tus.getFileSize(fullName);
 
         // 将本地文件上传到OSS
         Map<String, String> ossResultMap;
         try {
-            ossResultMap = modelOSS.addAllModel(tusUtil.getAbsoluteFilePathName(fullName), modelDTO.getCover(), userId);
+            ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), modelDTO.getCover(), userId);
         }
         catch (Exception e){
             throw new RuntimeException("文件上传失败");
@@ -114,7 +114,7 @@ public class ModelServiceImpl implements ModelService {
             modelRedis.removeUploadModel(userId);
 
             //删除本地文件
-            String folderName = tusUtil.getFolderName(fullName);
+            String folderName = tus.getFolderName(fullName);
             tusFileUploadService.deleteUpload(folderName);
         }
         catch (Exception e) {

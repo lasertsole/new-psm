@@ -1,6 +1,6 @@
 package com.psm.trigger.routine;
 
-import com.psm.infrastructure.utils.Tus.TusProperties;
+import com.psm.infrastructure.Tus.properties.TusProperties;
 import lombok.extern.slf4j.Slf4j;
 import me.desair.tus.server.TusFileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,9 @@
 <template>
     <div class="avatar">
-        <el-avatar :src="src" @error="errorHandler">
+        <el-avatar :src="src" @error="errorHandler" loading="lazy">
             <img
                 src="/images/defaultAvatar.png"
+                loading="lazy"
             />
         </el-avatar>
     </div>

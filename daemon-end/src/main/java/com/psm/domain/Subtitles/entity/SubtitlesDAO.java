@@ -2,7 +2,7 @@ package com.psm.domain.Subtitles.entity;
 
 import com.psm.domain.Subtitles.valueObject.Category;
 import com.baomidou.mybatisplus.annotation.*;
-import com.psm.infrastructure.utils.MybatisPlus.JsonTypeHandler;
+import com.psm.infrastructure.DB.utils.JsonTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

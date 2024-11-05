@@ -1,9 +1,15 @@
 <template>
     <div class="image">
-      <el-image :src="src" fit="cover">
+      <el-image :src="src" fit="cover" loading="lazy">
         <template #error>
           <div class="image-slot">
             <el-icon><icon-picture /></el-icon>
+          </div>
+        </template>
+
+        <template #placeholder>
+          <div class="image-slot">
+            Loading...
           </div>
         </template>
       </el-image>

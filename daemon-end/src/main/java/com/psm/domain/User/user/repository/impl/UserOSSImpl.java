@@ -2,7 +2,7 @@ package com.psm.domain.User.user.repository.impl;
 
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.repository.UserOSS;
-import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
+import com.psm.infrastructure.OSS.UploadOSS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +13,7 @@ public class UserOSSImpl implements UserOSS {
     String avatarFolderPath;
 
     @Autowired
-    UploadOSSUtil uploadOSSUtil;
+    UploadOSS uploadOSS;
 
     private String proccessAvatarFolderPath(String userId){
         return avatarFolderPath.replace("{userId}", userId);
@@ -21,12 +21,12 @@ public class UserOSSImpl implements UserOSS {
 
     @Override
     public Boolean removeAvatar(String avatarUrl, String userId) throws Exception {
-        return uploadOSSUtil.deleteFileByFullUrl(avatarUrl, proccessAvatarFolderPath(userId));
+        return uploadOSS.deleteFileByFullUrl(avatarUrl, proccessAvatarFolderPath(userId));
     }
 
     @Override
     public String addAvatar(MultipartFile newAvatarFile, String userId) throws Exception {
-        return uploadOSSUtil.multipartUpload(newAvatarFile, proccessAvatarFolderPath(userId));
+        return uploadOSS.multipartUpload(newAvatarFile, proccessAvatarFolderPath(userId));
     }
 
     @Override
@@ -43,6 +43,6 @@ public class UserOSSImpl implements UserOSS {
 
     @Override
     public Boolean removeUserFolder(String userId) throws Exception{
-        return uploadOSSUtil.deleteFolderByFullUrl(proccessAvatarFolderPath(userId));
+        return uploadOSS.deleteFolderByFullUrl(proccessAvatarFolderPath(userId));
     }
 }

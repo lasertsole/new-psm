@@ -3,7 +3,7 @@ package com.psm.domain.Model.model.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Model.model.entity.ModelDAO;
-import com.psm.domain.Model.model.infrastructure.dbMapper.ModelMapper;
+import com.psm.infrastructure.DB.ModelMapper;
 import com.psm.domain.Model.model.repository.ModelDB;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.types.enums.VisibleEnum;

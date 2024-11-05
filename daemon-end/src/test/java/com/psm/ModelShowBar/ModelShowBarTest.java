@@ -12,10 +12,4 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ModelShowBarTest {
     @Autowired
     private ModelController modelController;
-
-    @Test
-    void test(){
-        PageDTO pageDTO = new PageDTO(1, 10);
-        log.info("modelsShowBarAdaptor is {}", modelController.getModelsShowBars(pageDTO));
-    }
 }

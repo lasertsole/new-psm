@@ -1,7 +1,7 @@
 package com.psm.domain.Model.model.repository.impl;
 
 import com.psm.domain.Model.model.repository.ModelOSS;
-import com.psm.infrastructure.utils.OSS.UploadOSSUtil;
+import com.psm.infrastructure.OSS.UploadOSS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class ModelOSSImpl implements ModelOSS {
     String entityFolderPath;
 
     @Autowired
-    private UploadOSSUtil uploadOSSUtil;
+    private UploadOSS uploadOSS;
 
     private String proccessEntityFolderPath(String userId){
         return entityFolderPath.replace("{userId}", userId);
@@ -30,12 +30,12 @@ public class ModelOSSImpl implements ModelOSS {
 
     @Override
     public String addModelEntity(String localFilePath, String userId) throws Exception {
-        return uploadOSSUtil.multipartUpload(localFilePath, proccessEntityFolderPath(userId));
+        return uploadOSS.multipartUpload(localFilePath, proccessEntityFolderPath(userId));
     }
 
     @Override
     public Boolean deleteModelEntity(String entityUrl, String userId) throws Exception {
-        return uploadOSSUtil.deleteFileByFullUrl(entityUrl, proccessEntityFolderPath(userId));
+        return uploadOSS.deleteFileByFullUrl(entityUrl, proccessEntityFolderPath(userId));
     }
 
     @Override
@@ -52,12 +52,12 @@ public class ModelOSSImpl implements ModelOSS {
 
     @Override
     public Boolean deleteModelCover(String coverUrl, String userId) throws Exception {
-        return uploadOSSUtil.deleteFileByFullUrl(coverUrl, proccessCoverFolderPath(userId));
+        return uploadOSS.deleteFileByFullUrl(coverUrl, proccessCoverFolderPath(userId));
     }
 
     @Override
     public String addCover(MultipartFile newAvatarFile, String userId) throws Exception {
-        return uploadOSSUtil.multipartUpload(newAvatarFile, proccessCoverFolderPath(userId));
+        return uploadOSS.multipartUpload(newAvatarFile, proccessCoverFolderPath(userId));
     }
 
     @Override
@@ -87,6 +87,6 @@ public class ModelOSSImpl implements ModelOSS {
 
     @Override
     public Boolean removeModelFolder(String userId) throws Exception {
-        return uploadOSSUtil.deleteFolderByFullUrl(proccessEntityFolderPath(userId));
+        return uploadOSS.deleteFolderByFullUrl(proccessEntityFolderPath(userId));
     }
 }
