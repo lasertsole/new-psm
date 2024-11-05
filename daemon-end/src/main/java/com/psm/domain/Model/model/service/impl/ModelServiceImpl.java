@@ -2,12 +2,12 @@ package com.psm.domain.Model.model.service.impl;
 
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.entity.ModelDTO;
-import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
+import com.psm.domain.Model.model.types.convertor.ModelConvertor;
 import com.psm.domain.Model.model.repository.ModelRedis;
 import com.psm.domain.Model.model.repository.ModelDB;
 import com.psm.domain.Model.model.repository.ModelOSS;
 import com.psm.domain.Model.model.service.ModelService;
-import com.psm.infrastructure.enums.VisibleEnum;
+import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.utils.Tus.TusUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +16,6 @@ import me.desair.tus.server.TusFileUploadService;
 import me.desair.tus.server.exception.TusException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

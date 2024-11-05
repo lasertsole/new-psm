@@ -3,10 +3,10 @@ package com.psm.domain.Model.model.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Model.model.entity.ModelDAO;
-import com.psm.domain.Model.model.repository.mapper.ModelMapper;
+import com.psm.domain.Model.model.infrastructure.dbMapper.ModelMapper;
 import com.psm.domain.Model.model.repository.ModelDB;
 import com.psm.infrastructure.annotation.spring.Repository;
-import com.psm.infrastructure.enums.VisibleEnum;
+import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 

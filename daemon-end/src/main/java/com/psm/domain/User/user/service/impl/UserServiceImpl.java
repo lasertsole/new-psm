@@ -5,7 +5,7 @@ import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
-import com.psm.domain.User.user.infrastructure.convertor.UserConvertor;
+import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.domain.User.user.repository.UserExtensionDB;
 import com.psm.domain.User.user.repository.UserOSS;

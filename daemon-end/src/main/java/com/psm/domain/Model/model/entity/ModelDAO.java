@@ -1,10 +1,9 @@
 package com.psm.domain.Model.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.valueObject.Category;
-import com.psm.infrastructure.enums.VisibleEnum;
+import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.utils.MybatisPlus.JsonTypeHandler;
 import lombok.*;
 

@@ -1,9 +1,9 @@
 package com.psm.domain.Model.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.Model.model.infrastructure.convertor.ModelConvertor;
+import com.psm.domain.Model.model.types.convertor.ModelConvertor;
 import com.psm.domain.Model.model.valueObject.Category;
-import com.psm.infrastructure.enums.VisibleEnum;
+import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.utils.VO.BO2VOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;

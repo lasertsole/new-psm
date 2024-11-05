@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.psm.domain.User.user.repository.mapper.OAuth2ThirdAccountMapper;
+import com.psm.domain.User.user.infrastructure.dbMapper.OAuth2ThirdAccountMapper;
 import com.psm.infrastructure.annotation.spring.Repository;
 import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
 import com.psm.domain.User.user.repository.OAuth2ThirdAccountDB;

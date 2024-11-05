@@ -2,7 +2,7 @@ package com.psm.domain.Model.model.service;
 
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.model.entity.ModelDTO;
-import com.psm.infrastructure.enums.VisibleEnum;
+import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;

@@ -3,7 +3,7 @@ package com.psm.domain.User.user.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
-import com.psm.domain.User.user.infrastructure.convertor.UserExtensionConvertor;
+import com.psm.domain.User.user.types.convertor.UserExtensionConvertor;
 import com.psm.domain.User.user.repository.UserExtensionDB;
 import com.psm.domain.User.user.service.UserExtensionService;
 import lombok.extern.slf4j.Slf4j;

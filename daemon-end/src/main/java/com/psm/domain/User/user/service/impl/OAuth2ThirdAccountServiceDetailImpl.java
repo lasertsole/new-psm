@@ -4,7 +4,7 @@ import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
 import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
 import com.psm.domain.User.user.entity.User.UserDAO;
-import com.psm.domain.User.user.infrastructure.convertor.OAuth2ThirdAccountConvertor;
+import com.psm.domain.User.user.types.convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.User.user.infrastructure.utils.Oauth2UserIdContextHolder;
 import com.psm.domain.User.user.repository.OAuth2ThirdAccountDB;
 import com.psm.domain.User.user.repository.UserDB;

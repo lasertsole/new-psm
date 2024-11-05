@@ -4,7 +4,7 @@ import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.follower.entity.FollowerBO;
 import com.psm.domain.User.follower.entity.FollowerDAO;
 import com.psm.domain.User.follower.entity.FollowerDTO;
-import com.psm.domain.User.follower.infrastructure.convertor.FollowerConvertor;
+import com.psm.domain.User.follower.types.convertor.FollowerConvertor;
 import com.psm.domain.User.follower.service.FollowerService;
 import com.psm.infrastructure.annotation.spring.Adaptor;
 import com.psm.infrastructure.utils.Valid.ValidUtil;

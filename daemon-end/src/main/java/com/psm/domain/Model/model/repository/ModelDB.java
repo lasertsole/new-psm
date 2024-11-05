@@ -2,7 +2,7 @@ package com.psm.domain.Model.model.repository;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.Model.model.entity.ModelDAO;
-import com.psm.infrastructure.enums.VisibleEnum;
+import com.psm.types.enums.VisibleEnum;
 
 import java.util.List;
 

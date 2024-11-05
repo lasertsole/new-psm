@@ -125,7 +125,7 @@ mybatis-plus:
   #实体类所对应的包（如果不配置，则需要配置TableName注解）
 #  type-aliases-package: com.psm.domain
   #扫描通用枚举的包
-  type-enums-package: com.psm.domain, com.psm.infrastructure.enums
+  type-enums-package: com.psm.domain, com.psm.types.enums
 
 #阿里云配置信息
 aliyun:

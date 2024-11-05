@@ -2,7 +2,7 @@ package com.psm.domain.User.user.adaptor;
 
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
+import com.psm.types.entity.page.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;

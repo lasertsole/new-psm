@@ -2,7 +2,7 @@ package com.psm.domain.Subtitles.adaptor;
 
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.infrastructure.utils.MybatisPlus.Page.PageDTO;
+import com.psm.types.entity.page.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.security.InvalidParameterException;

@@ -1,7 +1,7 @@
 package com.psm.domain.User.follower.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.User.follower.infrastructure.convertor.ExtendedUserConvertor;
+import com.psm.domain.User.follower.types.convertor.ExtendedUserConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import lombok.Value;
 

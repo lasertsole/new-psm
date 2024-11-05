@@ -3,7 +3,7 @@ package com.psm.domain.Chat.service.impl;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.psm.domain.Chat.handler.SocketIOMessageEventHandler;
+import com.psm.domain.Chat.infrastructure.handler.SocketIOMessageEventHandler;
 import com.psm.domain.Chat.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
