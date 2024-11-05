@@ -3,16 +3,19 @@ package com.psm.domain.User.follower.valueObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.follower.types.convertor.ExtendedUserConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.domain.User.user.types.enums.SexEnum;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Value
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExtendedUserBO extends UserBO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 5757358121792316766L;
+    private static final long serialVersionUID = -2293374811762963476L;
 
     Boolean isFollowed;
 
@@ -24,11 +27,11 @@ public class ExtendedUserBO extends UserBO implements Serializable {
         String phone,
         String avatar,
         String email,
-        Boolean sex,
+        SexEnum sex,
         String profile,
         String createTime,
         String modifyTime,
-        Boolean followed)
+        Boolean isFollowed)
     {
         super(
             id,
@@ -42,7 +45,7 @@ public class ExtendedUserBO extends UserBO implements Serializable {
             createTime,
             modifyTime
         );
-        this.isFollowed = followed;
+        this.isFollowed = isFollowed;
     }
 
     public ExtendedUserBO(UserBO userBO, Boolean followed) {

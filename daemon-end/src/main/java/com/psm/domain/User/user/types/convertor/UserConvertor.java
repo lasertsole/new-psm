@@ -25,9 +25,6 @@ public abstract class UserConvertor {
     })
     public abstract UserDAO DTO2DAO(UserDTO userDTO);
 
-    @Mappings({
-            @Mapping(source = "sex.value", target = "sex")
-    })
     public abstract UserBO DAO2BO(UserDAO userDAO);
 
     @Named("longToString")
@@ -39,13 +36,15 @@ public abstract class UserConvertor {
         @Mapping(target = "hasPass", ignore = true),
         @Mapping(target = "id", qualifiedByName = "longToString"),
         @Mapping(target = "phone", ignore = true),
-        @Mapping(target = "email", ignore = true)
+        @Mapping(target = "email", ignore = true),
+        @Mapping(source = "sex.value", target = "sex")
     })
     public abstract UserVO BO2OtherVO(UserBO userBO);
 
     @Mappings({
         @Mapping(target = "hasPass", ignore = true),
         @Mapping(target = "id", qualifiedByName = "longToString"),
+        @Mapping(source = "sex.value", target = "sex")
     })
     public abstract UserVO BO2CurrentVO(UserBO userBO);
 
