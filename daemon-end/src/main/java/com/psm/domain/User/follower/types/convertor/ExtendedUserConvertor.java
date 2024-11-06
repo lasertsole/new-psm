@@ -6,6 +6,9 @@ import com.psm.domain.User.follower.valueObject.ExtendedUserVO;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import com.psm.domain.User.user.types.enums.SexEnum;
+
+import java.util.Optional;
 
 @Mapper
 public abstract class ExtendedUserConvertor {
@@ -17,28 +20,28 @@ public abstract class ExtendedUserConvertor {
     public ExtendedUserBO DAO2BO(ExtendedUserDAO extendedUserDAO) {
         return new ExtendedUserBO(
             extendedUserDAO.getId(),
-                extendedUserDAO.getName(),
-                extendedUserDAO.getPassword(),
-                extendedUserDAO.getPhone(),
-                extendedUserDAO.getAvatar(),
-                extendedUserDAO.getEmail(),
-                extendedUserDAO.getSex(),
-                extendedUserDAO.getProfile(),
-                extendedUserDAO.getCreateTime(),
-                extendedUserDAO.getModifyTime(),
-                extendedUserDAO.getIsFollowed()
+            extendedUserDAO.getName(),
+            extendedUserDAO.getPassword(),
+            extendedUserDAO.getPhone(),
+            extendedUserDAO.getAvatar(),
+            extendedUserDAO.getEmail(),
+            extendedUserDAO.getSex(),
+            extendedUserDAO.getProfile(),
+            extendedUserDAO.getCreateTime(),
+            extendedUserDAO.getModifyTime(),
+            extendedUserDAO.getIsFollowed()
         );
     };
 
     public ExtendedUserVO BO2OtherVO(ExtendedUserBO extendedUserBO) {
         return new ExtendedUserVO(
-            extendedUserBO.getId().toString(),
+            Optional.ofNullable(extendedUserBO.getId()).map(Object::toString).orElse(null),
             extendedUserBO.getName(),
             null,
             null,
             extendedUserBO.getAvatar(),
             null,
-            extendedUserBO.getSex().getValue(),
+            Optional.ofNullable(extendedUserBO.getSex()).map(SexEnum::getValue).orElse(null),
             extendedUserBO.getProfile(),
             extendedUserBO.getCreateTime(),
             extendedUserBO.getIsFollowed()

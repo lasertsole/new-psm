@@ -44,9 +44,8 @@ public class UserAdaptorImpl implements UserAdaptor {
         if(
                 StringUtils.isBlank(userDTO.getName())
                 ||StringUtils.isBlank(userDTO.getPassword())
-        ){
+        )
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 登录
         Map<String, Object> map = userService.login(userDTO);
@@ -78,9 +77,8 @@ public class UserAdaptorImpl implements UserAdaptor {
                 StringUtils.isBlank(userDTO.getName())
                 ||StringUtils.isBlank(userDTO.getPassword())
                 ||StringUtils.isBlank(userDTO.getEmail())
-        ){
+        )
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 注册
         Map<String, Object> map = userService.register(userDTO);
@@ -140,9 +138,7 @@ public class UserAdaptorImpl implements UserAdaptor {
                 StringUtils.isBlank(userDTO.getPassword())
                 ||StringUtils.isBlank(userDTO.getChangePassword())
         )
-        {
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 修改密码
         userService.updatePassword(userDTO.getPassword(), userDTO.getChangePassword());

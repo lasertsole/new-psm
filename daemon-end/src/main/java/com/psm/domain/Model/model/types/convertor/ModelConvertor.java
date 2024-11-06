@@ -21,7 +21,12 @@ public abstract class ModelConvertor {
 
     @Named("fromInteger")
     public VisibleEnum fromShort(Integer visable) {
-        return VisibleEnum.fromInteger(visable);
+        try{
+            return VisibleEnum.fromInteger(visable);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Mappings({
@@ -40,11 +45,16 @@ public abstract class ModelConvertor {
 
     @Named("longToString")
     public String longToString(Long num) {
-        return num.toString();
+        try {
+            return num.toString();
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Mappings({
-            @Mapping(source = "visible.value", target = "visible"),
+            @Mapping(source = "visible.value", target = "visible", defaultExpression = "java(null)"),
             @Mapping(target = "id", qualifiedByName = "longToString"),
             @Mapping(target = "userId", qualifiedByName = "longToString")
     })

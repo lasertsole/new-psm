@@ -16,6 +16,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Mapper
@@ -45,7 +46,7 @@ public abstract class ModelsUserBindConvertor {
         List<ModelVO> modelVOs =modelBOs.stream().map((modelBO)->{
             ModelVO modelVO = new ModelVO();
 
-            modelVO.setId(modelBO.getId().toString());
+            modelVO.setId(Optional.ofNullable(modelBO.getId()).map(Object::toString).orElse(null));
             modelVO.setTitle(modelBO.getTitle());
             modelVO.setCover(modelBO.getCover());
             modelVO.setStyle(modelBO.getStyle());

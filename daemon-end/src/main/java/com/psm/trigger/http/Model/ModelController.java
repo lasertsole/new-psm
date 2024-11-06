@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.modelExtendedUserBind.adaptor.ModelExtendedUserBindAdaptor;
 import com.psm.domain.Model.modelExtendedUserBind.valueObject.ModelExtendedUserBindBO;
+import com.psm.domain.Model.modelsUserBind.adaptor.ModelsUserBindAdaptor;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.follower.valueObject.ExtendedUserBO;
@@ -30,6 +32,12 @@ import java.util.*;
 @RestController
 @RequestMapping("/models")
 public class ModelController {
+    @Autowired
+    private ModelsUserBindAdaptor modelsUserBindAdaptor;
+
+    @Autowired
+    private ModelExtendedUserBindAdaptor modelExtendedUserBindAdaptor;
+
     @Autowired
     private UserAdaptor userAdaptor;
 
@@ -113,46 +121,7 @@ public class ModelController {
     @GetMapping
     public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO, @ModelAttribute ModelDTO modelDTO) {
         try {
-            // 获取发过模型的用户BO页
-            Page<UserExtensionBO> userExtensionBOPage = userExtensionAdapter.getHasPublicModelOrderByCreateTimeDesc(pageDTO);
-
-            // 按照用户BO页获取发过模型的用户的ID列表,并按时间降序排序
-            List<UserExtensionBO> userExtensionBOs = userExtensionBOPage.getRecords();
-
-            // 如果用户列表为空，则返回空列表
-            if (userExtensionBOs.isEmpty()) return ResponseVO.ok(Collections.emptyList());
-
-            // 创建一个Map，用于存储用户ID和ModelsShowBarDAO的映射
-            Map<Long, ModelsUserBindBO> collect = new HashMap<>();
-            userExtensionBOs.forEach(userExtensionBO -> collect.putIfAbsent(userExtensionBO.getId(), null));
-
-
-            // 获取用户ID列表，这个ID列表是按照时间降序排序的
-            List<Long> userIds = UserExtensionBO.getModelIds(userExtensionBOs);
-
-            // 按照用户ID列表获取用户BO实体列表
-            List<UserBO> userBOList = userAdaptor.getUserByIds(userIds);
-            userBOList.forEach(userBO -> {
-                collect.put(userBO.getId(), new ModelsUserBindBO(userBO, new ArrayList<>()));
-            });
-
-            // 按照用户ID列表获取作品模型列表
-            List<ModelBO> modelBOList = modelAdaptor.getByUserIds(userIds, VisibleEnum.PUBLIC);
-
-            // 将作品模型列表添加到对应的ModelsShowBarDAO中
-            modelBOList.forEach(modelBO -> {
-                ModelsUserBindBO modelsShowBarBO = collect.get(modelBO.getUserId());
-                modelsShowBarBO.getModels().add(modelBO);
-            });
-
-            // 复制需要返回的页信息
-            List<ModelsUserBindBO> modelsUserBindBOs = collect.values().stream().toList();
-            Page<ModelsUserBindBO> modelsUserBindBOPage = new Page<>();
-            BeanUtils.copyProperties(userExtensionBOPage, modelsUserBindBOPage);
-            modelsUserBindBOPage.setRecords(modelsUserBindBOs);
-
-            // 将结果返回
-            return ResponseVO.ok(modelsUserBindBOPage);
+            return ResponseVO.ok(modelsUserBindAdaptor.getModelsShowBars(pageDTO, modelDTO));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
@@ -171,24 +140,10 @@ public class ModelController {
     @GetMapping("/{id}")
     public ResponseVO getModelByModelId(@PathVariable Long id) {
         try {
-            // 获取模型
-            ModelDTO modelDTO = new ModelDTO();
-            modelDTO.setId(id);
-            modelDTO.setVisible(VisibleEnum.PUBLIC.getValue());
-            ModelBO modelBO = modelAdaptor.selectById(modelDTO);
+            // 获取当前用户ID
+            Long userSelfId = userAdaptor.getAuthorizedUserId();
 
-            // 获取用户信息
-            Long userId = modelBO.getUserId();
-            UserBO userBO = userAdaptor.getUserById(userId);
-
-            // 判断是否已关注
-            Boolean isFollowed = followerAdaptor.isFollowed(userId, userAdaptor.getAuthorizedUserId());
-
-            // 构建扩展用户信息
-            ExtendedUserBO extendedUserBO = ExtendedUserBO.from(userBO, isFollowed);
-
-            // 返回
-            return ResponseVO.ok(ModelExtendedUserBindBO.from(extendedUserBO, modelBO));
+            return ResponseVO.ok(modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

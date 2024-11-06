@@ -15,14 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Optional;
+
 @Slf4j
 @Mapper
-public abstract class ModelUserBindConvertor {
+public abstract class ModelExtendedUserBindConvertor {
     private static final ModelConvertor modelConvertor = ModelConvertor.INSTANCE;
 
     private static final ExtendedUserConvertor extendedUserConvertor = ExtendedUserConvertor.INSTANCE;
 
-    public static final ModelUserBindConvertor INSTANCE = Mappers.getMapper(ModelUserBindConvertor.class);
+    public static final ModelExtendedUserBindConvertor INSTANCE = Mappers.getMapper(ModelExtendedUserBindConvertor.class);
 
     public ModelExtendedUserBindBO DAO2BO(ModelExtendedUserBindDAO modelExtendedUserBindDAO) {
         ExtendedUserDAO extendedUserDAO = modelExtendedUserBindDAO.getUser();
@@ -41,7 +43,7 @@ public abstract class ModelUserBindConvertor {
         ExtendedUserVO extendedUserVO = extendedUserConvertor.BO2OtherVO(extendedUserBO);
         ModelVO modelVO = new ModelVO();
 
-        modelVO.setId(modelBO.getId().toString());
+        modelVO.setId(Optional.ofNullable(modelBO.getId()).map(Object::toString).orElse(null));
         modelVO.setTitle(modelBO.getTitle());
         modelVO.setContent(modelBO.getContent());
         modelVO.setCover(modelBO.getCover());

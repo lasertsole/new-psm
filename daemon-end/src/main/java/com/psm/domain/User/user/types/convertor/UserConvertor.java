@@ -9,13 +9,16 @@ import com.psm.domain.User.user.types.security.utils.BcryptEncoderUtil;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Objects;
+
 @Mapper
 public abstract class UserConvertor {
 
     public static final UserConvertor INSTANCE = Mappers.getMapper(UserConvertor.class);
 
     @Named("fromBoolean")
-    protected SexEnum fromBoolean(boolean value) {
+    protected SexEnum fromBoolean(Boolean value) {
+        if (Objects.isNull(value)) return null;
         return value ? SexEnum.FEMALE : SexEnum.MALE;
     }
 
@@ -29,6 +32,7 @@ public abstract class UserConvertor {
 
     @Named("longToString")
     public String longToString(Long num) {
+        if (Objects.isNull(num)) return null;
         return num.toString();
     }
 
@@ -37,14 +41,14 @@ public abstract class UserConvertor {
         @Mapping(target = "id", qualifiedByName = "longToString"),
         @Mapping(target = "phone", ignore = true),
         @Mapping(target = "email", ignore = true),
-        @Mapping(source = "sex.value", target = "sex")
+        @Mapping(source = "sex.value", target = "sex", defaultExpression = "java(null)")
     })
     public abstract UserVO BO2OtherVO(UserBO userBO);
 
     @Mappings({
         @Mapping(target = "hasPass", ignore = true),
         @Mapping(target = "id", qualifiedByName = "longToString"),
-        @Mapping(source = "sex.value", target = "sex")
+        @Mapping(source = "sex.value", target = "sex", defaultExpression = "java(null)")
     })
     public abstract UserVO BO2CurrentVO(UserBO userBO);
 

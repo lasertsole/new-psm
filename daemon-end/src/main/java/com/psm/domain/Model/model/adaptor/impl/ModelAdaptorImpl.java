@@ -34,6 +34,9 @@ public class ModelAdaptorImpl implements ModelAdaptor {
 
     @Override
     public void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException {
+        if(Objects.isNull(servletRequest) || Objects.isNull(servletResponse) || StringUtils.isBlank(userId))
+            throw new InvalidParameterException("Invalid parameter");
+
         modelService.uploadModelEntity(servletRequest, servletResponse, userId);
     }
 
@@ -73,6 +76,8 @@ public class ModelAdaptorImpl implements ModelAdaptor {
 
     @Override
     public ModelBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException {
+        if (Objects.isNull(id) || Objects.isNull(visible)) throw new InvalidParameterException("Invalid parameter");
+
         validUtil.validate(Map.of("id", id, "visible", visible), ModelDTO.class);
 
         ModelDAO modelDAO = modelService.getById(id, VisibleEnum.fromInteger(visible));
@@ -82,6 +87,8 @@ public class ModelAdaptorImpl implements ModelAdaptor {
 
     @Override
     public List<ModelBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+        if (Objects.isNull(userIds) || Objects.isNull(visibleEnum)) throw new InvalidParameterException("Invalid parameter");
+
         List<ModelDAO> modelDAOs = modelService.getByUserIds(userIds, visibleEnum);
         ModelConvertor modelConvertor = ModelConvertor.INSTANCE;
 
