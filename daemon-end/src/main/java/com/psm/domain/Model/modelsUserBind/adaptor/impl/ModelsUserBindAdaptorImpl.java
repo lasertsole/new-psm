@@ -8,6 +8,7 @@ import com.psm.domain.Model.modelsUserBind.service.ModelsUserBindService;
 import com.psm.domain.Model.modelsUserBind.types.convertor.ModelsUserBindConvertor;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindDAO;
+import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
 import com.psm.types.utils.page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class ModelsUserBindAdaptorImpl implements ModelsUserBindAdaptor {
     private ModelsUserBindService modelsUserBindService;
 
     @Override
-    public Page<ModelsUserBindBO> getModelsShowBars(@Valid PageDTO pageDTO,@Valid ModelDTO modelDTO) {
+    public Page<ModelsUserBindBO> getModelsShowBars(@Valid PageDTO pageDTO, @Valid UserExtensionDTO userExtensionDTO, @Valid ModelDTO modelDTO) {
         if(
                 Objects.isNull(pageDTO.getCurrent())
                 ||Objects.isNull(pageDTO.getSize())
@@ -34,7 +35,7 @@ public class ModelsUserBindAdaptorImpl implements ModelsUserBindAdaptor {
             throw new InvalidParameterException("Invalid parameter");
 
         Page<ModelsUserBindDAO> modelsUserBindDAOPage = modelsUserBindService.getModelsShowBars(
-                pageDTO.getCurrent(), pageDTO.getSize(), modelDTO.getStyle(), modelDTO.getType());
+                pageDTO.getCurrent(), pageDTO.getSize(), userExtensionDTO.getIsIdle(), userExtensionDTO.getCanUrgent(), modelDTO.getStyle(), modelDTO.getType());
         Page<ModelsUserBindBO> modelsUserBindBOPage = new Page<>();
         BeanUtils.copyProperties(modelsUserBindDAOPage, modelsUserBindBOPage);
         List<ModelsUserBindDAO> modelsUserBindDAOs = modelsUserBindDAOPage.getRecords();

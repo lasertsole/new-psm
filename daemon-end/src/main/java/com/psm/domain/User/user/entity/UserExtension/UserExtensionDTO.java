@@ -14,12 +14,14 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserExtensionDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -3360238516259800946L;
+    private static final long serialVersionUID = 7739665258774712512L;
 
     private Long id;
     private Short publicModelNum;
     private Long modelCurStorage;
     private Long modelMaxStorage;
+    private Boolean isIdle;
+    private Boolean canUrgent;
     private String createTime;
     private String modifyTime;
 

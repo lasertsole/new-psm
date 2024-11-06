@@ -15,12 +15,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserExtensionBO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -6961178143881514621L;
+    private static final long serialVersionUID = 8557931650212377888L;
 
     private Long id;
     private Short publicModelNum;
     private Long modelCurStorage;
     private Long modelMaxStorage;
+    private Boolean isIdle;
+    private Boolean canUrgent;
     private String createTime;
     private String modifyTime;
 

@@ -18,13 +18,15 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserExtensionDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 8485047296412780734L;
+    private static final long serialVersionUID = -2533881661820323195L;
 
     @TableId
     private Long id;
     private Short publicModelNum;
     private Long modelCurStorage;
     private Long modelMaxStorage;
+    private Boolean isIdle;
+    private Boolean canUrgent;
     private String createTime;
     private String modifyTime;
 

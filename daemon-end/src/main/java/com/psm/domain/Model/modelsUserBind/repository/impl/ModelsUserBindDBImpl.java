@@ -2,6 +2,7 @@ package com.psm.domain.Model.modelsUserBind.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.modelsUserBind.repository.ModelsUserBindDB;
@@ -16,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -34,12 +32,31 @@ public class ModelsUserBindDBImpl implements ModelsUserBindDB {
     UserMapper userMapper;
 
     @Override
-    public Page<ModelsUserBindDAO> selectModelsShowBars(Integer current, Integer size, String style, String type) {
+    public Page<ModelsUserBindDAO> selectModelsShowBars(
+            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type) {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
-        LambdaQueryWrapper<UserExtensionDAO> userExtensionWrapper = new LambdaQueryWrapper<>();
+        MPJLambdaWrapper<UserExtensionDAO> userExtensionWrapper = new MPJLambdaWrapper<>();
+
+        // 筛选出符合样式和类型的模型
+        if (style != null|| type != null) {
+            userExtensionWrapper.leftJoin(ModelDAO.class, ModelDAO::getUserId, UserExtensionDAO::getId);
+
+            userExtensionWrapper
+                .and(Objects.nonNull(style), wrapper -> wrapper.eq( ModelDAO::getStyle, style))
+                .and(Objects.nonNull(type), wrapper -> wrapper.eq( ModelDAO::getType, type));
+        }
+
+        // 筛选出可见的模型
+        userExtensionWrapper.and(Objects.nonNull(isIdle), wrapper -> wrapper.eq(UserExtensionDAO::getIsIdle, isIdle));
+        userExtensionWrapper.and(Objects.nonNull(canUrgent), wrapper -> wrapper.gt(UserExtensionDAO::getPublicModelNum, VisibleEnum.PUBLIC));
+
+        // 仅选择用户ID
         userExtensionWrapper.select(UserExtensionDAO::getId);
-        userExtensionWrapper.gt(UserExtensionDAO::getPublicModelNum, 0);
+
+        // 按照时间降序排序
         userExtensionWrapper.orderByDesc(UserExtensionDAO::getCreateTime);
+
+        // 按页数据获取用户列表
         Page<UserExtensionDAO> page = new Page<>(current, size);
         Page<UserExtensionDAO> userExtensionDAOPage = userExtensionMapper.selectPage(page, userExtensionWrapper);
 

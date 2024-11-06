@@ -14,6 +14,7 @@ import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
+import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.types.utils.page.PageDTO;
 import com.psm.types.utils.VO.ResponseVO;
@@ -119,9 +120,9 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO, @ModelAttribute ModelDTO modelDTO) {
+    public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO, @ModelAttribute UserExtensionDTO userExtensionDTO, @ModelAttribute ModelDTO modelDTO) {
         try {
-            return ResponseVO.ok(modelsUserBindAdaptor.getModelsShowBars(pageDTO, modelDTO));
+            return ResponseVO.ok(modelsUserBindAdaptor.getModelsShowBars(pageDTO, userExtensionDTO, modelDTO));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
