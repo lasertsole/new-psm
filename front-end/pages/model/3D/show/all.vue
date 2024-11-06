@@ -1,6 +1,16 @@
 <template>
     <div class="all">
         <div class="items">
+            <div class="filterBar"
+                ref="filterBar"
+            >
+                <CommonFilterBar
+                    :filterItem="filterItem"
+                    @filterCommit="handerFilterCommit"
+                >
+                </CommonFilterBar>
+            </div>
+
             <template v-for="(item, index) in ModelShowItems.records" :key="index">
                 <ModelShowItem
                     :boxInfo="item"
@@ -13,8 +23,8 @@
             class="pagination"
             background
             layout="total, sizes, prev, pager, next, jumper"
-            :page-size="pageSize"
             :total="ModelShowItems.total"
+            v-model:page-size="pageSize"
             v-model:current-page="currentPage"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -23,23 +33,96 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted } from "vue";
     import type { ModelInfos } from "@/types/model";
-    import type { Page } from "@/types/common";
+    import type { Page, FilterItem } from "@/types/common";
+    import { StyleEnum, TypeEnum } from "@/enums/models.d";
+
+    // 样式标签列表
+    const styleOpts = Object.entries(StyleEnum);
+    // 类型标签列表
+    const typeOpts = Object.entries(TypeEnum);
+
+    const filterItem = ref<FilterItem>(
+        {
+            selectList:[
+                [
+                    ...styleOpts.map(item=>{
+                        return {
+                            label:item[0],
+                            value: item[1]
+                        }
+                    })
+                ],
+                [
+                    ...typeOpts.map(item=>{
+                        return {
+                            label:item[0],
+                            value: item[1]
+                        }
+                    })
+                ]
+            ],
+            switchList:[
+                {
+                    label: "档期空闲",
+                    value: 0,
+                },
+                {
+                    label: "能否加急",
+                    value: 1,
+                }
+            ]
+        }
+    );
     
-    const ModelShowItems:Ref<Page<ModelInfos>> = ref<Page<ModelInfos>>({records:[]});
+    const ModelShowItems: Ref<Page<ModelInfos>> = ref<Page<ModelInfos>>({records:[]});
     
     // 服务器渲染请求
     ModelShowItems.value = (await getModelsShowBars({current:1, size:10}));
 
-    const currentPage:Ref<number> = ref<number>(1);
-    const pageSize:Ref<number> = ref<number>(10);
+    const currentPage: Ref<number> = ref<number>(1);
+    const pageSize: Ref<number> = ref<number>(10);
+    const style: Ref<string | undefined> = ref<string>();
+    const type: Ref<string | undefined> = ref<string>();
+    const isIdle: Ref<boolean> = ref<boolean>(false);
+    const canUrgent: Ref<boolean> = ref<boolean>(false);
 
-    const handleSizeChange = async() => {
-        ModelShowItems.value = (await getModelsShowBars({current:currentPage.value, size:pageSize.value}));
+    async function handleSizeChange(): Promise<void> {
+        ModelShowItems.value = (await getModelsShowBars({
+            current:currentPage.value, 
+            size:pageSize.value,
+            style:style.value,
+            type:type.value,
+            isIdle:isIdle.value,
+            canUrgent:canUrgent.value
+        }));
     }
-    const handleCurrentChange = async() => {
-        ModelShowItems.value = (await getModelsShowBars({current:currentPage.value, size:pageSize.value}));
+
+    async function handleCurrentChange(): Promise<void> {
+        ModelShowItems.value = (await getModelsShowBars({
+            current:currentPage.value, 
+            size:pageSize.value,
+            style:style.value,
+            type:type.value,
+            isIdle:isIdle.value,
+            canUrgent:canUrgent.value
+        }));
+    }
+
+    async function handerFilterCommit({ typeArr, switchArr }: { typeArr:string[], switchArr: boolean[] }): Promise<void> {
+        style.value = typeArr[0];
+        type.value = typeArr[1];
+        isIdle.value = switchArr[0];
+        canUrgent.value = switchArr[1];
+
+        ModelShowItems.value = (await getModelsShowBars({
+            current:currentPage.value, 
+            size:pageSize.value,
+            style:style.value,
+            type:type.value,
+            isIdle:isIdle.value,
+            canUrgent:canUrgent.value
+        }));
     }
 
     onMounted(async ()=>{
@@ -64,6 +147,7 @@
         .items{
             @include fullWidth();
             min-height: 100%;
+            justify-self: flex-start;
         }
 
         .pagination{

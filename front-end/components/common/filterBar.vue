@@ -22,7 +22,7 @@
             class="m-2"
             size="small"
             type="primary"
-            @click="emits('changeClassifyOption', [])"
+            @click="emits('filterCommit', { typeArr: typeValue, switchArr: switchValue })"
         >
             查询
         </el-button>
@@ -39,22 +39,30 @@
     });
     
 
-    const emits = defineEmits(["changeClassifyOption"]);
+    const emits = defineEmits(["filterCommit"]);
 
     //大类选项
-    const typeValue = ref<string[]>([]);
-
-    
+    const typeValue: Ref<string[]> = ref<string[]>([]);
 
     //小类选项
-    const switchValue = ref<boolean[]>([]);
+    const switchValue: Ref<boolean[]> = ref<boolean[]>([]);
 </script>
 
 <style lang="scss" scoped>
+    @use "sass:math";
+    @import "@/common.scss";
+
     .filter-bar{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); // 自动适应列数，每列最小宽度为 100px
+        grid-template-rows: 1fr; // 只有一行
+        gap: 20px; // 网格项之间的间距
+        justify-content: start;
+        justify-items: start;
+
         .el-select{
             box-sizing: border-box;
-            width: 108px;
+            width: 100%;
             margin-right: 15px;
 
             ::placeholder{
@@ -63,9 +71,16 @@
         }
         .el-popper{
             box-sizing: border-box;
+            width: 100%;
         }
         .el-switch{
             margin-right: 15px;
+            width: 100%;
+            // display: flex;
+            // justify-content: center;
+        }
+        .el-button{
+            @include fixedWidth(80px);
         }
     }
 </style>

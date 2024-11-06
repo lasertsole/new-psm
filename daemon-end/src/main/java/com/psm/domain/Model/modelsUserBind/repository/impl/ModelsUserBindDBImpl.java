@@ -39,16 +39,16 @@ public class ModelsUserBindDBImpl implements ModelsUserBindDB {
 
         // 当筛选条件涉及到模型表的字段时才拼接模型表
         if (Objects.nonNull(style) || Objects.nonNull(type)) {
-            userExtensionWrapper.innerJoin(ModelDAO.class, ModelDAO::getUserId, UserExtensionDAO::getId);
+            userExtensionWrapper.innerJoin(ModelDAO.class, ModelDAO::getUserId, UserExtensionDAO::getId)
+
+                // 筛选出符合样式和类型的模型
+                .and(Objects.nonNull(style), wrapper -> wrapper.eq( ModelDAO::getStyle, style))
+
+                // 筛选出符合类型的模型
+                .and(Objects.nonNull(type), wrapper -> wrapper.eq( ModelDAO::getType, type));
         }
 
         userExtensionWrapper
-            // 筛选出符合样式和类型的模型
-            .and(Objects.nonNull(style), wrapper -> wrapper.eq( ModelDAO::getStyle, style))
-
-            // 筛选出符合类型的模型
-            .and(Objects.nonNull(type), wrapper -> wrapper.eq( ModelDAO::getType, type))
-
             // 筛选出可见的模型
             .and(Objects.nonNull(isIdle), wrapper -> wrapper.eq(UserExtensionDAO::getIsIdle, isIdle))
 

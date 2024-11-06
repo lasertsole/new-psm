@@ -13,4 +13,6 @@ export type UserInfo = {
     sex?: boolean;//0:男 1:女
     createTime?: string;
     isFollowed?: boolean;
+    isIdle?: boolean,
+    canUrgent?: boolean
 };

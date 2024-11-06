@@ -12,6 +12,8 @@ export const userInfo = reactive<UserInfo>({
     createTime: '',
     isAdmin: false,
     isLogin: false,
+    // isIdle: true,
+    // canUrgent: false
 });
 
 function updateUserInfo(data:UserInfo){

@@ -7,8 +7,8 @@ export type ModelInfo = {
     content?: string;
     cover?: Blob | string;
     entity?: Blob | string;
-    style: string;
-    type: string;
+    style?: string;
+    type?: string;
     visible?: string;
     createTime?: string;
 };

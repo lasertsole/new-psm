@@ -16,6 +16,7 @@
 <style lang="scss" scoped>
     @use "sass:math";
     @import "@/common.scss";
+
     .logo{
         height: 100%;
         display: flex;
@@ -23,9 +24,11 @@
         align-items: center;
         margin-right: 10px;
         color: #fb7299;
+        
         &:hover{
             color: #fb7299
         }
+
         &-image{
             @include fixedSquare(80px);
             background-image: url(/images/psmlogo.png);
@@ -34,15 +37,18 @@
             background-size: 90px;
             margin-right: 5px;
         }
+
         &-text{
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
+
             >*{
                 display: flex;
                 justify-content: center;
             }
+
             h2{
                 margin-top: 10px;
                 font-size: 28px;
@@ -57,11 +63,13 @@
             }
         }
     }
+
     @media screen and (max-width: 800px) and (min-width: 600px) {
         .logo{
             display: none;
         }
     }
+
     @media screen and (max-width: 600px) {
         .logo{
             &-image{

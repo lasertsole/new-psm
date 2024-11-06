@@ -11,15 +11,6 @@
             </CommonTagBar>
         </div>
 
-        <div class="filterBar"
-            ref="filterBar"
-        >
-            <CommonFilterBar
-                :filterItem="filterItem"
-            >
-            </CommonFilterBar>
-        </div>
-
         <div class="content" ref="content">
             <NuxtPage keepalive/>
         </div>
@@ -27,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-    import type { TagBarItem, FilterItem } from "@/types/common";
-    import { StyleEnum, TypeEnum, PrimarySort, SortWay } from "@/enums/models.d";
+    import type { TagBarItem } from "@/types/common";
+    import { StyleEnum, TypeEnum, PrimarySort } from "@/enums/models.d";
     
     // 样式标签列表
     const styleOpts = Object.entries(StyleEnum);
@@ -50,53 +41,20 @@
         },
     ]);
 
-    const filterItem = ref<FilterItem>(
-        {
-            selectList:[
-                [
-                    ...styleOpts.map(item=>{
-                        return {
-                            label:item[0],
-                            value: item[1]
-                        }
-                    })
-                ],
-                [
-                    ...typeOpts.map(item=>{
-                        return {
-                            label:item[0],
-                            value: item[1]
-                        }
-                    })
-                ]
-            ],
-            switchList:[
-                {
-                    label: "档期空闲",
-                    value: 0,
-                },
-                {
-                    label: "能否加急",
-                    value: 1,
-                }
-            ]
-        }
-    );
+
     
     const show: Ref<HTMLElement | undefined> = ref<HTMLElement>();
     const tagBar: Ref<HTMLElement | undefined> = ref<HTMLElement>();
-    const filterBar: Ref<HTMLElement | undefined> = ref<HTMLElement>();
     const content: Ref<HTMLElement | undefined> = ref<HTMLElement>();
     const contentHeight: Ref<string> = ref<string>('');
 
     function computeHeight(): void {
-        if(!show.value||!tagBar.value||!filterBar.value) return
+        if(!show.value||!tagBar.value) return
 
         contentHeight.value = show.value.parentElement!.clientHeight
         - Number(window.getComputedStyle(show.value).paddingTop.replace('px',''))
         - Number(window.getComputedStyle(show.value).paddingBottom.replace('px',''))
         - tagBar.value.clientHeight
-        - filterBar.value.clientHeight
         + 'px';
     }
 

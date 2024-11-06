@@ -1,4 +1,5 @@
 import type { Page } from "@/types/common";
+import type { UserInfo } from "@/types/user";
 import type { ModelInfo, ModelInfos, ModelInfoDetail } from "@/types/model";
 
 export async function uploadModel(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
@@ -46,13 +47,19 @@ export async function uploadModelInfo({title, content, cover, style, type, visib
 };
 
 
-export async function getModelsShowBars({current, size}:Page<ModelInfos>):Promise<Page<ModelInfos>> {
+export async function getModelsShowBars(
+    {current, size, isIdle, canUrgent, style, type}:
+    Page<ModelInfos>&UserInfo&ModelInfo): Promise<Page<ModelInfos>> {
     const res:any = await fetchApi({
         url: '/models',
         method: 'get',
         opts:{
             current,
-            size
+            size,
+            isIdle,
+            canUrgent,
+            style,
+            type
         }
     });
     
