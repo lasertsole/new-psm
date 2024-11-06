@@ -17,3 +17,13 @@ export enum TypeEnum {
     "复古" = "retro",
     "未来主义" = "future",
 }
+
+export enum PrimarySort{
+    "全部" = 0,
+    "我关注的" = 1
+}
+
+export enum SortWay{
+    "按时间" = 0,
+    "按公开模型数" = 1,
+}

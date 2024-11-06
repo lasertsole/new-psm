@@ -28,9 +28,13 @@
 
 <script setup lang="ts">
     import type { TagBarItem, FilterItem } from "@/types/common";
-    import { PrimarySort } from "@/enums/subtitles.d";
-    import { SortWay } from "@/enums/subtitles.d";
+    import { StyleEnum, TypeEnum, PrimarySort, SortWay } from "@/enums/models.d";
     
+    // 样式标签列表
+    const styleOpts = Object.entries(StyleEnum);
+    // 类型标签列表
+    const typeOpts = Object.entries(TypeEnum);
+
     const tabList = ref<TagBarItem[]>([
         {
             tabName:PrimarySort[0],
@@ -50,28 +54,20 @@
         {
             selectList:[
                 [
-                    {
-                        label: '直播切片',
-                        value: 0,
-                    },
-                    {
-                        label: '歌曲相关',
-                        value: 1,
-                    },
-                    {
-                        label: '视频后期',
-                        value: 2,
-                    }
+                    ...styleOpts.map(item=>{
+                        return {
+                            label:item[0],
+                            value: item[1]
+                        }
+                    })
                 ],
                 [
-                    {
-                        label: SortWay[0],
-                        value: 0,
-                    },
-                    {
-                        label: SortWay[1],
-                        value: 1,
-                    }
+                    ...typeOpts.map(item=>{
+                        return {
+                            label:item[0],
+                            value: item[1]
+                        }
+                    })
                 ]
             ],
             switchList:[
@@ -127,7 +123,6 @@
         @include fullWidth();
         min-height: 100%;
         box-sizing: border-box;
-        overflow-y: auto;
         padding: 30px 80px;
         display: flex;
         flex-direction: column;

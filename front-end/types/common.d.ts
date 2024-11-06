@@ -15,8 +15,8 @@ export type TagBarItem = {
 };
 
 export type OptionInfo = {
-    label:string,
-    value: number
+    label: string,
+    value: string | number
 }
 
 export type FilterItem = {

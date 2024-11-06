@@ -37,18 +37,26 @@ public class ModelsUserBindDBImpl implements ModelsUserBindDB {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         MPJLambdaWrapper<UserExtensionDAO> userExtensionWrapper = new MPJLambdaWrapper<>();
 
-        // 筛选出符合样式和类型的模型
-        if (style != null|| type != null) {
-            userExtensionWrapper.leftJoin(ModelDAO.class, ModelDAO::getUserId, UserExtensionDAO::getId);
-
-            userExtensionWrapper
-                .and(Objects.nonNull(style), wrapper -> wrapper.eq( ModelDAO::getStyle, style))
-                .and(Objects.nonNull(type), wrapper -> wrapper.eq( ModelDAO::getType, type));
+        // 当筛选条件涉及到模型表的字段时才拼接模型表
+        if (Objects.nonNull(style) || Objects.nonNull(type)) {
+            userExtensionWrapper.innerJoin(ModelDAO.class, ModelDAO::getUserId, UserExtensionDAO::getId);
         }
 
-        // 筛选出可见的模型
-        userExtensionWrapper.and(Objects.nonNull(isIdle), wrapper -> wrapper.eq(UserExtensionDAO::getIsIdle, isIdle));
-        userExtensionWrapper.and(Objects.nonNull(canUrgent), wrapper -> wrapper.gt(UserExtensionDAO::getPublicModelNum, VisibleEnum.PUBLIC));
+        userExtensionWrapper
+            // 筛选出符合样式和类型的模型
+            .and(Objects.nonNull(style), wrapper -> wrapper.eq( ModelDAO::getStyle, style))
+
+            // 筛选出符合类型的模型
+            .and(Objects.nonNull(type), wrapper -> wrapper.eq( ModelDAO::getType, type))
+
+            // 筛选出可见的模型
+            .and(Objects.nonNull(isIdle), wrapper -> wrapper.eq(UserExtensionDAO::getIsIdle, isIdle))
+
+            // 筛选出可以加急接单的用户
+            .and(Objects.nonNull(canUrgent), wrapper -> wrapper.eq(UserExtensionDAO::getCanUrgent, canUrgent))
+
+            // 筛选出至少有一个公开模型的用户
+            .and(wrapper -> wrapper.ge(UserExtensionDAO::getPublicModelNum, 1));
 
         // 仅选择用户ID
         userExtensionWrapper.select(UserExtensionDAO::getId);
@@ -100,5 +108,5 @@ public class ModelsUserBindDBImpl implements ModelsUserBindDB {
         modelsUserBindDAOPage.setRecords(modelsUserBindDAOs);
 
         return modelsUserBindDAOPage;
-    };
+    }
 }

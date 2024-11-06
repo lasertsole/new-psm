@@ -16,7 +16,6 @@
             :page-size="pageSize"
             :total="ModelShowItems.total"
             v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
         />
@@ -36,10 +35,10 @@
     const currentPage:Ref<number> = ref<number>(1);
     const pageSize:Ref<number> = ref<number>(10);
 
-    const handleSizeChange = async(val: number) => {
+    const handleSizeChange = async() => {
         ModelShowItems.value = (await getModelsShowBars({current:currentPage.value, size:pageSize.value}));
     }
-    const handleCurrentChange = async(val: number) => {
+    const handleCurrentChange = async() => {
         ModelShowItems.value = (await getModelsShowBars({current:currentPage.value, size:pageSize.value}));
     }
 

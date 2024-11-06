@@ -1,7 +1,7 @@
 <template>
     <div class="filter-bar">
         <template v-for="(item,index) in filterItem.selectList" :key="index">
-            <el-select v-model="typeValue[index]" class="m-2" :placeholder="item&&item[0].label" size="small">
+            <el-select v-model="typeValue[index]" class="m-2" placeholder="no select" size="small">
                 <el-option
                     v-for="subItem in item"
                     :key="subItem.label"
@@ -17,6 +17,15 @@
             :key="item.label"
             :active-text="item.label"
         />
+
+        <el-button
+            class="m-2"
+            size="small"
+            type="primary"
+            @click="emits('changeClassifyOption', [])"
+        >
+            查询
+        </el-button>
     </div>
 </template>
 
@@ -33,24 +42,12 @@
     const emits = defineEmits(["changeClassifyOption"]);
 
     //大类选项
-    let selectListLength:number = props.filterItem.selectList?props.filterItem.selectList.length:0;
-    const typeValue = ref<number[]>([]);
-    for(let i = 0;i < selectListLength; i++){
-        typeValue.value[i] = 0;
-    }
+    const typeValue = ref<string[]>([]);
+
     
 
     //小类选项
-    let switchListLength:number = props.filterItem.switchList?props.filterItem.switchList.length:0;
     const switchValue = ref<boolean[]>([]);
-        for(let i = 0;i < switchListLength; i++){
-            switchValue.value[i] = false;
-    }
-
-    //当上述条件变化时向服务器发出请求
-    watch([typeValue, switchValue],(newVal, oldVal)=>{
-        emits("changeClassifyOption", newVal);
-    });
 </script>
 
 <style lang="scss" scoped>
