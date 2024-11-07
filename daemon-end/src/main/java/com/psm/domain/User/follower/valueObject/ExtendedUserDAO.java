@@ -14,7 +14,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExtendedUserDAO extends UserDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -413831532714981323L;
+    private static final long serialVersionUID = -4875055487265364549L;
 
     Boolean isFollowed;
 
@@ -28,6 +28,11 @@ public class ExtendedUserDAO extends UserDAO implements Serializable {
             String email,
             SexEnum sex,
             String profile,
+            Short publicModelNum,
+            Long modelMaxStorage,
+            Long modelCurStorage,
+            Boolean isIdle,
+            Boolean canUrgent,
             String createTime,
             String modifyTime,
             Boolean deleted,
@@ -43,6 +48,11 @@ public class ExtendedUserDAO extends UserDAO implements Serializable {
                 email,
                 sex,
                 profile,
+                publicModelNum,
+                modelMaxStorage,
+                modelCurStorage,
+                isIdle,
+                canUrgent,
                 createTime,
                 modifyTime,
                 deleted,
@@ -61,6 +71,11 @@ public class ExtendedUserDAO extends UserDAO implements Serializable {
                 userDAO.getEmail(),
                 userDAO.getSex(),
                 userDAO.getProfile(),
+                userDAO.getPublicModelNum(),
+                userDAO.getModelMaxStorage(),
+                userDAO.getModelCurStorage(),
+                userDAO.getIsIdle(),
+                userDAO.getCanUrgent(),
                 userDAO.getCreateTime(),
                 userDAO.getModifyTime(),
                 userDAO.getDeleted(),

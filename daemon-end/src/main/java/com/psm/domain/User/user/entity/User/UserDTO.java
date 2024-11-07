@@ -19,7 +19,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 3129738011696186066L;
+    private static final long serialVersionUID = 1085258276756409297L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -59,4 +59,17 @@ public class UserDTO implements Serializable {
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The profile format is incorrect")
     @Size(max = 255, message = "The profile length must not exceed 255 characters")
     private String profile;
+
+    @Min(value = 0, message = "The publicModelNum must be greater than or equal to 0")
+    private Short publicModelNum;
+
+    @Min(value = 0, message = "The modelMaxStorage must be greater than or equal to 0")
+    private Long modelMaxStorage;
+
+    @Min(value = 0, message = "The modelCurStorage must be greater than or equal to 0")
+    private Long modelCurStorage;
+
+    private Boolean isIdle;
+
+    private Boolean canUrgent;
 }

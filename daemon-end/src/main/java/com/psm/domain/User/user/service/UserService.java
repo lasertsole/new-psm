@@ -1,5 +1,6 @@
 package com.psm.domain.User.user.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import org.springframework.dao.DuplicateKeyException;
@@ -113,5 +114,57 @@ public interface UserService {
      * @return 用户DAO实体列表
      */
     List<UserDAO> getUserByIds(List<Long> ids);
+
+    /**
+     * 更新用户作品数量
+     *
+     * @param userId 用户ID
+     * @param work_num 作品数量
+     * @return boolean
+     */
+    boolean updateOnePublicModelNumById(Long userId, short work_num);
+
+    /**
+     * 更新用户作品数量
+     *
+     * @param id 用户ID
+     * @return boolean
+     */
+    boolean addOnePublicModelNumById(Long id);
+
+    /**
+     * 删除用户作品数量
+     *
+     * @param id 用户ID
+     * @return boolean
+     */
+    boolean removeOnePublicModelNumById(Long id);
+
+    /**
+     * 更新用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return boolean
+     */
+    Long updateOnePublicModelStorageById(Long id, Long storage);
+
+    /**
+     * 增加用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long addOnePublicModelStorageById(Long id, Long storage);
+
+    /**
+     * 减少用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long minusOnePublicModelStorageById(Long id, Long storage);
 }
 

@@ -19,32 +19,44 @@ public abstract class ExtendedUserConvertor {
 
     public ExtendedUserBO DAO2BO(ExtendedUserDAO extendedUserDAO) {
         return new ExtendedUserBO(
-            extendedUserDAO.getId(),
-            extendedUserDAO.getName(),
-            extendedUserDAO.getPassword(),
-            extendedUserDAO.getPhone(),
-            extendedUserDAO.getAvatar(),
-            extendedUserDAO.getEmail(),
-            extendedUserDAO.getSex(),
-            extendedUserDAO.getProfile(),
-            extendedUserDAO.getCreateTime(),
-            extendedUserDAO.getModifyTime(),
-            extendedUserDAO.getIsFollowed()
+                extendedUserDAO.getId(),
+                extendedUserDAO.getName(),
+                extendedUserDAO.getPassword(),
+                extendedUserDAO.getPhone(),
+                extendedUserDAO.getAvatar(),
+                extendedUserDAO.getEmail(),
+                extendedUserDAO.getSex(),
+                extendedUserDAO.getProfile(),
+                extendedUserDAO.getPublicModelNum(),
+                extendedUserDAO.getModelMaxStorage(),
+                extendedUserDAO.getModelCurStorage(),
+                extendedUserDAO.getIsIdle(),
+                extendedUserDAO.getCanUrgent(),
+                extendedUserDAO.getCreateTime(),
+                extendedUserDAO.getModifyTime(),
+                extendedUserDAO.getIsFollowed()
         );
-    };
+    }
+
+    ;
 
     public ExtendedUserVO BO2OtherVO(ExtendedUserBO extendedUserBO) {
         return new ExtendedUserVO(
-            Optional.ofNullable(extendedUserBO.getId()).map(Object::toString).orElse(null),
-            extendedUserBO.getName(),
-            null,
-            null,
-            extendedUserBO.getAvatar(),
-            null,
-            Optional.ofNullable(extendedUserBO.getSex()).map(SexEnum::getValue).orElse(null),
-            extendedUserBO.getProfile(),
-            extendedUserBO.getCreateTime(),
-            extendedUserBO.getIsFollowed()
+                Optional.ofNullable(extendedUserBO.getId()).map(Object::toString).orElse(null),
+                extendedUserBO.getName(),
+                null,
+                null,
+                extendedUserBO.getAvatar(),
+                null,
+                Optional.ofNullable(extendedUserBO.getSex()).map(SexEnum::getValue).orElse(null),
+                extendedUserBO.getProfile(),
+                extendedUserBO.getPublicModelNum(),
+                null,
+                null,
+                extendedUserBO.getIsIdle(),
+                extendedUserBO.getCanUrgent(),
+                extendedUserBO.getCreateTime(),
+                extendedUserBO.getIsFollowed()
         );
-    };
+    }
 }

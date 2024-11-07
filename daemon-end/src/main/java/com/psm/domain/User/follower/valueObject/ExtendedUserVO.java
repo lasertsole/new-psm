@@ -11,7 +11,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExtendedUserVO extends UserVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -2853192938223143416L;
+    private static final long serialVersionUID = 8160732814235369592L;
 
     Boolean isFollowed;
 
@@ -25,6 +25,11 @@ public class ExtendedUserVO extends UserVO implements Serializable {
         String email,
         Boolean sex,
         String profile,
+        Short publicModelNum,
+        Long modelMaxStorage,
+        Long modelCurStorage,
+        Boolean isIdle,
+        Boolean canUrgent,
         String createTime,
         Boolean followed)
     {
@@ -37,6 +42,11 @@ public class ExtendedUserVO extends UserVO implements Serializable {
             email,
             sex,
             profile,
+            publicModelNum,
+            modelMaxStorage,
+            modelCurStorage,
+            isIdle,
+            canUrgent,
             createTime
         );
         this.isFollowed = followed;
@@ -52,6 +62,11 @@ public class ExtendedUserVO extends UserVO implements Serializable {
             userVO.getEmail(),
             userVO.getSex(),
             userVO.getProfile(),
+            userVO.getPublicModelNum(),
+            userVO.getModelMaxStorage(),
+            userVO.getModelCurStorage(),
+            userVO.getIsIdle(),
+            userVO.getCanUrgent(),
             userVO.getCreateTime()
         );
         this.isFollowed = followed;

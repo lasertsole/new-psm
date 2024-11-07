@@ -1,7 +1,13 @@
 <template>
     <div class="filter-bar">
         <template v-for="(item,index) in filterItem.selectList" :key="index">
-            <el-select v-model="typeValue[index]" class="m-2" placeholder="no select" size="small">
+            <el-select
+                class="m-2" 
+                clearable
+                v-model="typeValue[index]" 
+                placeholder="no select"
+                size="small">
+                
                 <el-option
                     v-for="subItem in item"
                     :key="subItem.label"
@@ -45,7 +51,7 @@
     const typeValue: Ref<string[]> = ref<string[]>([]);
 
     //小类选项
-    const switchValue: Ref<boolean[]> = ref<boolean[]>([]);
+    const switchValue: Ref<boolean[]> = ref<boolean[]>([false, false]);
 </script>
 
 <style lang="scss" scoped>

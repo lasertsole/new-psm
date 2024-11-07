@@ -41,19 +41,21 @@ public abstract class UserConvertor {
         @Mapping(target = "id", qualifiedByName = "longToString"),
         @Mapping(target = "phone", ignore = true),
         @Mapping(target = "email", ignore = true),
-        @Mapping(source = "sex.value", target = "sex", defaultExpression = "java(null)")
+        @Mapping(source = "sex.value", target = "sex", defaultExpression = "java(null)"),
+        @Mapping(target = "modelMaxStorage", ignore = true),
+        @Mapping(target = "modelCurStorage", ignore = true)
     })
     public abstract UserVO BO2OtherVO(UserBO userBO);
 
     @Mappings({
-        @Mapping(target = "hasPass", ignore = true),
+        @Mapping(source = "password", target = "hasPass", qualifiedByName = "processPass"),
         @Mapping(target = "id", qualifiedByName = "longToString"),
         @Mapping(source = "sex.value", target = "sex", defaultExpression = "java(null)")
     })
     public abstract UserVO BO2CurrentVO(UserBO userBO);
 
-    @AfterMapping
-    protected void afterBO2CurrentVO(@MappingTarget UserVO currentUserVO, UserBO userBO) {
-        currentUserVO.setHasPass(BcryptEncoderUtil.isBcrypt(userBO.getPassword()));
+    @Named("processPass")
+    protected Boolean processPass(String password) {
+        return BcryptEncoderUtil.isBcrypt(password);
     }
 }

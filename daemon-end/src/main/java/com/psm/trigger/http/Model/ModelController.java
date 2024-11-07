@@ -1,27 +1,17 @@
 package com.psm.trigger.http.Model;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Model.model.adaptor.ModelAdaptor;
 import com.psm.domain.Model.model.entity.ModelBO;
 import com.psm.domain.Model.model.entity.ModelDTO;
-import com.psm.domain.Model.modelExtendedUserBind.adaptor.ModelExtendedUserBindAdaptor;
-import com.psm.domain.Model.modelExtendedUserBind.valueObject.ModelExtendedUserBindBO;
-import com.psm.domain.Model.modelsUserBind.adaptor.ModelsUserBindAdaptor;
-import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindBO;
+import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
+import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
-import com.psm.domain.User.follower.valueObject.ExtendedUserBO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.domain.User.user.adaptor.UserExtensionAdapter;
-import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.domain.User.user.entity.UserExtension.UserExtensionBO;
-import com.psm.domain.User.user.entity.UserExtension.UserExtensionDTO;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.types.utils.page.PageDTO;
 import com.psm.types.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -34,16 +24,13 @@ import java.util.*;
 @RequestMapping("/models")
 public class ModelController {
     @Autowired
-    private ModelsUserBindAdaptor modelsUserBindAdaptor;
+    private Models_UserAdaptor models_UserAdaptor;
 
     @Autowired
-    private ModelExtendedUserBindAdaptor modelExtendedUserBindAdaptor;
+    private Model_ExtendedUserAdaptor modelExtendedUserBindAdaptor;
 
     @Autowired
     private UserAdaptor userAdaptor;
-
-    @Autowired
-    private UserExtensionAdapter userExtensionAdapter;
 
     @Autowired
     private ModelAdaptor modelAdaptor;
@@ -98,11 +85,11 @@ public class ModelController {
 
             // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
             if (Objects.equals(modelBO.getVisible(), VisibleEnum.PUBLIC)) {
-                userExtensionAdapter.addOnePublicModelNumById(userId);
+                userAdaptor.addOnePublicModelNumById(userId);
             }
 
             // 增加用户已用的存储空间为当前文件大小
-            userExtensionAdapter.addOneModelStorageById(userId, modelSize);
+            userAdaptor.addOnePublicModelStorageById(userId, modelSize);
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
@@ -129,10 +116,12 @@ public class ModelController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Boolean isFollowing
     ) {
+        Long userSelfId = null;
+
         try {
-            Long userSelfId = null;
             if (Objects.nonNull(isFollowing) && isFollowing) userSelfId = userAdaptor.getAuthorizedUserId();
-            return ResponseVO.ok(modelsUserBindAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId));
+
+            return ResponseVO.ok(models_UserAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

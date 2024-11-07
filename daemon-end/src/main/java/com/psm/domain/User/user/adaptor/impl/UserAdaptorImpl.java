@@ -7,6 +7,7 @@ import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.service.UserService;
+import com.psm.types.utils.Valid.ValidUtil;
 import com.psm.types.utils.page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
@@ -25,6 +26,9 @@ import java.util.Objects;
 @Slf4j
 @Adaptor
 public class UserAdaptorImpl implements UserAdaptor {
+    @Autowired
+    ValidUtil validUtil;
+
     @Autowired
     UserService userService;
 
@@ -232,5 +236,147 @@ public class UserAdaptorImpl implements UserAdaptor {
         return userDAOList.stream().map(
                 UserConvertor.INSTANCE::DAO2BO
         ).toList();
+    }
+
+    @Override
+    public boolean updateOnePublicModelNumById(@Valid UserDTO userDTO) {
+        if (
+                Objects.isNull(userDTO.getId())
+                || Objects.isNull(userDTO.getPublicModelNum())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        return userService.updateOnePublicModelNumById(userDTO.getId(), userDTO.getPublicModelNum());
+    }
+
+    @Override
+    public boolean updateOnePublicModelNumById(UserBO userBO) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(userBO.getId())
+                || Objects.isNull(userBO.getPublicModelNum())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", userBO.getId(), "publicModelNum", userBO.getPublicModelNum()), UserDTO.class);
+
+        return userService.updateOnePublicModelNumById(userBO.getId(), userBO.getPublicModelNum());
+    }
+
+    @Override
+    public boolean addOnePublicModelNumById(Long id) throws InstantiationException, IllegalAccessException {
+        if (Objects.isNull(id))
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", id), UserDTO.class);
+
+        return userService.addOnePublicModelNumById(id);
+    }
+
+    @Override
+    public boolean addOnePublicModelNumById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+        if (Objects.isNull(userDTO.getId()))
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", userDTO.getId()), UserDTO.class);
+
+        return userService.addOnePublicModelNumById(userDTO.getId());
+    }
+
+    @Override
+    public boolean removeOnePublicModelNumById(Long id) throws InstantiationException, IllegalAccessException {
+        if (Objects.isNull(id))
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", id), UserDTO.class);
+
+        return userService.removeOnePublicModelNumById(id);
+    }
+
+    @Override
+    public boolean removeOnePublicModelNumById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+        if (Objects.isNull(userDTO.getId()))
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", userDTO.getId()), UserDTO.class);
+
+        return userService.removeOnePublicModelNumById(userDTO.getId());
+    }
+
+    @Override
+    public Long updateOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(id)
+                || Objects.isNull(storage)
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", id, "storage", storage), UserDTO.class);
+
+        return userService.updateOnePublicModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long updateOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(userDTO.getId())
+                || Objects.isNull(userDTO.getModelCurStorage())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", userDTO.getId(), "storage", userDTO.getModelCurStorage()), UserDTO.class);
+
+        return userService.updateOnePublicModelStorageById(userDTO.getId(), userDTO.getModelCurStorage());
+    }
+
+    @Override
+    public Long addOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(id)
+                || Objects.isNull(storage)
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", id, "storage", storage), UserDTO.class);
+
+        return userService.addOnePublicModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long addOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(userDTO.getId())
+                || Objects.isNull(userDTO.getModelCurStorage())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", userDTO.getId(), "storage", userDTO.getModelCurStorage()), UserDTO.class);
+
+        return userService.addOnePublicModelStorageById(userDTO.getId(), userDTO.getModelCurStorage());
+    }
+
+    @Override
+    public Long minusOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(id)
+                || Objects.isNull(storage)
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", id, "storage", storage), UserDTO.class);
+
+        return userService.minusOnePublicModelStorageById(id, storage);
+    }
+
+    @Override
+    public Long minusOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+        if (
+                Objects.isNull(userDTO.getId())
+                || Objects.isNull(userDTO.getModelCurStorage())
+        )
+            throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("id", userDTO.getId(), "storage", userDTO.getModelCurStorage()), UserDTO.class);
+
+        return userService.minusOnePublicModelStorageById(userDTO.getId(), userDTO.getModelCurStorage());
     }
 }

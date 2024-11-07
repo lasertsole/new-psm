@@ -20,7 +20,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDAO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -1869498695200374998L;
+    private static final long serialVersionUID = 8551539412702599762L;
 
     @TableId
     private Long id;
@@ -31,6 +31,11 @@ public class UserDAO implements Serializable {
     private String email;
     private SexEnum sex;
     private String profile;
+    private Short publicModelNum;
+    private Long modelMaxStorage;
+    private Long modelCurStorage;
+    private Boolean isIdle;
+    private Boolean canUrgent;
     private String createTime;
     private String modifyTime;
 

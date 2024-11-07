@@ -25,6 +25,11 @@ public class UserDBImpl extends ServiceImpl<UserMapper, UserDAO> implements User
     }
 
     @Override
+    public UserDAO selectById(Long id) {
+        return userMapper.selectById(id);
+    }
+
+    @Override
     public UserDAO selectById(UserDAO userDAO){
         return userMapper.selectById(userDAO.getId());
     }
@@ -47,6 +52,11 @@ public class UserDBImpl extends ServiceImpl<UserMapper, UserDAO> implements User
         wrapper.set(!ObjectUtil.isEmpty(userDAO.getPhone()), UserDAO::getPhone, userDAO.getPhone());
         wrapper.set(!ObjectUtil.isEmpty(userDAO.getEmail()), UserDAO::getEmail, userDAO.getEmail());
         wrapper.set(!ObjectUtil.isEmpty(userDAO.getSex()), UserDAO::getSex, userDAO.getSex());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPublicModelNum()), UserDAO::getPublicModelNum, userDAO.getPublicModelNum());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelMaxStorage()), UserDAO::getModelMaxStorage, userDAO.getModelMaxStorage());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelCurStorage()), UserDAO::getModelCurStorage, userDAO.getModelCurStorage());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getIsIdle()), UserDAO::getIsIdle, userDAO.getIsIdle());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getCanUrgent()), UserDAO::getCanUrgent, userDAO.getCanUrgent());
 
         userMapper.update(null,wrapper);
     }

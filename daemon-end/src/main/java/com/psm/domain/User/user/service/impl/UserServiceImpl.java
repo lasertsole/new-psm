@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.repository.LoginUserRedis;
-import com.psm.domain.User.user.repository.UserExtensionDB;
 import com.psm.domain.User.user.repository.UserOSS;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.UserService;
@@ -38,9 +36,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private LoginUserRedis loginUserRedis;
-
-    @Autowired
-    private UserExtensionDB userExtensionDB;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -110,9 +105,6 @@ public class UserServiceImpl implements UserService {
 
         // 将register对象保存到数据库
         userDB.save(register);
-
-        // 在数据库中创建一个UserExtension记录
-        userExtensionDB.insert(new UserExtensionDAO(register.getId()));
 
         // 使用未加密密码的user对象登录
         Map<String, Object> loginMap = login(userDTO);
@@ -254,5 +246,65 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDAO> getUserByIds(List<Long> ids) {
         return userDB.selectUserByIds(ids);
+    }
+
+    @Override
+    public boolean updateOnePublicModelNumById(Long id, short work_num) {
+        UserDAO userDAO = new UserDAO();
+        userDAO.setId(id);
+        userDAO.setPublicModelNum(work_num);
+
+        return userDB.updateById(userDAO);
+    }
+
+    @Override
+    public boolean addOnePublicModelNumById(Long id) {
+        UserDAO userDAO = userDB.selectById(id);
+        short work_num = userDAO.getPublicModelNum();
+
+        return updateOnePublicModelNumById(id, (short) (work_num + 1));
+    }
+
+    @Override
+    public boolean removeOnePublicModelNumById(Long id) {
+        UserDAO userDAO = userDB.selectById(id);
+        short work_num = userDAO.getPublicModelNum();
+
+        if ( work_num == 0) return false;
+
+        if ( work_num < 0) return updateOnePublicModelNumById(id, (short) 0);
+
+        return updateOnePublicModelNumById(id, (short) (work_num - 1));
+    }
+
+    @Override
+    public Long updateOnePublicModelStorageById(Long id, Long storage) {
+        UserDAO userDAO = new UserDAO();
+        userDAO.setId(id);
+        userDAO.setModelCurStorage(storage);
+        if(!userDB.updateById(userDAO)) throw new RuntimeException("The user does not exist.");
+
+        return storage;
+    }
+
+    @Override
+    public Long addOnePublicModelStorageById(Long id, Long storage) {
+        UserDAO userDAO = userDB.selectById(id);
+        long modelCurStorage = userDAO.getModelCurStorage();
+        long modelMaxStorage = userDAO.getModelMaxStorage();
+        long newStorage = modelCurStorage + storage;
+        if (newStorage > modelMaxStorage) throw new RuntimeException("The storage exceeds the maximum limit.");
+
+        return updateOnePublicModelStorageById(id, modelCurStorage + storage);
+    }
+
+    @Override
+    public Long minusOnePublicModelStorageById(Long id, Long storage) {
+        UserDAO userDAO = userDB.selectById(id);
+        long modelCurStorage = userDAO.getModelCurStorage();
+        long newStorage = modelCurStorage - storage;
+        if (newStorage < 0) newStorage = 0;
+
+        return updateOnePublicModelStorageById(id, newStorage);
     }
 }

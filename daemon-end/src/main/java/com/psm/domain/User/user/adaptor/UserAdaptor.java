@@ -1,6 +1,8 @@
 package com.psm.domain.User.user.adaptor;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.types.utils.page.PageDTO;
 import org.springframework.dao.DuplicateKeyException;
@@ -122,4 +124,103 @@ public interface UserAdaptor {
      * @return 用户DAO实体列表
      */
     List<UserBO> getUserByIds(List<Long> ids);
+
+    /**
+     * 更新用户作品数量
+     *
+     * @param userDTO 用户DTO实体
+     * @return boolean
+     */
+    boolean updateOnePublicModelNumById(UserDTO userDTO);
+
+    /**
+     * 更新用户作品数量
+     *
+     * @param userBO 用户BO实体
+     * @return boolean
+     */
+    boolean updateOnePublicModelNumById(UserBO userBO) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 更新用户作品数量
+     *
+     * @param id 用户id
+     * @return boolean
+     */
+    boolean addOnePublicModelNumById(Long id) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 更新用户作品数量
+     *
+     * @param userDTO 用户DTO实体
+     * @return boolean
+     */
+    boolean addOnePublicModelNumById(UserDTO userDTO) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 删除用户作品数量
+     *
+     * @param id 用户ID
+     * @return boolean
+     */
+    boolean removeOnePublicModelNumById(Long id) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 删除用户作品数量
+     *
+     * @param userDTO 用户DTO实体
+     * @return boolean
+     */
+    boolean removeOnePublicModelNumById(UserDTO userDTO) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 更新用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return boolean
+     */
+    Long updateOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 更新用户已用的存储空间
+     *
+     * @param userDTO 用户DTO实体
+     * @return boolean
+     */
+    Long updateOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 增加用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long addOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 增加用户已用的存储空间
+     *
+     * @param userDTO 用户DTO实体
+     * @return 已用的存储空间
+     */
+    Long addOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 减少用户已用的存储空间
+     *
+     * @param id 用户ID
+     * @param storage 存储空间
+     * @return 已用的存储空间
+     */
+    Long minusOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException;
+
+    /**
+     * 减少用户已用的存储空间
+     *
+     * @param userDTO 用户DTO实体
+     * @return 已用的存储空间
+     */
+    Long minusOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException;
 }

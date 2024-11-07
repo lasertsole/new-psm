@@ -15,7 +15,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserVO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 2550332823179953513L;
+    private static final long serialVersionUID = -8422855252853579864L;
 
     private String id;
     private String name;
@@ -25,5 +25,10 @@ public class UserVO implements Serializable {
     private String email;
     private Boolean sex;
     private String profile;
+    private Short publicModelNum;
+    private Long modelMaxStorage;
+    private Long modelCurStorage;
+    private Boolean isIdle;
+    private Boolean canUrgent;
     private String createTime;
 }

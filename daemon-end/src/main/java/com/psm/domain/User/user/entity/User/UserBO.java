@@ -17,7 +17,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserBO implements BO2VOable<UserVO>, Serializable {
     @Serial
-    private static final long serialVersionUID = -855115727901322256L;
+    private static final long serialVersionUID = -8417667463484249016L;
 
     private Long id;
     private String name;
@@ -27,6 +27,11 @@ public class UserBO implements BO2VOable<UserVO>, Serializable {
     private String email;
     private SexEnum sex;
     private String profile;
+    private Short publicModelNum;
+    private Long modelMaxStorage;
+    private Long modelCurStorage;
+    private Boolean isIdle;
+    private Boolean canUrgent;
     private String createTime;
     private String modifyTime;
 

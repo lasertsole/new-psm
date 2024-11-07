@@ -17,6 +17,14 @@ public interface UserDB extends IService<UserDAO> {
     /**
      * 根据id查找用户
      *
+     * @param id 用户id
+     * @return 查找到的用户DAO实体
+     */
+    UserDAO selectById(Long id);
+
+    /**
+     * 根据id查找用户
+     *
      * @param userDAO 用户DAO实体,应包含要查找的id
      * @return 查找到的用户DAO实体
      */
