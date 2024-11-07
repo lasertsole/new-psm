@@ -1,6 +1,7 @@
-import type { NitroFetchRequest } from 'nitropack';
 import * as tus from 'tus-js-client' // 假设 tus-js-client 是你使用的库
 import type { Upload } from 'tus-js-client';
+import type { Response } from "@/types/request";
+import type { NitroFetchRequest } from 'nitropack';
 
 interface Params {
     url: NitroFetchRequest;
@@ -40,7 +41,8 @@ export async function fetchApi({
   method = 'get',
   contentType = 'application/json',
   headeropts = {},
-}: Params){
+}: Params): Promise<Response>
+{
 
   // 设置请求头
   const headers:any = {};
@@ -61,7 +63,7 @@ export async function fetchApi({
   }
 
   // 发出请求
-  let res = await $fetch(url,{
+  let res:Response = await $fetch(url,{
     method,
     baseURL: import.meta.env.VITE_API_BACK_URL,
     ...params,

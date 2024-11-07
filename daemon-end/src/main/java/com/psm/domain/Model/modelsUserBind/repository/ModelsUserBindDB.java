@@ -12,8 +12,9 @@ public interface ModelsUserBindDB {
      * @param canUrgent 作者是否可紧急
      * @param style 模型风格
      * @param type 模型类型
+     * @param userSelfId 用户自己的id（查看关注的用户时要用）
      * @return 一页公开模型Bars DAO
      */
     Page<ModelsUserBindDAO> selectModelsShowBars(
-            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type);
+            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type, Long userSelfId);
 }

@@ -120,9 +120,19 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO getModelsShowBars(@ModelAttribute PageDTO pageDTO, @ModelAttribute UserExtensionDTO userExtensionDTO, @ModelAttribute ModelDTO modelDTO) {
+    public ResponseVO getModelsShowBars(
+            @RequestParam Integer current,
+            @RequestParam Integer size,
+            @RequestParam(required = false) Boolean isIdle,
+            @RequestParam(required = false) Boolean canUrgent,
+            @RequestParam(required = false) String style,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Boolean isFollowing
+    ) {
         try {
-            return ResponseVO.ok(modelsUserBindAdaptor.getModelsShowBars(pageDTO, userExtensionDTO, modelDTO));
+            Long userSelfId = null;
+            if (Objects.nonNull(isFollowing) && isFollowing) userSelfId = userAdaptor.getAuthorizedUserId();
+            return ResponseVO.ok(modelsUserBindAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

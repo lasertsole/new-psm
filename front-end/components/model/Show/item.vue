@@ -48,7 +48,8 @@
     
     .itemBox{
         margin-top: 15px;
-        height: 160px;
+        padding-bottom: 15px;
+        height: 175px;
         border-bottom: 1px solid rgba(165, 165, 165, 0.3568627451);
         display: flex;
         flex-direction: row;

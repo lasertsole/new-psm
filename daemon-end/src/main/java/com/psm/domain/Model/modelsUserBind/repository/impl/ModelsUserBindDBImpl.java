@@ -7,6 +7,7 @@ import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.domain.Model.modelsUserBind.repository.ModelsUserBindDB;
 import com.psm.domain.Model.modelsUserBind.valueObject.ModelsUserBindDAO;
+import com.psm.domain.User.follower.entity.FollowerDAO;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.UserExtension.UserExtensionDAO;
 import com.psm.infrastructure.DB.ModelMapper;
@@ -33,9 +34,16 @@ public class ModelsUserBindDBImpl implements ModelsUserBindDB {
 
     @Override
     public Page<ModelsUserBindDAO> selectModelsShowBars(
-            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type) {
+            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type, Long userSelfId) {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
         MPJLambdaWrapper<UserExtensionDAO> userExtensionWrapper = new MPJLambdaWrapper<>();
+
+        // 当userSelfId不为null时，才拼接tb_followers表
+        if (Objects.nonNull(userSelfId)) {
+            userExtensionWrapper.innerJoin(FollowerDAO.class, FollowerDAO::getTgtUserId, UserExtensionDAO::getId)
+                // 筛选出关注目标用户的模型
+                .and(wrapper -> wrapper.eq( FollowerDAO::getSrcUserId, userSelfId ));
+        }
 
         // 当筛选条件涉及到模型表的字段时才拼接模型表
         if (Objects.nonNull(style) || Objects.nonNull(type)) {
@@ -78,11 +86,15 @@ public class ModelsUserBindDBImpl implements ModelsUserBindDB {
         // 获取用户ID列表，这个ID列表是按照时间降序排序的
         List<Long> userIds = userExtensionDAOs.stream().map(UserExtensionDAO::getId).toList();
 
+        // 如果用户ID列表为空，则直接返回一个空的Page对象
+        if(userIds.isEmpty()) return new Page<>();
+
         // 按照用户ID列表获取用户列表
         LambdaQueryWrapper<UserDAO> userWrapper = new LambdaQueryWrapper<>();
         userWrapper.in(UserDAO::getId, userIds);
         List<UserDAO> userDAOList = userMapper.selectList(userWrapper);
 
+        // 使每个用户id都对应一个ModelsShowBarDAO
         userDAOList.forEach(userDAO -> {
             collect.put(userDAO.getId(), new ModelsUserBindDAO(userDAO, new ArrayList<>()));
         });

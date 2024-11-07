@@ -17,6 +17,6 @@ public class ModelShowBarTest {
     @Test
     public void getModelsShowBars() {
         log.info("selectModelsShowBars is {}", modelsUserBindDBImpl.selectModelsShowBars(
-                1,10, null, null, null, null).getRecords());
+                1,10, null, null, null, null, null).getRecords());
     }
 }

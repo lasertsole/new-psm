@@ -78,7 +78,7 @@
     const ModelShowItems: Ref<Page<ModelInfos>> = ref<Page<ModelInfos>>({records:[]});
     
     // 服务器渲染请求
-    ModelShowItems.value = (await getModelsShowBars({current:1, size:10}));
+    ModelShowItems.value = await getModelsShowBars({current:1, size:10});
 
     const currentPage: Ref<number> = ref<number>(1);
     const pageSize: Ref<number> = ref<number>(10);
@@ -88,25 +88,25 @@
     const canUrgent: Ref<boolean> = ref<boolean>(false);
 
     async function handleSizeChange(): Promise<void> {
-        ModelShowItems.value = (await getModelsShowBars({
+        ModelShowItems.value = await getModelsShowBars({
             current:currentPage.value, 
             size:pageSize.value,
             style:style.value,
             type:type.value,
             isIdle:isIdle.value,
             canUrgent:canUrgent.value
-        }));
+        });
     }
 
     async function handleCurrentChange(): Promise<void> {
-        ModelShowItems.value = (await getModelsShowBars({
+        ModelShowItems.value = await getModelsShowBars({
             current:currentPage.value, 
             size:pageSize.value,
             style:style.value,
             type:type.value,
             isIdle:isIdle.value,
             canUrgent:canUrgent.value
-        }));
+        });
     }
 
     async function handerFilterCommit({ typeArr, switchArr }: { typeArr:string[], switchArr: boolean[] }): Promise<void> {
@@ -115,14 +115,14 @@
         isIdle.value = switchArr[0];
         canUrgent.value = switchArr[1];
 
-        ModelShowItems.value = (await getModelsShowBars({
+        ModelShowItems.value = await getModelsShowBars({
             current:currentPage.value, 
             size:pageSize.value,
             style:style.value,
             type:type.value,
             isIdle:isIdle.value,
             canUrgent:canUrgent.value
-        }));
+        });
     }
 
     onMounted(async ()=>{
@@ -148,6 +148,10 @@
             @include fullWidth();
             min-height: 100%;
             justify-self: flex-start;
+            
+            .filterBar{
+                margin-top: 10px;
+            }
         }
 
         .pagination{

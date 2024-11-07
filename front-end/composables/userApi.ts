@@ -1,6 +1,14 @@
+import type { Reactive } from "vue";
 import type { UserInfo } from "@/types/user";
+import type { Response } from "@/types/request";
 
-export const userInfo = reactive<UserInfo>({
+/**
+ * 用户信息
+ * 
+ * @author: moye
+ * @returns Reactive
+ */
+export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
     id: '0',
     name: '',
     hasPass: undefined,
@@ -16,7 +24,13 @@ export const userInfo = reactive<UserInfo>({
     // canUrgent: false
 });
 
-function updateUserInfo(data:UserInfo){
+/**
+ * 更新用户数据
+ * 
+ * @author: moye
+ * @param data 要更新的数据对象
+ */
+function updateUserInfo(data:UserInfo): void{
     data.isAdmin && (userInfo.isAdmin = data.isAdmin);
     data.id && (userInfo.id = data.id);
     data.name && (userInfo.name = data.name);
@@ -29,7 +43,7 @@ function updateUserInfo(data:UserInfo){
     data.createTime && (userInfo.createTime = data.createTime);
 };
 
-function clearUserInfo(){
+function clearUserInfo(): void{
     userInfo.id = '';
     userInfo.name = '';
     userInfo.hasPass = undefined;
@@ -42,212 +56,262 @@ function clearUserInfo(){
     userInfo.isAdmin = false;
 };
 
-function loginApi(data:UserInfo){
+function loginApi(data:UserInfo): void{
     userInfo.isLogin = true;
     updateUserInfo(data);
     navigateTo("/home");
 };
 
-function logoutApi(){
+function logoutApi(): void{
     userInfo.isLogin = false;
     clearUserInfo();
     navigateTo("/");
 };
 
 export async function login(name:string | undefined, password:string | undefined):Promise<boolean>{
-    //先清除token防止旧token影响
-    localStorage.removeItem('token');
-    
-    const res:any = await fetchApi({
-        url: '/users/login',
-        opts: {
-            name,
-            password,
-        },
-        method: 'post',
-        contentType: 'application/json',
-    });
+    try {
+        //先清除token防止旧token影响
+        import.meta.client&&localStorage.removeItem('token');
+        
+        const res:Response = await fetchApi({
+            url: '/users/login',
+            opts: {
+                name,
+                password,
+            },
+            method: 'post',
+            contentType: 'application/json',
+        });
 
-    if(res == null || res.code!=200){
-        let msg = res?.msg;
-        if(msg == null || msg == undefined) msg = '';
-        ElMessage.error('登录失败:'+ msg);
-        if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
-        userInfo.isLogin = false;
+        if(res == null || res.code!=200){
+            let msg = res?.msg;
+            if(msg == null || msg == undefined) msg = '';
+            import.meta.client&&ElMessage.error('登录失败:'+ msg);
+            import.meta.client&&localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+            userInfo.isLogin = false;
 
+            return false;
+        }
+
+        let data = res.data;
+        loginApi(data);
+
+        import.meta.client&&ElMessage.success('登录成功');
+
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('登录失败');
         return false;
     }
-
-    let data = res.data;
-    loginApi(data);
-
-    ElMessage.success('登录成功');
-
-    return true;
 };
 
 export async function fastLogin():Promise<boolean>{
-    const res:any = await fetchApi({
-        url: '/users/fastLogin',
-        opts: {
-        },
-        method: 'get',
-        contentType: 'application/json',
-    });
+    try{
+        const res:Response = await fetchApi({
+            url: '/users/fastLogin',
+            opts: {
+            },
+            method: 'get',
+            contentType: 'application/json',
+        });
+        
+        if(res == null || res.code!=200){
+            let msg = res?.msg;
+            if(msg == null || msg == undefined) msg = '';
+            import.meta.client&&ElMessage.error('登录失败:'+ msg);
+            import.meta.client&&localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+            userInfo.isLogin = false;
+            return false;
+        }
     
-    if(res == null || res.code!=200){
-        let msg = res?.msg;
-        if(msg == null || msg == undefined) msg = '';
-        ElMessage.error('登录失败:'+ msg);
-        if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
-        userInfo.isLogin = false;
+        let data = res.data;
+        loginApi(data);
+    
+        import.meta.client&&ElMessage.success('登录成功');
+    
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('登录失败');
         return false;
     }
-
-    let data = res.data;
-    loginApi(data);
-
-    ElMessage.success('登录成功');
-
-    return true;
 };
 
 export async function thirdPartyLogin(path:string):Promise<void>{
-    let opts = useRuntimeConfig().public;
-    window.location.href = opts.baseURL + opts.oauth2AuthURL + "/gitee";
+    try{
+        let opts = useRuntimeConfig().public;
+
+        import.meta.client&&(window.location.href = opts.baseURL + opts.oauth2AuthURL + "/gitee");
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('第三方登录失败');
+    }
 };
 
 export async function register(name:string, password:string, email:string):Promise<Boolean>{
-    const res:any = await fetchApi({
-        url: '/users/register',
-        opts: {
-            name,
-            password,
-            email
-        },
-        method: 'post',
-        contentType: 'application/json',
-    });
-
-    if(res.code!=200){
-        let msg = res?.msg;
-        if(msg == null || msg == undefined) msg = '';
-        ElMessage.error('登录失败:'+ msg);
-        if(process.client)localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
-
+    try{
+        const res:Response = await fetchApi({
+            url: '/users/register',
+            opts: {
+                name,
+                password,
+                email
+            },
+            method: 'post',
+            contentType: 'application/json',
+        });
+    
+        if(res.code!=200){
+            let msg = res?.msg;
+            if(msg == null || msg == undefined) msg = '';
+            import.meta.client&&ElMessage.error('登录失败:'+ msg);
+            import.meta.client&&localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+    
+            return false;
+        }
+    
+        let data = res.data;
+        loginApi(data);
+    
+        import.meta.client&&ElMessage.success('注册成功');
+    
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('注册失败');
         return false;
     }
-
-    let data = res.data;
-    loginApi(data);
-
-    ElMessage.success('注册成功');
-
-    return true;
 };
 
 export async function updateAvatar(avatar:Blob):Promise<Boolean>{
-    if(avatar == null || avatar == undefined) return false;
-    const formData = new FormData();
-    formData.append('oldAvatarUrl', userInfo.avatar||"");
-    formData.append('avatar', avatar);
-
-    const res:any = await fetchApi({
-        url: '/users/updateAvatar',
-        opts: formData,
-        method: 'put',
-        contentType: 'multipart/form-data',
-    });
-
-    if(res.code!=200){
-        let msg = res?.msg;
-        if(msg == null || msg == undefined) msg = '';
-        ElMessage.error('更新头像失败:'+ msg);
-
+    try{
+        if(avatar == null || avatar == undefined) return false;
+        const formData = new FormData();
+        formData.append('oldAvatarUrl', userInfo.avatar||"");
+        formData.append('avatar', avatar);
+    
+        const res:Response = await fetchApi({
+            url: '/users/updateAvatar',
+            opts: formData,
+            method: 'put',
+            contentType: 'multipart/form-data',
+        });
+    
+        if(res.code!=200){
+            let msg = res?.msg;
+            if(msg == null || msg == undefined) msg = '';
+            import.meta.client&&ElMessage.error('更新头像失败:'+ msg);
+    
+            return false;
+        }
+    
+        let data = res.data;
+        userInfo.avatar = data;
+    
+        import.meta.client&&ElMessage.success('更新头像成功');
+    
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('更新头像失败');
+        
         return false;
     }
-
-    let data = res.data;
-    userInfo.avatar = data;
-
-    ElMessage.success('更新头像成功');
-
-    return true;
 };
 
 export async function updateAccountInfo({name, sex, phone, email, profile}:UserInfo):Promise<Boolean>{
-    const res:any = await fetchApi({
-        url: '/users/updateInfo',
-        opts: {
-            name,
-            sex,
-            phone,
-            email,
-            profile
-        },
-        method: 'put',
-        contentType: 'application/json',
-    });
-
-    if(res.code!=200){
-        let msg = res?.msg;
-        if(msg == null || msg == undefined) msg = '';
-        ElMessage.error('更新账户信息失败:'+ msg);
+    try{
+        const res:Response = await fetchApi({
+            url: '/users/updateInfo',
+            opts: {
+                name,
+                sex,
+                phone,
+                email,
+                profile
+            },
+            method: 'put',
+            contentType: 'application/json',
+        });
+    
+        if(res.code!=200){
+            let msg = res?.msg;
+            if(msg == null || msg == undefined) msg = '';
+            import.meta.client&&ElMessage.error('更新账户信息失败:'+ msg);
+    
+            return false;
+        }
+    
+        const data:UserInfo = {name, sex, phone, email, profile};
+        updateUserInfo(data);
+        
+        import.meta.client&&ElMessage.success('更新账户信息成功');
+    
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('更新账户信息失败');
 
         return false;
     }
-
-    const data:UserInfo = {name, sex, phone, email, profile};
-    updateUserInfo(data);
-    
-    ElMessage.success('更新账户信息成功');
-
-    return true;
 };
 
 export async function updatePassword(password : string, changePassword: string):Promise<Boolean>{
-    const res:any = await fetchApi({
-        url: '/users/updatePassword',
-        opts: {
-            password,
-            changePassword
-        },
-        method: 'put',
-        contentType: 'application/json',
-    });
-
-    if(res.code!=200){
-        let msg = res?.msg;
-        if(msg == null || msg == undefined) msg = '';
-        ElMessage.error('更新密码失败:'+ msg);
-
+    try{
+        const res:Response = await fetchApi({
+            url: '/users/updatePassword',
+            opts: {
+                password,
+                changePassword
+            },
+            method: 'put',
+            contentType: 'application/json',
+        });
+    
+        if(res.code!=200){
+            let msg = res?.msg;
+            if(msg == null || msg == undefined) msg = '';
+            ElMessage.error('更新密码失败:'+ msg);
+    
+            return false;
+        }
+    
+        import.meta.client&&localStorage.removeItem('token');
+        logoutApi();
+    
+        import.meta.client&&ElMessage.success('更新密码成功');
+        
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('更新密码失败');
         return false;
     }
-
-    localStorage.removeItem('token');
-    logoutApi();
-
-    ElMessage.success('更新密码成功');
-    
-    return true;
 };
 
 export async function logout():Promise<boolean>{
-    const res:any = await fetchApi({
-        url: '/users/logout',
-        method: 'delete',
-    });
+    try{
+        const res:Response = await fetchApi({
+            url: '/users/logout',
+            method: 'delete',
+        });
+        
+        if(res.code!=200){
+            ElMessage.error('登出失败:'+res.msg);
     
-    if(res.code!=200){
-        ElMessage.error('登出失败:'+res.msg);
-
+            return false;
+        }
+    
+        import.meta.client&&localStorage.removeItem('token');
+        logoutApi();
+    
+        import.meta.client&&ElMessage.success('登出成功');
+    
+        return true;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('登出失败');
         return false;
     }
-
-    localStorage.removeItem('token');
-    logoutApi();
-
-    ElMessage.success('登出成功');
-
-    return true;
 };

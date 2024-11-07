@@ -16,7 +16,7 @@ public class ModelsUserBindServiceImpl implements ModelsUserBindService {
 
     @Override
     public Page<ModelsUserBindDAO> getModelsShowBars(
-            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type) {
-        return modelsUserBindDB.selectModelsShowBars(current, size, isIdle, canUrgent, style, type);
+            Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type, Long userSelfId) {
+        return modelsUserBindDB.selectModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId);
     }
 }
