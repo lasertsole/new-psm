@@ -1,12 +1,12 @@
 package com.psm.domain.Model.model.repository;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.extension.mapping.base.MPJDeepService;
 import com.psm.domain.Model.model.entity.ModelDAO;
 import com.psm.types.enums.VisibleEnum;
 
 import java.util.List;
 
-public interface ModelDB extends IService<ModelDAO> {
+public interface ModelDB extends MPJDeepService<ModelDAO> {
     /**
      * 插入模型数据
      * @param modelDAO

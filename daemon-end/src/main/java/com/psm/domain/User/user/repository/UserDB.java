@@ -1,12 +1,12 @@
 package com.psm.domain.User.user.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.extension.mapping.base.MPJDeepService;
 import com.psm.domain.User.user.entity.User.UserDAO;
 
 import java.util.List;
 
-public interface UserDB extends IService<UserDAO> {
+public interface UserDB extends MPJDeepService<UserDAO> {
     /**
      * 插入用户
      *

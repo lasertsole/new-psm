@@ -33,6 +33,7 @@
 		<druid.version>1.2.20</druid.version>
 		<mybatisPlus.version>3.5.7</mybatisPlus.version>
 		<mybatisPlusJoin.version>1.5.2</mybatisPlusJoin.version>
+		<mybatisPlusExt.version>3.5.8-EXT722</mybatisPlusExt.version>
 		<fastjson2.version>2.0.52</fastjson2.version>
 		<jjwt.version>0.12.3</jjwt.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -92,6 +93,12 @@
 			<groupId>com.github.yulichang</groupId>
 			<artifactId>mybatis-plus-join-boot-starter</artifactId>
 			<version>${mybatisPlusJoin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.tangzc</groupId>
+			<artifactId>mybatis-plus-ext-spring-boot3-starter</artifactId>
+			<version>${mybatisPlusExt.version}</version>
 		</dependency>
 
 		<!--redis起步依赖-->
