@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.psm.infrastructure.DB.utils.CustomIdentifierGenerator;
+import com.tangzc.autotable.springboot.EnableAutoTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j
 @Configuration
+@EnableAutoTable
 @EnableTransactionManagement // 开启事务支持
 public class MyBatisPlusConfig {//mybatis-plus配置类
     @Value("${mybatis-plus.workerId}")

@@ -1,4 +1,6 @@
 package com.psm.domain.Chat.entity;
 
-public class ChatVO {
+import java.io.Serializable;
+
+public class ChatVO implements Serializable {
 }

@@ -11,7 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OAuth2ThirdAccountDTO implements Serializable {
-    private static final long serialVersionUID = 565652969569896022L;
 
     private Long id;                 //自增id
 

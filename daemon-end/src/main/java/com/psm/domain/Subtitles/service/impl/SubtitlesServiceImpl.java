@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
-import com.psm.domain.Subtitles.repository.SubtitlesMapper;
+import com.psm.infrastructure.DB.SubtitlesMapper;
 import com.psm.domain.Subtitles.service.SubtitlesService;
 import com.psm.infrastructure.OSS.UploadOSS;
 import lombok.Setter;

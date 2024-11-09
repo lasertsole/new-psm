@@ -5,7 +5,7 @@ import com.psm.domain.Subtitles.adaptor.SubtitlesAdaptor;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.domain.Subtitles.types.convertor.SubtitlesInfrastructure;
+import com.psm.domain.Subtitles.types.convertor.SubtitlesConvertor;
 import com.psm.domain.Subtitles.service.SubtitlesService;
 import com.psm.types.utils.page.PageDTO;
 import io.micrometer.common.util.StringUtils;
@@ -31,14 +31,14 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
                 pageDTO.getCurrent(),
                 pageDTO.getSize());
         // 判断字幕盒子是否存在
-        if(subtitlesDAOList == null){
+        if(Objects.isNull(subtitlesDAOList)){
             throw new RuntimeException("The Subtitles does not exist.");
         }
 
         // 将DAO转换为VO
         return subtitlesDAOList.stream().map(
                 subtitlesDAO -> {
-                    return SubtitlesInfrastructure.DAOConvertToVO(subtitlesDAO);
+                    return SubtitlesConvertor.INSTANCE.DAO2VO(subtitlesDAO);
                 }
         ).toList();
     };
@@ -46,9 +46,8 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
     @Override
     public SubtitlesVO getSubtitlesById(@Valid SubtitlesDTO subtitlesDTO) throws InvalidParameterException{
         // 参数判空
-        if(Objects.isNull(subtitlesDTO.getId())){
+        if(Objects.isNull(subtitlesDTO.getId()))
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 获取字幕盒子
         SubtitlesDAO subtitlesDAO = subtitlesService.getSubtitlesById(subtitlesDTO.getId());
@@ -59,14 +58,13 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         }
 
         // 将DAO转换为VO
-        return SubtitlesInfrastructure.DAOConvertToVO(subtitlesDAO);
+        return SubtitlesConvertor.INSTANCE.DAO2VO(subtitlesDAO);
     };
 
     public List<SubtitlesVO> getSubtitlesByUserId(@Valid SubtitlesDTO subtitlesDTO){
         // 参数判空
-        if(Objects.isNull(subtitlesDTO.getUserId())){
+        if(Objects.isNull(subtitlesDTO.getUserId()))
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 获取字幕盒子列表
         List<SubtitlesDAO> subtitlesDAOList = subtitlesService.getSubtitlesByUserId(subtitlesDTO.getUserId());
@@ -78,7 +76,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
 
         // 将DAO转换为VO
         return subtitlesDAOList.stream().map(subtitlesDAO -> {
-            return SubtitlesInfrastructure.DAOConvertToVO(subtitlesDAO);
+            return SubtitlesConvertor.INSTANCE.DAO2VO(subtitlesDAO);
         }).toList();
     };
 
@@ -87,15 +85,14 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
         log.info("subtitlesDTO is {}", subtitlesDTO);
         // 参数判空
         if (
-                StringUtils.isBlank(subtitlesDTO.getTitle()) ||
-                StringUtils.isBlank(subtitlesDTO.getContent()) ||
-                Objects.isNull(subtitlesDTO.getCover()) ||
-                Objects.isNull(subtitlesDTO.getVideo()) ||
-                StringUtils.isBlank(subtitlesDTO.getCategory())
+                StringUtils.isBlank(subtitlesDTO.getTitle())
+                || StringUtils.isBlank(subtitlesDTO.getContent())
+                || Objects.isNull(subtitlesDTO.getCover())
+                || Objects.isNull(subtitlesDTO.getVideo())
+                || StringUtils.isBlank(subtitlesDTO.getStyle())
+                || StringUtils.isBlank(subtitlesDTO.getType())
         )
-        {
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 添加字幕盒子
         subtitlesService.addSubtitles(subtitlesDTO);
@@ -105,15 +102,14 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
     public void updateSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws InvalidParameterException{
         // 参数判空
         if (
-                StringUtils.isBlank(subtitlesDTO.getTitle()) &&
-                StringUtils.isBlank(subtitlesDTO.getContent()) &&
-                Objects.isNull(subtitlesDTO.getCover()) &&
-                Objects.isNull(subtitlesDTO.getVideo()) &&
-                StringUtils.isBlank(subtitlesDTO.getCategory())
+                StringUtils.isBlank(subtitlesDTO.getTitle())
+                && StringUtils.isBlank(subtitlesDTO.getContent())
+                && Objects.isNull(subtitlesDTO.getCover())
+                && Objects.isNull(subtitlesDTO.getVideo())
+                && StringUtils.isBlank(subtitlesDTO.getStyle())
+                && StringUtils.isBlank(subtitlesDTO.getType())
         )
-        {
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 更新字幕盒子
         subtitlesService.updateSubtitles(subtitlesDTO);
@@ -123,9 +119,7 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
     public void deleteSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws InvalidParameterException{
         // 参数判空
         if (Objects.isNull(subtitlesDTO.getId()))
-        {
             throw new InvalidParameterException("Invalid parameter");
-        }
 
         // 删除字幕盒子
         subtitlesService.deleteSubtitles(subtitlesDTO.getId());

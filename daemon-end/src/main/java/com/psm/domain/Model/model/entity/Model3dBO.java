@@ -1,24 +1,20 @@
 package com.psm.domain.Model.model.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.types.enums.VisibleEnum;
-import lombok.*;
+import com.psm.types.utils.VO.BO2VOable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TableName(value = "tb_models", autoResultMap = true)
-public class ModelDAO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 9181763329672463766L;
-
-    @TableId
+public class Model3dBO implements BO2VOable<Model3dVO>, Serializable {
     private Long id;
     private Long userId;
     private String title;
@@ -33,9 +29,8 @@ public class ModelDAO implements Serializable {
     private String createTime;
     private String modifyTime;
 
-    @TableLogic
-    private Boolean deleted;
-
-    @Version
-    private Integer version;
+    @Override
+    public Model3dVO toVO() {
+        return Model3dConvertor.INSTANCE.BO2VO(this);
+    }
 }

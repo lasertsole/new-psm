@@ -1,12 +1,12 @@
 package com.psm.domain.Model.model.service.impl;
 
-import com.psm.domain.Model.model.entity.ModelDAO;
-import com.psm.domain.Model.model.entity.ModelDTO;
-import com.psm.domain.Model.model.types.convertor.ModelConvertor;
-import com.psm.domain.Model.model.repository.ModelRedis;
-import com.psm.domain.Model.model.repository.ModelDB;
-import com.psm.domain.Model.model.repository.ModelOSS;
-import com.psm.domain.Model.model.service.ModelService;
+import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dDTO;
+import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
+import com.psm.domain.Model.model.repository.Model3dRedis;
+import com.psm.domain.Model.model.repository.Model3dDB;
+import com.psm.domain.Model.model.repository.Model3dOSS;
+import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.Tus.Tus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class ModelServiceImpl implements ModelService {
+public class Model3dServiceImpl implements Model3dService {
     @Autowired
     private TusFileUploadService tusFileUploadService;
 
@@ -33,13 +33,13 @@ public class ModelServiceImpl implements ModelService {
     Tus tus;
 
     @Autowired
-    private ModelRedis modelRedis;
+    private Model3dRedis modelRedis;
 
     @Autowired
-    private ModelOSS modelOSS;
+    private Model3dOSS modelOSS;
 
     @Autowired
-    private ModelDB modelDB;
+    private Model3dDB modelDB;
 
     @Override
     public void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException {
@@ -66,7 +66,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Transactional
     @Override
-    public Map<String, Long> uploadModelInfo(ModelDTO modelDTO) throws Exception {
+    public Map<String, Long> uploadModelInfo(Model3dDTO modelDTO) throws Exception {
         String userId = String.valueOf(modelDTO.getUserId());
 
         // 判断文件是否已上传完成且没有过期fullPath
@@ -91,7 +91,7 @@ public class ModelServiceImpl implements ModelService {
         Long modelId; // 定义模型ID
         try {
             // 将ModelDTO转换为ModelDAO
-            ModelDAO modelDAO = ModelConvertor.INSTANCE.DTO2DAO(modelDTO);
+            Model3dDAO modelDAO = Model3dConvertor.INSTANCE.DTO2DAO(modelDTO);
             modelDAO.setEntity(ossResultMap.get("entityUrl"));
             modelDAO.setCover(ossResultMap.get("coverUrl"));
             modelDAO.setStorage(fileSize);
@@ -127,17 +127,17 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public void removeModelInfo(ModelDTO modelDTO) throws IOException{
-        modelDB.delete(ModelConvertor.INSTANCE.DTO2DAO(modelDTO));
+    public void removeModelInfo(Model3dDTO modelDTO) throws IOException{
+        modelDB.delete(Model3dConvertor.INSTANCE.DTO2DAO(modelDTO));
     }
 
     @Override
-    public ModelDAO getById(Long modelId, VisibleEnum visibleEnum) {
+    public Model3dDAO getById(Long modelId, VisibleEnum visibleEnum) {
         return modelDB.selectById(modelId, visibleEnum);
     }
 
     @Override
-    public List<ModelDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+    public List<Model3dDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
         return modelDB.selectByUserIds(userIds, visibleEnum);
     }
 }

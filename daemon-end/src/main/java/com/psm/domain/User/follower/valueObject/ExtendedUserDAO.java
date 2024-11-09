@@ -13,9 +13,6 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExtendedUserDAO extends UserDAO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -4875055487265364549L;
-
     Boolean isFollowed;
 
     // 全参构造函数

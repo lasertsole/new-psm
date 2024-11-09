@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -13,9 +12,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FollowerVO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -8040996100086553973L;
-
     private String id;
 
     private String tgtUserId;

@@ -1,16 +1,15 @@
 package com.psm.domain.Model.models_user.repository.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Model.model.entity.ModelDAO;
+import com.psm.domain.Model.model.entity.Model3dDAO;
 import com.psm.domain.Model.models_user.entity.ModelUserDAO;
 import com.psm.domain.Model.models_user.repository.Models_UserDB;
 import com.psm.domain.Model.models_user.valueObject.Models_UserDAO;
 import com.psm.domain.User.follower.entity.FollowerDAO;
 import com.psm.domain.User.user.entity.User.UserDAO;
-import com.psm.infrastructure.DB.ModelMapper;
+import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.infrastructure.DB.UserMapper;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import java.util.*;
 @Repository
 public class Models_UserDBImpl implements Models_UserDB {
     @Autowired
-    private ModelMapper modelMapper;
+    private Model3dMapper modelMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -51,13 +50,13 @@ public class Models_UserDBImpl implements Models_UserDB {
         boolean hasCanUrgent = Objects.nonNull(canUrgent);
 
         if (hasStyle || hasType) {
-            userMPJWrapper.innerJoin(ModelDAO.class, ModelDAO::getUserId, UserDAO::getId)
+            userMPJWrapper.innerJoin(Model3dDAO.class, Model3dDAO::getUserId, UserDAO::getId)
 
                 // 筛选出符合样式和类型的模型
-                .and(hasStyle, wrapper -> wrapper.eq( ModelDAO::getStyle, style))
+                .and(hasStyle, wrapper -> wrapper.eq( Model3dDAO::getStyle, style))
 
                 // 筛选出符合类型的模型
-                .and(hasType, wrapper -> wrapper.eq( ModelDAO::getType, type));
+                .and(hasType, wrapper -> wrapper.eq( Model3dDAO::getType, type));
         }
 
         userMPJWrapper
@@ -94,18 +93,18 @@ public class Models_UserDBImpl implements Models_UserDB {
         List<Long> ids = userDAOPage.getRecords().stream().map(UserDAO::getId).toList();
 
         MPJLambdaWrapper<UserDAO> userJoinModelWrapper = new MPJLambdaWrapper<UserDAO>();
-        userJoinModelWrapper.innerJoin(ModelDAO.class, ModelDAO::getUserId, UserDAO::getId);
-        userJoinModelWrapper.selectAs(ModelDAO::getId, ModelUserDAO::getModelId);
-        userJoinModelWrapper.select(ModelDAO::getTitle, ModelDAO::getCover,
-                ModelDAO::getStyle, ModelDAO::getType);
+        userJoinModelWrapper.innerJoin(Model3dDAO.class, Model3dDAO::getUserId, UserDAO::getId);
+        userJoinModelWrapper.selectAs(Model3dDAO::getId, ModelUserDAO::getModelId);
+        userJoinModelWrapper.select(Model3dDAO::getTitle, Model3dDAO::getCover,
+                Model3dDAO::getStyle, Model3dDAO::getType);
         userJoinModelWrapper.selectAs(UserDAO::getId, ModelUserDAO::getUserId);
         userJoinModelWrapper.select(UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
                 UserDAO::getPublicModelNum, UserDAO::getIsIdle, UserDAO::getCanUrgent, UserDAO::getCreateTime);
-        userJoinModelWrapper.eq(ModelDAO::getVisible, VisibleEnum.PUBLIC);
+        userJoinModelWrapper.eq(Model3dDAO::getVisible, VisibleEnum.PUBLIC);
 
         userJoinModelWrapper.eq(isFollowing, FollowerDAO::getSrcUserId, userSelfId);
-        userJoinModelWrapper.eq(hasStyle, ModelDAO::getStyle, style);
-        userJoinModelWrapper.eq(hasType, ModelDAO::getType, type);
+        userJoinModelWrapper.eq(hasStyle, Model3dDAO::getStyle, style);
+        userJoinModelWrapper.eq(hasType, Model3dDAO::getType, type);
 
         userJoinModelWrapper.eq(hasIsIdle, UserDAO::getIsIdle, isIdle);
         userJoinModelWrapper.eq(hasCanUrgent, UserDAO::getCanUrgent, canUrgent);
@@ -120,7 +119,7 @@ public class Models_UserDBImpl implements Models_UserDB {
 
         modelUserDAOs.forEach(
                 modelUserDAO -> {
-                    ModelDAO model = new ModelDAO(
+                    Model3dDAO model = new Model3dDAO(
                             modelUserDAO.getModelId(),
                             null,
                             modelUserDAO.getTitle(),
@@ -158,7 +157,7 @@ public class Models_UserDBImpl implements Models_UserDB {
                                 null
                         );
 
-                        List<ModelDAO> models = new ArrayList<>();
+                        List<Model3dDAO> models = new ArrayList<>();
                         models.add(model);
                         Models_UserDAO models_UserDAO = new Models_UserDAO(user, models);
                         userMap.put(modelUserDAO.getUserId(), models_UserDAO);

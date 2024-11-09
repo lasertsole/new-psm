@@ -1,7 +1,7 @@
 package com.psm.domain.Model.models_user.adaptor;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.types.utils.page.PageDTO;
@@ -14,7 +14,7 @@ public interface Models_UserAdaptor {
      * @param modelDTO 模型DTO
      * @return 一页公开模型Bars DAO
      */
-    Page<Models_UserBO> getModelsShowBars(PageDTO pageDTO, UserDTO userDTO, ModelDTO modelDTO);
+    Page<Models_UserBO> getModelsShowBars(PageDTO pageDTO, UserDTO userDTO, Model3dDTO modelDTO);
 
     /**
      * 获取公开模型Bars展示

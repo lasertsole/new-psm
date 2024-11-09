@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -14,9 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserVO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -8422855252853579864L;
-
     private String id;
     private String name;
     private Boolean hasPass;

@@ -2,17 +2,16 @@ package com.psm.domain.User.follower.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.user.entity.User.UserVO;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Value
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExtendedUserVO extends UserVO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 8160732814235369592L;
-
     Boolean isFollowed;
 
     // 全参构造函数

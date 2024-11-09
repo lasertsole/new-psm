@@ -1,6 +1,6 @@
 package com.psm.domain.Model.model.repository;
 
-public interface ModelRedis {
+public interface Model3dRedis {
     /**
      * 添加上传文件信息
      *

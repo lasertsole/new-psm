@@ -1,8 +1,8 @@
 package com.psm.trigger.http.Model;
 
-import com.psm.domain.Model.model.adaptor.ModelAdaptor;
-import com.psm.domain.Model.model.entity.ModelBO;
-import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.model.adaptor.Model3dAdaptor;
+import com.psm.domain.Model.model.entity.Model3dBO;
+import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
 import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
@@ -33,7 +33,7 @@ public class ModelController {
     private UserAdaptor userAdaptor;
 
     @Autowired
-    private ModelAdaptor modelAdaptor;
+    private Model3dAdaptor modelAdaptor;
 
     @Autowired
     private FollowerAdaptor followerAdaptor;
@@ -70,7 +70,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @PostMapping("/uploadInfo")
-    public ResponseVO uploadModelInfo(ModelDTO modelDTO){
+    public ResponseVO uploadModelInfo(Model3dDTO modelDTO){
         Long userId;//当前用户id
         try {
             //获取当前用户id
@@ -78,7 +78,7 @@ public class ModelController {
             modelDTO.setUserId(userId);
 
             // 调用模型信息上传接口,获取上传后的模型id
-            ModelBO modelBO = modelAdaptor.uploadModelInfo(modelDTO);
+            Model3dBO modelBO = modelAdaptor.uploadModelInfo(modelDTO);
 
             // 获取上传后模型大小
             Long modelSize = modelBO.getStorage();

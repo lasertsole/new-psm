@@ -2,7 +2,7 @@ package com.psm.domain.Model.models_user.adaptor.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.app.annotation.spring.Adaptor;
-import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.Model.models_user.service.Models_UserService;
 import com.psm.domain.Model.models_user.types.convertor.Models_UserConvertor;
@@ -31,7 +31,7 @@ public class Models_UserAdaptorImpl implements Models_UserAdaptor {
     private Models_UserService models_UserService;
 
     @Override
-    public Page<Models_UserBO> getModelsShowBars(@Valid PageDTO pageDTO, UserDTO userDTO, @Valid ModelDTO modelDTO) {
+    public Page<Models_UserBO> getModelsShowBars(@Valid PageDTO pageDTO, UserDTO userDTO, @Valid Model3dDTO modelDTO) {
         if(
                 Objects.isNull(pageDTO.getCurrent())
                 ||Objects.isNull(pageDTO.getSize())
@@ -67,8 +67,8 @@ public class Models_UserAdaptorImpl implements Models_UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
 
         validUtil.validate(Map.of("current", current, "size", size), PageDTO.class);
-        if (Objects.nonNull(style)) validUtil.validate(Map.of("style", style), ModelDTO.class);
-        if (Objects.nonNull(type)) validUtil.validate(Map.of( "type", type), ModelDTO.class);
+        if (Objects.nonNull(style)) validUtil.validate(Map.of("style", style), Model3dDTO.class);
+        if (Objects.nonNull(type)) validUtil.validate(Map.of( "type", type), Model3dDTO.class);
 
         Page<Models_UserDAO> modelsUserBindDAOPage = models_UserService.getModelsShowBars(
                 current, size, isIdle, canUrgent, style, type, userSelfId);

@@ -1,9 +1,9 @@
 package com.psm.domain.Model.model_extendedUser.types.convertor;
 
-import com.psm.domain.Model.model.entity.ModelBO;
-import com.psm.domain.Model.model.entity.ModelDAO;
-import com.psm.domain.Model.model.entity.ModelVO;
-import com.psm.domain.Model.model.types.convertor.ModelConvertor;
+import com.psm.domain.Model.model.entity.Model3dBO;
+import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dVO;
+import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserBO;
 import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDAO;
 import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserVO;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Mapper
 public abstract class Model_ExtendedUserConvertor {
-    private static final ModelConvertor modelConvertor = ModelConvertor.INSTANCE;
+    private static final Model3dConvertor model3dConvertor = Model3dConvertor.INSTANCE;
 
     private static final ExtendedUserConvertor extendedUserConvertor = ExtendedUserConvertor.INSTANCE;
 
@@ -28,20 +28,20 @@ public abstract class Model_ExtendedUserConvertor {
 
     public Model_ExtendedUserBO DAO2BO(Model_ExtendedUserDAO modelUserBindDAO) {
         ExtendedUserDAO extendedUserDAO = modelUserBindDAO.getUser();
-        ModelDAO modelDAO = modelUserBindDAO.getModel();
+        Model3dDAO modelDAO = modelUserBindDAO.getModel();
 
         ExtendedUserBO extendedUserBO = extendedUserConvertor.DAO2BO(extendedUserDAO);
-        ModelBO modelBO = modelConvertor.DAO2BO(modelDAO);
+        Model3dBO modelBO = model3dConvertor.DAO2BO(modelDAO);
 
         return new Model_ExtendedUserBO(extendedUserBO, modelBO);
     }
 
     public Model_ExtendedUserVO BO2VO(Model_ExtendedUserBO modelUserBindBO) {
         ExtendedUserBO extendedUserBO = modelUserBindBO.getUser();
-        ModelBO modelBO = modelUserBindBO.getModel();
+        Model3dBO modelBO = modelUserBindBO.getModel();
 
         ExtendedUserVO extendedUserVO = extendedUserConvertor.BO2OtherVO(extendedUserBO);
-        ModelVO modelVO = new ModelVO();
+        Model3dVO modelVO = new Model3dVO();
 
         modelVO.setId(Optional.ofNullable(modelBO.getId()).map(Object::toString).orElse(null));
         modelVO.setTitle(modelBO.getTitle());

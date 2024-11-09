@@ -1,7 +1,7 @@
 package com.psm.domain.Model.model.service;
 
-import com.psm.domain.Model.model.entity.ModelDAO;
-import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public interface ModelService {
+public interface Model3dService {
     /**
      * 上传模型文件
      *
@@ -29,7 +29,7 @@ public interface ModelService {
      * @throws IOException io异常
      * @return Map,其中modelId为模型id, modelStorage为模型大小
      */
-    Map<String, Long> uploadModelInfo(ModelDTO modelDTO) throws Exception;
+    Map<String, Long> uploadModelInfo(Model3dDTO modelDTO) throws Exception;
 
     /**
      * 删除模型信息
@@ -37,7 +37,7 @@ public interface ModelService {
      * @param modelDTO 模型DTO对象, 包括模型id
      * @throws IOException io异常
      */
-    void removeModelInfo(ModelDTO modelDTO) throws IOException;
+    void removeModelInfo(Model3dDTO modelDTO) throws IOException;
 
     /**
      * 根据模型ID查询模型
@@ -46,7 +46,7 @@ public interface ModelService {
      * @param visibleEnum 可见性等级枚举
      * @return 模型DAO
      */
-    ModelDAO getById(Long modelId, VisibleEnum visibleEnum);
+    Model3dDAO getById(Long modelId, VisibleEnum visibleEnum);
 
     /**
      * 根据模型ID查询模型
@@ -55,5 +55,5 @@ public interface ModelService {
      * @param visibleEnum 可见性等级枚举
      * @return 模型DAO
      */
-    List<ModelDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
+    List<Model3dDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
 }

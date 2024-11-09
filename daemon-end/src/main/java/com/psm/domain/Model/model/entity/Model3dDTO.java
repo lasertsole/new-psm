@@ -3,7 +3,6 @@ package com.psm.domain.Model.model.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
-import com.psm.app.annotation.validation.ValidJson;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -13,17 +12,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ModelDTO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -5726532450004978706L;
-
+public class Model3dDTO implements Serializable {
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 
@@ -43,10 +38,10 @@ public class ModelDTO implements Serializable {
     private MultipartFile cover;
 
     @Size(max = 15, message = "The category length must not exceed 15 characters")
-    private String style;//模型风格
+    private String style;
 
     @Size(max = 15, message = "The category length must not exceed 15 characters")
-    private String type;//模型类型
+    private String type;
 
     @Min(value = 0, message = "The visable must be greater than or equal to 0")
     @Max(value = 2, message = "The visable must be less than or equal to 2")

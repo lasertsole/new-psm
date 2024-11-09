@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
-public interface ModelOSS {
+public interface Model3dOSS {
 
     /**
      * 上传模型实体文件

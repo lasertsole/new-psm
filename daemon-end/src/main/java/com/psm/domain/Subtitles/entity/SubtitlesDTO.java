@@ -2,7 +2,6 @@ package com.psm.domain.Subtitles.entity;
 
 import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
-import com.psm.app.annotation.validation.ValidJson;
 
 import com.psm.app.annotation.validation.ValidVideo;
 import jakarta.validation.constraints.Min;
@@ -21,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class SubtitlesDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = 2545599656348291740L;
+    private static final long serialVersionUID = -7448377581522558100L;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -45,7 +44,9 @@ public class SubtitlesDTO implements Serializable {
     @ValidFileSize(maxSize = 200 * 1024)//最大200MB
     private MultipartFile video;
 
-    @ValidJson
-    @Size(max = 255, message = "The category length must not exceed 255 characters")
-    private String category;
+    @Size(max = 15, message = "The category length must not exceed 15 characters")
+    private String style;
+
+    @Size(max = 15, message = "The category length must not exceed 15 characters")
+    private String type;
 }

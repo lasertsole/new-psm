@@ -1,7 +1,7 @@
 package com.psm.domain.Model.model.adaptor;
 
-import com.psm.domain.Model.model.entity.ModelBO;
-import com.psm.domain.Model.model.entity.ModelDTO;
+import com.psm.domain.Model.model.entity.Model3dBO;
+import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
 
-public interface ModelAdaptor {
+public interface Model3dAdaptor {
     /**
      * 上传模型文件
      *
@@ -31,7 +31,7 @@ public interface ModelAdaptor {
      * @throws IOException     IO异常
      * @return 模型BO实体
      */
-    ModelBO uploadModelInfo(ModelDTO modelDTO) throws Exception;
+    Model3dBO uploadModelInfo(Model3dDTO modelDTO) throws Exception;
 
     /**
      * 根据模型ID查询模型
@@ -39,7 +39,7 @@ public interface ModelAdaptor {
      * @param modelDTO  模型信息
      * @return 模型BO
      */
-    ModelBO selectById(ModelDTO modelDTO);
+    Model3dBO selectById(Model3dDTO modelDTO);
 
     /**
      * 根据模型ID查询模型
@@ -51,7 +51,7 @@ public interface ModelAdaptor {
      * @throws InstantiationException      实例化异常
      * @throws IllegalAccessException      非法访问异常
      */
-    ModelBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException;
+    Model3dBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException;
 
     /**
      * 根据模型ID查询模型
@@ -60,5 +60,5 @@ public interface ModelAdaptor {
      * @param visibleEnum 可见性等级枚举
      * @return 模型BO
      */
-    List<ModelBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
+    List<Model3dBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
 }

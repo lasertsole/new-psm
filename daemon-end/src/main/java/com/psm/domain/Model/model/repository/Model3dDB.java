@@ -1,17 +1,17 @@
 package com.psm.domain.Model.model.repository;
 
 import com.github.yulichang.extension.mapping.base.MPJDeepService;
-import com.psm.domain.Model.model.entity.ModelDAO;
+import com.psm.domain.Model.model.entity.Model3dDAO;
 import com.psm.types.enums.VisibleEnum;
 
 import java.util.List;
 
-public interface ModelDB extends MPJDeepService<ModelDAO> {
+public interface Model3dDB extends MPJDeepService<Model3dDAO> {
     /**
      * 插入模型数据
      * @param modelDAO
      */
-    void insert(ModelDAO modelDAO);
+    void insert(Model3dDAO modelDAO);
 
     /**
      * 根据模型ID查询模型
@@ -20,7 +20,7 @@ public interface ModelDB extends MPJDeepService<ModelDAO> {
      * @param visibleEnum 可见性等级枚举
      * @return 模型DAO
      */
-    ModelDAO selectById(Long modelId, VisibleEnum visibleEnum);
+    Model3dDAO selectById(Long modelId, VisibleEnum visibleEnum);
 
     /**
      * 根据模型ID查询模型
@@ -29,12 +29,12 @@ public interface ModelDB extends MPJDeepService<ModelDAO> {
      * @param visibleEnum 可见性等级枚举
      * @return 模型DAO
      */
-    List<ModelDAO> selectByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
+    List<Model3dDAO> selectByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
 
     /**
      * 删除模型数据
      *
      * @param modelDAO 模型DAO
      */
-    void delete(ModelDAO modelDAO);
+    void delete(Model3dDAO modelDAO);
 }

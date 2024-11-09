@@ -1,11 +1,13 @@
 package com.psm.domain.Model.models_user.entity;
 
 import com.psm.domain.User.user.types.enums.SexEnum;
+import com.tangzc.mpe.processer.annotation.AutoDefine;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AutoDefine
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModelUserDAO {

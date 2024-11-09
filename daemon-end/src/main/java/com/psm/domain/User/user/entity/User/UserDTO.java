@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -18,9 +17,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1085258276756409297L;
-
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 
@@ -39,7 +35,7 @@ public class UserDTO implements Serializable {
 
     @Pattern(regexp = "^(?:\\+?(\\d{1,3}))?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()" +
             "\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?[-. ()\\d]*(\\d{1,4})?$",
-            message = "The phone format is incorrect")
+            message = "The phone format is incorrect")//普通号码11位，国际区号3位，可选+号1位
     private String phone;
 
     @ValidImage

@@ -1,9 +1,9 @@
 package com.psm.infrastructure.DB;
 
 import com.github.yulichang.base.MPJBaseMapper;
-import com.psm.domain.Model.model.entity.ModelDAO;
+import com.psm.domain.Chat.entity.ChatDAO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ModelMapper extends MPJBaseMapper<ModelDAO> {
+public interface ChatMapper extends MPJBaseMapper<ChatDAO> {
 }

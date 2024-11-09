@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -16,9 +15,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserBO implements BO2VOable<UserVO>, Serializable {
-    @Serial
-    private static final long serialVersionUID = -8417667463484249016L;
-
     private Long id;
     private String name;
     private String password;

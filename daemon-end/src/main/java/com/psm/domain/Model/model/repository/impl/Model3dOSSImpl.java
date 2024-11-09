@@ -1,6 +1,6 @@
 package com.psm.domain.Model.model.repository.impl;
 
-import com.psm.domain.Model.model.repository.ModelOSS;
+import com.psm.domain.Model.model.repository.Model3dOSS;
 import com.psm.infrastructure.OSS.UploadOSS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @Component
-public class ModelOSSImpl implements ModelOSS {
+public class Model3dOSSImpl implements Model3dOSS {
     @Value("${aliyun.oss.path.models.coverFolderPath}")
     String coverFolderPath;
 

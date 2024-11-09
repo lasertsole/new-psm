@@ -14,9 +14,6 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExtendedUserBO extends UserBO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 3285828213600765157L;
-
     Boolean isFollowed;
 
     // 全参构造函数
