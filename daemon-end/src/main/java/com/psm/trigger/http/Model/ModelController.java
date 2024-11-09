@@ -8,7 +8,7 @@ import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.types.utils.VO.ResponseVO;
+import com.psm.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

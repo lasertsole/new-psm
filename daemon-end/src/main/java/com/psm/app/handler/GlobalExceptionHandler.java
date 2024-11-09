@@ -1,8 +1,7 @@
-package com.psm.types.handler;
+package com.psm.app.handler;
 
-import com.psm.types.utils.VO.ResponseVO;
+import com.psm.utils.VO.ResponseVO;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 //@ControllerAdvice

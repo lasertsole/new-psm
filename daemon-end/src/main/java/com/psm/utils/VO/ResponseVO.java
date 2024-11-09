@@ -1,8 +1,8 @@
-package com.psm.types.utils.VO;
+package com.psm.utils.VO;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.types.utils.page.PageVO;
+import com.psm.utils.page.PageVO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

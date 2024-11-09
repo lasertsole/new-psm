@@ -1,4 +1,4 @@
-package com.psm.types.utils.Valid;
+package com.psm.utils.Valid;
 
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;

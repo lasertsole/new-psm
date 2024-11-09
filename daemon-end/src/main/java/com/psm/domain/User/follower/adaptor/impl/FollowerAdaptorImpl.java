@@ -7,7 +7,7 @@ import com.psm.domain.User.follower.entity.FollowerDTO;
 import com.psm.domain.User.follower.types.convertor.FollowerConvertor;
 import com.psm.domain.User.follower.service.FollowerService;
 import com.psm.app.annotation.spring.Adaptor;
-import com.psm.types.utils.Valid.ValidUtil;
+import com.psm.utils.Valid.ValidUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,7 +1,7 @@
 package com.psm.domain.User.user.types.security.handler;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.types.utils.VO.ResponseVO;
+import com.psm.utils.VO.ResponseVO;
 import com.psm.domain.User.user.types.security.utils.WebUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;

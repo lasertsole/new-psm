@@ -7,7 +7,7 @@ import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import com.psm.domain.Subtitles.types.convertor.SubtitlesConvertor;
 import com.psm.domain.Subtitles.service.SubtitlesService;
-import com.psm.types.utils.page.PageDTO;
+import com.psm.utils.page.PageDTO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

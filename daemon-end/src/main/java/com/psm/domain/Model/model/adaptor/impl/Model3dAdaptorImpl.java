@@ -8,7 +8,7 @@ import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.types.utils.Valid.ValidUtil;
+import com.psm.utils.Valid.ValidUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

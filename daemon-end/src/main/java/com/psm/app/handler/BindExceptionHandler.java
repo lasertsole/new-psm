@@ -1,6 +1,6 @@
-package com.psm.types.handler;
+package com.psm.app.handler;
 
-import com.psm.types.utils.VO.ResponseVO;
+import com.psm.utils.VO.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

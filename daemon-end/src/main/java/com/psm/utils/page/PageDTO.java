@@ -1,4 +1,4 @@
-package com.psm.types.utils.page;
+package com.psm.utils.page;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

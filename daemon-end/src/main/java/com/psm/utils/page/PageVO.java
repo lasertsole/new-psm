@@ -1,4 +1,4 @@
-package com.psm.types.utils.page;
+package com.psm.utils.page;
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.fasterxml.jackson.annotation.JsonInclude;

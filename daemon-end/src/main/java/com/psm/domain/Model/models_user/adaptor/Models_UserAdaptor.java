@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.types.utils.page.PageDTO;
+import com.psm.utils.page.PageDTO;
 
 public interface Models_UserAdaptor {
     /**
