@@ -34,6 +34,7 @@
 		<mybatisPlus.version>3.5.7</mybatisPlus.version>
 		<mybatisPlusJoin.version>1.5.2</mybatisPlusJoin.version>
 		<mybatisPlusExt.version>3.5.8-EXT722</mybatisPlusExt.version>
+		<redssion.version>3.38.1</redssion.version>
 		<fastjson2.version>2.0.52</fastjson2.version>
 		<jjwt.version>0.12.3</jjwt.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -83,12 +84,6 @@
 		</dependency>
 
 		<!--mybatis-plus依赖-->
-<!--		<dependency>-->
-<!--			<groupId>com.baomidou</groupId>-->
-<!--			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>-->
-<!--			<version>${mybatisPlus.version}</version>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>com.github.yulichang</groupId>
 			<artifactId>mybatis-plus-join-boot-starter</artifactId>
@@ -105,6 +100,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson-spring-boot-starter</artifactId>
+			<version>${redssion.version}</version>
 		</dependency>
 
 		<!--用于用户密码加密的依赖-->
