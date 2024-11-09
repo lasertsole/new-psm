@@ -1,11 +1,11 @@
 package com.psm.domain.User.follower.repository;
 
-import com.github.yulichang.extension.mapping.base.MPJDeepService;
 import com.psm.domain.User.follower.entity.FollowerDAO;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 
 import java.util.List;
 
-public interface FollowerDB extends MPJDeepService<FollowerDAO> {
+public interface FollowerDB extends BaseDBRepository<FollowerDAO> {
     /**
      * 根据源用户id获取关注记录
      *

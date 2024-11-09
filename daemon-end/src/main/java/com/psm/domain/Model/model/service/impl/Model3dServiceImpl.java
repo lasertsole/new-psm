@@ -1,8 +1,6 @@
 package com.psm.domain.Model.model.service.impl;
 
 import com.psm.domain.Model.model.entity.Model3dDAO;
-import com.psm.domain.Model.model.entity.Model3dDTO;
-import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.domain.Model.model.repository.Model3dRedis;
 import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.domain.Model.model.repository.Model3dOSS;
@@ -18,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -66,11 +65,11 @@ public class Model3dServiceImpl implements Model3dService {
 
     @Transactional
     @Override
-    public Map<String, Long> uploadModelInfo(Model3dDTO modelDTO) throws Exception {
-        String userId = String.valueOf(modelDTO.getUserId());
+    public Map<String, Long> uploadModelInfo(Long userId, String title, String content, MultipartFile cover, String style, String type, Integer visible) throws Exception {
+        String _userId = String.valueOf(userId);
 
         // 判断文件是否已上传完成且没有过期fullPath
-        String fullName = modelRedis.getUploadModel(userId);
+        String fullName = modelRedis.getUploadModel(_userId);
 
         if(StringUtils.isBlank(fullName))
             throw new RuntimeException("文件未上传完成或已过期");
@@ -81,7 +80,7 @@ public class Model3dServiceImpl implements Model3dService {
         // 将本地文件上传到OSS
         Map<String, String> ossResultMap;
         try {
-            ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), modelDTO.getCover(), userId);
+            ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), cover, _userId);
         }
         catch (Exception e){
             throw new RuntimeException("文件上传失败");
@@ -91,27 +90,33 @@ public class Model3dServiceImpl implements Model3dService {
         Long modelId; // 定义模型ID
         try {
             // 将ModelDTO转换为ModelDAO
-            Model3dDAO modelDAO = Model3dConvertor.INSTANCE.DTO2DAO(modelDTO);
-            modelDAO.setEntity(ossResultMap.get("entityUrl"));
-            modelDAO.setCover(ossResultMap.get("coverUrl"));
-            modelDAO.setStorage(fileSize);
+            Model3dDAO model3dDAO = new Model3dDAO();
+            model3dDAO.setUserId(userId);
+            model3dDAO.setTitle(title);
+            model3dDAO.setContent(content);
+            model3dDAO.setStyle(style);
+            model3dDAO.setType(type);
+            model3dDAO.setVisible(VisibleEnum.fromInteger(visible));
+            model3dDAO.setEntity(ossResultMap.get("entityUrl"));
+            model3dDAO.setCover(ossResultMap.get("coverUrl"));
+            model3dDAO.setStorage(fileSize);
 
             // 将ModelDAO存入数据库
-            modelDB.insert(modelDAO);
-            modelId = modelDAO.getId();
+            modelDB.insert(model3dDAO);
+            modelId = model3dDAO.getId();
         }
         catch (Exception e){
             // 回滚OSS
-            modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), userId);
+            modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), _userId);
             // 删除redis缓存
-            modelRedis.removeUploadModel(userId);
+            modelRedis.removeUploadModel(_userId);
             log.error("数据库写入失败", e);
             throw new RuntimeException("数据库写入失败");
         }
 
         try {
             // 删除redis缓存
-            modelRedis.removeUploadModel(userId);
+            modelRedis.removeUploadModel(_userId);
 
             //删除本地文件
             String folderName = tus.getFolderName(fullName);
@@ -119,7 +124,7 @@ public class Model3dServiceImpl implements Model3dService {
         }
         catch (Exception e) {
             // 回滚OSS
-            modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), userId);
+            modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), _userId);
             throw new RuntimeException("删除云文件失败");
         }
 
@@ -127,8 +132,8 @@ public class Model3dServiceImpl implements Model3dService {
     }
 
     @Override
-    public void removeModelInfo(Model3dDTO modelDTO) throws IOException{
-        modelDB.delete(Model3dConvertor.INSTANCE.DTO2DAO(modelDTO));
+    public void removeModelInfo(Long Id) throws IOException{
+        modelDB.removeById(Id);
     }
 
     @Override

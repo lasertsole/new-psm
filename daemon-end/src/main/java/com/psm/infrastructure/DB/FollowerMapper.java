@@ -1,9 +1,9 @@
 package com.psm.infrastructure.DB;
 
-import com.github.yulichang.base.MPJBaseMapper;
 import com.psm.domain.User.follower.entity.FollowerDAO;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface FollowerMapper extends MPJBaseMapper<FollowerDAO> {
+public interface FollowerMapper extends BaseDBMapper<FollowerDAO> {
 }

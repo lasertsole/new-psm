@@ -1,11 +1,11 @@
 package com.psm.domain.Model.model.service;
 
 import com.psm.domain.Model.model.entity.Model3dDAO;
-import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.desair.tus.server.exception.TusException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,20 +24,26 @@ public interface Model3dService {
     /**
      * 上传模型信息
      *
-     * @param modelDTO 模型DTO对象, 包括本地模型文件路径和模型信息
+     * @param userId    用户ID
+     * @param title     模型标题
+     * @param content    模型内容
+     * @param cover     封面
+     * @param style     模型风格
+     * @param type      模型类型
+     * @param visible   可见性
      * @throws TusException tus异常
      * @throws IOException io异常
      * @return Map,其中modelId为模型id, modelStorage为模型大小
      */
-    Map<String, Long> uploadModelInfo(Model3dDTO modelDTO) throws Exception;
+    Map<String, Long> uploadModelInfo(Long userId, String title, String content, MultipartFile cover, String style, String type, Integer visible) throws Exception;
 
     /**
      * 删除模型信息
      *
-     * @param modelDTO 模型DTO对象, 包括模型id
+     * @param Id 模型id
      * @throws IOException io异常
      */
-    void removeModelInfo(Model3dDTO modelDTO) throws IOException;
+    void removeModelInfo(Long Id) throws IOException;
 
     /**
      * 根据模型ID查询模型

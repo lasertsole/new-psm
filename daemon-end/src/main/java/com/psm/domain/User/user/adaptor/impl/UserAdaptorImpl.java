@@ -44,15 +44,18 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public Map<String, Object> login(@Valid UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException{
+        String name = userDTO.getName();
+        String password = userDTO.getPassword();
+
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getName())
-                ||StringUtils.isBlank(userDTO.getPassword())
+                StringUtils.isBlank(name)
+                ||StringUtils.isBlank(password)
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 登录
-        Map<String, Object> map = userService.login(userDTO);
+        Map<String, Object> map = userService.login(name, password);
 
         // 获取用户
         UserDAO userDAO = (UserDAO) map.get("user");
@@ -76,16 +79,20 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public Map<String, Object> register(@Valid UserDTO userDTO) throws DuplicateKeyException, InvalidParameterException {
+        String name = userDTO.getName();
+        String password = userDTO.getPassword();
+        String email = userDTO.getEmail();
+
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getName())
-                ||StringUtils.isBlank(userDTO.getPassword())
-                ||StringUtils.isBlank(userDTO.getEmail())
+                StringUtils.isBlank(name)
+                ||StringUtils.isBlank(password)
+                ||StringUtils.isBlank(email)
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 注册
-        Map<String, Object> map = userService.register(userDTO);
+        Map<String, Object> map = userService.register(name, password, email);
 
         // 获取用户
         UserDAO userDAO = (UserDAO) map.get("user");
@@ -120,19 +127,25 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public void updateInfo(@Valid UserDTO userDTO) throws InvalidParameterException {
+        String name = userDTO.getName();
+        Boolean sex = userDTO.getSex();
+        String phone = userDTO.getPhone();
+        String email = userDTO.getEmail();
+        String profile = userDTO.getProfile();
+
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getName())
-                &&Objects.isNull(userDTO.getSex())
-                &&StringUtils.isBlank(userDTO.getPhone())
-                &&StringUtils.isBlank(userDTO.getEmail())
-                &&StringUtils.isBlank(userDTO.getProfile())
+                StringUtils.isBlank(name)
+                &&Objects.isNull(sex)
+                &&StringUtils.isBlank(phone)
+                &&StringUtils.isBlank(email)
+                &&StringUtils.isBlank(profile)
         )
             throw new InvalidParameterException("Invalid parameter");
 
 
         // 修改用户
-        userService.updateInfo(userDTO);
+        userService.updateInfo(name, sex, phone, email, profile);
     }
 
     @Override

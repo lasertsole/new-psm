@@ -1,11 +1,11 @@
 package com.psm.domain.Model.model.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Model.model.entity.Model3dDAO;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.app.annotation.spring.Repository;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class Model3dDBImpl extends ServiceImpl<Model3dMapper, Model3dDAO> implements Model3dDB {
+public class Model3dDBImpl extends BaseDBRepositoryImpl<Model3dMapper, Model3dDAO> implements Model3dDB {
     @Autowired
     private Model3dMapper model3dMapper;
 

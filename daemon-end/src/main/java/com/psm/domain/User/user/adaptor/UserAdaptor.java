@@ -1,8 +1,6 @@
 package com.psm.domain.User.user.adaptor;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.types.utils.page.PageDTO;
 import org.springframework.dao.DuplicateKeyException;

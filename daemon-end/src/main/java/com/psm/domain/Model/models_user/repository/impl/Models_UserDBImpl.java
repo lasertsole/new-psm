@@ -89,11 +89,12 @@ public class Models_UserDBImpl implements Models_UserDB {
             return page;
         }
 
-        // 按照用户DAO页获取发过模型的用户的ID列表,并按时间降序排序 ****************************
+        // 按照用户DAO页获取发过模型的用户的ID列表,并按时间降序排序
         List<Long> ids = userDAOPage.getRecords().stream().map(UserDAO::getId).toList();
 
-        MPJLambdaWrapper<UserDAO> userJoinModelWrapper = new MPJLambdaWrapper<UserDAO>();
-        userJoinModelWrapper.innerJoin(Model3dDAO.class, Model3dDAO::getUserId, UserDAO::getId);
+        // 按照用户ID获取用户-模型一对多列表
+        MPJLambdaWrapper<UserDAO> userJoinModelWrapper = new MPJLambdaWrapper<UserDAO>();//主表为用户表
+        userJoinModelWrapper.innerJoin(Model3dDAO.class, Model3dDAO::getUserId, UserDAO::getId);//拼接从表3d模型表,连接条件为userDAO.Id = Model3dDAO.userId
         userJoinModelWrapper.selectAs(Model3dDAO::getId, ModelUserDAO::getModelId);
         userJoinModelWrapper.select(Model3dDAO::getTitle, Model3dDAO::getCover,
                 Model3dDAO::getStyle, Model3dDAO::getType);
@@ -102,7 +103,6 @@ public class Models_UserDBImpl implements Models_UserDB {
                 UserDAO::getPublicModelNum, UserDAO::getIsIdle, UserDAO::getCanUrgent, UserDAO::getCreateTime);
         userJoinModelWrapper.eq(Model3dDAO::getVisible, VisibleEnum.PUBLIC);
 
-        userJoinModelWrapper.eq(isFollowing, FollowerDAO::getSrcUserId, userSelfId);
         userJoinModelWrapper.eq(hasStyle, Model3dDAO::getStyle, style);
         userJoinModelWrapper.eq(hasType, Model3dDAO::getType, type);
 

@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import me.desair.tus.server.exception.TusException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -42,18 +43,26 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
 
     @Override
     public Model3dBO uploadModelInfo(@Valid Model3dDTO model3dDTO) throws Exception {
+        Long userId = model3dDTO.getUserId();
+        String title = model3dDTO.getTitle();
+        String content = model3dDTO.getContent();
+        MultipartFile cover = model3dDTO.getCover();
+        String style = model3dDTO.getStyle();
+        String type = model3dDTO.getType();
+        Integer visible = model3dDTO.getVisible();
+
         if (
-                Objects.isNull(model3dDTO.getUserId())
-                || StringUtils.isBlank(model3dDTO.getTitle())
-                || StringUtils.isBlank(model3dDTO.getContent())
-                || Objects.isNull(model3dDTO.getCover())
-                || StringUtils.isBlank(model3dDTO.getStyle())
-                || StringUtils.isBlank(model3dDTO.getType())
-                || Objects.isNull(model3dDTO.getVisible())
+                Objects.isNull(userId)
+                || StringUtils.isBlank(title)
+                || StringUtils.isBlank(content)
+                || Objects.isNull(cover)
+                || StringUtils.isBlank(style)
+                || StringUtils.isBlank(type)
+                || Objects.isNull(visible)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        Map<String, Long> map = modelService.uploadModelInfo(model3dDTO);
+        Map<String, Long> map = modelService.uploadModelInfo(userId, title, content, cover, style, type, visible);
         Model3dBO model3dBO = Model3dConvertor.INSTANCE.DTO2BO(model3dDTO);
         model3dBO.setId(map.get("modelId"));
         model3dBO.setStorage(map.get("modelStorage"));

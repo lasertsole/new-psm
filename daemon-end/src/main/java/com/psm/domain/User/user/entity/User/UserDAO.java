@@ -31,7 +31,7 @@ public class UserDAO implements Serializable {
     @Column(comment = "用户名", notNull = true, length = 12)
     private String name;
 
-    @Column(comment = "密码", notNull = true, length = 26)
+    @Column(comment = "密码", notNull = true, length = 60)// BCrypt加密密码长度60位
     private String password;
 
     @Index(name = "tb_users_phone_index")

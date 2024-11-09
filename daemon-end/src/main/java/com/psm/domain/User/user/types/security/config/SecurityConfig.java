@@ -1,6 +1,7 @@
 package com.psm.domain.User.user.types.security.config;
 
 import com.psm.domain.User.user.types.security.filter.JwtAuthenticationTokenFilter;
+import com.psm.domain.User.user.types.security.handler.Oauth2LoginErrorHander;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -75,6 +77,9 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
     @Value("${server.protocol}")
     private String protocol;
 
@@ -117,6 +122,7 @@ public class SecurityConfig {
                 .loginPage("/users/login")
                 .userInfoEndpoint(userInfo -> userInfo.userService(OAuth2ThirdAccountServiceDetail))
                 .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler)
         );
 
         //添加过滤器

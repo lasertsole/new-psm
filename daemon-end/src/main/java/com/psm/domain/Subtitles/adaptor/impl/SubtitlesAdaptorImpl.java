@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -82,37 +83,50 @@ public class SubtitlesAdaptorImpl implements SubtitlesAdaptor {
 
     @Override
     public void addSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws DuplicateKeyException, InvalidParameterException{
-        log.info("subtitlesDTO is {}", subtitlesDTO);
+        String title = subtitlesDTO.getTitle();
+        String content = subtitlesDTO.getContent();
+        MultipartFile cover = subtitlesDTO.getCover();
+        MultipartFile video = subtitlesDTO.getVideo();
+        String style = subtitlesDTO.getStyle();
+        String type = subtitlesDTO.getType();
+
         // 参数判空
         if (
-                StringUtils.isBlank(subtitlesDTO.getTitle())
-                || StringUtils.isBlank(subtitlesDTO.getContent())
-                || Objects.isNull(subtitlesDTO.getCover())
-                || Objects.isNull(subtitlesDTO.getVideo())
-                || StringUtils.isBlank(subtitlesDTO.getStyle())
-                || StringUtils.isBlank(subtitlesDTO.getType())
+                StringUtils.isBlank(title)
+                || StringUtils.isBlank(content)
+                || Objects.isNull(cover)
+                || Objects.isNull(video)
+                || StringUtils.isBlank(style)
+                || StringUtils.isBlank(type)
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 添加字幕盒子
-        subtitlesService.addSubtitles(subtitlesDTO);
+        subtitlesService.addSubtitles(title, content, cover, video, style, type);
     };
 
     @Override
     public void updateSubtitles(@Valid SubtitlesDTO subtitlesDTO) throws InvalidParameterException{
+        String title = subtitlesDTO.getTitle();
+        String content = subtitlesDTO.getContent();
+        MultipartFile cover = subtitlesDTO.getCover();
+        MultipartFile video = subtitlesDTO.getVideo();
+        String style = subtitlesDTO.getStyle();
+        String type = subtitlesDTO.getType();
+
         // 参数判空
         if (
-                StringUtils.isBlank(subtitlesDTO.getTitle())
-                && StringUtils.isBlank(subtitlesDTO.getContent())
-                && Objects.isNull(subtitlesDTO.getCover())
-                && Objects.isNull(subtitlesDTO.getVideo())
-                && StringUtils.isBlank(subtitlesDTO.getStyle())
-                && StringUtils.isBlank(subtitlesDTO.getType())
+                StringUtils.isBlank(title)
+                        || StringUtils.isBlank(content)
+                        || Objects.isNull(cover)
+                        || Objects.isNull(video)
+                        || StringUtils.isBlank(style)
+                        || StringUtils.isBlank(type)
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 更新字幕盒子
-        subtitlesService.updateSubtitles(subtitlesDTO);
+        subtitlesService.updateSubtitles(title, content, cover, video, style, type);
     };
 
     @Override

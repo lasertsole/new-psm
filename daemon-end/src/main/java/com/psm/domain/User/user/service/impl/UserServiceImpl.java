@@ -9,6 +9,7 @@ import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.domain.User.user.repository.UserOSS;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.UserService;
+import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.domain.User.user.types.security.utils.JWT.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +66,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Object> login(UserDTO userDTO) throws LockedException,BadCredentialsException,DisabledException{
+    public Map<String, Object> login(String name, String password) throws LockedException,BadCredentialsException,DisabledException{
         // AuthenticationManager authenticate进行认证
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDTO.getName(),userDTO.getPassword());
+                new UsernamePasswordAuthenticationToken(name, password);
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
         // 如果认证通过了，使用id生成jwt
@@ -98,16 +99,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException{
+    public Map<String, Object> register(String name, String password, String email) throws DuplicateKeyException{
         // 将前端传来的user对象拷贝到register对象中,并加密register对象的密码
-        UserDAO register = UserConvertor.INSTANCE.DTO2DAO(userDTO);
+        UserDAO register = new UserDAO();
+        register.setName(name);
+        register.setPassword(password);
+        register.setEmail(email);
         register.setPassword(passwordEncoder.encode(register.getPassword()));
 
         // 将register对象保存到数据库
         userDB.save(register);
 
         // 使用未加密密码的user对象登录
-        Map<String, Object> loginMap = login(userDTO);
+        Map<String, Object> loginMap = login(name, password);
 
         if (loginMap.isEmpty()){
             throw new RuntimeException("The user does not exist.");
@@ -153,14 +157,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateInfo(UserDTO userDTO) {
+    public void updateInfo(String name, Boolean sex, String phone, String email, String profile) {
         // 获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         Long id = loginUser.getUserDAO().getId();
 
         // 将UserDTO转化为UserDAO
-        UserDAO userDAO = UserConvertor.INSTANCE.DTO2DAO(userDTO);
+        UserDAO userDAO = new UserDAO();
+        userDAO.setName(name);
+        userDAO.setSex(sex ? SexEnum.FEMALE : SexEnum.MALE);
+        userDAO.setPhone(phone);
+        userDAO.setEmail(email);
+        userDAO.setProfile(profile);
         userDAO.setId(id);
 
         // 更新用户信息

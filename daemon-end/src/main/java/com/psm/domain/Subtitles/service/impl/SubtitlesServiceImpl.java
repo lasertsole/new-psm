@@ -2,11 +2,11 @@ package com.psm.domain.Subtitles.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.infrastructure.DB.SubtitlesMapper;
 import com.psm.domain.Subtitles.service.SubtitlesService;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import com.psm.infrastructure.OSS.UploadOSS;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 @Setter
 @Service
 @ConfigurationProperties(prefix = "aliyun.oss.path.subtitles")
-public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, SubtitlesDAO> implements SubtitlesService {
+public class SubtitlesServiceImpl extends BaseDBRepositoryImpl<SubtitlesMapper, SubtitlesDAO> implements SubtitlesService {
     @Autowired
     private SubtitlesMapper showcaseMapper;
 
@@ -69,14 +70,14 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
     }
 
     @Override
-    public void addSubtitles(SubtitlesDTO subtitlesDTO) throws DuplicateKeyException{
+    public void addSubtitles(String title, String content, MultipartFile cover, MultipartFile video, String style, String type) throws DuplicateKeyException{
         try{
             String coverUrl;
             String videoUrl;
 
             // 上传封面
             try{
-                coverUrl = uploadOSS.multipartUpload(subtitlesDTO.getCover(),imageFolderPath);
+                coverUrl = uploadOSS.multipartUpload(cover, imageFolderPath);
             }
             catch (Exception e){
                 throw new RuntimeException("Cover upload failed");
@@ -84,7 +85,7 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
 
             // 上传视频
             try{
-                videoUrl = uploadOSS.multipartUpload(subtitlesDTO.getCover(),videoFolderPath);
+                videoUrl = uploadOSS.multipartUpload(video, videoFolderPath);
             }
             catch (Exception e){
                 String coverOSSPath = new URL(coverUrl).getPath().substring(1);
@@ -95,9 +96,12 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
 
             // 将信息保存到数据库
             SubtitlesDAO showcaseDAO = new SubtitlesDAO();
-            BeanUtils.copyProperties(subtitlesDTO, showcaseDAO);
+            showcaseDAO.setTitle(title);
+            showcaseDAO.setContent(content);
             showcaseDAO.setCover(coverUrl);
             showcaseDAO.setVideo(videoUrl);
+            showcaseDAO.setStyle(style);
+            showcaseDAO.setType(type);
             save(showcaseDAO);
         }
         catch (DuplicateKeyException e){
@@ -109,10 +113,14 @@ public class SubtitlesServiceImpl extends ServiceImpl<SubtitlesMapper, Subtitles
     }
 
     @Override
-    public void updateSubtitles(SubtitlesDTO subtitlesDTO) {
+    public void updateSubtitles(String title, String content, MultipartFile cover, MultipartFile video, String style, String type) {
         try{
+            // TODO 需要完善修改,缺修改oss的视频和封面
             SubtitlesDAO showcaseDAO = new SubtitlesDAO();
-            BeanUtils.copyProperties(subtitlesDTO,showcaseDAO);
+            showcaseDAO.setTitle(title);
+            showcaseDAO.setContent(content);
+            showcaseDAO.setStyle(style);
+            showcaseDAO.setType(type);
             updateById(showcaseDAO);
         }
         catch (Exception e){

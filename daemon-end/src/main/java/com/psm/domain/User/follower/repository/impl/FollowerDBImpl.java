@@ -1,17 +1,17 @@
 package com.psm.domain.User.follower.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.User.follower.entity.FollowerDAO;
 import com.psm.domain.User.follower.repository.FollowerDB;
 import com.psm.infrastructure.DB.FollowerMapper;
 import com.psm.app.annotation.spring.Repository;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Repository
-public class FollowerDBImpl extends ServiceImpl<FollowerMapper, FollowerDAO> implements FollowerDB {
+public class FollowerDBImpl extends BaseDBRepositoryImpl<FollowerMapper, FollowerDAO> implements FollowerDB {
     @Autowired
     private FollowerMapper followerMapper;
 

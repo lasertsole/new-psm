@@ -1,12 +1,12 @@
 package com.psm.domain.Model.model.repository;
 
-import com.github.yulichang.extension.mapping.base.MPJDeepService;
 import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 import com.psm.types.enums.VisibleEnum;
 
 import java.util.List;
 
-public interface Model3dDB extends MPJDeepService<Model3dDAO> {
+public interface Model3dDB extends BaseDBRepository<Model3dDAO> {
     /**
      * 插入模型数据
      * @param modelDAO

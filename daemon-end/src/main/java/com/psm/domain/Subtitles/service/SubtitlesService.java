@@ -1,9 +1,10 @@
 package com.psm.domain.Subtitles.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.psm.domain.Subtitles.entity.SubtitlesDAO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,47 +15,55 @@ import java.util.List;
  * @author moye
  * @date 2021/05/08
  */
-public interface SubtitlesService extends IService<SubtitlesDAO> {
+public interface SubtitlesService extends BaseDBRepository<SubtitlesDAO> {
     /**
      * 分页查询橱窗盒子
      *
-     * @param currentPage
-     * @param pageSize
-     * @return
+     * @param currentPage 当前页码
+     * @param pageSize 页大小
+     * @return 字幕DAO列表
      */
-    public List<SubtitlesDAO> getSubtitlesListByPage(Integer currentPage, Integer pageSize);
+    List<SubtitlesDAO> getSubtitlesListByPage(Integer currentPage, Integer pageSize);
 
     /**
      * 根据id查询橱窗盒子
      *
-     * @param id
-     * @return
+     * @param id 字幕id
+     * @return 字幕DAO
      */
-    public SubtitlesDAO getSubtitlesById(Long id);
+    SubtitlesDAO getSubtitlesById(Long id);
 
     /**
      * 根据userId查询橱窗盒子
      *
-     * @param userId
-     * @return
+     * @param userId 用户id
+     * @return 字幕DAO列表
      */
     List<SubtitlesDAO> getSubtitlesByUserId(Long userId);
 
     /**
      * 增加橱窗盒子
      *
-     * @param subtitlesDTO
-     * @return
+     * @param title 标题
+     * @param content 内容
+     * @param cover 封面
+     * @param video 视频
+     * @param style 样式
+     * @param type 类型
      */
-    public void addSubtitles(SubtitlesDTO subtitlesDTO) throws DuplicateKeyException;
+    public void addSubtitles(String title, String content, MultipartFile cover, MultipartFile video, String style, String type) throws DuplicateKeyException;
 
     /**
      * 修改橱窗盒子
      *
-     * @param subtitlesDTO
-     * @return
+     * @param title 标题
+     * @param content 内容
+     * @param cover 封面
+     * @param video 视频
+     * @param style 样式
+     * @param type 类型
      */
-    public void updateSubtitles(SubtitlesDTO subtitlesDTO);
+    public void updateSubtitles(String title, String content, MultipartFile cover, MultipartFile video, String style, String type);
 
     /**
      * 删除橱窗盒子

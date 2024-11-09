@@ -1,6 +1,5 @@
 package com.psm.domain.User.follower.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.mpe.annotation.InsertFillTime;

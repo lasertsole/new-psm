@@ -1,19 +1,16 @@
 package com.psm.domain.User.user.types.security.utils;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class Oauth2UserIdContextHolder {
-    private static final ThreadLocal<Long> contextHolder = new ThreadLocal<>();
+    private static final ThreadLocal<Long> PARAM_THREAD_LOCAL = new ThreadLocal<>();
     public static void setUserId(Long userId) {
-        contextHolder.set(userId);
+        PARAM_THREAD_LOCAL.set(userId);
     }
 
     public static Long getUserId() {
-        return contextHolder.get();
+        return PARAM_THREAD_LOCAL.get();
     }
 
     public static void removeUserId() {
-        contextHolder.remove();
+        PARAM_THREAD_LOCAL.remove();
     }
 }

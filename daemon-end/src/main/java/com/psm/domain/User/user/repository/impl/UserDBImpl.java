@@ -4,18 +4,18 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.infrastructure.DB.UserMapper;
+import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
 
 @Repository
-public class UserDBImpl extends ServiceImpl<UserMapper, UserDAO> implements UserDB {
+public class UserDBImpl extends BaseDBRepositoryImpl<UserMapper, UserDAO> implements UserDB {
     @Autowired
     private UserMapper userMapper;
 

@@ -36,10 +36,11 @@ public interface UserService {
     /**
      * 登录
      *
-     * @param userDTO 用户DTO实体
+     * @param name 用户名
+     * @param password 密码
      * @return 用户登录信息的键值对，其中token为令牌，user为用户信息
      */
-    Map<String, Object> login(UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException;
+    Map<String, Object> login(String name, String password) throws LockedException, BadCredentialsException, DisabledException;
 
 
     /**
@@ -50,10 +51,12 @@ public interface UserService {
     /**
      * 注册
      *
-     * @param userDTO 用户DTO实体
+     * @param name 用户DTO实体
+     * @param password 密码
+     * @param email 邮箱
      * @return 用户登录信息的键值对，其中token为令牌，user为用户信息
      */
-    Map<String, Object> register(UserDTO userDTO) throws DuplicateKeyException;
+    Map<String, Object> register(String name, String password, String email) throws DuplicateKeyException;
 
     /**
      * 销号
@@ -72,7 +75,7 @@ public interface UserService {
     /**
      * 更新用户信息(除了密码和头像)
      */
-    void updateInfo(UserDTO userDTO);
+    void updateInfo(String name, Boolean sex, String phone, String email, String profile);
 
     /**
      * 更新密码

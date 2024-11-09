@@ -115,7 +115,7 @@ public class ModelController {
             @RequestParam(required = false) String style,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Boolean isFollowing
-    ) {
+    )  {
         Long userSelfId = null;
 
         try {
