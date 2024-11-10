@@ -7,7 +7,9 @@
                 >
                 </CommonAvatar>
             </div>
-            <div class="recomment">
+            <el-main class="recomment"
+                v-loading="loading"
+            >
                 <div class="recomment-name">{{userInfo.name}}</div>
                 <div class="recomment-title">个人简介:</div>
                 <el-input
@@ -24,7 +26,7 @@
                     style="border-radius:5px; overflow: hidden;"
                 />
                 <el-button type="primary" @click="editProfileFunc">编辑信息</el-button>
-            </div>
+            </el-main>
         </div>
         <div class="showcase">
             <h2>
@@ -87,6 +89,8 @@
     // import { ref } from "vue"
     // import { showCaseBoxInfo, planningBoxInfo} from "types/pageType/personSpace"
 
+    const loading:Ref<boolean> = ref(false);
+
     const profileEditable = ref<boolean>(false);// 是否可以编辑个人简介
 
     const tempProfile = ref<string>(userInfo.profile||"");
@@ -103,10 +107,10 @@
             return;
         }
 
-        let ok = await updateAccountInfo({profile : tempProfile.value});
-        if(ok){
-            tempProfile.value=userInfo.profile||"";
-        };
+        loading.value=true;
+        let ok = await updateAccountInfo({profile : tempProfile.value}).then((res)=>{
+            if(res){tempProfile.value=userInfo.profile||"";}
+        }).finally(()=>{loading.value=false});
     });
     
     definePageMeta({

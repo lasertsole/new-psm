@@ -11,9 +11,10 @@
 </style>
 
 <script lang="ts" setup>
-  const { $emit } = useNuxtApp();
+  const { $emit, $socket } = useNuxtApp();
 
   // 这里的代码仅在客户端执行
+  // 配置登录事件
   onMounted(()=>{
     userInfo.isLogin = false;
     
@@ -28,4 +29,19 @@
       }, 0);
     }
   });
+
+  // 监听socket消息
+  onMounted(() => {
+    setInterval(()=>{
+      $socket.emit('chat message', 'hello')
+    }, 500);
+    $socket.on('chat message', (msg) => {
+      console.log('Received message:', msg)
+    })
+  })
+
+  // 组件销毁时移除监听
+  onBeforeUnmount(() => {
+    $socket.off('chat message')
+  })
 </script>

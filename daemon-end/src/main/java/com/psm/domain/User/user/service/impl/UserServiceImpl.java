@@ -165,11 +165,11 @@ public class UserServiceImpl implements UserService {
 
         // 将UserDTO转化为UserDAO
         UserDAO userDAO = new UserDAO();
-        userDAO.setName(name);
-        userDAO.setSex(sex ? SexEnum.FEMALE : SexEnum.MALE);
-        userDAO.setPhone(phone);
-        userDAO.setEmail(email);
-        userDAO.setProfile(profile);
+        if(Objects.nonNull(name)) userDAO.setName(name);
+        if(Objects.nonNull(sex)) userDAO.setSex(sex ? SexEnum.FEMALE : SexEnum.MALE);
+        if(Objects.nonNull(phone)) userDAO.setPhone(phone);
+        if(Objects.nonNull(email)) userDAO.setEmail(email);
+        if(Objects.nonNull(profile)) userDAO.setProfile(profile);
         userDAO.setId(id);
 
         // 更新用户信息

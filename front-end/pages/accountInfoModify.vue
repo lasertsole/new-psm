@@ -1,5 +1,7 @@
 <template>
-    <form class="accountModify">
+    <el-form class="accountModify"
+        v-loading="loadding"
+    >
         <ul class="infoBox">
             <li class="profile">
                 <div class="circle">
@@ -123,7 +125,7 @@
                 </transition>
             </li>
         </ul>
-    </form>
+    </el-form>
 </template>
     
 <script lang="ts" setup>
@@ -131,6 +133,7 @@
     import { ElMessage } from 'element-plus';
     const { $on }= useNuxtApp();
 
+    const loadding:Ref<boolean> = ref<boolean>(false); // 是否显示加载中
 
     /**以下为展开合上盒子时的动画特效**/
     /*详情盒子动画钩子*/
@@ -149,7 +152,7 @@
                 animateLock=false;
             }
         });
-    }
+    };
 
     function onLeave(el:any, done:Function):void{
         animate = gsap.to(el,{
@@ -212,11 +215,13 @@
             ElMessage.error("修改后的名字不能与原来的一样");
         }
         else{
-            let isOk = await updateAccountInfo({name:temptUserName.value});
-            if(isOk){
+            loadding.value = true;
+            updateAccountInfo({name:temptUserName.value}).then((res)=>{
+                if(res){
                 temptUserName.value = userInfo.name||"未设置";
                 modifyIndex.value = -1;
             }
+            }).finally(()=>{loadding.value = false;});
         }
     }, 1000);
 
@@ -225,11 +230,13 @@
             ElMessage.error("性别未选择");  
         }
         else{
-            let isOk = await updateAccountInfo({sex:temptSex.value});
-            if(isOk){
-                temptSex.value = userInfo.sex;
-                modifyIndex.value = -1;
+            loadding.value = true;
+            updateAccountInfo({sex:temptSex.value}).then((res)=>{
+                if(res){
+                    temptSex.value = userInfo.sex;
+                    modifyIndex.value = -1;
             }
+            }).finally(()=>{loadding.value = false;});
         }
     }, 1000);
 
@@ -244,11 +251,12 @@
             ElMessage.error("修改后的手机号不能与原来的一样");
         }
         else{
-            let isOk = await updateAccountInfo({phone:temptUserPhoneNumber.value});
-            if(isOk){
-                temptUserPhoneNumber.value = userInfo.phone||"";
-                modifyIndex.value = -1;
-            }
+            loadding.value = true;
+            updateAccountInfo({phone:temptUserPhoneNumber.value}).then((res)=>{
+                if(res){
+                    temptUserPhoneNumber.value = userInfo.phone||"";
+                    modifyIndex.value = -1;
+            }}).finally(()=>{loadding.value = false;});
         }
     }, 1000);
 
@@ -262,11 +270,12 @@
             ElMessage.error('无效邮箱');
         }
         else{
-            let isOk = await updateAccountInfo({email:temptUserEmail.value});
-            if(isOk){
-                temptUserEmail.value = userInfo.email||"";
-                modifyIndex.value = -1;
-            }
+            loadding.value = true;
+            updateAccountInfo({email:temptUserEmail.value}).then((res)=>{
+                if(res){
+                    temptUserEmail.value = userInfo.email||"";
+                    modifyIndex.value = -1;
+            }}).finally(()=>{loadding.value = false;});
         }
     })
 
@@ -296,11 +305,12 @@
             ElMessage.error('新旧密码不能一样');
         }
         else{
-            let isOk = await updatePassword(temptPassword.value, changePassword.value);
-            if(isOk){
-                temptPassword.value = "111111";
-                modifyIndex.value = -1;
-            }
+            loadding.value = true;
+            updatePassword(temptPassword.value, changePassword.value).then((res)=>{
+                if(res){
+                    temptPassword.value = "111111";
+                    modifyIndex.value = -1;
+            }}).finally(()=>{loadding.value = false;});
         }
     }, 1000);
     /**以上为修改信息部分**/

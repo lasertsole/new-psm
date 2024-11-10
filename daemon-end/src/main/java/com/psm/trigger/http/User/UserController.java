@@ -181,16 +181,18 @@ public class UserController {
      */
     @PutMapping("/updateInfo")
     public ResponseVO updateUser(@RequestBody UserDTO userDTO) {
-        try {
-            userAdaptor.updateInfo(userDTO);
-            return ResponseVO.ok("Update user successful");
-        }
-        catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
-        }
+        userAdaptor.updateInfo(userDTO);
+        return ResponseVO.ok("Update user successful");
+//        try {
+//            userAdaptor.updateInfo(userDTO);
+//            return ResponseVO.ok("Update user successful");
+//        }
+//        catch (InvalidParameterException e){
+//            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+//        }
+//        catch (Exception e){
+//            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+//        }
     }
 
     /**

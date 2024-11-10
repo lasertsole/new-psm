@@ -1,6 +1,6 @@
 <template>
     <div class="all">
-        <div class="items">
+        <el-main class="items" v-loading="loading">
             <div class="filterBar"
                 ref="filterBar"
             >
@@ -17,7 +17,7 @@
                 >
                 </ModelShowItem>
             </template>
-        </div>
+        </el-main>
 
         <el-pagination 
             class="pagination"
@@ -36,6 +36,9 @@
     import type { ModelInfos } from "@/types/model";
     import type { Page, FilterItem } from "@/types/common";
     import { StyleEnum, TypeEnum } from "@/enums/models.d";
+
+    // 加载状态
+    const loading:Ref<boolean> = ref<boolean>(true);
 
     // 样式标签列表
     const styleOpts = Object.entries(StyleEnum);
@@ -77,8 +80,18 @@
     
     const ModelShowItems: Ref<Page<ModelInfos>> = ref<Page<ModelInfos>>({records:[]});
     
+    // 分页请求数据函数
+    function fetchModelsShowBars({current, size, style, type, isIdle, canUrgent}:
+    {current: number, size: number, style?:string, type?:string, isIdle?:boolean, canUrgent?:boolean}):void
+    {
+        loading.value = true;
+        getModelsShowBars({current, size, style, type, isIdle, canUrgent}).then((res)=>{
+            ModelShowItems.value = res;
+        }).finally(()=>{loading.value = false;});
+    };
+
     // 服务器渲染请求
-    ModelShowItems.value = await getModelsShowBars({current:1, size:10});
+    fetchModelsShowBars({current:1, size:10});
 
     const currentPage: Ref<number> = ref<number>(1);
     const pageSize: Ref<number> = ref<number>(10);
@@ -88,7 +101,8 @@
     const canUrgent: Ref<boolean> = ref<boolean>(false);
 
     async function handleSizeChange(): Promise<void> {
-        ModelShowItems.value = await getModelsShowBars({
+        loading.value = true;
+        fetchModelsShowBars({
             current:currentPage.value, 
             size:pageSize.value,
             style:style.value,
@@ -99,7 +113,7 @@
     }
 
     async function handleCurrentChange(): Promise<void> {
-        ModelShowItems.value = await getModelsShowBars({
+        fetchModelsShowBars({
             current:currentPage.value, 
             size:pageSize.value,
             style:style.value,
@@ -110,12 +124,13 @@
     }
 
     async function handerFilterCommit({ typeArr, switchArr }: { typeArr:string[], switchArr: boolean[] }): Promise<void> {
+        console.log(typeArr, switchArr);
         style.value = typeArr[0];
         type.value = typeArr[1];
         isIdle.value = switchArr[0];
         canUrgent.value = switchArr[1];
 
-        ModelShowItems.value = await getModelsShowBars({
+        fetchModelsShowBars({
             current:currentPage.value, 
             size:pageSize.value,
             style:style.value,

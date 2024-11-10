@@ -9,7 +9,8 @@
             >
             </model-upload-entity>
 
-            <div
+            <el-main
+                v-loading="loading"
                 key="1"
                 v-show="hadUpload"
                 class="upload-detail"
@@ -113,7 +114,7 @@
                 <div class="send">
                     <el-button type="primary" @click="sendModelInfo">发送</el-button>
                 </div>
-            </div>
+            </el-main>
         </transition-group>
     </div>
 </template>
@@ -122,9 +123,10 @@
     import { StyleEnum, TypeEnum } from "@/enums/models.d";
     import { VisibleEnum } from "@/enums/visible.d";
 
-    const progress = ref<string>('0.00%');
-    const hadUpload = ref<boolean>(false);
-    const fileName = ref<string>("");
+    const loading:Ref<boolean> = ref<boolean>(false);
+    const progress:Ref<string> = ref<string>('0.00%');
+    const hadUpload:Ref<boolean> = ref<boolean>(false);
+    const fileName:Ref<string> = ref<string>("");
 
     // 开始上传模型文件回调
     function uploadStart(fln:any):void {
@@ -264,6 +266,7 @@
             return;
         };
         
+        loading.value = true;
         uploadModelInfo({
             cover: cover.value,
             title: title.value,
@@ -271,7 +274,7 @@
             style: style.value,
             type: type.value,
             visible: visible.value.toString()
-        });
+        }).finally(()=>{loading.value = false});
     }, 1000);
 
     definePageMeta({

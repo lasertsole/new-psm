@@ -151,7 +151,7 @@ aliyun:
 socketio:
   # 监听的ip和端口
   host: localhost
-  port: 9099
+  port: 8000
   # 设置最大每帧处理数据的长度，防止他人利用大数据来攻击服务器
   max-frame-payload-length: 1048576
   # 设置http交互最大内容长度
@@ -180,7 +180,7 @@ server:
     # 缓冲池大小
     buffer-pool: 16M
   protocol: http
-  port: 8000
+  port: 8001
   address: 127.0.0.1
   front-end-url:
     socket: localhost:3000

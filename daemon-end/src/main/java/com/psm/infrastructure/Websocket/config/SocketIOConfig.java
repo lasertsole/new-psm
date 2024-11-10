@@ -8,9 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @描述：socketio配置类
- */
 @Setter
 @ConfigurationProperties(prefix = "socketio")
 @Configuration
@@ -26,7 +23,7 @@ public class SocketIOConfig {
 
     /**
      * 以下配置在上面的application.properties中已经注明
-     * @return
+     * @return SocketIOServer
      */
     @Bean
     public SocketIOServer socketIOServer() {

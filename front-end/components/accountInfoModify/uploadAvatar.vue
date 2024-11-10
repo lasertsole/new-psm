@@ -3,6 +3,7 @@
         class="avatar-uploader"
     >
         <el-upload
+            v-loading="loading"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
@@ -26,6 +27,8 @@
     import { ElMessage } from 'element-plus';
     import type { UploadProps } from 'element-plus';
 
+    const loading:Ref<boolean> = ref<boolean>(false); // 是否正在上传中
+
     const handleAvatarSuccess: UploadProps['onSuccess'] = (response,uploadFile) => {
         // imageUrl.value = URL.createObjectURL(uploadFile.raw!);
     };
@@ -46,7 +49,8 @@
     }
 
     async function request(params:any):Promise<void>{//替换掉原本的xhr请求
-        updateAvatar(params.file);
+        loading.value = true;
+        updateAvatar(params.file).finally(()=>loading.value = false);
     }
 </script>
 

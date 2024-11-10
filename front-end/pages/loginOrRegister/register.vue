@@ -3,6 +3,7 @@
         :rules="rules"
         :model="userInfo"
         ref="ruleFormRef"
+        v-loading="loading"
     >
         <el-form-item prop="name">
             <el-input
@@ -68,6 +69,7 @@
         }
     });
 
+    const loading:Ref<boolean> = ref<boolean>(false);
     const ruleFormRef = ref<FormInstance>();
 
     //类型继承与属性覆盖
@@ -156,12 +158,13 @@
         formEl.validate((valid) => {
             if (valid) {
                 if(userInfo.name&&userInfo.password&&userInfo.email){
+                    loading.value = true;
                     register(userInfo.name, userInfo.password, userInfo.email).then(isSuccuss => {
                         if(isSuccuss){
                             $emit("online");
                             router.push("/");
                         }
-                    });
+                    }).finally(() => loading.value = false);
                 }
             }
         })

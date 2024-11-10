@@ -3,6 +3,7 @@
         :rules="rules"
         :model="userInfo"
         ref="ruleFormRef"
+        v-loading="loading"
     >
         <el-form-item prop="name">
             <el-input
@@ -71,6 +72,8 @@
         }
     });
 
+    const loading:Ref<boolean> = ref<boolean>(false);
+
     const ruleFormRef = ref<FormInstance>();
 
     const userInfo:UserInfo = reactive({
@@ -115,19 +118,23 @@
         if (!formEl) return;
         formEl.validate((valid) => {
             if (valid) {
+                loading.value = true;
                 login(userInfo.name, userInfo.password).then(isSuccuss => {
                     if(isSuccuss){
                         $emit("online");
                         router.push("/");
                     }
-                });
+                }).finally(() => loading.value = false);
             }
         })
     }, 1000);
 
     // github登录
     const githubLogin = debounce(()=>{
-        thirdPartyLogin("/giteeLogin");
+        loading.value = true;
+        thirdPartyLogin("/giteeLogin").then(isSuccuss => {
+            loading.value = false;
+        });
     }, 1000);
 </script>
 
