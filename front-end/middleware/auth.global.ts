@@ -1,5 +1,6 @@
 const needAuthPages: string[] = [// 示例需要认证的页面路径的正则表达式数组
-    "/model/3D/detailShow/.*"
+    "/home"
+    ,"/model/3D/detailShow/.*"
     ,"/model/3D/show/follow"
 ];
 

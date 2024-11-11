@@ -167,6 +167,24 @@
             .filterBar{
                 margin-top: 10px;
             }
+
+            /* 滚动条整体部分 */
+            &::-webkit-scrollbar {
+                width: 10px; /* 滚动条的宽度 */
+                height: 10px; /* 水平滚动条的高度 */
+            }
+
+            /* 滚动条的滑块部分 */
+            &::-webkit-scrollbar-thumb {
+                background-color: darkgrey; /* 滑块的颜色 */
+                border-radius: 10px; /* 滑块的圆角 */
+            }
+
+            /* 滚动条的轨道部分 */
+            &::-webkit-scrollbar-track {
+                background-color: lightgrey; /* 轨道的颜色 */
+                border-radius: 10px; /* 轨道的圆角 */
+            }
         }
 
         .pagination{

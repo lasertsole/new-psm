@@ -1,5 +1,5 @@
 <template>
-    <div class="personSpace">
+    <div class="home">
         <div class="personAbtract">
             <div class="avatar">
                 <CommonAvatar
@@ -128,7 +128,7 @@
         border-radius: 50%;
     }
 
-    .personSpace{
+    .home{
         width: 100%;
         height: 100%;
         padding: 20px;

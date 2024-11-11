@@ -23,8 +23,8 @@ export const routerList:Router[] = [
         tarbar: true,
     },
     {
-        name: '作品',
-        path: '/#',
+        name: '消息',
+        path: '/message',
         needOnLine: false,
         needOffLine: false,
         tarbar: true,

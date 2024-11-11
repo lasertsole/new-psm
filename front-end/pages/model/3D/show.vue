@@ -85,6 +85,10 @@
         display: flex;
         flex-direction: column;
 
+        @media screen and (max-width: 800px){
+            padding: 30px 0px;
+        }
+
         .content{
             $contentHeight: v-bind(contentHeight);
             height: $contentHeight;

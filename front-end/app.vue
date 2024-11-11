@@ -11,7 +11,9 @@
 </style>
 
 <script lang="ts" setup>
-  const { $emit, $socket } = useNuxtApp();
+  const { $emit, $on } = useNuxtApp();
+
+  let onetoOneChatService; // 一对一聊天服务
 
   // 这里的代码仅在客户端执行
   // 配置登录事件
@@ -29,19 +31,16 @@
       }, 0);
     }
   });
+  
+  $on("online", ()=>{
+    onetoOneChatService = OnetoOneChatService.getInstance();
+  })
 
   // 监听socket消息
-  onMounted(() => {
-    setInterval(()=>{
-      $socket.emit('chat message', 'hello')
-    }, 500);
-    $socket.on('chat message', (msg) => {
-      console.log('Received message:', msg)
-    })
-  })
+  onMounted(()=>{
+  });
 
   // 组件销毁时移除监听
   onBeforeUnmount(() => {
-    $socket.off('chat message')
-  })
+  });
 </script>
