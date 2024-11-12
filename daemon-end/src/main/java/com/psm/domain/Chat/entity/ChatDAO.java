@@ -1,6 +1,5 @@
 package com.psm.domain.Chat.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.mpe.autotable.annotation.Column;
@@ -30,4 +29,7 @@ public class ChatDAO implements Serializable {
     @Index(name = "tb_chats_srcUserId_index")
     @Column(comment = "来源用户id", notNull = true)
     private Long srcUserId;
+
+    @Column(comment = "消息内容", notNull = true)
+    private String content;
 }

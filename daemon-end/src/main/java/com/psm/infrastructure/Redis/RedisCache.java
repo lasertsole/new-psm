@@ -118,6 +118,37 @@ public class RedisCache {
     }
 
     /**
+     * 向Set中添加元素
+     *
+     * @param key 缓存的键值
+     * @param value
+     * @return 成功添加到集合中的新成员数量
+     */
+    public <T> void cacheSetNumber(final String key, final T value){
+        redisTemplate.opsForSet().add(key, value);
+    }
+
+    /**
+     * 向Set中移除元素，如果删除后集合为空，则删除集合
+     *
+     * @param key 缓存的键值
+     * @param value
+     */
+    public <T> void deleteSetValue(final String key, final T value){
+        Long remove = redisTemplate.opsForSet().remove(key, value);
+        Set<String> members = redisTemplate.opsForSet().members(key);
+        // 如果set为空，则删除集合
+        if (members == null || members.isEmpty())
+        {
+            deleteObject(key);
+        }
+    }
+
+    public <T> void deleteSet(final String key) {
+        deleteObject(key);
+    }
+
+    /**
      * 获得缓存的set
      *
      * @param key
