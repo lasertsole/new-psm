@@ -53,6 +53,7 @@
 
                 .el-icon{
                     @include fullInParent();
+                    @include flexCenter;
 
                     svg{
                         @include fixedSquare(20%);

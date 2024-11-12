@@ -29,7 +29,11 @@
             justify-content: center;
             align-items: center;
             a{
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 color: #707070;
+                
                 &.selected{
                     color: #f87299;
                 }

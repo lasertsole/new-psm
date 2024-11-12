@@ -5,6 +5,7 @@ import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
+import com.psm.domain.User.user.service.AuthUserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.service.UserService;
 import com.psm.utils.Valid.ValidUtil;
@@ -31,6 +32,12 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AuthUserService authUserService;
+    public String authUserToken(String token) {
+        return authUserService.authUserToken(token);
+    }
 
     @Override
     public UserBO getAuthorizedUser() {

@@ -11,12 +11,14 @@
                 </CommonFilterBar>
             </div>
 
-            <template v-for="(item, index) in ModelShowItems.records" :key="index">
-                <ModelShowItem
-                    :boxInfo="item"
-                >
-                </ModelShowItem>
-            </template>
+            <div class="list">
+                <template v-for="(item, index) in ModelShowItems.records" :key="index">
+                    <ModelShowItem
+                        :boxInfo="item"
+                    >
+                    </ModelShowItem>
+                </template>
+            </div>
         </el-main>
 
         <el-pagination 
@@ -153,6 +155,7 @@
     @import "@/common.scss";
 
     .all{
+        @include scrollBar(8px);
         @include fullWidth();
         min-height: 100%;
         display: flex;
@@ -163,27 +166,22 @@
             @include fullWidth();
             min-height: 100%;
             justify-self: flex-start;
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
             
             .filterBar{
-                margin-top: 10px;
+                padding: 30px 20px 0px 20px;
             }
 
-            /* 滚动条整体部分 */
-            &::-webkit-scrollbar {
-                width: 10px; /* 滚动条的宽度 */
-                height: 10px; /* 水平滚动条的高度 */
-            }
-
-            /* 滚动条的滑块部分 */
-            &::-webkit-scrollbar-thumb {
-                background-color: darkgrey; /* 滑块的颜色 */
-                border-radius: 10px; /* 滑块的圆角 */
-            }
-
-            /* 滚动条的轨道部分 */
-            &::-webkit-scrollbar-track {
-                background-color: lightgrey; /* 轨道的颜色 */
-                border-radius: 10px; /* 轨道的圆角 */
+            .list{
+                height: 200px;
+                flex-grow: 1;
+                padding: 0px 20px 30px 20px;
+                @include scrollBar(8px);
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
             }
         }
 

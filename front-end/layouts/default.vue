@@ -1,6 +1,6 @@
 <template>
-    <div class="layout">
-        <header>
+    <div class="layout" ref="layout">
+        <header ref="header">
             <div class="left">
                 <HeaderLogo></HeaderLogo>
                 <div class="tabBar">
@@ -18,6 +18,20 @@
 </template>
 
 <script setup lang="ts">
+    const layout: Ref<HTMLElement | undefined> = ref<HTMLElement>();
+    const header: Ref<HTMLElement | undefined> = ref<HTMLElement>();
+    const nowMainHeight:Ref<string | undefined> = ref('100%');
+
+    function computedMainHeight(): void{
+        if(!header.value || !layout.value) return;
+        nowMainHeight.value = layout.value.clientHeight - header.value.offsetHeight + "px";
+    }
+    
+    onMounted(() => {
+        computedMainHeight();
+
+        window.addEventListener('resize', computedMainHeight);
+    })
 </script>
 
 <style lang="scss" scoped>
@@ -29,6 +43,8 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        background-color: rgba(222, 222, 222, .75);
+        
         header{
             transition: height .3s linear;
             position: relative;
@@ -85,27 +101,11 @@
                 }
             }
         }
+        
         main{
             flex-grow: 1;
-            overflow: auto;
-
-            /* 滚动条整体部分 */
-            &::-webkit-scrollbar {
-            width: 10px; /* 滚动条的宽度 */
-            height: 10px; /* 水平滚动条的高度 */
-            }
-
-            /* 滚动条的滑块部分 */
-            &::-webkit-scrollbar-thumb {
-            background-color: darkgrey; /* 滑块的颜色 */
-            border-radius: 10px; /* 滑块的圆角 */
-            }
-
-            /* 滚动条的轨道部分 */
-            &::-webkit-scrollbar-track {
-            background-color: lightgrey; /* 轨道的颜色 */
-            border-radius: 10px; /* 轨道的圆角 */
-            }
+            $nowMainHeight: v-bind(nowMainHeight);
+            @include fixedHeight($nowMainHeight);
         }
     }
 </style>

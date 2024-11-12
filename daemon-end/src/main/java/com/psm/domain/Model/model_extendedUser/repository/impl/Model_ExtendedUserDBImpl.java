@@ -48,11 +48,11 @@ public class Model_ExtendedUserDBImpl implements Model_ExtendedUserDB {
         UserDAO userDAO =userMapper.selectOne(userWrapper);
 
         // 判断是否已关注
-        LambdaQueryWrapper<FollowerDAO> followerwrapper = new LambdaQueryWrapper<>();
-        followerwrapper.eq(FollowerDAO::getTgtUserId,userId).and(
+        LambdaQueryWrapper<FollowerDAO> followerWrapper = new LambdaQueryWrapper<>();
+        followerWrapper.eq(FollowerDAO::getTgtUserId,userId).and(
                 w->w.eq(FollowerDAO::getSrcUserId,userSelfId));
 
-        Boolean isFollowed = !Objects.isNull(followerMapper.selectOne(followerwrapper));
+        Boolean isFollowed = !Objects.isNull(followerMapper.selectOne(followerWrapper));
 
         // 构建扩展用户信息
         ExtendedUserDAO extendedUserDAO = ExtendedUserDAO.from(userDAO, isFollowed);

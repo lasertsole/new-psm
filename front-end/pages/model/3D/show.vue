@@ -49,7 +49,7 @@
     const contentHeight: Ref<string> = ref<string>('');
 
     function computeHeight(): void {
-        if(!show.value||!tagBar.value) return
+        if(!show.value || !tagBar.value) return
 
         contentHeight.value = show.value.parentElement!.clientHeight
         - Number(window.getComputedStyle(show.value).paddingTop.replace('px',''))
@@ -61,11 +61,11 @@
     onActivated (()=>{
         computeHeight();
 
-        window.addEventListener('resize',computeHeight);
+        window.addEventListener('resize', computeHeight);
     });
 
     onDeactivated (()=>{
-        window.removeEventListener('resize',computeHeight);
+        window.removeEventListener('resize', computeHeight);
     });
 
     definePageMeta({
@@ -78,12 +78,13 @@
     @import "@/common.scss";
     
     .show{
-        @include fullWidth();
-        min-height: 100%;
+        border-radius: 5px;
+        padding: 20px;
+        @include fullInParent;
         box-sizing: border-box;
-        padding: 30px 80px;
         display: flex;
         flex-direction: column;
+        background-color: white;
 
         @media screen and (max-width: 800px){
             padding: 30px 0px;

@@ -20,15 +20,8 @@ export class OnetoOneChatService { // 单例模式
     });
 
     this.socket.on('connect', () => {
-      setInterval(() => {
-        console.log('Manager Connected to server');
-        this.socket.volatile.send("message");
-      }, 1000);
+      console.log('Manager Connected to server');
     });
-
-    // this.socket.on('heartbeat', () => {
-    //   this.socket.emit('heartbeat', "ping");
-    // });
 
     this.socket.on('connect_error', (error) => {
       console.error('Manager Connection error:', error);

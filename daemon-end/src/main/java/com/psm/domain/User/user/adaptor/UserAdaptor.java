@@ -14,6 +14,14 @@ import java.util.Map;
 
 public interface UserAdaptor {
     /**
+     * 验证用户token
+     *
+     * @param token 用户token
+     * @return 用户id
+     */
+    String authUserToken(String token);
+
+    /**
      * 获取当前登录用户信息
      *
      * @return 用户DAO实体

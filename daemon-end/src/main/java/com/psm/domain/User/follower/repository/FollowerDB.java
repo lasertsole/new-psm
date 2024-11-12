@@ -7,6 +7,14 @@ import java.util.List;
 
 public interface FollowerDB extends BaseDBRepository<FollowerDAO> {
     /**
+     * 添加关注记录
+     *
+     * @param followerDAO 关注记录DAO
+     * @return 关注记录id
+     */
+    void insertTgUserIdAndSrcUserId(FollowerDAO followerDAO);
+
+    /**
      * 根据源用户id获取关注记录
      *
      * @param tgtUserId 目标用户id

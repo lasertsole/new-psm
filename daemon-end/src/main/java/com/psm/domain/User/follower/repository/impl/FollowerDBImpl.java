@@ -1,6 +1,8 @@
 package com.psm.domain.User.follower.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.psm.domain.User.follower.entity.FollowerDAO;
 import com.psm.domain.User.follower.repository.FollowerDB;
 import com.psm.infrastructure.DB.FollowerMapper;
@@ -14,6 +16,15 @@ import java.util.List;
 public class FollowerDBImpl extends BaseDBRepositoryImpl<FollowerMapper, FollowerDAO> implements FollowerDB {
     @Autowired
     private FollowerMapper followerMapper;
+
+    @Override
+    public void insertTgUserIdAndSrcUserId(FollowerDAO followerDAO) {
+        LambdaQueryWrapper<FollowerDAO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FollowerDAO::getTgtUserId,followerDAO.getTgtUserId())
+                .and(w-> w.eq(FollowerDAO::getSrcUserId,followerDAO.getSrcUserId()));
+
+        saveOrUpdate(followerDAO, wrapper);
+    }
 
     @Override
     public List<FollowerDAO> selectByTgtUserId(Long tgtUserId) {

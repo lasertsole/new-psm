@@ -139,17 +139,18 @@ public class ModelController {
      */
     @GetMapping("/{id}")
     public ResponseVO getModelByModelId(@PathVariable Long id) {
-        try {
-            // 获取当前用户ID
-            Long userSelfId = userAdaptor.getAuthorizedUserId();
+        // 获取当前用户ID
+        Long userSelfId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId));
-        }
-        catch (InvalidParameterException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
-        }
+        return ResponseVO.ok(modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId));
+//        try {
+//
+//        }
+//        catch (InvalidParameterException e) {
+//            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+//        }
+//        catch (Exception e){
+//            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
+//        }
     }
 }

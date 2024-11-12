@@ -23,13 +23,13 @@
             <div class="sms">私信</div>
         </div>
       </div>
-      
+        
       <div class="main">
-        <commonModel
+        <ModelShowModel
           class="entity"
           v-if="modelInfo && modelInfo.entity"
           :entity="(modelInfo.entity as string)"
-        ></CommonModel>
+        ></ModelShowModel>
 
         <div class="info">
           <div class="createTime">
@@ -107,15 +107,14 @@
   @import "@/common.scss";
 
   .detailShow{
-    @include fullWidth();
-    min-height: 100%;
+    @include scrollBar(8px);
+    @include fullInParent();
     display: flex;
     justify-content: center;
     background-color: rgba(222, 222, 222, .75);
 
     .page{
       @include fixedWidth(65%);
-      margin: 60px 4px 80px;
 
       >div{
         background-color: white;
@@ -130,8 +129,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-top: 30px;
 
         .info{
+          @include minWidth(115px);
           display: flex;
 
           .avatar{
@@ -165,6 +166,7 @@
           align-items: center;
           color: white;
           margin-top: 2px;
+          
           >div{
             @include fixedRetangle(52px, 26px);
             @include flexCenter();
@@ -184,9 +186,11 @@
       .main{
         @include fullWidth();
         margin-top: 20px;
+        margin-bottom: 30px;
 
         .entity{
-          @include fixedHeight(550px);
+          @include minWidthInParent();
+          @include minHeight(550px);  
         }
         
         .info{
@@ -210,9 +214,9 @@
 
       @media screen and (max-width: 800px) and (min-width: 600px) {
         @include fixedWidth(85%);
-
         margin-top: 40px;
         margin-bottom: 60px;
+        
         .main{
           margin-top: 10px;
         }
@@ -220,7 +224,6 @@
       
       @media screen and (max-width: 600px) {
         @include fullWidth;
-
         margin: 0px;
         .main{
           margin-top: 0px;

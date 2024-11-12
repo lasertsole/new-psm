@@ -172,8 +172,8 @@
     }
 
     const { $emit } = useNuxtApp();
-    function clickLogout():void { //点击下线事件
-        logout()&&$emit("offline");
+    async function clickLogout():Promise<void> { //点击下线事件
+        await logout()&&$emit("offline");
     }
 </script>
 
@@ -388,8 +388,8 @@
                         }
 
                         a{
-                            @include flexCenter();
                             @include fullInParent();
+                            @include flexCenter();
                         }
                     }
                 }
