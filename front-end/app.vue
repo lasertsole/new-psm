@@ -13,7 +13,7 @@
 <script lang="ts" setup>
   const { $emit, $on } = useNuxtApp();
 
-  let onetoOneChatService; // 一对一聊天服务
+  let DMServiceInstance; // 一对一聊天服务
 
   // 这里的代码仅在客户端执行
   // 配置登录事件
@@ -33,8 +33,8 @@
   });
   
   $on("online", ()=>{
-    onetoOneChatService = OnetoOneChatService.getInstance();
-  })
+    DMServiceInstance = DMService.getInstance();
+  });
 
   // 监听socket消息
   onMounted(()=>{

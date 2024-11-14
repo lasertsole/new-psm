@@ -2,6 +2,7 @@ package com.psm.domain.Chat.service;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Chat.entity.ChatDTO;
+import org.apache.rocketmq.client.apis.ClientException;
 
 /**聊天领域服务
  *
@@ -13,13 +14,13 @@ public interface ChatService {
      * description: 建立连接
      * @param client 客户端
      */
-    void connect(SocketIOClient client);
+    void connectDM(SocketIOClient client);
 
     /**
      * description: 断开连接
      * @param client 客户端
      */
-    void disconnect(SocketIOClient client);
+    void disconnectDM(SocketIOClient client);
 
     /**
      * description: 给指定用户发送通知
@@ -29,5 +30,13 @@ public interface ChatService {
      * @param client 客户端
      * @param message 消息体
      */
-    void sendMessage(SocketIOClient client, ChatDTO message);
+    void sendMessageDM(SocketIOClient client, ChatDTO message) throws ClientException;
+
+    /**
+     * description: 处理一对一消息
+     * author: moye
+     *
+     * @param message 消息体
+     */
+    void processMessageDM(ChatDTO message);
 }

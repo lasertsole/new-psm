@@ -1,5 +1,8 @@
-package com.psm.domain.Chat.Event.EventListener;
+package com.psm.domain.Chat.event.EventListener;
 
+import com.alibaba.fastjson2.JSON;
+import com.psm.domain.Chat.entity.ChatDAO;
+import com.psm.domain.Chat.service.ChatService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -11,15 +14,19 @@ import org.apache.rocketmq.client.apis.consumer.FilterExpression;
 import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
 import org.apache.rocketmq.client.apis.consumer.PushConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Slf4j
 @Component
 public class ChatEventListener {
+    @Autowired
+    ChatService chatService;
+
     @Autowired
     private ClientConfiguration clientConfiguration;
 
@@ -27,7 +34,7 @@ public class ChatEventListener {
     private ClientServiceProvider provider;
 
     // 订阅消息的过滤规则，表示订阅所有Tag的消息。
-    private final String tag = "*";
+    private final String tag = "OneToOne";
 
     // 订阅消息的过滤表达式，表示订阅所有消息。
     private final FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
@@ -55,11 +62,17 @@ public class ChatEventListener {
                 // 设置消费监听器。
                 .setMessageListener(messageView -> {
                     // 获取消息体
-                    String messageBody = String.valueOf(messageView.getBody());
-                    log.info("Received message body: {}", messageBody);
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
 
-                    // 处理消息并返回消费结果。
-                    log.info("Consume message successfully, messageId={}, messageBody={}", messageView.getMessageId(), messageBody);
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    ChatDAO messageBody = JSON.parseObject(jsonString, ChatDAO.class);
+
+
+
                     return ConsumeResult.SUCCESS;
                 })
 

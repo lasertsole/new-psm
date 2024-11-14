@@ -20,7 +20,7 @@
         
         <div class="action">
             <div class="follow" @click="triggerFollow()">{{isFollowing?'已关注':'关注'}}</div>
-            <div class="sms">私信</div>
+            <div class="sms" @click="triggerDM()">私信</div>
         </div>
       </div>
         
@@ -88,6 +88,10 @@
       if(await unFollowUser(authorInfo.value.id!)) isFollowing.value = !isFollowing.value;
     }
   }, 1000);
+
+  const triggerDM = debounce(async ():Promise<void>=> {
+    toDM(authorInfo.value!.id!);
+  });
 
   onMounted(async ()=>{
     let res : ModelInfoDetail = await getModelByModelId({modelId: id as string});

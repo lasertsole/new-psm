@@ -5,6 +5,7 @@ import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Chat.entity.ChatDTO;
 import jakarta.validation.Valid;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.psm.domain.Chat.service.ChatService;
 
@@ -14,17 +15,17 @@ public class ChatAdaptorImpl implements ChatAdaptor {
     private ChatService chatService;
 
     @Override
-    public void connect(SocketIOClient client) {
-        chatService.connect(client);
+    public void connectDM(SocketIOClient client) {
+        chatService.connectDM(client);
     }
 
     @Override
-    public void disconnect(SocketIOClient client) {
-        chatService.disconnect(client);
+    public void disconnectDM(SocketIOClient client) {
+        chatService.disconnectDM(client);
     }
 
     @Override
-    public void sendMessage(SocketIOClient client, @Valid ChatDTO message) {
-        chatService.sendMessage(client, message);
+    public void sendMessageDM(SocketIOClient client, @Valid ChatDTO message) throws ClientException {
+        chatService.sendMessageDM(client, message);
     }
 }

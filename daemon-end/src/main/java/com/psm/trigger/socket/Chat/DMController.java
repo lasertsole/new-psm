@@ -6,6 +6,7 @@ import com.psm.domain.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Chat.entity.ChatDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class OneToOneChatController implements CommandLineRunner {
+public class DMController implements CommandLineRunner {
     @Autowired
     private UserAdaptor userAdaptor;
 
@@ -32,7 +33,7 @@ public class OneToOneChatController implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 创建一个名字空间
-        SocketIONamespace oneToOneChat = socketIOServer.addNamespace("/OneToOneChat");
+        SocketIONamespace oneToOneChat = socketIOServer.addNamespace("/DM");
 
         // 添加校验token监听器
         oneToOneChat.addAuthTokenListener((authToken, client)->{
@@ -50,19 +51,37 @@ public class OneToOneChatController implements CommandLineRunner {
 
         // 添加连接监听器
         oneToOneChat.addConnectListener(client -> {
-            chatAdaptor.connect(client);
+            try {
+                chatAdaptor.connectDM(client);
+            }
+            catch (Exception e) {
+                log.info("connect DM error");
+            }
         });
 
         // 添加断开连接监听器
         oneToOneChat.addDisconnectListener(client ->{
-            chatAdaptor.disconnect(client);
+            try {
+                chatAdaptor.disconnectDM(client);
+            }
+            catch (Exception e) {
+                log.info("disconnect DM error");
+            }
         });
 
         // 添加私立聊监听器
         oneToOneChat.addEventListener("sendMessage", ChatDTO.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient client, ChatDTO message, AckRequest ackRequest) {
-                chatAdaptor.sendMessage(client, message);
+                try {
+                    chatAdaptor.sendMessageDM(client, message);
+                }
+                catch (ClientException e) {
+                    ackRequest.sendAckData("MQ error");
+                }
+                catch (Exception e) {
+                    ackRequest.sendAckData("server error");
+                }
             }
         });
     }

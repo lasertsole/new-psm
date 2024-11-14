@@ -1,4 +1,4 @@
-package com.psm.domain.Chat.Event.valueObject;
+package com.psm.domain.Chat.event.valueObject;
 
 import lombok.Value;
 

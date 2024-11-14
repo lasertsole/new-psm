@@ -1,27 +1,50 @@
 <template>
     <div class="message">
         <el-main class="container">
+            
             <div class="titleBox">
                 <span>我的消息</span>
             </div>
 
             <div class="chatBox">
+                
                 <div class="left">
                     <div class="title">近期消息</div>
                     <div class="contactList"></div>
                 </div>
+                
                 <div class="right">
                     <div class="title"></div>
                     <div class="messageList"></div>
                     <div class="sendBox"></div>
                 </div>
+                
             </div>
+            
         </el-main>
     </div>
 </template>
 
 <script lang="ts" setup>
+    // 获取当前路由对象
+    const route = useRoute();
 
+    // 从 query 参数中获取 userId 和 type
+    let userId:string|undefined;
+    let type:string|undefined;
+    onActivated(()=>{
+        userId = route.query.userId;
+        type = route.query.type;
+        
+        if(userId && type){
+            let inContacts = quicklyChat(userId, type);
+            console.log(inContacts);
+        };
+    });
+
+    definePageMeta({
+        name: 'message'
+    });
 </script>
 
 <style lang="scss" scoped>

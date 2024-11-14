@@ -15,9 +15,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements UserDetails, Serializable {
-    @Serial
-    private static final long serialVersionUID = -2368581758648842223L;
-
     private UserDAO userDAO;
 
     @Override

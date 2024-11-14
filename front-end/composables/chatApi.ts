@@ -9,13 +9,13 @@ const manager: Manager= new Manager(socketUrl, {
   , upgrade: false // 关闭自动升级
 });
 
-export class OnetoOneChatService { // 单例模式
-  private static instance: OnetoOneChatService;
+export class DMService { // 单例模式
+  private static instance: DMService;
   private socket: Socket;
-  private contactItem: ContactItem[] = [] as ContactItem[];
+  public contactItem: ContactItem[] = [] as ContactItem[];
 
   private constructor() {
-    this.socket = manager.socket("/OneToOneChat", {
+    this.socket = manager.socket("/DM", {
       auth: {
         token: localStorage.getItem("token") || ""
       }
@@ -49,12 +49,12 @@ export class OnetoOneChatService { // 单例模式
     });
   };
 
-  public static getInstance(): OnetoOneChatService {
-    if (!OnetoOneChatService.instance) {
-      OnetoOneChatService.instance = new OnetoOneChatService();
+  public static getInstance(): DMService {
+    if (!DMService.instance) {
+      DMService.instance = new DMService();
     };
 
-    return OnetoOneChatService.instance;
+    return DMService.instance;
   };
 
   public getSocket(): Socket {
@@ -69,3 +69,33 @@ export class OnetoOneChatService { // 单例模式
     this.socket.disconnect();
   };
 };
+
+export function toDM(id:string):void {
+  if(userInfo.id==id) {
+    import.meta.client&&ElMessage.warning('不能私信自己');
+    return;
+  }
+
+  navigateTo("/message?userId="+id+"&type=dm");
+};
+
+export function quicklyChat(userId:string, type:string) {
+  const dmService = DMService.getInstance();
+  let userIds: string[] = dmService.contactItem.length !== 0
+    ? dmService.contactItem
+        .filter(item => item.id !== undefined) // 过滤掉 id 为 undefined 的项
+        .map(item => item.id!)
+    : [];
+  let index = userIds.indexOf(userId);
+  if(index!== -1){
+    // 将元素从原位置移除
+    const [movedElement] = dmService.contactItem.splice(index, 1);
+    // 将元素插入到列表头部
+    dmService.contactItem.unshift(movedElement);
+    
+    return true;
+  }
+  else{
+    return false;
+  }
+}

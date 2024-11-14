@@ -2,19 +2,20 @@ package com.psm.domain.Chat.adaptor;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Chat.entity.ChatDTO;
+import org.apache.rocketmq.client.apis.ClientException;
 
 public interface ChatAdaptor {
     /**
      * description: 建立连接
      * @param client 客户端
      */
-    void connect(SocketIOClient client);
+    void connectDM(SocketIOClient client);
 
     /**
      * description: 断开连接
      * @param client 客户端
      */
-    void disconnect(SocketIOClient client);
+    void disconnectDM(SocketIOClient client);
 
     /**
      * description: 给指定用户发送通知
@@ -24,5 +25,5 @@ public interface ChatAdaptor {
      * @param client 客户端
      * @param message 消息体
      */
-    void sendMessage(SocketIOClient client, ChatDTO message);
+    void sendMessageDM(SocketIOClient client, ChatDTO message) throws ClientException;
 }
