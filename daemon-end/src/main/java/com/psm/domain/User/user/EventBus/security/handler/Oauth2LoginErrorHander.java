@@ -1,6 +1,6 @@
-package com.psm.domain.User.user.types.security.handler;
+package com.psm.domain.User.user.EventBus.security.handler;
 
-import com.psm.domain.User.user.types.security.utils.Oauth2UserIdContextHolder;
+import com.psm.domain.User.user.EventBus.security.utils.Oauth2UserIdContextHolder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

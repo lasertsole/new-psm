@@ -2,7 +2,7 @@ package com.psm.domain.Chat.entity;
 
 import java.io.Serializable;
 
-public class ChatVO implements Serializable {
+public class ChatBO implements Serializable {
     private Long id;
 
     private Long tgtUserId;

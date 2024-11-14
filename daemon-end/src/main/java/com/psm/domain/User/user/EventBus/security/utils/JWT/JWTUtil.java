@@ -1,4 +1,4 @@
-package com.psm.domain.User.user.types.security.utils.JWT;
+package com.psm.domain.User.user.EventBus.security.utils.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;

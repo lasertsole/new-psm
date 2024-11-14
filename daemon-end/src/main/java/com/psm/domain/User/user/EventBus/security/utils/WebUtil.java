@@ -1,4 +1,4 @@
-package com.psm.domain.User.user.types.security.utils;
+package com.psm.domain.User.user.EventBus.security.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

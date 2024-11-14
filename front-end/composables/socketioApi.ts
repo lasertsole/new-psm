@@ -1,4 +1,5 @@
 import { Manager, Socket } from 'socket.io-client';
+import type { ContactItem, MessageItem, Sender } from '@/types/socketIO';
 
 let socketUrl:string = "ws://localhost:8001";
 
@@ -11,6 +12,8 @@ const manager: Manager= new Manager(socketUrl, {
 export class OnetoOneChatService { // 单例模式
   private static instance: OnetoOneChatService;
   private socket: Socket;
+  private contactItem: ContactItem[] = [] as ContactItem[];
+
   private constructor() {
     this.socket = manager.socket("/OneToOneChat", {
       auth: {

@@ -1,7 +1,7 @@
-package com.psm.domain.User.user.types.security.filter;
+package com.psm.domain.User.user.EventBus.security.filter;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.domain.User.user.types.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.EventBus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;

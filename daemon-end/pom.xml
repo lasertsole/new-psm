@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.psm</groupId>
-	<artifactId>daemon-end</artifactId>
+	<artifactId>rocketmq</artifactId>
 	<version>1.1.1</version>
 	<name>daemon-end</name>
 	<description>Demo project for Spring Boot</description>
@@ -48,6 +48,7 @@
 		<tika.version>2.4.1</tika.version>
 		<socketio.version>2.0.12</socketio.version>
 		<tus.version>1.0.0-3.0</tus.version>
+		<rocketmqClientJava.version>5.0.7</rocketmqClientJava.version>
 	</properties>
 
 	<dependencies>
@@ -83,13 +84,14 @@
 			<version>${druid.version}</version>
 		</dependency>
 
-		<!--mybatis-plus依赖-->
+		<!--mybatis-plus依赖和多表连接依赖-->
 		<dependency>
 			<groupId>com.github.yulichang</groupId>
 			<artifactId>mybatis-plus-join-boot-starter</artifactId>
 			<version>${mybatisPlusJoin.version}</version>
 		</dependency>
 
+		<!--mybatis-plus添加JPA特性的依赖-->
 		<dependency>
 			<groupId>com.tangzc</groupId>
 			<artifactId>mybatis-plus-ext-spring-boot3-starter</artifactId>
@@ -102,6 +104,7 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
+		<!--基于redis的分布式自旋锁-->
 		<dependency>
 			<groupId>org.redisson</groupId>
 			<artifactId>redisson-spring-boot-starter</artifactId>
@@ -287,6 +290,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
+
+		<!-- rocketmq依赖-->
+		<dependency>
+			<groupId>org.apache.rocketmq</groupId>
+			<artifactId>rocketmq-client-java</artifactId>
+			<version>${rocketmqClientJava.version}</version>
 		</dependency>
 	</dependencies>
 

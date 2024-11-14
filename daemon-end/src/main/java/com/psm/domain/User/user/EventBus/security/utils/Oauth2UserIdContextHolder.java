@@ -1,4 +1,4 @@
-package com.psm.domain.User.user.types.security.utils;
+package com.psm.domain.User.user.EventBus.security.utils;
 
 public class Oauth2UserIdContextHolder {
     private static final ThreadLocal<Long> PARAM_THREAD_LOCAL = new ThreadLocal<>();

@@ -4,7 +4,7 @@ import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.AuthUserService;
-import com.psm.domain.User.user.types.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.EventBus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;

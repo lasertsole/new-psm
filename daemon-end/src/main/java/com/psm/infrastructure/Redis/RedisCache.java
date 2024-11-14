@@ -58,6 +58,20 @@ public class RedisCache {
     }
 
     /**
+     * 获得缓存的基本对象并更新缓存时间。
+     *
+     * @param key 缓存键值
+     * @param timeout 过期时间
+     * @param timeUnit 时间颗粒度
+     * @return 缓存键值对应的数据
+     */
+    public <T> T getCacheObject(final String key, final Integer timeout, final TimeUnit timeUnit)
+    {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        return operation.getAndExpire(key, timeout, timeUnit);
+    }
+
+    /**
      * 删除单个对象
      *
      * @param key
@@ -85,8 +99,7 @@ public class RedisCache {
      * @param dataList 待缓存的List数据
      * @return 缓存的对象
      */
-    public <T> long setCacheList(final String key, final Collection<T> dataList)
-    {
+    public <T> long setCacheList(final String key, final Collection<T> dataList) {
         Long count = redisTemplate.opsForList().rightPushAll(key, dataList);
         return count == null ? 0 : count;
     }
@@ -108,7 +121,7 @@ public class RedisCache {
      * @param dataSet 缓存的数据
      * @return 缓存数据的对象
      */
-    public <T> BoundSetOperations<String, T> setCacheSet(final String key, final Set<T> dataSet){
+    public <T> BoundSetOperations<String, T> setCacheSet(final String key, final Set<T> dataSet) {
         BoundSetOperations<String, T> setOperation = redisTemplate.boundSetOps(key);
         Iterator<T> it = dataSet.iterator();
         while (it.hasNext()){
@@ -121,26 +134,58 @@ public class RedisCache {
      * 向Set中添加元素
      *
      * @param key 缓存的键值
-     * @param value
-     * @return 成功添加到集合中的新成员数量
+     * @param member 集合成员对象
      */
-    public <T> void cacheSetNumber(final String key, final T value){
-        redisTemplate.opsForSet().add(key, value);
+    public <T> void cacheSetMember(final String key, final T member) {
+        redisTemplate.opsForSet().add(key, member);
     }
+
+    /**
+     * 向Set中添加元素,并设置过期时间
+     *
+     * @param key 缓存的键值
+     * @param member 集合成员对象
+     * @param timeout 过期时间
+     * @param timeUnit 时间颗粒度
+     */
+    public <T> void cacheSetMember(final String key, final T member, final Integer timeout, final TimeUnit timeUnit) {
+        redisTemplate.opsForSet().add(key, member);
+        setExpire(key, timeout, timeUnit);
+    }
+
 
     /**
      * 向Set中移除元素，如果删除后集合为空，则删除集合
      *
      * @param key 缓存的键值
-     * @param value
+     * @param member 集合成员对象
      */
-    public <T> void deleteSetValue(final String key, final T value){
-        Long remove = redisTemplate.opsForSet().remove(key, value);
+    public <T> void deleteSetMember(final String key, final T member) {
+        Long remove = redisTemplate.opsForSet().remove(key, member);
         Set<String> members = redisTemplate.opsForSet().members(key);
         // 如果set为空，则删除集合
         if (members == null || members.isEmpty())
         {
             deleteObject(key);
+        }
+    }
+
+    /**
+     * 向Set中移除元素，如果删除后集合为空，则删除集合。若不为空，则修改过期时间
+     *
+     * @param key 缓存的键值
+     * @param member 集合成员对象
+     * @param timeout 过期时间
+     * @param timeUnit 时间颗粒度
+     */
+    public <T> void deleteSetMember(final String key, final T member, final Integer timeout, final TimeUnit timeUnit) {
+        Long remove = redisTemplate.opsForSet().remove(key, member);
+        Set<String> members = redisTemplate.opsForSet().members(key);
+        // 如果set为空，则删除集合
+        if (members == null || members.isEmpty()) {
+            deleteObject(key);
+        } else {
+            setExpire(key, timeout, timeUnit);
         }
     }
 
@@ -152,9 +197,22 @@ public class RedisCache {
      * 获得缓存的set
      *
      * @param key
-     * @return
+     * @return T类型对象
      */
     public <T> Set<T> getCacheSet(final String key){
+        return redisTemplate.opsForSet().members(key);
+    }
+
+    /**
+     * 获得缓存的set,并修改过期时间
+     *
+     * @param key
+     * @param timeout 过期时间
+     * @param timeUnit 时间颗粒度
+     * @return
+     */
+    public <T> Set<T> getCacheSet(final String key, final Integer timeout, final TimeUnit timeUnit){
+        setExpire(key, timeout, timeUnit);
         return redisTemplate.opsForSet().members(key);
     }
 

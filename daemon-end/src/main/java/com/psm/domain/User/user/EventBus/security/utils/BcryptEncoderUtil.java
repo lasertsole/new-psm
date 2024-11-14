@@ -1,4 +1,4 @@
-package com.psm.domain.User.user.types.security.utils;
+package com.psm.domain.User.user.EventBus.security.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

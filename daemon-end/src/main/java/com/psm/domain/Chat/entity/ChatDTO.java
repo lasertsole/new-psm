@@ -1,23 +1,29 @@
 package com.psm.domain.Chat.entity;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import com.tangzc.mpe.autotable.annotation.Column;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatDTO implements Serializable {
-    private static final Validator validator = new LocalValidatorFactoryBean(); // 使用Spring的LocalValidatorFactoryBean
+    @Min(value = 1, message = "The id must be greater than or equal to 1")
+    private Long id;
 
-    private void validateField(String fieldName) {
-        ConstraintViolation<ChatDTO> violation = validator.validateProperty(this, fieldName)
-                .stream()
-                .findFirst()
-                .orElse(null);
+    @Min(value = 1, message = "The id must be greater than or equal to 1")
+    @Column(comment = "目标用户id", notNull = true)
+    private Long tgtUserId;
 
-        if (violation != null) {
-            // 处理验证错误
-            throw new IllegalArgumentException(violation.getMessage());
-        }
-    }
+    @Min(value = 1, message = "The id must be greater than or equal to 1")
+    @Column(comment = "来源用户id", notNull = true)
+    private Long srcUserId;
+
+    @Size(max = 255, message = "The content length must not exceed 255 characters")
+    private String content;
 }

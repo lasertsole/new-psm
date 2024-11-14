@@ -1,7 +1,6 @@
-package com.psm.domain.User.user.types.security.config;
+package com.psm.domain.User.user.EventBus.security.config;
 
-import com.psm.domain.User.user.types.security.filter.JwtAuthenticationTokenFilter;
-import com.psm.domain.User.user.types.security.handler.Oauth2LoginErrorHander;
+import com.psm.domain.User.user.EventBus.security.filter.JwtAuthenticationTokenFilter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

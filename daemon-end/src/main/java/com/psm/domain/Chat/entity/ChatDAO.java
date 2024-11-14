@@ -30,6 +30,6 @@ public class ChatDAO implements Serializable {
     @Column(comment = "来源用户id", notNull = true)
     private Long srcUserId;
 
-    @Column(comment = "消息内容", notNull = true)
+    @Column(comment = "消息内容")
     private String content;
 }
