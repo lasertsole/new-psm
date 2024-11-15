@@ -26,6 +26,8 @@
 </template>
 
 <script lang="ts" setup>
+    import type { UserInfo } from '@/types/user';
+
     // 获取当前路由对象
     const route = useRoute();
 
@@ -33,13 +35,12 @@
     let userId:string|undefined;
     let type:string|undefined;
     onActivated(()=>{
-        userId = route.query.userId;
-        type = route.query.type;
-        
-        if(userId && type){
-            let inContacts = quicklyChat(userId, type);
-            console.log(inContacts);
-        };
+        let inContacts = quicklyChat();
+        console.log(inContacts);
+        let targetUser:UserInfo = getTempDMUserInfo();
+        if(targetUser.id&&targetUser.name&&targetUser.avatar){
+            console.log(targetUser);
+        }
     });
 
     definePageMeta({

@@ -14,7 +14,7 @@ export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
     hasPass: undefined,
     phone: '',
     email: '',
-    avatar: '/images/defaultAvatar.png',
+    avatar: import.meta.env.Default_User_Avatar,
     profile: '',
     sex: undefined,
     createTime: '',
@@ -31,6 +31,9 @@ export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
  * @param data 要更新的数据对象
  */
 function updateUserInfo(data:UserInfo): void{
+    // 将 sessionStorage中的userInfo删除
+    sessionStorage.removeItem('userInfo');
+    
     data.isAdmin && (userInfo.isAdmin = data.isAdmin);
     data.id && (userInfo.id = data.id);
     data.name && (userInfo.name = data.name);
@@ -41,6 +44,19 @@ function updateUserInfo(data:UserInfo): void{
     data.profile && (userInfo.profile = data.profile);
     data.sex != undefined && (userInfo.sex = data.sex);
     data.createTime && (userInfo.createTime = data.createTime);
+
+    // 将 userInfo 存储到 sessionStorage
+    sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+};
+
+function copyUserInfoFromSessionStorage(): boolean{
+    const storedUserInfo = sessionStorage.getItem("userInfo");
+    if (storedUserInfo) {
+        Object.assign(userInfo, JSON.parse(storedUserInfo));
+        return true;
+    } else {
+        return false;
+    };
 };
 
 function clearUserInfo(): void{
@@ -54,6 +70,9 @@ function clearUserInfo(): void{
     userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
+
+    // 将 sessionStorage中的userInfo删除
+    sessionStorage.removeItem('userInfo');
 };
 
 function loginApi(data:UserInfo): void{
@@ -108,6 +127,12 @@ export async function login(name:string | undefined, password:string | undefined
 
 export async function fastLogin():Promise<boolean>{
     try{
+        if(import.meta.client&&!localStorage.getItem('token')) return false;
+        if(copyUserInfoFromSessionStorage()){
+            import.meta.client&&ElMessage.success('登录成功');
+            return true;
+        }
+        
         const res:Response = await fetchApi({
             url: '/users/fastLogin',
             opts: {
@@ -134,6 +159,8 @@ export async function fastLogin():Promise<boolean>{
     }
     catch (error) {
         import.meta.client&&ElMessage.error('登录失败');
+        import.meta.client&&localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
+        
         return false;
     }
 };

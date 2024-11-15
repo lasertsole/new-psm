@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { StyleEnum, TypeEnum } from "@/enums/models.d";
+    import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
     import { VisibleEnum } from "@/enums/visible.d";
 
     const loading:Ref<boolean> = ref<boolean>(false);

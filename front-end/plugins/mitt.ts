@@ -8,5 +8,5 @@ export default defineNuxtPlugin(() => {
       emit: emitter.emit,// 触发事件方法 $emit
       on: emitter.on// 监听事件方法 $on
     }
-  }
+  };
 });

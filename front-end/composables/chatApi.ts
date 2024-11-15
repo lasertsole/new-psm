@@ -1,4 +1,5 @@
 import { Manager, Socket } from 'socket.io-client';
+import type { UserInfo } from '@/types/user';
 import type { ContactItem, MessageItem, Sender } from '@/types/socketIO';
 
 let socketUrl:string = "ws://localhost:8001";
@@ -70,23 +71,48 @@ export class DMService { // 单例模式
   };
 };
 
-export function toDM(id:string):void {
+const tempDMUserInfo:UserInfo = {
+  id:"",
+  name:"",
+  avatar:"",
+}
+
+function setTempDMUserInfo(id:string, name:string, avatar:string):void {
+  tempDMUserInfo.id = id;
+  tempDMUserInfo.name = name;
+  tempDMUserInfo.avatar = avatar;
+};
+
+function removeTempDMUserInfo():void {
+  tempDMUserInfo.id = "";
+  tempDMUserInfo.name = "";
+  tempDMUserInfo.avatar = "";
+};
+
+export function getTempDMUserInfo():UserInfo {
+  return tempDMUserInfo;
+};
+
+export function toDM(id:string, name:string, avatar:string):void {
   if(userInfo.id==id) {
     import.meta.client&&ElMessage.warning('不能私信自己');
     return;
   }
-
-  navigateTo("/message?userId="+id+"&type=dm");
+  
+  removeTempDMUserInfo();
+  setTempDMUserInfo(id, name, avatar||process.env.Default_User_Avatar!);
+  
+  navigateTo("/message");
 };
 
-export function quicklyChat(userId:string, type:string) {
+export function quicklyChat() {
   const dmService = DMService.getInstance();
   let userIds: string[] = dmService.contactItem.length !== 0
     ? dmService.contactItem
         .filter(item => item.id !== undefined) // 过滤掉 id 为 undefined 的项
         .map(item => item.id!)
     : [];
-  let index = userIds.indexOf(userId);
+  let index = userIds.indexOf(tempDMUserInfo.id!);
   if(index!== -1){
     // 将元素从原位置移除
     const [movedElement] = dmService.contactItem.splice(index, 1);

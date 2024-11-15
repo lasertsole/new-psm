@@ -11,68 +11,72 @@ export default defineNuxtConfig({
     ,'@vite-pwa/nuxt'
   ],
   
-  // pwa: {
-  //   strategies: "generateSW",
-  //   srcDir: "service-worker",
-  //   filename: "sw.ts",
-  //   registerType: 'autoUpdate',
-  //   manifest: {
-  //     name: process.env.VITE_APP_NAME,
-  //     short_name: process.env.VITE_APP_NAME,
-  //     icons: [
-  //       {
-  //         src: '/favicon/tab_icon.png',
-  //         sizes: '192x192',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: '/favicon/tab_icon.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //       },
-  //     ],
-  //     theme_color: '#ffffff',
-  //     display: 'standalone',
-  //     start_url: '/',
-  //   },
+  pwa: {
+    strategies: "generateSW",
+    srcDir: "service-worker",
+    filename: "sw.ts",
+    registerType: 'autoUpdate',
+    manifest: {
+      name: process.env.VITE_APP_NAME,
+      short_name: process.env.VITE_APP_NAME,
+      icons: [
+        {
+          src: process.env.Default_APP_Icon!,
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: process.env.Default_APP_Icon!,
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
+      theme_color: '#ffffff',
+      display: 'standalone',
+      start_url: '/',
+    },
 
-  //   workbox:{
-  //     runtimeCaching: [
-  //       {
-  //         urlPattern: new RegExp(process.env.VITE_API_FRONT_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
-  //         method: 'GET',
-  //         handler: 'CacheFirst',
-  //         options: {
-  //           cacheName: 'frontEndCache',
-  //           expiration: {
-  //             maxAgeSeconds: 60 * 60 * 24 * 1, // <== 缓存过期时间1 days
-  //           },
-  //           cacheableResponse: {
-  //             statuses: [0, 200], // 0表示离线访问
-  //           },
-  //         },
-  //       }
-  //       ,{
-  //         urlPattern: new RegExp(process.env.VITE_API_BACK_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
-  //         handler: 'NetworkFirst',
-  //         options: {
-  //           cacheName: 'backEndCache',
-  //           expiration: {
-  //             maxAgeSeconds: 60 * 60* 24 * 0.5, // <== 缓存过期时间0.5 days
-  //           }
-  //         }
-  //       }
-  //     ]
-  //   },
+    workbox:{
+      runtimeCaching: [
+        {
+          urlPattern: new RegExp(process.env.VITE_API_FRONT_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
+          method: 'GET',
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'frontEndCache',
+            expiration: {
+              maxAgeSeconds: 60 * 60 * 24 * 1, // <== 缓存过期时间1 days
+            },
+            cacheableResponse: {
+              statuses: [0, 200], // 0表示离线访问
+            },
+          },
+        }
+        
+        ,{
+          urlPattern: new RegExp(process.env.VITE_API_BACK_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'backEndCache',
+            expiration: {
+              maxAgeSeconds: 60 * 60, // <== 缓存过期时间1小时
+            },
+            cacheableResponse: {
+              statuses: [0, 200], // 0表示离线访问
+            },
+          }
+        }
+      ]
+    },
     
-  //   devOptions: {
-  //     enabled: true,
-  //     suppressWarnings: true,
-  //     navigateFallback: '/',
-  //     navigateFallbackAllowlist: [/^\/$/],
-  //     type: 'module',
-  //   },
-  // },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
 
   //项目信息
   app:{
@@ -90,7 +94,7 @@ export default defineNuxtConfig({
     }
   },
   // 全局css
-  css:['@/main.scss'],
+  css:['@/main.css'],
 
   vite: {
     resolve: {
@@ -121,6 +125,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+  
   runtimeConfig: {
     public: {
       appName: process.env.VITE_APP_NAME
@@ -128,6 +133,7 @@ export default defineNuxtConfig({
       ,baseURL: process.env.VITE_API_BACK_URL
       ,apiBaseURL: "/api"
       ,oauth2AuthURL: process.env.VITE_OAuth2_Auth_URL//第三方登录授权地址
+      ,defaultAvatar: process.env.Default_User_Avatar // 默认头像
     }
   }
-})
+});

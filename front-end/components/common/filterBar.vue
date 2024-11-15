@@ -51,7 +51,7 @@
     const typeValue: Ref<string[]> = ref<string[]>([]);
 
     //小类选项
-    const switchValue: Ref<boolean[]> = ref<boolean[]>([false, false]);
+    const switchValue: Ref<boolean[]> = ref<boolean[]>([true, true]);
 </script>
 
 <style lang="scss" scoped>

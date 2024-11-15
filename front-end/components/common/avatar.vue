@@ -2,7 +2,7 @@
     <div class="avatar">
         <el-avatar :src="src" @error="errorHandler" loading="lazy">
             <img
-                src="/images/defaultAvatar.png"
+                :src="useRuntimeConfig().public.defaultAvatar"
                 loading="lazy"
             />
         </el-avatar>

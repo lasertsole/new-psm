@@ -3,13 +3,23 @@
 </template>
 
 <script lang="ts" setup>
+  const { $localforage } = useNuxtApp();
   import * as THREE from 'three';
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
   import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
   
   const props = defineProps({
     entity: {type: String, required: false}
-  })
+  });
+  
+  let store = $localforage.createInstance({
+    name        : 'psm',
+    version     : 1.0,
+    storeName   : 'models', // Should be alphanumeric, with underscores.
+    description : 'save model data'
+  });
+
+  store.setItem("key", props.entity);
   
   const entity = ref<HTMLElement>();
 

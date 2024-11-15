@@ -57,8 +57,8 @@
 
 <script setup lang="ts">
   import type { UserInfo } from "@/types/user";
-  import { StyleEnum, TypeEnum } from "@/enums/models.d";
-  import type { ModelInfoDetail, ModelInfo } from "@/types/model";
+  import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
+  import type { Model3DInfoDetail, Model3DInfo } from "@/types/model3d";
 
   // 将枚举转换为对象
   const styleEnumObject = Object.fromEntries(Object.entries(StyleEnum).map(([k, v]) => [v, k]));
@@ -70,11 +70,11 @@
   // 从 query 参数中获取 id
   const id = route.params.id;
 
-  const modelInfoDetail = ref<ModelInfoDetail>();
+  const modelInfoDetail = ref<Model3DInfoDetail>();
 
   const authorInfo: ComputedRef<UserInfo | undefined> = computed(()=>{return modelInfoDetail.value?.user;});
 
-  const modelInfo: ComputedRef<ModelInfo | undefined> = computed(()=>{return modelInfoDetail.value?.model;});
+  const modelInfo: ComputedRef<Model3DInfo | undefined> = computed(()=>{return modelInfoDetail.value?.model;});
 
   const isFollowing: Ref<boolean> = ref<boolean>(false);
 
@@ -90,11 +90,11 @@
   }, 1000);
 
   const triggerDM = debounce(async ():Promise<void>=> {
-    toDM(authorInfo.value!.id!);
+    toDM(authorInfo.value!.id!, authorInfo.value!.name!, authorInfo.value!.avatar||useRuntimeConfig().public.defaultAvatar);
   });
 
   onMounted(async ()=>{
-    let res : ModelInfoDetail = await getModelByModelId({modelId: id as string});
+    let res : Model3DInfoDetail = await getModelByModelId({modelId: id as string});
     if(res){
       modelInfoDetail.value = res;
       isFollowing.value = res.user.isFollowed!;

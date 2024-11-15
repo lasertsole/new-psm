@@ -119,26 +119,26 @@
 
 /* 固定圆角矩形 */
 @mixin fixedRoundedRectangle($widthSize, $heightSize, $borderRadiusSize){
-	@include fixedRetangle($widthSize, $heightSize);
 	border-radius: $borderRadiusSize;
+	@include fixedRetangle($widthSize, $heightSize);
 }
 
 /* 限定最小圆角正方形 */
 @mixin minRoundedSquare($widthSize, $heightSize, $borderRadiusSize){
-	@include minRetangle($widthSize, $heightSize);
 	border-radius: $borderRadiusSize;
+	@include minRetangle($widthSize, $heightSize);
 }
 
 /* 限定最大圆角正方形 */
 @mixin maxRoundedSquare($widthSize, $heightSize, $borderRadiusSize){
-	@include maxRetangle($widthSize, $heightSize);
 	border-radius: $borderRadiusSize;
+	@include maxRetangle($widthSize, $heightSize);
 }
 
 /* 固定圆角正方形 */
 @mixin fixedRoundedSquare($size, $borderRadiusSize){
-	@include fixedSquare($size);
 	border-radius: $borderRadiusSize;
+	@include fixedSquare($size);
 }
 
 /* 限定最小胶囊形 */
@@ -236,8 +236,8 @@
 
 /* 固定充满本容器的图片 */
 @mixin fullImg($imgSrc) {
-	@include backgroundImgCondition;
 	background-image: url(#{$imgSrc});
+	@include backgroundImgCondition;
 }
 
 /* flex 布局居中 */

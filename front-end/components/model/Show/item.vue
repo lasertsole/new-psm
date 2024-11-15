@@ -34,11 +34,11 @@
 </template>
 
 <script setup lang="ts">
-    import type { ModelInfos } from "@/types/model";
+    import type { Model3DInfos } from "~/types/model3d";
     import type { PropType } from "vue";
     
     const props = defineProps({
-        boxInfo:{type:Object as PropType<ModelInfos>, required: true}
+        boxInfo:{type:Object as PropType<Model3DInfos>, required: true}
     });
 </script>
 

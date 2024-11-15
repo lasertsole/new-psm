@@ -1,8 +1,16 @@
 import type { Page } from "@/types/common";
 import type { UserInfo } from "@/types/user";
 import type { Response } from "@/types/request";
-import type { ModelInfo, ModelInfos, ModelInfoDetail } from "@/types/model";
+import type { Model3DInfo, Model3DInfos, Model3DInfoDetail } from "@/types/model3d";
 
+/**
+ * 上传模型
+ * 
+ * @param file 模型文件
+ * @param progressFuc 上传进度变化时的回调函数
+ * @param targetFilePathRef 文件上传到云端路径ref
+ * @returns 
+ */
 export async function uploadModel(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
     try{
         return await tusUploadApi({
@@ -21,7 +29,7 @@ export async function uploadModel(file:File, progressFuc:Function, targetFilePat
     }
 };
 
-export async function uploadModelInfo({title, content, cover, style, type, visible}:ModelInfo):Promise<Boolean> {
+export async function uploadModelInfo({title, content, cover, style, type, visible}:Model3DInfo):Promise<Boolean> {
     try{
         if(!title || !content || !cover || !style || !type || !visible) return false;
         const formData = new FormData();
@@ -62,20 +70,23 @@ export async function uploadModelInfo({title, content, cover, style, type, visib
 
 export async function getModelsShowBars(
     {current, size, isIdle, canUrgent, style, type}:
-    Page<ModelInfos>&UserInfo&ModelInfo): Promise<Page<ModelInfos>> {
+    Page<Model3DInfos>&UserInfo&Model3DInfo): Promise<Page<Model3DInfos>> {
 
     try{
+        
+        let opts:Page<Model3DInfos>&UserInfo&Model3DInfo = {
+            current,
+            size,
+            isIdle,
+            canUrgent,
+            style,
+            type
+        };
+        
         const res:Response = await fetchApi({
             url: '/models',
             method: 'get',
-            opts:{
-                current,
-                size,
-                isIdle,
-                canUrgent,
-                style,
-                type
-            }
+            opts
         });
 
         if(res.code!=200){
@@ -87,7 +98,7 @@ export async function getModelsShowBars(
                 total: 0,
                 records:[],
                 pages: 1
-            } as Page<ModelInfos>;
+            } as Page<Model3DInfos>;
         };
         
         return res.data;
@@ -101,13 +112,13 @@ export async function getModelsShowBars(
             total: 0,
             records:[],
             pages: 1
-        } as Page<ModelInfos>;
+        } as Page<Model3DInfos>;
     }
 };
 
 export async function getFollowingModelsShowBars(
     {current, size, isIdle, canUrgent, style, type}:
-    Page<ModelInfos>&UserInfo&ModelInfo): Promise<Page<ModelInfos>> {
+    Page<Model3DInfos>&UserInfo&Model3DInfo): Promise<Page<Model3DInfos>> {
 
     try {
         const res:Response = await fetchApi({
@@ -133,7 +144,7 @@ export async function getFollowingModelsShowBars(
                 total: 0,
                 records:[],
                 pages: 1
-            } as Page<ModelInfos>;
+            } as Page<Model3DInfos>;
         };
         
         return res.data;
@@ -147,11 +158,11 @@ export async function getFollowingModelsShowBars(
             total: 0,
             records:[],
             pages: 1
-        } as Page<ModelInfos>;
+        } as Page<Model3DInfos>;
     }
 };
 
-export async function getModelByModelId({ modelId }:{modelId:string}):Promise<ModelInfoDetail> {
+export async function getModelByModelId({ modelId }:{modelId:string}):Promise<Model3DInfoDetail> {
     try {
         const res:Response = await fetchApi({
             url: `/models/${modelId}`,
@@ -163,6 +174,6 @@ export async function getModelByModelId({ modelId }:{modelId:string}):Promise<Mo
     catch (error) {
         import.meta.client&&ElMessage.error('获取模型失败');
         
-        return {} as ModelInfoDetail; 
+        return {} as Model3DInfoDetail; 
     }
 };

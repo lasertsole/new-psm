@@ -1,6 +1,6 @@
 import type { UserInfo } from "@/types/user";
 
-export type ModelInfo = {
+export type Model3DInfo = {
     id?: string;
     userId?: string;
     title?: string;
@@ -13,12 +13,12 @@ export type ModelInfo = {
     createTime?: string;
 };
 
-export type ModelInfos = {
+export type Model3DInfos = {
     user: UserInfo;
     models: ModelInfo[];
 }
 
-export type ModelInfoDetail = {
+export type Model3DInfoDetail = {
     user: UserInfo;
     model: ModelInfo;
 }

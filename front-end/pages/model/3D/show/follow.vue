@@ -33,9 +33,9 @@
 </template>
 
 <script setup lang="ts">
-    import type { ModelInfos } from "@/types/model";
+    import type { Model3DInfos } from "@/types/model3d";
     import type { Page, FilterItem } from "@/types/common";
-    import { StyleEnum, TypeEnum } from "@/enums/models.d";
+    import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
 
     // 加载状态
     const loading:Ref<boolean> = ref<boolean>(true);
@@ -78,28 +78,28 @@
         }
     );
     
-    const ModelShowItems: Ref<Page<ModelInfos>> = ref<Page<ModelInfos>>({records:[]});
+    const ModelShowItems: Ref<Page<Model3DInfos>> = ref<Page<Model3DInfos>>({records:[]});
     
     
     // 分页请求数据函数
     function fetchModelsShowBars({current, size, style, type, isIdle, canUrgent}:
-    {current: number, size: number, style?:string, type?:string, isIdle?:boolean, canUrgent?:boolean}):void
+    {current: number, size: number, style?:string, type?:string, isIdle:boolean, canUrgent:boolean}):void
     {
         loading.value = true;
-        getFollowingModelsShowBars({current, size, style, type, isIdle, canUrgent}).then((res)=>{
+        getFollowingModelsShowBars({current, size, style, type, isIdle, canUrgent}).then((res:Page<Model3DInfos>)=>{
             ModelShowItems.value = res;
         }).finally(()=>{loading.value = false;});
     };
 
     // 服务器渲染请求
-    fetchModelsShowBars({current:1, size:10});
+    fetchModelsShowBars({current:1, size:10, isIdle:true, canUrgent:true});
 
     const currentPage: Ref<number> = ref<number>(1);
     const pageSize: Ref<number> = ref<number>(10);
     const style: Ref<string | undefined> = ref<string>();
     const type: Ref<string | undefined> = ref<string>();
-    const isIdle: Ref<boolean> = ref<boolean>(false);
-    const canUrgent: Ref<boolean> = ref<boolean>(false);
+    const isIdle: Ref<boolean> = ref<boolean>(true);
+    const canUrgent: Ref<boolean> = ref<boolean>(true);
 
     async function handleSizeChange(): Promise<void> {
         fetchModelsShowBars({

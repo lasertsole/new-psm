@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.9",
+    "@types/three": "^0.170.0",
     "sass": "^1.77.8"
   }
 }

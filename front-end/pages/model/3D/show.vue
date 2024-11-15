@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
     import type { TagBarItem } from "@/types/common";
-    import { StyleEnum, TypeEnum, PrimarySort } from "@/enums/models.d";
+    import { StyleEnum, TypeEnum, PrimarySort } from "@/enums/model3d.d"
     
     // 样式标签列表
     const styleOpts = Object.entries(StyleEnum);
