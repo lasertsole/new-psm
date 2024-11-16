@@ -7,8 +7,7 @@
 ### loadsh防抖与节流
 ### three.js 浏览器3D渲染
 ### pixi.js 游戏动画库
-### pwa & service-worker 全平台适配与浏览器cache storage缓存
-### vite-pwa + sessionStorage + cacheStorage + indexedDB全平台适配方案与离线缓存
+### vite-pwa + service-worker + sessionStorage + cacheStorage + indexedDB全平台适配方案与离线缓存
 ### tus-js-client大文件分片上传
 ### socket.io(client) websocket全双工通信框架
 ## 后端:
@@ -22,4 +21,4 @@
 ### nginx(podman) 正反向代理
 ### rocketMQ 消息中间件
 ### tus-java-server大文件分片上传
-### socket.io(server) websocket全双工通信框架
+### Netty socket.io(server) websocket+nio全双工通信框架
