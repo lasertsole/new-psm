@@ -7,7 +7,7 @@ import com.psm.domain.Model.model.entity.Model3dDAO;
 import com.psm.domain.Model.models_user.entity.ModelUserDAO;
 import com.psm.domain.Model.models_user.repository.Models_UserDB;
 import com.psm.domain.Model.models_user.valueObject.Models_UserDAO;
-import com.psm.domain.User.follower.entity.FollowerDAO;
+import com.psm.domain.User.relationships.entity.RelationshipsDAO;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.infrastructure.DB.UserMapper;
@@ -38,9 +38,10 @@ public class Models_UserDBImpl implements Models_UserDB {
 
         // 当userSelfId不为null时，才拼接tb_followers表
         if (isFollowing) {
-            userMPJWrapper.innerJoin(FollowerDAO.class, FollowerDAO::getTgtUserId, UserDAO::getId)
+            userMPJWrapper.innerJoin(RelationshipsDAO.class, RelationshipsDAO::getTgtUserId, UserDAO::getId)
                 // 筛选出关注目标用户的模型
-                .and(wrapper -> wrapper.eq( FollowerDAO::getSrcUserId, userSelfId ));
+                .and(wrapper -> wrapper.eq( RelationshipsDAO::getSrcUserId, userSelfId ))
+                .and(wrapper -> wrapper.eq( RelationshipsDAO::getIsFollowing, true ));
         }
 
         // 当筛选条件涉及到模型表的字段时才拼接模型表

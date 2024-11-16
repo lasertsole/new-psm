@@ -1,6 +1,6 @@
 package com.psm.trigger.http.User;
 
-import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
+import com.psm.domain.User.relationships.adaptor.RelationshipsAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.utils.VO.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -12,21 +12,21 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/followers")
-public class FollowerController {
+public class RelationshipsController {
     @Autowired
     private UserAdaptor userAdaptor;
 
     @Autowired
-    private FollowerAdaptor followerAdaptor;
+    private RelationshipsAdaptor relationshipsAdaptor;
 
     /**
-     * 检查两个用户是否关注
+     * 检查src用户是否关注tgt用户
      * @return ResponseVO
      */
     @GetMapping("/{tgtUserId}/{srcUserId}")
-    public ResponseVO checkFollowing(@PathVariable Long tgtUserId, @PathVariable Long srcUserId) {
+    public ResponseVO checkFollowShip(@PathVariable Long tgtUserId, @PathVariable Long srcUserId) {
         try {
-            return ResponseVO.ok(followerAdaptor.getByTgUserIdAndSrcUserId(tgtUserId, srcUserId));
+            return ResponseVO.ok(relationshipsAdaptor.checkFollowShip(tgtUserId, srcUserId));
         }
         catch (IllegalArgumentException e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
@@ -45,7 +45,7 @@ public class FollowerController {
         // 获取当前用户id
         Long srcUserId = userAdaptor.getAuthorizedUserId();
 
-        return checkFollowing(tgtUserId, srcUserId);
+        return checkFollowShip(tgtUserId, srcUserId);
     }
 
     /**
@@ -58,7 +58,7 @@ public class FollowerController {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(followerAdaptor.getBySrcUserId(srcUserId));
+            return ResponseVO.ok(relationshipsAdaptor.checkFollowing(srcUserId));
         }
         catch (IllegalArgumentException e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
@@ -78,7 +78,7 @@ public class FollowerController {
             // 获取当前用户id
             Long tgtUserId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(followerAdaptor.getByTgtUserId(tgtUserId));
+            return ResponseVO.ok(relationshipsAdaptor.checkFollowers(tgtUserId));
         }
         catch (IllegalArgumentException e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
@@ -93,13 +93,13 @@ public class FollowerController {
      * @return ResponseVO
      */
     @PostMapping("/{tgtUserId}")
-    public ResponseVO followUser(@PathVariable Long tgtUserId) throws InstantiationException, IllegalAccessException {
+    public ResponseVO followUser(@PathVariable Long tgtUserId) {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
             // 关注用户
-            followerAdaptor.addFollowing(tgtUserId, srcUserId);
+            relationshipsAdaptor.addFollowing(tgtUserId, srcUserId);
 
             return ResponseVO.ok("Get users successful");
         }
@@ -124,7 +124,7 @@ public class FollowerController {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
-            followerAdaptor.removeFollowing(tgtUserId, srcUserId);
+            relationshipsAdaptor.removeFollowing(tgtUserId, srcUserId);
 
             return ResponseVO.ok("Unfollow user successful");
         }

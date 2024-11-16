@@ -2,7 +2,7 @@ package com.psm.domain.Model.model_extendedUser.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.entity.Model3dVO;
-import com.psm.domain.User.follower.valueObject.ExtendedUserVO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserVO;
 import lombok.Value;
 
 import java.io.Serializable;

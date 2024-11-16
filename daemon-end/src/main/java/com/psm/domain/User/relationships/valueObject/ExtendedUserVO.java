@@ -1,11 +1,10 @@
-package com.psm.domain.User.follower.valueObject;
+package com.psm.domain.User.relationships.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.user.entity.User.UserVO;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Value

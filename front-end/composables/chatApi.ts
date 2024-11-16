@@ -13,7 +13,6 @@ const manager: Manager= new Manager(socketUrl, {
 export class DMService { // 单例模式
   private static instance: DMService;
   private socket: Socket;
-  public contactItem: ContactItem[] = [] as ContactItem[];
   private interval:NodeJS.Timeout|null = null;
 
   private constructor() {
@@ -75,57 +74,45 @@ export class DMService { // 单例模式
   };
 };
 
-const tempDMUserInfo:UserInfo = {
-  id:"",
-  name:"",
-  avatar:"",
-}
 
-function setTempDMUserInfo(id:string, name:string, avatar:string):void {
-  tempDMUserInfo.id = id;
-  tempDMUserInfo.name = name;
-  tempDMUserInfo.avatar = avatar;
-};
+export const contactItems: Ref<ContactItem[]> = ref<ContactItem[]>([] as ContactItem[]);// 联系人列表
+export const nowChatIndex: Ref<number> = ref(0);// 当前聊天窗口在联系人列表中的索引
 
-function removeTempDMUserInfo():void {
-  tempDMUserInfo.id = "";
-  tempDMUserInfo.name = "";
-  tempDMUserInfo.avatar = "";
-};
-
-export function getTempDMUserInfo():UserInfo {
-  return tempDMUserInfo;
-};
-
+/**
+ * 跳转到私聊页面
+ */
 export function toDM(id:string, name:string, avatar:string):void {
   if(userInfo.id==id) {
     import.meta.client&&ElMessage.warning('不能私信自己');
     return;
   }
   
-  removeTempDMUserInfo();
-  setTempDMUserInfo(id, name, avatar||process.env.Default_User_Avatar!);
+  let userIds: string[] = contactItems.value.length!=0?contactItems.value.map(user => user.id!):[];
+  let index = userIds.indexOf(id);
+  
+  if(index!== -1){// 如果用户存在于联系人列表中
+    // 将用户从原位置移除
+    const [movedElement] = contactItems.value.splice(index, 1);
+    // 将用户插入到列表头部
+    contactItems.value.unshift(movedElement);
+  }
+  else{// 如果用户不存在于联系人列表中
+    // 将用户插入到列表头部
+    let newContactItem: ContactItem = {
+      id,
+      name,
+      avatar,
+      lastMessage: "",
+      lastTime: "",
+      unread: 0,
+      isMuted: false,
+      isGroup: false
+    };
+
+    contactItems.value.unshift(newContactItem);
+  }
+  
+  nowChatIndex.value = 0;// 将当前聊天窗口设置为第一个
   
   navigateTo("/message");
 };
-
-export function quicklyChat() {
-  const dmService = DMService.getInstance();
-  let userIds: string[] = dmService.contactItem.length !== 0
-    ? dmService.contactItem
-        .filter(item => item.id !== undefined) // 过滤掉 id 为 undefined 的项
-        .map(item => item.id!)
-    : [];
-  let index = userIds.indexOf(tempDMUserInfo.id!);
-  if(index!== -1){
-    // 将元素从原位置移除
-    const [movedElement] = dmService.contactItem.splice(index, 1);
-    // 将元素插入到列表头部
-    dmService.contactItem.unshift(movedElement);
-    
-    return true;
-  }
-  else{
-    return false;
-  }
-}

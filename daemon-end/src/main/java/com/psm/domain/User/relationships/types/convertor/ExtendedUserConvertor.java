@@ -1,8 +1,8 @@
-package com.psm.domain.User.follower.types.convertor;
+package com.psm.domain.User.relationships.types.convertor;
 
-import com.psm.domain.User.follower.valueObject.ExtendedUserBO;
-import com.psm.domain.User.follower.valueObject.ExtendedUserDAO;
-import com.psm.domain.User.follower.valueObject.ExtendedUserVO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserBO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserDAO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserVO;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

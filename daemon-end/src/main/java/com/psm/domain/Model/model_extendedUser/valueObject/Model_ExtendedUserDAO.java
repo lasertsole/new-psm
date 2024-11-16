@@ -2,7 +2,7 @@ package com.psm.domain.Model.model_extendedUser.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.entity.Model3dDAO;
-import com.psm.domain.User.follower.valueObject.ExtendedUserDAO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserDAO;
 import com.tangzc.mpe.processer.annotation.AutoDefine;
 import lombok.Value;
 

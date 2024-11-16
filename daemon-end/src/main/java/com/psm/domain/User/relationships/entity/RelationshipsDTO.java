@@ -1,4 +1,4 @@
-package com.psm.domain.User.follower.entity;
+package com.psm.domain.User.relationships.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Min;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FollowerDTO implements Serializable {
+public class RelationshipsDTO implements Serializable {
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -22,4 +22,10 @@ public class FollowerDTO implements Serializable {
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long srcUserId;
+
+    private Boolean isFollowing;
+
+    private Boolean isInContacts;
+
+    private Boolean isBlocking;
 }

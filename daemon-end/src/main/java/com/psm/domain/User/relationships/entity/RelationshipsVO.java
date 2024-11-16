@@ -1,4 +1,4 @@
-package com.psm.domain.User.follower.entity;
+package com.psm.domain.User.relationships.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,11 +11,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FollowerVO implements Serializable {
+public class RelationshipsVO implements Serializable {
     private String id;
 
     private String tgtUserId;
     private String srcUserId;
+    private Boolean isFollowing;
+    private Boolean isInContacts;
+    private Boolean isBlocking;
 
     private String createTime;
 }

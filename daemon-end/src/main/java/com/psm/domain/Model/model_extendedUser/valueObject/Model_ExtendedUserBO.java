@@ -3,7 +3,7 @@ package com.psm.domain.Model.model_extendedUser.valueObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
-import com.psm.domain.User.follower.valueObject.ExtendedUserBO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserBO;
 import com.psm.utils.VO.BO2VOable;
 import lombok.Value;
 

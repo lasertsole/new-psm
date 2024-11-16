@@ -5,12 +5,8 @@ export type ContactItem = {
     lastMessage?: string;
     lastTime?: string;
     unread?: number;
-    isOnline?: boolean;
     isMuted?: boolean;
-    isFollowed?: boolean;
-    isIdle?: boolean;
-    owner?: string;
-    isGroup?: boolean;
+    isGroup?: boolean; //是否是群聊
 };
 
 export type Sender = {

@@ -15,7 +15,6 @@ import lombok.*;
 import java.io.Serializable;
 
 @Data
-@Builder
 @AutoDefine
 @NoArgsConstructor
 @AllArgsConstructor

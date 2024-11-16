@@ -10,7 +10,22 @@
                 
                 <div class="left">
                     <div class="title">近期消息</div>
-                    <div class="contactList"></div>
+                    <div class="contactList">
+                        <template v-for="(item, index) in contactItems" :key="item.id">
+                            <MessageBox
+                                :id="item.id!"
+                                :name="item.name!"
+                                :avatar="item.avatar!"
+                                :lastMessage="item.lastMessage!"
+                                :lastTime="item.lastTime!"
+                                :unread="item.unread!"
+                                :isMuted="item.isMuted!"
+                                :isGroup="item.isGroup!"
+                                :isSeleted="index==nowChatIndex"
+                            >
+                            </MessageBox>
+                        </template>
+                    </div>
                 </div>
                 
                 <div class="right">
@@ -27,6 +42,7 @@
 
 <script lang="ts" setup>
     import type { UserInfo } from '@/types/user';
+import MessageBox from '~/components/message/messageBox.vue';
 
     // 获取当前路由对象
     const route = useRoute();
@@ -35,12 +51,7 @@
     let userId:string|undefined;
     let type:string|undefined;
     onActivated(()=>{
-        let inContacts = quicklyChat();
-        console.log(inContacts);
-        let targetUser:UserInfo = getTempDMUserInfo();
-        if(targetUser.id&&targetUser.name&&targetUser.avatar){
-            console.log(targetUser);
-        }
+        
     });
 
     definePageMeta({

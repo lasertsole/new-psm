@@ -5,7 +5,6 @@ import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
 import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
-import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.utils.VO.ResponseVO;
@@ -34,9 +33,6 @@ public class ModelController {
 
     @Autowired
     private Model3dAdaptor modelAdaptor;
-
-    @Autowired
-    private FollowerAdaptor followerAdaptor;
 
     /**
      * 模型上传接口
@@ -139,18 +135,17 @@ public class ModelController {
      */
     @GetMapping("/{id}")
     public ResponseVO getModelByModelId(@PathVariable Long id) {
-        // 获取当前用户ID
-        Long userSelfId = userAdaptor.getAuthorizedUserId();
+        try {
+            // 获取当前用户ID
+            Long userSelfId = userAdaptor.getAuthorizedUserId();
 
-        return ResponseVO.ok(modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId));
-//        try {
-//
-//        }
-//        catch (InvalidParameterException e) {
-//            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-//        }
-//        catch (Exception e){
-//            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
-//        }
+            return ResponseVO.ok(modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId));
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
+        }
     }
 }

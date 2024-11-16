@@ -1,9 +1,9 @@
 package com.psm.infrastructure.DB;
 
-import com.psm.domain.User.follower.entity.FollowerDAO;
+import com.psm.domain.User.relationships.entity.RelationshipsDAO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface FollowerMapper extends BaseDBMapper<FollowerDAO> {
+public interface RelationshipsMapper extends BaseDBMapper<RelationshipsDAO> {
 }

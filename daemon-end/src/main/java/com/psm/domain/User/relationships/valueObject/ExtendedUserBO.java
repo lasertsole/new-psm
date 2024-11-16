@@ -1,13 +1,12 @@
-package com.psm.domain.User.follower.valueObject;
+package com.psm.domain.User.relationships.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.User.follower.types.convertor.ExtendedUserConvertor;
+import com.psm.domain.User.relationships.types.convertor.ExtendedUserConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Value

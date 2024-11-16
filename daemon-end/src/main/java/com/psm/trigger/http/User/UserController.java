@@ -1,6 +1,5 @@
 package com.psm.trigger.http.User;
 
-import com.psm.domain.User.follower.adaptor.FollowerAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
@@ -27,9 +26,6 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserAdaptor userAdaptor;
-
-    @Autowired
-    private FollowerAdaptor followerAdaptor;
 
     // 前端地址
     @Value("${server.front-end-url.socket}")
@@ -181,18 +177,16 @@ public class UserController {
      */
     @PutMapping("/updateInfo")
     public ResponseVO updateUser(@RequestBody UserDTO userDTO) {
-        userAdaptor.updateInfo(userDTO);
-        return ResponseVO.ok("Update user successful");
-//        try {
-//            userAdaptor.updateInfo(userDTO);
-//            return ResponseVO.ok("Update user successful");
-//        }
-//        catch (InvalidParameterException e){
-//            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-//        }
-//        catch (Exception e){
-//            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
-//        }
+        try {
+            userAdaptor.updateInfo(userDTO);
+            return ResponseVO.ok("Update user successful");
+        }
+        catch (InvalidParameterException e){
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+        }
+        catch (Exception e){
+            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+        }
     }
 
     /**

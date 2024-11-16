@@ -1,7 +1,7 @@
-package com.psm.domain.User.follower.entity;
+package com.psm.domain.User.relationships.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.User.follower.types.convertor.FollowerConvertor;
+import com.psm.domain.User.relationships.types.convertor.RelationshipsConvertor;
 import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDAODefine;
 import com.psm.utils.VO.BO2VOable;
@@ -17,23 +17,26 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FollowerBO implements BO2VOable<FollowerVO>, Serializable {
+public class RelationshipsBO implements BO2VOable<RelationshipsVO>, Serializable {
 
     private Long id;
 
     private Long tgtUserId;
     private Long srcUserId;
+    private Boolean isFollowing;
+    private Boolean isInContacts;
+    private Boolean isBlocking;
 
     private String createTime;
 
-    @BindEntity(conditions = @JoinCondition(selfField = FollowerDAODefine.tgtUserId, joinField = UserDAODefine.id))
+    @BindEntity(conditions = @JoinCondition(selfField = RelationshipsDAODefine.tgtUserId, joinField = UserDAODefine.id))
     private UserDAO tgtUser;
 
-    @BindEntity(conditions = @JoinCondition(selfField = FollowerDAODefine.srcUserId, joinField = UserDAODefine.id))
+    @BindEntity(conditions = @JoinCondition(selfField = RelationshipsDAODefine.srcUserId, joinField = UserDAODefine.id))
     private UserDAO srcUser;
 
     @Override
-    public FollowerVO toVO() {
-        return FollowerConvertor.INSTANCE.BO2VO(this);
+    public RelationshipsVO toVO() {
+        return RelationshipsConvertor.INSTANCE.BO2VO(this);
     }
 }
