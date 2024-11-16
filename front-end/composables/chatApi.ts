@@ -14,6 +14,7 @@ export class DMService { // 单例模式
   private static instance: DMService;
   private socket: Socket;
   public contactItem: ContactItem[] = [] as ContactItem[];
+  private interval:NodeJS.Timeout|null = null;
 
   private constructor() {
     this.socket = manager.socket("/DM", {
@@ -30,8 +31,11 @@ export class DMService { // 单例模式
     this.socket.on('connect_error', (error) => {
       console.error('Manager Connection error:', error);
       // 可以在这里处理重连逻辑
-      setInterval(() => {
+      if(this.interval) return;
+      this.interval = setInterval(() => {
         this.connect(); // 重新连接
+        this.interval&&clearInterval(this.interval);
+        this.interval=null;
       }, 5000); // 5秒后重试
     });
 

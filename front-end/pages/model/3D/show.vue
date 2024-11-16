@@ -48,9 +48,9 @@
     const content: Ref<HTMLElement | undefined> = ref<HTMLElement>();
     const contentHeight: Ref<string> = ref<string>('');
 
-    function computeHeight(): void {
+    async function computeHeight():Promise<void> {
+        await nextTick();
         if(!show.value || !tagBar.value) return
-
         contentHeight.value = show.value.parentElement!.clientHeight
         - Number(window.getComputedStyle(show.value).paddingTop.replace('px',''))
         - Number(window.getComputedStyle(show.value).paddingBottom.replace('px',''))
@@ -58,8 +58,8 @@
         + 'px';
     }
 
-    onActivated (()=>{
-        computeHeight();
+    onActivated (async ()=>{
+        await computeHeight();
 
         window.addEventListener('resize', computeHeight);
     });

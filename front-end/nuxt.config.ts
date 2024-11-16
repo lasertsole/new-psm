@@ -24,11 +24,13 @@ export default defineNuxtConfig({
           src: process.env.Default_APP_Icon!,
           sizes: '192x192',
           type: 'image/png',
+          purpose: "any maskable"
         },
         {
           src: process.env.Default_APP_Icon!,
           sizes: '512x512',
           type: 'image/png',
+          purpose: "any maskable"
         },
       ],
       theme_color: '#ffffff',
@@ -41,7 +43,7 @@ export default defineNuxtConfig({
         {
           urlPattern: new RegExp(process.env.VITE_API_FRONT_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
           method: 'GET',
-          handler: 'CacheFirst',
+          handler: 'StaleWhileRevalidate',// 推陈出新策略,前端项目缓存策略不能是cacheFirst或chacheOnly，否则因为过期问题页面无法加载
           options: {
             cacheName: 'frontEndCache',
             expiration: {
@@ -62,13 +64,13 @@ export default defineNuxtConfig({
               maxAgeSeconds: 60 * 60, // <== 缓存过期时间1小时
             },
             cacheableResponse: {
-              statuses: [0, 200], // 0表示离线访问
+              statuses: [200], // 0表示离线访问
             },
           }
         }
       ]
     },
-    
+
     devOptions: {
       enabled: true,
       suppressWarnings: true,
@@ -93,9 +95,10 @@ export default defineNuxtConfig({
       ]
     }
   },
+  
   // 全局css
-  css:['@/main.css'],
-
+  css:['@/main.scss'],
+  
   vite: {
     resolve: {
       alias: {

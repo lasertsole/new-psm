@@ -16,9 +16,6 @@ declare type ExtendableEvent = any;
 // self.__WB_MANIFEST is default injection point
 precacheAndRoute(self.__WB_MANIFEST);
 
-// 缓存过期时间(单位毫秒)
-const CACHE_TIMEOUT:number = 1000 * 60 * 60 * 24 * 1; // 1天
-
 const data = {
     race: false,
     debug: false,
@@ -45,44 +42,44 @@ const manifestURLs = manifest.map((entry) => {
 });
 
 function buildStrategy(): Strategy {
-    if (data.race) {
-      class CacheNetworkRace extends Strategy {
-        _handle(
-          request: Request,
-          handler: StrategyHandler
-        ): Promise<Response | undefined> {
-          const fetchAndCachePutDone: Promise<Response> =
-            handler.fetchAndCachePut(request);
-          const cacheMatchDone: Promise<Response | undefined> =
-            handler.cacheMatch(request);
-  
-          return new Promise((resolve, reject) => {
-            fetchAndCachePutDone.then(resolve).catch((e) => {
-              if (data.debug) console.log(`Cannot fetch resource: ${request.url}`, e);
-            });
-            cacheMatchDone.then((response) => response && resolve(response));
-  
-            // Reject if both network and cache error or find no response.
-            Promise.allSettled([fetchAndCachePutDone, cacheMatchDone]).then(
-              (results) => {
-                const [fetchAndCachePutResult, cacheMatchResult] = results;
-                if (
-                  fetchAndCachePutResult.status === 'rejected' &&
-                  !cacheMatchResult.value
-                )
-                  reject(fetchAndCachePutResult.reason);
-              }
-            );
+  if (data.race) {
+    class CacheNetworkRace extends Strategy {
+      _handle(
+        request: Request,
+        handler: StrategyHandler
+      ): Promise<Response | undefined> {
+        const fetchAndCachePutDone: Promise<Response> =
+          handler.fetchAndCachePut(request);
+        const cacheMatchDone: Promise<Response | undefined> =
+          handler.cacheMatch(request);
+
+        return new Promise((resolve, reject) => {
+          fetchAndCachePutDone.then(resolve).catch((e) => {
+            if (data.debug) console.log(`Cannot fetch resource: ${request.url}`, e);
           });
-        }
+          cacheMatchDone.then((response) => response && resolve(response));
+
+          // Reject if both network and cache error or find no response.
+          Promise.allSettled([fetchAndCachePutDone, cacheMatchDone]).then(
+            (results) => {
+              const [fetchAndCachePutResult, cacheMatchResult] = results;
+              if (
+                fetchAndCachePutResult.status === 'rejected' &&
+                !cacheMatchResult.value
+              )
+                reject(fetchAndCachePutResult.reason);
+            }
+          );
+        });
       }
-      return new CacheNetworkRace();
-    } else {
-      if (data.networkTimeoutSeconds > 0)
-        return new NetworkFirst({ cacheName, networkTimeoutSeconds: data.networkTimeoutSeconds });
-      else return new NetworkFirst({ cacheName });
     }
+    return new CacheNetworkRace();
+  } else {
+    if (data.networkTimeoutSeconds > 0)
+      return new NetworkFirst({ cacheName, networkTimeoutSeconds: data.networkTimeoutSeconds });
+    else return new NetworkFirst({ cacheName });
   }
+}
 
 // 主要先存储一些文件
 self.addEventListener('install', async(event)=>{
@@ -94,43 +91,45 @@ self.addEventListener('install', async(event)=>{
     await self.skipWaiting();
 });
 
-// 主要清除旧的缓存
-self.addEventListener('activate', async(event: ExtendableEvent)=>{
-    event.waitUntil(
-        caches.open(cacheName).then((cache)=>{
-            cache.keys().then(keys=>{
-                keys.forEach(async (request)=>{
-                    // 从缓存中获取响应
-                    cache.match(request).then(async (tempRes)=>{
-                        if(!tempRes) return;
-                        const response:Response = tempRes;
-                        
-                        const tempDate = response.headers.get('Date');
-                        if(!tempDate) return;
-                        const timestampHeader:string = tempDate;
-                        
-                        const cacheTimestamp = new Date(timestampHeader);
-                        const currentTime = new Date();
-                        
-                            // 计算时间差（毫秒）
-                        const timeDifference = currentTime.getTime() - cacheTimestamp.getTime();
-                        
-                        //判断是否过期,如果超过缓存过期时间，则删除  (强制控制缓存时间)
-                        if(CACHE_TIMEOUT<timeDifference){
-                            await cache.delete(request);
-                        }; 
-                    });
-                });
+self.addEventListener('activate', (event: ExtendableEvent) => {
+  const debug = true; // 根据需要设置调试标志
+
+  // 清理过时的运行时缓存
+  event.waitUntil(
+    caches.open(cacheName).then((cache) => {
+      // 清理不在 manifestURLs 中的缓存项
+      cache.keys().then((keys) => {
+        const deletePromises = keys.map((request) => {
+          if (debug) {
+            console.log(`Checking cache entry to be removed: ${request.url}`);
+          }
+          if (!manifestURLs.includes(request.url)) {
+            return cache.delete(request).then((deleted) => {
+              if (debug) {
+                if (deleted) {
+                  console.log(`Precached data removed: ${request.url || request}`);
+                } else {
+                  console.log(`No precache found: ${request.url || request}`);
+                }
+              }
             });
-        })
-    );
-    
-    await self.clients.claim();
+          }
+          return Promise.resolve(); // 如果不需要删除，返回一个已解析的 Promise
+        });
+
+        // 并行处理所有删除操作
+        return Promise.all(deletePromises);
+      });
+    })
+  );
+
+  // 声明当前服务工作线程
+  self.clients.claim();
 });
 
-registerRoute(({ url }) => manifestURLs.includes(url.href), buildStrategy());
+registerRoute(({ url }) => manifestURLs.includes(url.href), new CacheFirst());
 
-setDefaultHandler(new NetworkFirst());
+setDefaultHandler(buildStrategy());
 
 // fallback to app-shell for document request
 setCatchHandler(({ event }): Promise<Response> => {

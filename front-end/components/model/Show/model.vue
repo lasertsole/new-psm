@@ -12,15 +12,6 @@
     entity: {type: String, required: false}
   });
   
-  let store = $localforage.createInstance({
-    name        : 'psm',
-    version     : 1.0,
-    storeName   : 'models', // Should be alphanumeric, with underscores.
-    description : 'save model data'
-  });
-
-  store.setItem("key", props.entity);
-  
   const entity = ref<HTMLElement>();
 
   onMounted(async ()=>{

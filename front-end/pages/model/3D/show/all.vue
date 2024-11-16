@@ -81,7 +81,7 @@
     );
     
     const ModelShowItems: Ref<Page<Model3DInfos>> = ref<Page<Model3DInfos>>({records:[]});
-    
+
     // 分页请求数据函数
     function fetchModelsShowBars({current, size, style, type, isIdle, canUrgent}:
         {current: number, size: number, style?:string, type?:string, isIdle:boolean, canUrgent:boolean}):void
@@ -91,7 +91,6 @@
             ModelShowItems.value = res;
         }).finally(()=>{loading.value = false;});
     };
-
     // 服务器渲染请求
     fetchModelsShowBars({current:1, size:10, isIdle:true, canUrgent:true});
 
