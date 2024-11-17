@@ -7,6 +7,7 @@ export type ContactItem = {
     unread?: number;
     isMuted?: boolean;
     isGroup?: boolean; //是否是群聊
+    MessageItems: MessageItem[];// 消息列表
 };
 
 export type Sender = {
@@ -20,13 +21,12 @@ export type Sender = {
 
 export type MessageItem = {
     id?: string;
-    type?: string;
+    type?: 'text';
     content?: string;
-    sender?: string;
-    receiver?: string;
+    senderId?: string;
+    receiverId?: string;
     time?: string;
     isRead?: boolean;
-    isMine?: boolean;
     isUrgent?: boolean;
     isDeleted?: boolean;
 };

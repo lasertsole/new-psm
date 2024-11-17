@@ -12,7 +12,7 @@
                     <div class="title">近期消息</div>
                     <div class="contactList">
                         <template v-for="(item, index) in contactItems" :key="item.id">
-                            <MessageBox
+                            <MessageContactsBox
                                 :id="item.id!"
                                 :name="item.name!"
                                 :avatar="item.avatar!"
@@ -23,15 +23,56 @@
                                 :isGroup="item.isGroup!"
                                 :isSeleted="index==nowChatIndex"
                             >
-                            </MessageBox>
+                            </MessageContactsBox>
                         </template>
                     </div>
                 </div>
                 
                 <div class="right">
-                    <div class="title"></div>
-                    <div class="messageList"></div>
-                    <div class="sendBox"></div>
+                    <div class="title">
+                        <span v-show="nowChatIndex>=0">
+                            {{ contactItems[nowChatIndex]?.name }}
+                        </span>
+                    </div>
+                    <div class="messageList">
+                        <div class="containerBox" v-show="nowChatIndex>=0">
+                            <div class="topGap"></div>
+                            <template v-for="(item, inex) in contactItems[nowChatIndex]?.MessageItems">
+                                <messageBox
+                                    :avatar="contactItems[nowChatIndex].avatar!"
+                                    :name="contactItems[nowChatIndex].name!"
+                                    :type="item.type!"
+                                    :senderId="item.senderId!"
+                                    :receiverId="item.receiverId!"
+                                    :time="item.time!"
+                                    :isDeleted="item.isDeleted!"
+                                >
+                                    <template #text>
+                                        {{ item.content }}
+                                    </template>
+                                </messageBox>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="sendBox">
+                        <el-input
+                            v-show="nowChatIndex>=0"
+                            v-model="message"
+                            type="textarea"
+                            placeholder="请输入文字"
+                            maxlength="255"
+                            show-word-limit
+                            resize="none"
+                        />
+                        <el-button
+                            plain
+                            type="primary"
+                            @click="send"
+                            v-show="nowChatIndex>=0"
+                        >
+                            发送
+                        </el-button>
+                    </div>
                 </div>
                 
             </div>
@@ -41,15 +82,32 @@
 </template>
 
 <script lang="ts" setup>
-    import type { UserInfo } from '@/types/user';
-import MessageBox from '~/components/message/messageBox.vue';
-
     // 获取当前路由对象
     const route = useRoute();
 
-    // 从 query 参数中获取 userId 和 type
-    let userId:string|undefined;
-    let type:string|undefined;
+    const message:Ref<string> = ref<string>("");
+
+    function validateMessage(content:string):boolean {
+        if(content.length==0){
+            ElMessage.warning("发送信息不能为空");
+            return false;
+        }
+        else if(content.length>255){
+            ElMessage.warning("发送信息不能超过255个字符");
+            return false;
+        }
+        return true;
+    }
+        
+    // 发送信息
+    function send():void{
+        if(!validateMessage(message.value))
+            return;
+
+            sendMessage(message.value);
+        message.value="";
+    }
+        
     onActivated(()=>{
         
     });
@@ -129,7 +187,7 @@ import MessageBox from '~/components/message/messageBox.vue';
                 }
 
                 .left{
-                    width: 240px;
+                    @include fixedWidth(220px);
                     margin-right: 1.6px;
                     display: flex;
                     flex-direction: column;
@@ -143,6 +201,7 @@ import MessageBox from '~/components/message/messageBox.vue';
                     }
 
                     .contactList{
+                        @include scrollBar(8px);
                         flex-grow: 1;
                     }
                 }
@@ -159,16 +218,59 @@ import MessageBox from '~/components/message/messageBox.vue';
                     }
 
                     .messageList{
+                        @include scrollBar(8px);
                         flex-grow: 1;
                         margin-bottom: 0.8px;
-                        overflow-y: scroll;
-
-                        @include scrollBar(8px);
+                        
+                        .topGap{
+                            @include fixedHeight(22px);
+                            @include fullWidth();
+                        }
+                        
+                        .containerBox{
+                            @include fullInParent;
+                        }
                     }
 
+                    $padding: 16px;
+                    $buttonWidth: 88px;
+                    $buttonHeight: 30px;
+                    $countHeight: 14px;
+                    
                     .sendBox{
                         height: 162px;
                         margin-top: 0.8px;
+                        position: relative;
+                        
+                        &::v-deep(.el-textarea) {
+                            @include fullInParent();
+
+                            *{
+                                background-color: rgba(14, 12, 12, 0);// 透明背景
+                            }
+                            
+                            .el-textarea__inner{
+                                @include scrollBar(8px);
+                                
+                                width: 100% !important;
+                                height: 100% !important;
+                                padding: $padding;
+                            }
+
+                            .el-input__count{
+                                @include fixedHeight($countHeight);
+                                right: $padding + $buttonWidth + 15px;
+                                bottom: $padding + math.div(($buttonHeight - $countHeight), 2);
+                            }
+                        }
+
+                        button{
+                            @include fixedWidth($buttonWidth);
+                            @include fixedHeight($buttonHeight);
+                            position: absolute;
+                            right: $padding;
+                            bottom: $padding;
+                        }
                     }
                 }
             }

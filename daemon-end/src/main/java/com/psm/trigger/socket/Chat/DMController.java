@@ -33,10 +33,10 @@ public class DMController implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 创建一个名字空间
-        SocketIONamespace oneToOneChat = socketIOServer.addNamespace("/DM");
+        SocketIONamespace dm = socketIOServer.addNamespace("/DM");
 
         // 添加校验token监听器
-        oneToOneChat.addAuthTokenListener((authToken, client)->{
+        dm.addAuthTokenListener((authToken, client)->{
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
                 String userId = userAdaptor.authUserToken((String) map.get("token"));
@@ -50,7 +50,7 @@ public class DMController implements CommandLineRunner {
         });
 
         // 添加连接监听器
-        oneToOneChat.addConnectListener(client -> {
+        dm.addConnectListener(client -> {
             try {
                 chatAdaptor.connectDM(client);
             }
@@ -60,7 +60,7 @@ public class DMController implements CommandLineRunner {
         });
 
         // 添加断开连接监听器
-        oneToOneChat.addDisconnectListener(client ->{
+        dm.addDisconnectListener(client ->{
             try {
                 chatAdaptor.disconnectDM(client);
             }
@@ -70,11 +70,12 @@ public class DMController implements CommandLineRunner {
         });
 
         // 添加私立聊监听器
-        oneToOneChat.addEventListener("sendMessage", ChatDTO.class, new DataListener<>() {
+        dm.addEventListener("sendMessage", ChatDTO.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient client, ChatDTO message, AckRequest ackRequest) {
                 try {
                     chatAdaptor.sendMessageDM(client, message);
+                    ackRequest.isAckRequested();
                 }
                 catch (ClientException e) {
                     ackRequest.sendAckData("MQ error");

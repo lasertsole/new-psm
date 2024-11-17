@@ -51,7 +51,7 @@ public class ChatServiceImpl implements ChatService {
         // 如果目标用户存在，则发送消息
         SocketIOClient tgtClient = userIdMapClient.get(tgtUserId);
         if (Objects.nonNull(tgtClient)){
-            tgtClient.sendEvent("sendMessage", message);
+            tgtClient.sendEvent("receiveMessage", message);
         }
 
         // 将消息发送到MQ

@@ -1,5 +1,4 @@
 import { Manager, Socket } from 'socket.io-client';
-import type { UserInfo } from '@/types/user';
 import type { ContactItem, MessageItem, Sender } from '@/types/socketIO';
 
 let socketUrl:string = "ws://localhost:8001";
@@ -74,9 +73,8 @@ export class DMService { // 单例模式
   };
 };
 
-
 export const contactItems: Ref<ContactItem[]> = ref<ContactItem[]>([] as ContactItem[]);// 联系人列表
-export const nowChatIndex: Ref<number> = ref(0);// 当前聊天窗口在联系人列表中的索引
+export const nowChatIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
 
 /**
  * 跳转到私聊页面
@@ -106,7 +104,8 @@ export function toDM(id:string, name:string, avatar:string):void {
       lastTime: "",
       unread: 0,
       isMuted: false,
-      isGroup: false
+      isGroup: false,
+      MessageItems: []
     };
 
     contactItems.value.unshift(newContactItem);
@@ -115,4 +114,21 @@ export function toDM(id:string, name:string, avatar:string):void {
   nowChatIndex.value = 0;// 将当前聊天窗口设置为第一个
   
   navigateTo("/message");
+};
+
+export function sendMessage(message:string) {
+  
+  
+  const messageItem: MessageItem ={
+    type: 'text',
+    content: message,
+    senderId: userInfo.id,
+    receiverId: contactItems.value[nowChatIndex.value].id,
+    time: new Date().toISOString(),
+    isDeleted: false,
+  };
+  
+  // DMService.getInstance().getSocket().emit('sendMessage', messageItem);
+  
+  contactItems.value[nowChatIndex.value].MessageItems!.push(messageItem);
 };

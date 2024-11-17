@@ -1,30 +1,32 @@
 <template>
-    <div :class="{messageBox:true, isSeleted}">
-        <div class="leftBox">
-            <CommonAvatar :src="avatar"></CommonAvatar>
+    <div :class="{messageBox:true, isSelf:senderId==userInfo.id}">
+        <div class="top">
+            
         </div>
-        
-        <div class="rightBox">
-            <div class="top">{{ name }}</div>
-            <div class="bottom">{{ lastMessage }}</div>
+        <div class="bottom">
+            <div class="avatar">
+                <CommonAvatar :src="avatar"></CommonAvatar>
+            </div>
+            
+            <div class="gap"></div>
+            
+            <div class="text"><slot name="text"></slot></div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
     const props = defineProps({
-        id: {type:String, required: true},
-        name: {type:String, required: true},
         avatar: {type:String, required: true},
-        lastMessage: {type:String, required: true},
-        lastTime: {type:String, required: true},
-        unread: {type:Number, required: true},
-        isMuted: {type:Boolean, required: true},
-        isGroup: {type:Boolean, required: true},
-        isSeleted: {type:Boolean, required:true},
+        name: {type:String, required: true},
+        type: {type:String, required: true},
+        senderId: {type:String, required: true},
+        receiverId: {type:String, required: true},
+        time: {type:String, required: true},
+        isDeleted: {type:Boolean, required: true}
     });
 
-    console.log(props.isSeleted);
+    console.log(props);
 </script>
 
 <style scoped lang="scss">
@@ -32,43 +34,45 @@
     @import "@/common.scss";
 
     .messageBox{
-        @include fullWidth;
-        @include fixedHeight(80px);
-        
-        padding: 20px 24px;
-        display: flex;
-        align-items: center;
-        
-        .leftBox{
-            @include fixedHeight(40px);
-            @include flexCenter;
-            margin-right: 8px;
+        &.isSelf{
+            .bottom{
+                flex-direction: row-reverse;
+                
+                .text{
+                    background-color: #80b9f2;
+                    border-radius: 16px 0 16px 16px;
+                }
+            }
         }
-
-        .rightBox{
-            @include fullHeight;
-            flex-grow: 1;
+        
+        .bottom{
+            @include fullWidth;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-self: start;
+            padding: 0px 16px 16px 16px;
+            
+            $avatarSize: 30px;
+            $gapSize: 8px;
+            .avatar{
+                @include fixedSquare($avatarSize);
+            }
 
-            .top{
-                @include fullWidth();
-                @include fixedHeight(50%);
-                display: flex;
-                align-items:flex-end;
+            .gap{
+                @include fixedWidth($gapSize);
             }
             
-            .bottom{
-                @include fullWidth();
-                @include fixedHeight(50%);
-                display: flex;
-                align-items:flex-start;
+            .text{
+                max-width: calc(100% - 2 * ($avatarSize + $gapSize));
+                padding: 8px 16px;
+                display: inline-block;
+                font-size: 14px;
+                word-wrap: break-word;
+                word-break: break-word;
+                border-radius: 0 16px 16px 16px;
+                overflow: hidden;
+                background: #fff;
             }
-        }
-        
-        
-        &.isSeleted{
-            background-color: #e4e5e6;
         }
     }
 </style>
