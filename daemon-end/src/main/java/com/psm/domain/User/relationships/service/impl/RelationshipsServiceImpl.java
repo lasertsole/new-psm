@@ -1,8 +1,10 @@
 package com.psm.domain.User.relationships.service.impl;
 
-import com.psm.domain.User.relationships.entity.RelationshipsDAO;
+import com.psm.domain.User.relationships.entity.RelationshipsBO;
+import com.psm.domain.User.relationships.entity.RelationshipsDO;
 import com.psm.domain.User.relationships.repository.RelationshipsDB;
 import com.psm.domain.User.relationships.service.RelationshipsService;
+import com.psm.domain.User.relationships.types.convertor.RelationshipsConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,64 +19,66 @@ public class RelationshipsServiceImpl implements RelationshipsService {
     private RelationshipsDB relationshipsDB;
 
     @Override
-    public List<RelationshipsDAO> checkFollowers(Long tgtUserId) {
+    public List<RelationshipsBO> checkFollowers(Long tgtUserId) {
         // 创建 FollowerDAO 对象
-        RelationshipsDAO followerDAO = new RelationshipsDAO();
-        followerDAO.setTgtUserId(tgtUserId);
-        followerDAO.setIsFollowing(true);
-        return relationshipsDB.selectByTgtUserId(followerDAO);
+        RelationshipsDO followerDO = new RelationshipsDO();
+        followerDO.setTgtUserId(tgtUserId);
+        followerDO.setIsFollowing(true);
+
+        return relationshipsDB.selectByTgtUserId(followerDO).stream().map(RelationshipsConvertor.INSTANCE::DO2BO).toList();
     }
 
     @Override
-    public List<RelationshipsDAO> checkFollowing(Long srcUserId) {
-        RelationshipsDAO relationshipsDAO = new RelationshipsDAO();
-        relationshipsDAO.setSrcUserId(srcUserId);
-        relationshipsDAO.setIsFollowing(true);
+    public List<RelationshipsBO> checkFollowing(Long srcUserId) {
+        RelationshipsDO relationshipsDO = new RelationshipsDO();
+        relationshipsDO.setSrcUserId(srcUserId);
+        relationshipsDO.setIsFollowing(true);
 
-        return relationshipsDB.selectBySrcUserId(relationshipsDAO);
+        return relationshipsDB.selectBySrcUserId(relationshipsDO).stream().map(RelationshipsConvertor.INSTANCE::DO2BO).toList();
     }
 
         @Override
-    public void saveOrUpdateRelationship(RelationshipsDAO relationshipsDAO) {
-        relationshipsDB.insertOrUpdateRelationship(relationshipsDAO);
+    public void saveOrUpdateRelationship(Long tgtUserId, Long srcUserId, Boolean isFollowing, Boolean isInContacts, Boolean isBlocking) {
+        RelationshipsDO relationshipsDO = new RelationshipsDO();
+        relationshipsDO.setTgtUserId(tgtUserId);
+        relationshipsDO.setSrcUserId(srcUserId);
+        relationshipsDO.setIsFollowing(isFollowing);
+        relationshipsDO.setIsInContacts(isInContacts);
+        relationshipsDO.setIsBlocking(isBlocking);
+
+        relationshipsDB.insertOrUpdateRelationship(relationshipsDO);
     };
 
     @Override
-    public RelationshipsDAO getRelationship(RelationshipsDAO relationshipsDAO) {
-        return relationshipsDB.selectRelationship(relationshipsDAO);
+    public RelationshipsBO getRelationship(Long tgtUserId, Long srcUserId) {
+        RelationshipsDO relationshipsDO = new RelationshipsDO();
+        relationshipsDO.setTgtUserId(tgtUserId);
+        relationshipsDO.setSrcUserId(srcUserId);
+
+        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsDB.selectRelationship(relationshipsDO));
     };
 
     @Override
     public void following(Long tgtUserId, Long srcUserId) throws DuplicateKeyException {
-        // 创建 FollowerDAO 对象
-        RelationshipsDAO followerDAO = new RelationshipsDAO();
-        followerDAO.setTgtUserId(tgtUserId);
-        followerDAO.setSrcUserId(srcUserId);
-        followerDAO.setIsFollowing(true);
 
         // 将FollowerDAO 对象保存到数据库
-        saveOrUpdateRelationship(followerDAO);
+        saveOrUpdateRelationship(tgtUserId, srcUserId, true, null, null);
     }
 
     @Override
-    public RelationshipsDAO checkFollowShip(Long tgtUserId, Long srcUserId) {
-        RelationshipsDAO relationshipsDAO = new RelationshipsDAO();
-        relationshipsDAO.setTgtUserId(tgtUserId);
-        relationshipsDAO.setSrcUserId(srcUserId);
-        relationshipsDAO.setIsFollowing(true);
+    public RelationshipsBO checkFollowShip(Long tgtUserId, Long srcUserId) {
+        RelationshipsDO relationshipsDO = new RelationshipsDO();
+        relationshipsDO.setTgtUserId(tgtUserId);
+        relationshipsDO.setSrcUserId(srcUserId);
+        relationshipsDO.setIsFollowing(true);
 
-        return relationshipsDB.selectRelationship(relationshipsDAO);
+        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsDB.selectRelationship(relationshipsDO));
     }
 
     @Override
     public void unFollowing(Long tgtUserId, Long srcUserId) {
-        // 创建 FollowerDAO 对象
-        RelationshipsDAO followerDAO = new RelationshipsDAO();
-        followerDAO.setTgtUserId(tgtUserId);
-        followerDAO.setSrcUserId(srcUserId);
-        followerDAO.setIsFollowing(false);
 
         // 将FollowerDAO 对象保存到数据库
-        saveOrUpdateRelationship(followerDAO);
+        saveOrUpdateRelationship(tgtUserId, srcUserId, false, null, null);
     }
 }

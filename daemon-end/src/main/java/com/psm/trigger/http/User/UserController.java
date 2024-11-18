@@ -6,6 +6,7 @@ import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -51,11 +51,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseVO login(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
+            UserBO userBO = UserBO.fromDTO(userDTO);
             // 登录
-            Map<String, Object> map = userAdaptor.login(userDTO);
-            response.setHeader("token", (String) map.get("token"));
-            UserBO userBO = (UserBO) map.get("user");
-            return new ResponseVO(HttpStatus.OK, "Login successful", userBO.toCurrentUserVO());
+            userBO = userAdaptor.login(userBO);
+            response.setHeader("token", userBO.getToken());
+
+            BeanUtils.copyProperties(userBO, userDTO);
+            return new ResponseVO(HttpStatus.OK, "Login successful", userDTO.toCurrentUserVO());
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
@@ -83,7 +85,8 @@ public class UserController {
     public ResponseVO fastLogin() {
         try {
             UserBO userBO = userAdaptor.getAuthorizedUser();
-            return ResponseVO.ok("FastLogin successful", userBO.toCurrentUserVO());
+            UserDTO userDTO = UserDTO.fromBO(userBO);
+            return ResponseVO.ok("FastLogin successful", userDTO.toCurrentUserVO());
         }
         catch (Exception e){
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
@@ -100,11 +103,13 @@ public class UserController {
     @PostMapping("/register")
     public ResponseVO register(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
+            UserBO userBO = UserBO.fromDTO(userDTO);
             //注册
-            Map<String, Object> map = userAdaptor.register(userDTO);
-            response.setHeader("token", (String) map.get("token"));
-            UserBO userBO = (UserBO) map.get("user");
-            return new ResponseVO(HttpStatus.OK, "Login successful", userBO.toCurrentUserVO());
+            userBO = userAdaptor.register(userBO);
+            response.setHeader("token", userBO.getToken());
+
+            BeanUtils.copyProperties(userBO, userDTO);
+            return new ResponseVO(HttpStatus.OK, "register successful", userDTO.toCurrentUserVO());
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
@@ -158,7 +163,8 @@ public class UserController {
     @PutMapping("/updateAvatar")
     public ResponseVO updateAvatar(UserDTO userDTO) {
         try {
-            String avatarUrl = userAdaptor.updateAvatar(userDTO);
+            UserBO userBO = UserBO.fromDTO(userDTO);
+            String avatarUrl = userAdaptor.updateAvatar(userBO);
             return ResponseVO.ok("Update avatar successful", avatarUrl);
         }
         catch (InvalidParameterException e){
@@ -178,7 +184,8 @@ public class UserController {
     @PutMapping("/updateInfo")
     public ResponseVO updateUser(@RequestBody UserDTO userDTO) {
         try {
-            userAdaptor.updateInfo(userDTO);
+            UserBO userBO = UserBO.fromDTO(userDTO);
+            userAdaptor.updateInfo(userBO);
             return ResponseVO.ok("Update user successful");
         }
         catch (InvalidParameterException e){
@@ -198,7 +205,8 @@ public class UserController {
     @PutMapping("/updatePassword")
     public ResponseVO updatePassword(@RequestBody UserDTO userDTO) {
         try {
-            userAdaptor.updatePassword(userDTO);
+            UserBO userBO = UserBO.fromDTO(userDTO);
+            userAdaptor.updatePassword(userBO);
             return ResponseVO.ok("Update password successful");
         }
         catch (InvalidParameterException e){
@@ -221,8 +229,9 @@ public class UserController {
         userDTO.setId(id);
 
         try {
+            UserBO userBO = UserBO.fromDTO(userDTO);
             // 获取用户信息
-            UserBO userBO = userAdaptor.getUserById(userDTO);
+            userBO = userAdaptor.getUserById(userBO);
 
             return new ResponseVO(HttpStatus.OK, "Get user successful", userBO);
         }
@@ -242,12 +251,12 @@ public class UserController {
      */
     @GetMapping
     public ResponseVO getUserByName(@RequestParam String name) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setName(name);
+        UserBO userBO = new UserBO();
+        userBO.setName(name);
 
         try {
             // 获取用户信息
-            List<UserBO> userBOs = userAdaptor.getUserByName(userDTO);
+            List<UserBO> userBOs = userAdaptor.getUserByName(userBO);
 
             return new ResponseVO(HttpStatus.OK, "Get users successful", userBOs);
         }

@@ -1,7 +1,7 @@
 package com.psm.domain.User.relationships.types.convertor;
 
 import com.psm.domain.User.relationships.entity.RelationshipsBO;
-import com.psm.domain.User.relationships.entity.RelationshipsDAO;
+import com.psm.domain.User.relationships.entity.RelationshipsDO;
 import com.psm.domain.User.relationships.entity.RelationshipsDTO;
 import com.psm.domain.User.relationships.entity.RelationshipsVO;
 import org.mapstruct.Mapper;
@@ -15,11 +15,13 @@ public abstract class RelationshipsConvertor {
 
     public static final RelationshipsConvertor INSTANCE = Mappers.getMapper(RelationshipsConvertor.class);
 
+    public abstract RelationshipsDO BO2DO(RelationshipsBO followerBO);
+
+    public abstract RelationshipsBO DTO2BO(RelationshipsDTO followerDTO);
+
+    public abstract RelationshipsBO DO2BO(RelationshipsDO followerDO);
+
     public abstract RelationshipsDTO BO2DTO(RelationshipsBO followerBO);
-
-    public abstract RelationshipsDAO DTO2DAO(RelationshipsDTO followerDTO);
-
-    public abstract RelationshipsBO DAO2BO(RelationshipsDAO followerDAO);
 
     @Named("longToString")
     public String longToString(Long num) {
@@ -31,5 +33,5 @@ public abstract class RelationshipsConvertor {
             @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
             @Mapping(target = "srcUserId", qualifiedByName = "longToString")
     })
-    public abstract RelationshipsVO BO2VO(RelationshipsBO followerBO);
+    public abstract RelationshipsVO DTO2VO(RelationshipsDTO followerDTO);
 }

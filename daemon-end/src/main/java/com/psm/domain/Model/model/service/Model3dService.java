@@ -1,6 +1,6 @@
 package com.psm.domain.Model.model.service;
 
-import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public interface Model3dService {
     /**
@@ -26,16 +25,16 @@ public interface Model3dService {
      *
      * @param userId    用户ID
      * @param title     模型标题
-     * @param content    模型内容
-     * @param cover     封面
+     * @param content   模型内容
+     * @param coverFile 封面文件
      * @param style     模型风格
      * @param type      模型类型
      * @param visible   可见性
      * @throws TusException tus异常
      * @throws IOException io异常
-     * @return Map,其中modelId为模型id, modelStorage为模型大小
+     * @return Model3dBO,其中modelId为模型id, modelStorage为模型大小
      */
-    Map<String, Long> uploadModelInfo(Long userId, String title, String content, MultipartFile cover, String style, String type, Integer visible) throws Exception;
+    Model3dBO uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception;
 
     /**
      * 删除模型信息
@@ -50,16 +49,16 @@ public interface Model3dService {
      *
      * @param modelId 模型ID
      * @param visibleEnum 可见性等级枚举
-     * @return 模型DAO
+     * @return 模型BO
      */
-    Model3dDAO getById(Long modelId, VisibleEnum visibleEnum);
+    Model3dBO getById(Long modelId, VisibleEnum visibleEnum);
 
     /**
      * 根据模型ID查询模型
      *
      * @param userIds 用户ID列表
      * @param visibleEnum 可见性等级枚举
-     * @return 模型DAO
+     * @return 模型BO
      */
-    List<Model3dDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
+    List<Model3dBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
 }

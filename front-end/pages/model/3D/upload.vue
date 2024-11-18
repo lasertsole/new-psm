@@ -153,13 +153,13 @@
     const style = ref<string>("");//模型风格
     const type = ref<string>("");// 模型类型
     
-    function changeCover(coverFile:any):void{//封面上传回调
+    function changeCover(coverFile:any):void {//封面上传回调
         cover.value = coverFile;
         return;
     }
     
     // 校验输入标题
-    function validateTitle(title:string):boolean{
+    function validateTitle(title:string):boolean {
         const regex = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]+$");
 
         if (title == '') {
@@ -179,7 +179,7 @@
     }
 
     // 校验输入封面
-    function validateCover(cover:Blob|undefined):boolean{
+    function validateCover(cover:Blob|undefined):boolean {
         if (!cover) {
             ElMessage.error('请输入封面');
             return false;
@@ -188,7 +188,7 @@
         return true;
     }
     
-    function validateVisible(visible:string|undefined):boolean{
+    function validateVisible(visible:string|undefined):boolean {
         if (visible === '') {
             ElMessage.error('请选择可见性');
             return false;
@@ -198,7 +198,7 @@
     }
     
     // 校验输入简介
-    function validateContent(content:string):boolean{
+    function validateContent(content:string):boolean {
         const regex = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]+$");
 
         if (content == '') {
@@ -218,7 +218,7 @@
     }
     
     // 校验输入样式标签
-    function validateCategory(style:string, type:string):boolean{
+    function validateCategory(style:string, type:string):boolean {
         let styleFlag:boolean = false;
         let typeFlag:boolean = false;
         
@@ -246,7 +246,7 @@
         return true;
     }
     
-    const sendModelInfo = debounce(async ():Promise<void>=>{
+    const sendModelInfo = debounce(async ():Promise<void>=> {
         if(!validateCover(cover.value)){
             return;
         }
@@ -259,7 +259,7 @@
         else if(!validateContent(title.value)){
             return;
         }
-        else if(!validateCategory(style.value, type.value)){
+        else if(!validateCategory(style.value, type.value)) {
             return;
         }else if(progress.value!="100.00%"){
             ElMessage.error('请等待文件上传完成');
@@ -353,11 +353,11 @@
             }
             
             >div{
+                @include fullWidth();
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: center;
-                @include fullWidth();
                 
                 >span{
                     @include fixedWidth(80px);
@@ -375,7 +375,10 @@
                 
                 >div{
                     flex-wrap: wrap;
-                    flex-grow: 1;
+
+                    &:last-child{
+                        flex-grow: 1;
+                    }
                 }
                 
                 &:not(:first-child){

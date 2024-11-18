@@ -211,12 +211,12 @@ export async function register(name:string, password:string, email:string):Promi
     }
 };
 
-export async function updateAvatar(avatar:Blob):Promise<Boolean>{
+export async function updateAvatar(avatarFile:Blob):Promise<Boolean>{
     try{
-        if(avatar == null || avatar == undefined) return false;
+        if(avatarFile == null || avatarFile == undefined) return false;
         const formData = new FormData();
-        formData.append('oldAvatarUrl', userInfo.avatar||"");
-        formData.append('avatar', avatar);
+        formData.append('oldAvatar', userInfo.avatar||"");
+        formData.append('avatarFile', avatarFile);
     
         const res:Response = await fetchApi({
             url: '/users/updateAvatar',

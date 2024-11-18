@@ -22,8 +22,8 @@ public class UserVO implements Serializable {
     private Boolean sex;
     private String profile;
     private Short publicModelNum;
-    private Long modelMaxStorage;
-    private Long modelCurStorage;
+    private String modelMaxStorage;
+    private String modelCurStorage;
     private Boolean isIdle;
     private Boolean canUrgent;
     private String createTime;

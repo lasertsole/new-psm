@@ -3,12 +3,12 @@ package com.psm.domain.Model.models_user.repository.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Model.model.entity.Model3dDAO;
-import com.psm.domain.Model.models_user.entity.ModelUserDAO;
+import com.psm.domain.Model.model.entity.Model3dDO;
+import com.psm.domain.Model.models_user.entity.ModelUserDO;
 import com.psm.domain.Model.models_user.repository.Models_UserDB;
-import com.psm.domain.Model.models_user.valueObject.Models_UserDAO;
-import com.psm.domain.User.relationships.entity.RelationshipsDAO;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.Model.models_user.valueObject.Models_UserDO;
+import com.psm.domain.User.relationships.entity.RelationshipsDO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.infrastructure.DB.UserMapper;
 import com.psm.types.enums.VisibleEnum;
@@ -28,20 +28,20 @@ public class Models_UserDBImpl implements Models_UserDB {
     private UserMapper userMapper;
 
     @Override
-    public Page<Models_UserDAO> selectModelsShowBars(
+    public Page<Models_UserDO> selectModelsShowBars(
             Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type, Long userSelfId) {
         // 按照页配置获取发过模型的用户的ID列表,并按时间降序排序
-        MPJLambdaWrapper<UserDAO> userMPJWrapper = new MPJLambdaWrapper<>();
+        MPJLambdaWrapper<UserDO> userMPJWrapper = new MPJLambdaWrapper<>();
 
         // 判断是否传入用户自己的ID,若传入，则表示筛选查找用户自己的关注目标用户
         boolean isFollowing = Objects.nonNull(userSelfId);
 
         // 当userSelfId不为null时，才拼接tb_followers表
         if (isFollowing) {
-            userMPJWrapper.innerJoin(RelationshipsDAO.class, RelationshipsDAO::getTgtUserId, UserDAO::getId)
+            userMPJWrapper.innerJoin(RelationshipsDO.class, RelationshipsDO::getTgtUserId, UserDO::getId)
                 // 筛选出关注目标用户的模型
-                .and(wrapper -> wrapper.eq( RelationshipsDAO::getSrcUserId, userSelfId ))
-                .and(wrapper -> wrapper.eq( RelationshipsDAO::getIsFollowing, true ));
+                .and(wrapper -> wrapper.eq( RelationshipsDO::getSrcUserId, userSelfId ))
+                .and(wrapper -> wrapper.eq( RelationshipsDO::getIsFollowing, true ));
         }
 
         // 当筛选条件涉及到模型表的字段时才拼接模型表
@@ -51,127 +51,127 @@ public class Models_UserDBImpl implements Models_UserDB {
         boolean hasCanUrgent = Objects.nonNull(canUrgent);
 
         if (hasStyle || hasType) {
-            userMPJWrapper.innerJoin(Model3dDAO.class, Model3dDAO::getUserId, UserDAO::getId)
+            userMPJWrapper.innerJoin(Model3dDO.class, Model3dDO::getUserId, UserDO::getId)
 
                 // 筛选出符合样式和类型的模型
-                .and(hasStyle, wrapper -> wrapper.eq( Model3dDAO::getStyle, style))
+                .and(hasStyle, wrapper -> wrapper.eq( Model3dDO::getStyle, style))
 
                 // 筛选出符合类型的模型
-                .and(hasType, wrapper -> wrapper.eq( Model3dDAO::getType, type));
+                .and(hasType, wrapper -> wrapper.eq( Model3dDO::getType, type));
         }
 
         userMPJWrapper
             // 筛选出可见的模型
-            .and(hasIsIdle, wrapper -> wrapper.eq(UserDAO::getIsIdle, isIdle))
+            .and(hasIsIdle, wrapper -> wrapper.eq(UserDO::getIsIdle, isIdle))
 
             // 筛选出可以加急接单的用户
-            .and(hasCanUrgent, wrapper -> wrapper.eq(UserDAO::getCanUrgent, canUrgent))
+            .and(hasCanUrgent, wrapper -> wrapper.eq(UserDO::getCanUrgent, canUrgent))
 
             // 筛选出至少有一个公开模型的用户
-            .and(wrapper -> wrapper.ge(UserDAO::getPublicModelNum, 1));
+            .and(wrapper -> wrapper.ge(UserDO::getPublicModelNum, 1));
 
         // 仅选择用户ID和createTime字段(存在联合索引),避免回表查询
-        userMPJWrapper.select(UserDAO::getId);
+        userMPJWrapper.select(UserDO::getId);
 
         // 按照时间降序排序(因为使用雪花算法，id自带顺序，从小到大)
-        userMPJWrapper.orderByDesc(UserDAO::getId);
+        userMPJWrapper.orderByDesc(UserDO::getId);
 
         // 因为用户id和模型存在一对多的关系，拼接后的查询结果存在id重复的问题，需要去重
         userMPJWrapper.distinct();
 
         // 按页数据获取用户列表
-        Page<UserDAO> userDAOPage = new Page<>(current, size);
-        userMapper.selectPage(userDAOPage, userMPJWrapper);
+        Page<UserDO> userDOPage = new Page<>(current, size);
+        userMapper.selectPage(userDOPage, userMPJWrapper);
 
         // 如果用户ID列表为空，则直接返回一个空的Page对象
-        if (userDAOPage.getRecords().isEmpty()) {
-            Page<Models_UserDAO> page = new Page<>();
-            BeanUtils.copyProperties(userDAOPage, page);
+        if (userDOPage.getRecords().isEmpty()) {
+            Page<Models_UserDO> page = new Page<>();
+            BeanUtils.copyProperties(userDOPage, page);
             return page;
         }
 
-        // 按照用户DAO页获取发过模型的用户的ID列表,并按时间降序排序
-        List<Long> ids = userDAOPage.getRecords().stream().map(UserDAO::getId).toList();
+        // 按照用户DO页获取发过模型的用户的ID列表,并按时间降序排序
+        List<Long> ids = userDOPage.getRecords().stream().map(UserDO::getId).toList();
 
         // 按照用户ID获取用户-模型一对多列表
-        MPJLambdaWrapper<UserDAO> userJoinModelWrapper = new MPJLambdaWrapper<UserDAO>();//主表为用户表
-        userJoinModelWrapper.innerJoin(Model3dDAO.class, Model3dDAO::getUserId, UserDAO::getId);//拼接从表3d模型表,连接条件为userDAO.Id = Model3dDAO.userId
-        userJoinModelWrapper.selectAs(Model3dDAO::getId, ModelUserDAO::getModelId);
-        userJoinModelWrapper.select(Model3dDAO::getTitle, Model3dDAO::getCover,
-                Model3dDAO::getStyle, Model3dDAO::getType);
-        userJoinModelWrapper.selectAs(UserDAO::getId, ModelUserDAO::getUserId);
-        userJoinModelWrapper.select(UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
-                UserDAO::getPublicModelNum, UserDAO::getIsIdle, UserDAO::getCanUrgent, UserDAO::getCreateTime);
-        userJoinModelWrapper.eq(Model3dDAO::getVisible, VisibleEnum.PUBLIC);
+        MPJLambdaWrapper<UserDO> userJoinModelWrapper = new MPJLambdaWrapper<UserDO>();//主表为用户表
+        userJoinModelWrapper.innerJoin(Model3dDO.class, Model3dDO::getUserId, UserDO::getId);//拼接从表3d模型表,连接条件为userDO.Id = Model3dDO.userId
+        userJoinModelWrapper.selectAs(Model3dDO::getId, ModelUserDO::getModelId);
+        userJoinModelWrapper.select(Model3dDO::getTitle, Model3dDO::getCover,
+                Model3dDO::getStyle, Model3dDO::getType);
+        userJoinModelWrapper.selectAs(UserDO::getId, ModelUserDO::getUserId);
+        userJoinModelWrapper.select(UserDO::getName, UserDO::getAvatar, UserDO::getSex, UserDO::getProfile,
+                UserDO::getPublicModelNum, UserDO::getIsIdle, UserDO::getCanUrgent, UserDO::getCreateTime);
+        userJoinModelWrapper.eq(Model3dDO::getVisible, VisibleEnum.PUBLIC);
 
-        userJoinModelWrapper.eq(hasStyle, Model3dDAO::getStyle, style);
-        userJoinModelWrapper.eq(hasType, Model3dDAO::getType, type);
+        userJoinModelWrapper.eq(hasStyle, Model3dDO::getStyle, style);
+        userJoinModelWrapper.eq(hasType, Model3dDO::getType, type);
 
-        userJoinModelWrapper.eq(hasIsIdle, UserDAO::getIsIdle, isIdle);
-        userJoinModelWrapper.eq(hasCanUrgent, UserDAO::getCanUrgent, canUrgent);
+        userJoinModelWrapper.eq(hasIsIdle, UserDO::getIsIdle, isIdle);
+        userJoinModelWrapper.eq(hasCanUrgent, UserDO::getCanUrgent, canUrgent);
 
-        userJoinModelWrapper.in(UserDAO::getId, ids);
+        userJoinModelWrapper.in(UserDO::getId, ids);
 
         // 按照用户ID和模型ID进行关联查询
-        List<ModelUserDAO> modelUserDAOs = userMapper.selectJoinList(ModelUserDAO.class, userJoinModelWrapper);
+        List<ModelUserDO> modelUserDOs = userMapper.selectJoinList(ModelUserDO.class, userJoinModelWrapper);
 
 
-        Map<Long, Models_UserDAO> userMap = new HashMap<>();
+        Map<Long, Models_UserDO> userMap = new HashMap<>();
 
-        modelUserDAOs.forEach(
-                modelUserDAO -> {
-                    Model3dDAO model = new Model3dDAO(
-                            modelUserDAO.getModelId(),
+        modelUserDOs.forEach(
+                modelUserDO -> {
+                    Model3dDO model = new Model3dDO(
+                            modelUserDO.getModelId(),
                             null,
-                            modelUserDAO.getTitle(),
+                            modelUserDO.getTitle(),
                             null,
-                            modelUserDAO.getCover(),
+                            modelUserDO.getCover(),
                             null,
                             null,
                             null,
-                            modelUserDAO.getStyle(),
-                            modelUserDAO.getType(),
-                            modelUserDAO.getCreateTime(),
+                            modelUserDO.getStyle(),
+                            modelUserDO.getType(),
+                            modelUserDO.getCreateTime(),
                             null,
                             null,
                             null
                     );
 
-                    if (!userMap.containsKey(modelUserDAO.getUserId())){
-                        UserDAO user = new UserDAO(
-                                modelUserDAO.getUserId(),
-                                modelUserDAO.getName(),
+                    if (!userMap.containsKey(modelUserDO.getUserId())){
+                        UserDO user = new UserDO(
+                                modelUserDO.getUserId(),
+                                modelUserDO.getName(),
                                 null,
                                 null,
-                                modelUserDAO.getAvatar(),
+                                modelUserDO.getAvatar(),
                                 null,
-                                modelUserDAO.getSex(),
-                                modelUserDAO.getProfile(),
-                                modelUserDAO.getPublicModelNum(),
+                                modelUserDO.getSex(),
+                                modelUserDO.getProfile(),
+                                modelUserDO.getPublicModelNum(),
                                 null,
                                 null,
-                                modelUserDAO.getIsIdle(),
-                                modelUserDAO.getCanUrgent(),
+                                modelUserDO.getIsIdle(),
+                                modelUserDO.getCanUrgent(),
                                 null,
                                 null,
                                 null,
                                 null
                         );
 
-                        List<Model3dDAO> models = new ArrayList<>();
+                        List<Model3dDO> models = new ArrayList<>();
                         models.add(model);
-                        Models_UserDAO models_UserDAO = new Models_UserDAO(user, models);
-                        userMap.put(modelUserDAO.getUserId(), models_UserDAO);
+                        Models_UserDO models_UserDO = new Models_UserDO(user, models);
+                        userMap.put(modelUserDO.getUserId(), models_UserDO);
                     }
                     else{
-                        userMap.get(modelUserDAO.getUserId()).getModels().add(model);
+                        userMap.get(modelUserDO.getUserId()).getModels().add(model);
                     }
                 }
         );
 
-        List<Models_UserDAO> values = new ArrayList<>(userMap.values());
-        Page<Models_UserDAO> page = new Page<>();
-        BeanUtils.copyProperties(userDAOPage, page);
+        List<Models_UserDO> values = new ArrayList<>(userMap.values());
+        Page<Models_UserDO> page = new Page<>();
+        BeanUtils.copyProperties(userDOPage, page);
         page.setRecords(values);
 
         return page;

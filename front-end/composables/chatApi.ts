@@ -9,6 +9,9 @@ const manager: Manager= new Manager(socketUrl, {
   , upgrade: false // 关闭自动升级
 });
 
+export const contactItems: Ref<ContactItem[]> = ref<ContactItem[]>([] as ContactItem[]);// 联系人列表
+export const nowChatIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
+
 export class DMService { // 单例模式
   private static instance: DMService;
   private socket: Socket;
@@ -19,7 +22,6 @@ export class DMService { // 单例模式
       auth: {
         token: localStorage.getItem("token") || ""
       }
-      , retries: 3 // 最大重试次数。超过限制，数据包将被丢弃。
     });
 
     this.socket.on('connect', () => {
@@ -50,6 +52,32 @@ export class DMService { // 单例模式
         }, 5000); // 5秒后重试
       };
     });
+
+    this.socket.on("receiveMessage", (MessageItem: MessageItem)=>{
+      console.log(MessageItem);
+      let userIds: string[] = contactItems.value.length!=0?contactItems.value.map(user => user.id!):[];
+      let index = userIds.indexOf(MessageItem.srcUserId!);
+
+      if(index!== -1){
+        contactItems.value[index].MessageItems!.push(MessageItem)
+      }
+      else{// 如果用户不存在于联系人列表中
+        // // 将用户插入到列表头部
+        // let newContactItem: ContactItem = {
+        //   id: MessageItem.id,
+        //   name: MessageItem,
+        //   avatar,
+        //   lastMessage: "",
+        //   lastTime: "",
+        //   unread: 0,
+        //   isMuted: false,
+        //   isGroup: false,
+        //   MessageItems: []
+        // };
+    
+        // contactItems.value.unshift(newContactItem);
+      }
+    });
   };
 
   public static getInstance(): DMService {
@@ -72,9 +100,6 @@ export class DMService { // 单例模式
     this.socket.disconnect();
   };
 };
-
-export const contactItems: Ref<ContactItem[]> = ref<ContactItem[]>([] as ContactItem[]);// 联系人列表
-export const nowChatIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
 
 /**
  * 跳转到私聊页面
@@ -122,13 +147,20 @@ export function sendMessage(message:string) {
   const messageItem: MessageItem ={
     type: 'text',
     content: message,
-    senderId: userInfo.id,
-    receiverId: contactItems.value[nowChatIndex.value].id,
+    srcUserId: userInfo.id,
+    tgtUserId: contactItems.value[nowChatIndex.value].id,
     time: new Date().toISOString(),
     isDeleted: false,
   };
   
-  // DMService.getInstance().getSocket().emit('sendMessage', messageItem);
+  let socket: Socket = DMService.getInstance().getSocket();
+  socket.timeout(5000).emit('sendMessage', messageItem, (err:any, response:any)=>{
+    if (err) {
+      // the other side did not acknowledge the event in the given delay
+    } else {
+      console.log(response);
+    }
+  });
   
   contactItems.value[nowChatIndex.value].MessageItems!.push(messageItem);
 };

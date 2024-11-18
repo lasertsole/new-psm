@@ -2,12 +2,12 @@ package com.psm.domain.Model.model_extendedUser.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dDO;
 import com.psm.domain.Model.model_extendedUser.repository.Model_ExtendedUserDB;
-import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDAO;
-import com.psm.domain.User.relationships.entity.RelationshipsDAO;
-import com.psm.domain.User.relationships.valueObject.ExtendedUserDAO;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDO;
+import com.psm.domain.User.relationships.entity.RelationshipsDO;
+import com.psm.domain.User.relationships.valueObject.ExtendedUserDO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.infrastructure.DB.RelationshipsMapper;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.infrastructure.DB.UserMapper;
@@ -30,34 +30,34 @@ public class Model_ExtendedUserDBImpl implements Model_ExtendedUserDB {
     RelationshipsMapper relationshipsMapperMapper;
 
     @Override
-    public Model_ExtendedUserDAO selectModelByModelId(Long id, Long userSelfId) {
+    public Model_ExtendedUserDO selectModelByModelId(Long id, Long userSelfId) {
         // 获取模型
-        LambdaQueryWrapper<Model3dDAO> model3dWrapper = new LambdaQueryWrapper<>();
-        model3dWrapper.eq(Model3dDAO::getId, id);
-        model3dWrapper.ge(Model3dDAO::getVisible, VisibleEnum.PUBLIC);
-        model3dWrapper.select(Model3dDAO::getId, Model3dDAO::getUserId, Model3dDAO::getTitle, Model3dDAO::getCover,
-                Model3dDAO::getEntity, Model3dDAO::getStyle, Model3dDAO::getType, Model3dDAO::getCreateTime);
+        LambdaQueryWrapper<Model3dDO> model3dWrapper = new LambdaQueryWrapper<>();
+        model3dWrapper.eq(Model3dDO::getId, id);
+        model3dWrapper.ge(Model3dDO::getVisible, VisibleEnum.PUBLIC);
+        model3dWrapper.select(Model3dDO::getId, Model3dDO::getUserId, Model3dDO::getTitle, Model3dDO::getCover,
+                Model3dDO::getEntity, Model3dDO::getStyle, Model3dDO::getType, Model3dDO::getCreateTime);
 
-        Model3dDAO model3dDAO = model3dMapper.selectOne(model3dWrapper);
+        Model3dDO model3dDO = model3dMapper.selectOne(model3dWrapper);
 
         // 获取用户信息
-        Long userId = model3dDAO.getUserId();
-        LambdaQueryWrapper<UserDAO> userWrapper = new LambdaQueryWrapper<>();
-        userWrapper.eq(UserDAO::getId, userId);
-        userWrapper.select(UserDAO::getId, UserDAO::getAvatar, UserDAO::getName);
-        UserDAO userDAO =userMapper.selectOne(userWrapper);
+        Long userId = model3dDO.getUserId();
+        LambdaQueryWrapper<UserDO> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.eq(UserDO::getId, userId);
+        userWrapper.select(UserDO::getId, UserDO::getAvatar, UserDO::getName);
+        UserDO userDO =userMapper.selectOne(userWrapper);
 
         // 判断是否已关注
-        LambdaQueryWrapper<RelationshipsDAO> relationshipsDAOWrapper = new LambdaQueryWrapper<>();
-        relationshipsDAOWrapper.eq(RelationshipsDAO::getTgtUserId,userId)
-                .and(w->w.eq(RelationshipsDAO::getSrcUserId,userSelfId))
-                .and(w->w.eq(RelationshipsDAO::getIsFollowing,true));
+        LambdaQueryWrapper<RelationshipsDO> relationshipsDOWrapper = new LambdaQueryWrapper<>();
+        relationshipsDOWrapper.eq(RelationshipsDO::getTgtUserId,userId)
+                .and(w->w.eq(RelationshipsDO::getSrcUserId,userSelfId))
+                .and(w->w.eq(RelationshipsDO::getIsFollowing,true));
 
-        Boolean isFollowed = !Objects.isNull(relationshipsMapperMapper.selectOne(relationshipsDAOWrapper));
+        Boolean isFollowed = !Objects.isNull(relationshipsMapperMapper.selectOne(relationshipsDOWrapper));
 
         // 构建扩展用户信息
-        ExtendedUserDAO extendedUserDAO = ExtendedUserDAO.from(userDAO, isFollowed);
+        ExtendedUserDO extendedUserDO = ExtendedUserDO.from(userDO, isFollowed);
 
-        return Model_ExtendedUserDAO.from(extendedUserDAO, model3dDAO);
+        return Model_ExtendedUserDO.from(extendedUserDO, model3dDO);
     }
 }

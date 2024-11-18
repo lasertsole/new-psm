@@ -1,6 +1,7 @@
 package com.psm.domain.User.relationships.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.domain.User.relationships.types.convertor.ExtendedUserConvertor;
 import com.psm.domain.User.user.entity.User.UserVO;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -24,8 +25,8 @@ public class ExtendedUserVO extends UserVO implements Serializable {
         Boolean sex,
         String profile,
         Short publicModelNum,
-        Long modelMaxStorage,
-        Long modelCurStorage,
+        String modelMaxStorage,
+        String modelCurStorage,
         Boolean isIdle,
         Boolean canUrgent,
         String createTime,

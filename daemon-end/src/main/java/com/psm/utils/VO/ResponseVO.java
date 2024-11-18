@@ -37,13 +37,13 @@ public class ResponseVO implements Serializable {
     private Object data = null;
 
     protected static Object processData(Object data) {
-        if(data instanceof BO2VOable) {
-            data = ((BO2VOable) data).toVO();
+        if(data instanceof DTO2VOable) {
+            data = ((DTO2VOable) data).toVO();
         }
         else if (data instanceof List) {
             data = ((List) data).stream().map(item -> {
-                if(item instanceof BO2VOable) {
-                    return ((BO2VOable) item).toVO();
+                if(item instanceof DTO2VOable) {
+                    return ((DTO2VOable) item).toVO();
                 }
                 else{
                     return item;
@@ -53,8 +53,8 @@ public class ResponseVO implements Serializable {
         else if (data instanceof Page<?>) {
             Page<?> page = (Page<?>) data;
             List records = page.getRecords().stream().map(item -> {
-                if(item instanceof BO2VOable) {
-                    return ((BO2VOable) item).toVO();
+                if(item instanceof DTO2VOable) {
+                    return ((DTO2VOable) item).toVO();
                 }
                 else{
                     return item;

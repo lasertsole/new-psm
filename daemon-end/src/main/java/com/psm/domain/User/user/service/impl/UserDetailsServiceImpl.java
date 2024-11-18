@@ -1,10 +1,10 @@
 package com.psm.domain.User.user.service.impl;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.AuthUserService;
-import com.psm.domain.User.user.EventBus.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.Redis.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +38,10 @@ public class UserDetailsServiceImpl implements AuthUserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 根据用户名查询用户信息
-        UserDAO user = new UserDAO();
+        UserDO user = new UserDO();
         user.setName(username);
 
-        UserDAO user1 = userDB.findUserByName(user);
+        UserDO user1 = userDB.findUserByName(user);
 
         // 如果没有查询到用户抛出异常
         if (Objects.isNull(user1)){

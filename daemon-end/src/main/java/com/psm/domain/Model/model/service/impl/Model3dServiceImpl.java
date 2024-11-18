@@ -1,10 +1,13 @@
 package com.psm.domain.Model.model.service.impl;
 
-import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dBO;
+import com.psm.domain.Model.model.entity.Model3dDO;
 import com.psm.domain.Model.model.repository.Model3dRedis;
 import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.domain.Model.model.repository.Model3dOSS;
 import com.psm.domain.Model.model.service.Model3dService;
+import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
+import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.Tus.Tus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +43,9 @@ public class Model3dServiceImpl implements Model3dService {
     @Autowired
     private Model3dDB modelDB;
 
+    @Autowired
+    private MQPublisher mqPublisher;
+
     @Override
     public void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException {
         //判断是否是刚开始上传
@@ -65,7 +71,7 @@ public class Model3dServiceImpl implements Model3dService {
 
     @Transactional
     @Override
-    public Map<String, Long> uploadModelInfo(Long userId, String title, String content, MultipartFile cover, String style, String type, Integer visible) throws Exception {
+    public Model3dBO uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception {
         String _userId = String.valueOf(userId);
 
         // 判断文件是否已上传完成且没有过期fullPath
@@ -80,30 +86,30 @@ public class Model3dServiceImpl implements Model3dService {
         // 将本地文件上传到OSS
         Map<String, String> ossResultMap;
         try {
-            ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), cover, _userId);
+            ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), coverFile, _userId);
         }
         catch (Exception e){
             throw new RuntimeException("文件上传失败");
         }
 
-        // 将ModelDAO存入数据库
+        // 将ModelDO存入数据库
         Long modelId; // 定义模型ID
         try {
-            // 将ModelDTO转换为ModelDAO
-            Model3dDAO model3dDAO = new Model3dDAO();
-            model3dDAO.setUserId(userId);
-            model3dDAO.setTitle(title);
-            model3dDAO.setContent(content);
-            model3dDAO.setStyle(style);
-            model3dDAO.setType(type);
-            model3dDAO.setVisible(VisibleEnum.fromInteger(visible));
-            model3dDAO.setEntity(ossResultMap.get("entityUrl"));
-            model3dDAO.setCover(ossResultMap.get("coverUrl"));
-            model3dDAO.setStorage(fileSize);
+            // 将ModelDTO转换为ModelDO
+            Model3dDO model3dDO = new Model3dDO();
+            model3dDO.setUserId(userId);
+            model3dDO.setTitle(title);
+            model3dDO.setContent(content);
+            model3dDO.setStyle(style);
+            model3dDO.setType(type);
+            model3dDO.setVisible(visible);
+            model3dDO.setEntity(ossResultMap.get("entityUrl"));
+            model3dDO.setCover(ossResultMap.get("coverUrl"));
+            model3dDO.setStorage(fileSize);
 
-            // 将ModelDAO存入数据库
-            modelDB.insert(model3dDAO);
-            modelId = model3dDAO.getId();
+            // 将ModelDO存入数据库
+            modelDB.insert(model3dDO);
+            modelId = model3dDO.getId();
         }
         catch (Exception e){
             // 回滚OSS
@@ -128,7 +134,14 @@ public class Model3dServiceImpl implements Model3dService {
             throw new RuntimeException("删除云文件失败");
         }
 
-        return Map.of("modelId", modelId, "modelStorage", fileSize);
+        Model3dBO model3dBO = new Model3dBO();
+        model3dBO.setId(modelId);
+        model3dBO.setStorage(fileSize);
+
+//        // 将消息发送到MQ
+//        mqPublisher.publish(model3dBO, "*", "uploadModel3d", modelId.toString());
+
+        return model3dBO;
     }
 
     @Override
@@ -137,12 +150,12 @@ public class Model3dServiceImpl implements Model3dService {
     }
 
     @Override
-    public Model3dDAO getById(Long modelId, VisibleEnum visibleEnum) {
-        return modelDB.selectById(modelId, visibleEnum);
+    public Model3dBO getById(Long modelId, VisibleEnum visibleEnum) {
+        return Model3dConvertor.INSTANCE.DO2BO(modelDB.selectById(modelId, visibleEnum));
     }
 
     @Override
-    public List<Model3dDAO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
-        return modelDB.selectByUserIds(userIds, visibleEnum);
+    public List<Model3dBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+        return modelDB.selectByUserIds(userIds, visibleEnum).stream().map(Model3dConvertor.INSTANCE::DO2BO).toList();
     }
 }

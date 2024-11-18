@@ -1,6 +1,6 @@
 package com.psm.domain.Subtitles.types.convertor;
 
-import com.psm.domain.Subtitles.entity.SubtitlesDAO;
+import com.psm.domain.Subtitles.entity.SubtitlesDO;
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
 import org.mapstruct.Mapper;
@@ -12,18 +12,18 @@ public abstract class SubtitlesConvertor {
     public static SubtitlesConvertor INSTANCE = Mappers.getMapper(SubtitlesConvertor.class);
 
 
-    public SubtitlesDAO DTO2DAO(SubtitlesDTO subtitlesDTO){
-        SubtitlesDAO subtitlesDAO = new SubtitlesDAO();
-        BeanUtils.copyProperties(subtitlesDTO, subtitlesDAO);
+    public SubtitlesDO DTO2DO(SubtitlesDTO subtitlesDTO){
+        SubtitlesDO subtitlesDO = new SubtitlesDO();
+        BeanUtils.copyProperties(subtitlesDTO, subtitlesDO);
 
-        return subtitlesDAO;
+        return subtitlesDO;
     }
 
-    public SubtitlesVO DAO2VO(SubtitlesDAO subtitlesDAO){
+    public SubtitlesVO DO2VO(SubtitlesDO subtitlesDO){
         SubtitlesVO subtitlesVO = new SubtitlesVO();
-        BeanUtils.copyProperties(subtitlesDAO, subtitlesVO);
-        subtitlesVO.setStyle(subtitlesDAO.getStyle());
-        subtitlesVO.setType(subtitlesDAO.getType());
+        BeanUtils.copyProperties(subtitlesDO, subtitlesVO);
+        subtitlesVO.setStyle(subtitlesDO.getStyle());
+        subtitlesVO.setType(subtitlesDO.getType());
 
         return subtitlesVO;
     }

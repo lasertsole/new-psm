@@ -1,13 +1,12 @@
 package com.psm.domain.User.user.entity.LoginUser;
 
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -15,7 +14,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements UserDetails, Serializable {
-    private UserDAO userDAO;
+    private UserDO userDO;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -24,12 +23,12 @@ public class LoginUser implements UserDetails, Serializable {
 
     @Override
     public String getPassword() {
-        return userDAO.getPassword();
+        return userDO.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userDAO.getName();
+        return userDO.getName();
     }
 
     @Override

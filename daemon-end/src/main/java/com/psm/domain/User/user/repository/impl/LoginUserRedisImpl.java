@@ -1,6 +1,6 @@
 package com.psm.domain.User.user.repository.impl;
 
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
@@ -28,7 +28,7 @@ public class LoginUserRedisImpl implements LoginUserRedis {
 
     @Override
     public void addLoginUser(LoginUser loginUser){
-        String id = loginUser.getUserDAO().getId().toString();
+        String id = loginUser.getUserDO().getId().toString();
         addLoginUser(id, loginUser);
     }
 
@@ -44,23 +44,23 @@ public class LoginUserRedisImpl implements LoginUserRedis {
 
     @Override
     public void removeLoginUser(LoginUser loginUser){
-        String id = loginUser.getUserDAO().getId().toString();
+        String id = loginUser.getUserDO().getId().toString();
         removeLoginUser(id);
     }
 
     @Override
-    public void updateLoginUser(UserDAO userDAO) {
-        String id = String.valueOf(userDAO.getId());
+    public void updateLoginUser(UserDO userDO) {
+        String id = String.valueOf(userDO.getId());
         LoginUser loginUser = (LoginUser) redisCache.getCacheObject("login:" + id);
 
-        UserDAO userDAORefer = loginUser.getUserDAO();//获取loginUser内的UserDAO引用
-        if (!Objects.isNull(userDAO.getAvatar())) userDAORefer.setAvatar(userDAO.getAvatar());
-        if (!Objects.isNull(userDAO.getName())) userDAORefer.setName(userDAO.getName());
-        if (!Objects.isNull(userDAO.getProfile())) userDAORefer.setProfile(userDAO.getProfile());
-        if (!Objects.isNull(userDAO.getPhone())) userDAORefer.setPhone(userDAO.getPhone());
-        if (!Objects.isNull(userDAO.getEmail())) userDAORefer.setEmail(userDAO.getEmail());
-        if (!Objects.isNull(userDAO.getSex())) userDAORefer.setSex(userDAO.getSex());
-        if (!Objects.isNull(userDAO.getPassword())) userDAORefer.setPassword(userDAO.getPassword());
+        UserDO userDORefer = loginUser.getUserDO();//获取loginUser内的UserDO引用
+        if (!Objects.isNull(userDO.getAvatar())) userDORefer.setAvatar(userDO.getAvatar());
+        if (!Objects.isNull(userDO.getName())) userDORefer.setName(userDO.getName());
+        if (!Objects.isNull(userDO.getProfile())) userDORefer.setProfile(userDO.getProfile());
+        if (!Objects.isNull(userDO.getPhone())) userDORefer.setPhone(userDO.getPhone());
+        if (!Objects.isNull(userDO.getEmail())) userDORefer.setEmail(userDO.getEmail());
+        if (!Objects.isNull(userDO.getSex())) userDORefer.setSex(userDO.getSex());
+        if (!Objects.isNull(userDO.getPassword())) userDORefer.setPassword(userDO.getPassword());
 
         addLoginUser(id, loginUser);
     }

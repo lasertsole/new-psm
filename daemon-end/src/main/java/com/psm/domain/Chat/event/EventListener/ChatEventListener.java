@@ -1,7 +1,7 @@
 package com.psm.domain.Chat.event.EventListener;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.domain.Chat.entity.ChatDAO;
+import com.psm.domain.Chat.entity.ChatBO;
 import com.psm.domain.Chat.service.ChatService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -34,7 +34,7 @@ public class ChatEventListener {
     private ClientServiceProvider provider;
 
     // 订阅消息的过滤规则，表示订阅所有Tag的消息。
-    private final String tag = "OneToOne";
+    private final String tag = "DM";
 
     // 订阅消息的过滤表达式，表示订阅所有消息。
     private final FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
@@ -47,7 +47,6 @@ public class ChatEventListener {
 
     // PushConsumer对象，其作用为消费消息。
     private PushConsumer pushConsumer;
-
 
     @PostConstruct
     public void init() throws ClientException {
@@ -69,9 +68,8 @@ public class ChatEventListener {
 
                     // 将字节数组转换为字符串
                     String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
-                    ChatDAO messageBody = JSON.parseObject(jsonString, ChatDAO.class);
-
-
+                    ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
+                    chatService.processMessageDM(messageBody);
 
                     return ConsumeResult.SUCCESS;
                 })

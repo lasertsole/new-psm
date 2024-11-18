@@ -13,12 +13,10 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RelationshipsVO implements Serializable {
     private String id;
-
     private String tgtUserId;
     private String srcUserId;
     private Boolean isFollowing;
     private Boolean isInContacts;
     private Boolean isBlocking;
-
     private String createTime;
 }

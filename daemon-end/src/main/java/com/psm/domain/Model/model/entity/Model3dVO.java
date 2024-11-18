@@ -18,8 +18,8 @@ public class Model3dVO implements Serializable {
     private String content;
     private String cover;
     private String entity;
-    private String style;//模型风格
-    private String type;//模型类型
+    private String style;
+    private String type;
     private Integer visible;
     private Long storage;
     private String createTime;

@@ -1,8 +1,6 @@
 package com.psm.domain.User.user.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.User.user.entity.User.UserDAO;
-import com.psm.domain.User.user.entity.User.UserDTO;
+import com.psm.domain.User.user.entity.User.UserBO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -10,7 +8,6 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**用户领域服务
@@ -22,9 +19,9 @@ public interface UserService {
     /**
      * 获取当前登录用户信息
      *
-     * @return 用户DAO实体
+     * @return 用户BO实体
      */
-    UserDAO getAuthorizedUser();
+    UserBO getAuthorizedUser();
 
     /**
      * 获取当前登录用户id
@@ -38,9 +35,9 @@ public interface UserService {
      *
      * @param name 用户名
      * @param password 密码
-     * @return 用户登录信息的键值对，其中token为令牌，user为用户信息
+     * @return 用户BO实体，其中token为令牌，user为用户信息
      */
-    Map<String, Object> login(String name, String password) throws LockedException, BadCredentialsException, DisabledException;
+    UserBO login(String name, String password) throws LockedException, BadCredentialsException, DisabledException;
 
 
     /**
@@ -54,9 +51,9 @@ public interface UserService {
      * @param name 用户DTO实体
      * @param password 密码
      * @param email 邮箱
-     * @return 用户登录信息的键值对，其中token为令牌，user为用户信息
+     * @return 用户BO实体，其中token为令牌，user为用户信息
      */
-    Map<String, Object> register(String name, String password, String email) throws DuplicateKeyException;
+    UserBO register(String name, String password, String email) throws DuplicateKeyException;
 
     /**
      * 销号
@@ -89,34 +86,34 @@ public interface UserService {
      * 通过用户ID获取用户信息
      *
      * @param id 用户ID
-     * @return 用户DAO实体
+     * @return 用户BO实体
      */
-    UserDAO getUserByID(Long id);
+    UserBO getUserByID(Long id);
 
     /**
      * 通过用户名获取用户信息
      *
      * @param name 用户名
-     * @return 根据用户名查找到的用户列表
+     * @return 根据用户名查找到的用户BO列表
      */
-    List<UserDAO> getUserByName(String name);
+    List<UserBO> getUserByName(String name);
 
     /**
      * 按创建时间排序获取用户列表
      *
      * @param current 当前页码
      * @param pageSize 每页用户信息条数
-     * @return 用户信息列表
+     * @return 用户BO实体列表
      */
-    List<UserDAO> getUserOrderByCreateTimeAsc(Integer current, Integer pageSize);
+    List<UserBO> getUserOrderByCreateTimeAsc(Integer current, Integer pageSize);
 
     /**
      * 根据id列表查找用户
      *
      * @param ids id列表
-     * @return 用户DAO实体列表
+     * @return 用户BO实体列表
      */
-    List<UserDAO> getUserByIds(List<Long> ids);
+    List<UserBO> getUserByIds(List<Long> ids);
 
     /**
      * 更新用户作品数量

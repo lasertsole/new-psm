@@ -1,15 +1,13 @@
 package com.psm.domain.User.relationships.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import com.psm.domain.User.relationships.types.convertor.RelationshipsConvertor;
-import com.psm.domain.User.user.entity.User.UserDAO;
-import com.psm.domain.User.user.entity.User.UserDAODefine;
-import com.psm.utils.VO.BO2VOable;
-import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
-import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -17,26 +15,28 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RelationshipsBO implements BO2VOable<RelationshipsVO>, Serializable {
+public class RelationshipsBO implements Serializable {
 
+    @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 
+    @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long tgtUserId;
+
+    @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long srcUserId;
+
     private Boolean isFollowing;
     private Boolean isInContacts;
     private Boolean isBlocking;
 
     private String createTime;
 
-    @BindEntity(conditions = @JoinCondition(selfField = RelationshipsDAODefine.tgtUserId, joinField = UserDAODefine.id))
-    private UserDAO tgtUser;
+    public static RelationshipsBO fromDTO(RelationshipsDTO relationshipsDTO) {
+        return RelationshipsConvertor.INSTANCE.DTO2BO(relationshipsDTO);
+    }
 
-    @BindEntity(conditions = @JoinCondition(selfField = RelationshipsDAODefine.srcUserId, joinField = UserDAODefine.id))
-    private UserDAO srcUser;
-
-    @Override
-    public RelationshipsVO toVO() {
-        return RelationshipsConvertor.INSTANCE.BO2VO(this);
+    public static RelationshipsBO fromDO(RelationshipsDO relationshipsDO) {
+        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsDO);
     }
 }

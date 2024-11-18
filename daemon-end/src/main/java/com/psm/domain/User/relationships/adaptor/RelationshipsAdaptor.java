@@ -1,7 +1,6 @@
 package com.psm.domain.User.relationships.adaptor;
 
 import com.psm.domain.User.relationships.entity.RelationshipsBO;
-import com.psm.domain.User.relationships.entity.RelationshipsDTO;
 import jakarta.validation.Valid;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -12,7 +11,7 @@ public interface RelationshipsAdaptor {
      * 根据源用户id获取关注记录
      *
      * @param tgtUserId 目标用户id
-     * @return 关注记录DAO列表
+     * @return  关系实体BO列表
      */
     List<RelationshipsBO> checkFollowers(Long tgtUserId) throws InstantiationException, IllegalAccessException;
 
@@ -27,9 +26,9 @@ public interface RelationshipsAdaptor {
     /**
      * 添加关注记录
      *
-     * @param followerDTO 关注信息DTO
+     * @param relationshipsBO 关系实体BO
      */
-    void addFollowing(@Valid RelationshipsDTO followerDTO) throws DuplicateKeyException;
+    void addFollowing(@Valid RelationshipsBO relationshipsBO) throws DuplicateKeyException;
 
     /**
      * 添加关注记录
@@ -42,10 +41,10 @@ public interface RelationshipsAdaptor {
     /**
      * 根据目标用户id和来源用户id获取关注信息
      *
-     * @param followerDTO 关注信息DTO
+     * @param relationshipsBO 关系实体BO
      * @return 关注信息BO
      */
-    RelationshipsBO checkFollowShip(RelationshipsDTO followerDTO);
+    RelationshipsBO checkFollowShip(RelationshipsBO relationshipsBO);
 
     /**
      * 根据目标用户id和来源用户id获取关注信息
@@ -59,10 +58,10 @@ public interface RelationshipsAdaptor {
     /**
      * 判断用户是否关注了目标用户
      *
-     * @param followerDTO 关注信息DTO
+     * @param relationshipsBO 关系实体BO
      * @return 是否关注
      */
-    Boolean isFollowed(RelationshipsDTO followerDTO);
+    Boolean isFollowed(RelationshipsBO relationshipsBO);
 
     /**
      * 判断用户是否关注了目标用户
@@ -76,9 +75,9 @@ public interface RelationshipsAdaptor {
     /**
      * 根据目标用户id和来源用户id删除关注记录
      *
-     * @param followerDTO 关注信息DTO
+     * @param relationshipsBO 关系实体BO
      */
-    void removeFollowing(RelationshipsDTO followerDTO);
+    void removeFollowing(RelationshipsBO relationshipsBO);
 
     /**
      * 根据目标用户id和来源用户id删除关注记录
@@ -90,14 +89,14 @@ public interface RelationshipsAdaptor {
 
     /**
      * 更新或保存关系记录
-     * @param relationshipsDTO 关系记录
+     * @param relationshipsBO 关系实体BO
      */
-    void saveOrUpdateRelationship(RelationshipsDTO relationshipsDTO);
+    void saveOrUpdateRelationship(RelationshipsBO relationshipsBO);
 
     /**
      * 根据条件查询关系记录
-     * @param relationshipsDTO 关系记录
+     * @param relationshipsBO 关系实体BO
      * @return 关系记录
      */
-    RelationshipsBO getRelationship(RelationshipsDTO relationshipsDTO);
+    RelationshipsBO getRelationship(RelationshipsBO relationshipsBO);
 }

@@ -4,9 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.infrastructure.DB.UserMapper;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,102 +15,102 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class UserDBImpl extends BaseDBRepositoryImpl<UserMapper, UserDAO> implements UserDB {
+public class UserDBImpl extends BaseDBRepositoryImpl<UserMapper, UserDO> implements UserDB {
     @Autowired
     private UserMapper userMapper;
 
     @Override
-    public void insert(UserDAO userDAO){
+    public void insert(UserDO userDAO){
         userMapper.insert(userDAO);
     }
 
     @Override
-    public UserDAO selectById(Long id) {
+    public UserDO selectById(Long id) {
         return userMapper.selectById(id);
     }
 
     @Override
-    public UserDAO selectById(UserDAO userDAO){
+    public UserDO selectById(UserDO userDAO){
         return userMapper.selectById(userDAO.getId());
     }
 
     @Override
-    public void updateAvatar(UserDAO userDAO){
-        LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(UserDAO::getId,userDAO.getId());
-        wrapper.set(UserDAO::getAvatar, userDAO.getAvatar());
+    public void updateAvatar(UserDO userDAO){
+        LambdaUpdateWrapper<UserDO> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(UserDO::getId,userDAO.getId());
+        wrapper.set(UserDO::getAvatar, userDAO.getAvatar());
         userMapper.update(null,wrapper);
     }
 
     @Override
-    public void updateInfo(UserDAO userDAO){
-        LambdaUpdateWrapper<UserDAO> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(UserDAO::getId,userDAO.getId());
+    public void updateInfo(UserDO userDAO){
+        LambdaUpdateWrapper<UserDO> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(UserDO::getId,userDAO.getId());
 
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getName()), UserDAO::getName, userDAO.getName());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getProfile()), UserDAO::getProfile, userDAO.getProfile());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPhone()), UserDAO::getPhone, userDAO.getPhone());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getEmail()), UserDAO::getEmail, userDAO.getEmail());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getSex()), UserDAO::getSex, userDAO.getSex());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPublicModelNum()), UserDAO::getPublicModelNum, userDAO.getPublicModelNum());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelMaxStorage()), UserDAO::getModelMaxStorage, userDAO.getModelMaxStorage());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelCurStorage()), UserDAO::getModelCurStorage, userDAO.getModelCurStorage());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getIsIdle()), UserDAO::getIsIdle, userDAO.getIsIdle());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getCanUrgent()), UserDAO::getCanUrgent, userDAO.getCanUrgent());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getName()), UserDO::getName, userDAO.getName());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getProfile()), UserDO::getProfile, userDAO.getProfile());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPhone()), UserDO::getPhone, userDAO.getPhone());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getEmail()), UserDO::getEmail, userDAO.getEmail());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getSex()), UserDO::getSex, userDAO.getSex());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPublicModelNum()), UserDO::getPublicModelNum, userDAO.getPublicModelNum());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelMaxStorage()), UserDO::getModelMaxStorage, userDAO.getModelMaxStorage());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelCurStorage()), UserDO::getModelCurStorage, userDAO.getModelCurStorage());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getIsIdle()), UserDO::getIsIdle, userDAO.getIsIdle());
+        wrapper.set(!ObjectUtil.isEmpty(userDAO.getCanUrgent()), UserDO::getCanUrgent, userDAO.getCanUrgent());
 
         userMapper.update(null,wrapper);
     }
 
     @Override
-    public String findPasswordById(UserDAO userDAO){
-        LambdaQueryWrapper<UserDAO> queryWrapper = new LambdaQueryWrapper<UserDAO>();
-        queryWrapper.select(UserDAO::getPassword)
-                .eq(UserDAO::getId, userDAO.getId());
+    public String findPasswordById(UserDO userDAO){
+        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<UserDO>();
+        queryWrapper.select(UserDO::getPassword)
+                .eq(UserDO::getId, userDAO.getId());
 
         List<Map<String, Object>> passwordList = userMapper.selectMaps(queryWrapper);
         return (String) passwordList.get(0).get("password");
     }
 
     @Override
-    public void updatePasswordById(UserDAO userDAO){
-        LambdaUpdateWrapper<UserDAO> uploadWrapper = new LambdaUpdateWrapper<UserDAO>();
-        uploadWrapper.eq(UserDAO::getId, userDAO.getId())
-                .set(UserDAO::getPassword, userDAO.getPassword());
+    public void updatePasswordById(UserDO userDAO){
+        LambdaUpdateWrapper<UserDO> uploadWrapper = new LambdaUpdateWrapper<UserDO>();
+        uploadWrapper.eq(UserDO::getId, userDAO.getId())
+                .set(UserDO::getPassword, userDAO.getPassword());
         userMapper.update(null, uploadWrapper);
     }
 
     @Override
-    public UserDAO findUserByName(UserDAO userDAO){
-        LambdaQueryWrapper<UserDAO> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserDAO::getName, userDAO.getName());
+    public UserDO findUserByName(UserDO userDAO){
+        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserDO::getName, userDAO.getName());
         return userMapper.selectOne(queryWrapper);
     };
 
     @Override
-    public List<UserDAO> findUsersByName(UserDAO userDAO){
-        LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
-                UserDAO::getCreateTime).like(UserDAO::getName, userDAO.getName());
+    public List<UserDO> findUsersByName(UserDO userDAO){
+        LambdaQueryWrapper<UserDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(UserDO::getId, UserDO::getName, UserDO::getAvatar, UserDO::getSex, UserDO::getProfile,
+                UserDO::getCreateTime).like(UserDO::getName, userDAO.getName());
         return userMapper.selectList(wrapper);
     }
 
     @Override
-    public List<UserDAO> selectUserOrderByCreateTimeAsc (Page<UserDAO> page) {
-        LambdaQueryWrapper<UserDAO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.select(UserDAO::getId, UserDAO::getName, UserDAO::getAvatar, UserDAO::getSex, UserDAO::getProfile,
-                UserDAO::getCreateTime).orderByAsc(UserDAO::getCreateTime);
+    public List<UserDO> selectUserOrderByCreateTimeAsc (Page<UserDO> page) {
+        LambdaQueryWrapper<UserDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(UserDO::getId, UserDO::getName, UserDO::getAvatar, UserDO::getSex, UserDO::getProfile,
+                UserDO::getCreateTime).orderByAsc(UserDO::getCreateTime);
 
         //执行查询
-        Page<UserDAO> resultPage = userMapper.selectPage(page, wrapper);
+        Page<UserDO> resultPage = userMapper.selectPage(page, wrapper);
 
         return resultPage.getRecords();
     }
 
     @Override
-    public List<UserDAO> selectUserByIds(List<Long> ids) {
+    public List<UserDO> selectUserByIds(List<Long> ids) {
         // 按照用户ID列表获取用户列表
-        LambdaQueryWrapper<UserDAO> userWrapper = new LambdaQueryWrapper<>();
-        userWrapper.in(UserDAO::getId, ids);
+        LambdaQueryWrapper<UserDO> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.in(UserDO::getId, ids);
         return userMapper.selectList(userWrapper);
     }
 }

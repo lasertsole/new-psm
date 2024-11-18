@@ -1,8 +1,8 @@
 package com.psm.domain.User.user.types.convertor;
 
-import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
+import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
 import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -42,7 +42,7 @@ public abstract class OAuth2ThirdAccountConvertor {
     @Mappings(
             @Mapping(source = "userId", target = "id")
     )
-    public abstract UserDAO DTO2UserDAO(OAuth2ThirdAccountDTO oAuth2ThirdAccount);
+    public abstract UserDO DTO2UserDO(OAuth2ThirdAccountDTO oAuth2ThirdAccount);
 
-    public abstract OAuth2ThirdAccountDAO DTO2DAO(OAuth2ThirdAccountDTO oAuth2ThirdAccountDTO);
+    public abstract OAuth2ThirdAccountDO DTO2DO(OAuth2ThirdAccountDTO oAuth2ThirdAccountDTO);
 }

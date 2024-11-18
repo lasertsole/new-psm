@@ -1,7 +1,6 @@
 package com.psm.domain.User.relationships.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.User.relationships.types.convertor.ExtendedUserConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import lombok.EqualsAndHashCode;
@@ -35,11 +34,15 @@ public class ExtendedUserBO extends UserBO implements Serializable {
         Boolean isFollowed)
     {
         super(
+            null,
             id,
             name,
             password,
+            null,
             phone,
+            null,
             avatar,
+            null,
             email,
             sex,
             profile,
@@ -56,11 +59,15 @@ public class ExtendedUserBO extends UserBO implements Serializable {
 
     public ExtendedUserBO(UserBO userBO, Boolean followed) {
         super(
+            null,
             userBO.getId(),
             userBO.getName(),
             userBO.getPassword(),
+            null,
             userBO.getPhone(),
+            null,
             userBO.getAvatar(),
+            null,
             userBO.getEmail(),
             userBO.getSex(),
             userBO.getProfile(),
@@ -77,10 +84,5 @@ public class ExtendedUserBO extends UserBO implements Serializable {
 
     public static ExtendedUserBO from(UserBO userBO, Boolean followed) {
         return new ExtendedUserBO(userBO, followed);
-    }
-
-    @Override
-    public ExtendedUserVO toVO() {
-        return ExtendedUserConvertor.INSTANCE.BO2OtherVO(this);
     }
 }

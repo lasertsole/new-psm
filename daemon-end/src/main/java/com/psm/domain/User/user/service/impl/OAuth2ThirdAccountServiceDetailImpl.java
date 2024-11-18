@@ -2,10 +2,10 @@ package com.psm.domain.User.user.service.impl;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
-import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDAO;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.types.convertor.OAuth2ThirdAccountConvertor;
-import com.psm.domain.User.user.EventBus.security.utils.Oauth2UserIdContextHolder;
+import com.psm.domain.User.user.Event.EventBus.security.utils.Oauth2UserIdContextHolder;
 import com.psm.domain.User.user.repository.OAuth2ThirdAccountDB;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.infrastructure.Redis.RedisCache;
@@ -58,44 +58,44 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
 
         // 判断是否用户是否在第三方平台有账号
         if (!Objects.isNull(oAuth2ThirdAccountDTO)){
-            //将DTO转换为DAO
-            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2DAO(oAuth2ThirdAccountDTO);
+            //将DTO转换为DO
+            OAuth2ThirdAccountDO oAuth2ThirdAccountDO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2DO(oAuth2ThirdAccountDTO);
 
             //查询数据库内tb_third_party_user表中是否有该第三方账号
-            OAuth2ThirdAccountDAO oAuth2ThirdAccountDAO1 = oAuth2ThirdAccountDB.findByPrimaryKey(oAuth2ThirdAccountDAO);
+            OAuth2ThirdAccountDO oAuth2ThirdAccountDO1 = oAuth2ThirdAccountDB.findByPrimaryKey(oAuth2ThirdAccountDO);
 
             Long tbUserId;// 第三方账号对应的用户id
-            UserDAO userDAO;// 第三方账号对应的用户信息
+            UserDO userDO;// 第三方账号对应的用户信息
             // 添加或更新改用户已在数据库内的信息
-            if (Objects.isNull(oAuth2ThirdAccountDAO1)){//判断用户的第三方平台账号是否已在数据库
+            if (Objects.isNull(oAuth2ThirdAccountDO1)){//判断用户的第三方平台账号是否已在数据库
                 //在tb_user表插入新用户信息
-                userDAO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2UserDAO(oAuth2ThirdAccountDTO);
-                userDAO.setPassword(UUID.randomUUID().toString());
-                userDB.insert(userDAO);
+                userDO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2UserDO(oAuth2ThirdAccountDTO);
+                userDO.setPassword(UUID.randomUUID().toString());
+                userDB.insert(userDO);
 
                 //得到插入tb_user表后新用户信息的id(雪花算法生成ID)
-                tbUserId = userDAO.getId();
+                tbUserId = userDO.getId();
 
                 //在tb_third_party_user表中新建第三方账号，外键user_id的值为tb_user表的id
-                oAuth2ThirdAccountDAO.setUserId(tbUserId);
-                oAuth2ThirdAccountDB.insert(oAuth2ThirdAccountDAO);
+                oAuth2ThirdAccountDO.setUserId(tbUserId);
+                oAuth2ThirdAccountDB.insert(oAuth2ThirdAccountDO);
             }
             else{
                 // 获取第三方账号对应的用户id
-                tbUserId = oAuth2ThirdAccountDAO1.getUserId();
+                tbUserId = oAuth2ThirdAccountDO1.getUserId();
 
                 //更新第三方账号信息
-                OAuth2ThirdAccountDAO DAO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2DAO(oAuth2ThirdAccountDTO);
-                oAuth2ThirdAccountDB.update(DAO);
+                OAuth2ThirdAccountDO DO = OAuth2ThirdAccountConvertor.INSTANCE.DTO2DO(oAuth2ThirdAccountDTO);
+                oAuth2ThirdAccountDB.update(DO);
 
                 // 查询已有的用户信息
-                UserDAO tempUser = new UserDAO();
+                UserDO tempUser = new UserDO();
                 tempUser.setId(tbUserId);
-                userDAO = userDB.selectById(tempUser);
+                userDO = userDB.selectById(tempUser);
             }
 
-            //将userDAO转成LoginUser格式
-            LoginUser loginUser = new LoginUser(userDAO);
+            //将userDO转成LoginUser格式
+            LoginUser loginUser = new LoginUser(userDO);
 
             //把完整信息存入redis，id作为key(如果原先有则覆盖)
             redisCache.setCacheObject("login:"+tbUserId, loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);

@@ -5,7 +5,7 @@ import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor
 import com.psm.domain.Model.model_extendedUser.service.Model_ExtendedUserService;
 import com.psm.domain.Model.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
 import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserBO;
-import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDAO;
+import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,8 +21,6 @@ public class Model_ExtendedUserAdaptorImpl implements Model_ExtendedUserAdaptor 
     public Model_ExtendedUserBO getModelByModelId(Long id, Long userSelfId) {
         if (id == null || userSelfId == null) throw new InvalidParameterException("Invalid parameter");
 
-        Model_ExtendedUserDAO modelExtendedUserBindDAO = modelExtendedUserBindService.getModelByModelId(id, userSelfId);
-
-        return Model_ExtendedUserConvertor.INSTANCE.DAO2BO(modelExtendedUserBindDAO);
+        return modelExtendedUserBindService.getModelByModelId(id, userSelfId);
     }
 }

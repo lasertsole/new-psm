@@ -3,13 +3,12 @@ package com.psm.domain.User.user.adaptor.impl;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.domain.User.user.entity.User.UserDAO;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.service.AuthUserService;
-import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.service.UserService;
 import com.psm.utils.Valid.ValidUtil;
-import com.psm.utils.page.PageDTO;
+import com.psm.domain.User.user.types.enums.SexEnum;
+import com.psm.utils.page.PageBO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +17,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Adaptor
@@ -41,7 +42,7 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public UserBO getAuthorizedUser() {
-        return UserConvertor.INSTANCE.DAO2BO(userService.getAuthorizedUser());
+        return userService.getAuthorizedUser();
     }
 
     @Override
@@ -50,9 +51,9 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public Map<String, Object> login(@Valid UserDTO userDTO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException{
-        String name = userDTO.getName();
-        String password = userDTO.getPassword();
+    public UserBO login(@Valid UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException{
+        String name = userBO.getName();
+        String password = userBO.getPassword();
 
         // 参数判空
         if(
@@ -62,21 +63,14 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
 
         // 登录
-        Map<String, Object> map = userService.login(name, password);
-
-        // 获取用户
-        UserDAO userDAO = (UserDAO) map.get("user");
+        userBO = userService.login(name, password);
 
         // 判断用户是否存在
-        if(userDAO == null){
+        if(Objects.isNull(userBO.getToken())){
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserBO
-        UserBO userBO = UserConvertor.INSTANCE.DAO2BO(userDAO);
-        map.put("user", userBO);
-
-        return map;
+        return userBO;
     }
 
     @Override
@@ -85,10 +79,10 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public Map<String, Object> register(@Valid UserDTO userDTO) throws DuplicateKeyException, InvalidParameterException {
-        String name = userDTO.getName();
-        String password = userDTO.getPassword();
-        String email = userDTO.getEmail();
+    public UserBO register(@Valid UserBO userBO) throws DuplicateKeyException, InvalidParameterException {
+        String name = userBO.getName();
+        String password = userBO.getPassword();
+        String email = userBO.getEmail();
 
         // 参数判空
         if(
@@ -99,21 +93,14 @@ public class UserAdaptorImpl implements UserAdaptor {
             throw new InvalidParameterException("Invalid parameter");
 
         // 注册
-        Map<String, Object> map = userService.register(name, password, email);
-
-        // 获取用户
-        UserDAO userDAO = (UserDAO) map.get("user");
+        userBO = userService.register(name, password, email);
 
         // 判断用户是否存在
-        if(userDAO == null){
+        if(Objects.isNull(userBO.getToken())){
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserBO
-        UserBO userBO = UserConvertor.INSTANCE.DAO2BO(userDAO);
-        map.put("user", userBO);
-
-        return map;
+        return userBO;
     }
 
     @Override
@@ -122,23 +109,26 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public String updateAvatar(@Valid UserDTO userDTO) throws InvalidParameterException, Exception{
+    public String updateAvatar(@Valid UserBO userBO) throws InvalidParameterException, Exception{
+        String oldAvatar = userBO.getOldAvatar();
+        MultipartFile newAvatarFile = userBO.getAvatarFile();
+
         if (
-                StringUtils.isBlank(userDTO.getOldAvatarUrl())
-                &&Objects.isNull(userDTO.getAvatar())
+                StringUtils.isBlank(oldAvatar)
+                &&Objects.isNull(newAvatarFile)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        return userService.updateAvatar(userDTO.getOldAvatarUrl(), userDTO.getAvatar());
+        return userService.updateAvatar(oldAvatar, newAvatarFile);
     };
 
     @Override
-    public void updateInfo(@Valid UserDTO userDTO) throws InvalidParameterException {
-        String name = userDTO.getName();
-        Boolean sex = userDTO.getSex();
-        String phone = userDTO.getPhone();
-        String email = userDTO.getEmail();
-        String profile = userDTO.getProfile();
+    public void updateInfo(@Valid UserBO userBO) throws InvalidParameterException {
+        String name = userBO.getName();
+        Boolean sex = Optional.ofNullable(userBO.getSex()).map(SexEnum::getValue).orElse(null);
+        String phone = userBO.getPhone();
+        String email = userBO.getEmail();
+        String profile = userBO.getProfile();
 
         // 参数判空
         if(
@@ -156,128 +146,108 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public void updatePassword(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public void updatePassword(@Valid UserBO userBO) throws InvalidParameterException {
         // 参数判空
         if(
-                StringUtils.isBlank(userDTO.getPassword())
-                ||StringUtils.isBlank(userDTO.getChangePassword())
+                StringUtils.isBlank(userBO.getPassword())
+                ||StringUtils.isBlank(userBO.getChangePassword())
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 修改密码
-        userService.updatePassword(userDTO.getPassword(), userDTO.getChangePassword());
+        userService.updatePassword(userBO.getPassword(), userBO.getChangePassword());
     }
 
     @Override
-    public UserBO getUserById(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public UserBO getUserById(@Valid UserBO userBO) throws InvalidParameterException {
         // 参数判空
-        if(Objects.isNull(userDTO.getId())){
+        if(Objects.isNull(userBO.getId())){
             throw new InvalidParameterException("Invalid parameter");
         }
 
         // 获取用户
-        Long id = userDTO.getId();
-        UserDAO userDAO = userService.getUserByID(id);
+        Long id = userBO.getId();
+        userBO = userService.getUserByID(id);
 
         // 判断用户是否存在
-        if(Objects.isNull(userDAO)){
+        if(Objects.isNull(userBO)){
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserBO
-        return UserConvertor.INSTANCE.DAO2BO(userDAO);
+        // 将UserDO转换为UserBO
+        return userBO;
     }
 
     @Override
     public UserBO getUserById(Long id) throws InvalidParameterException {
-        UserDAO userDAO = userService.getUserByID(id);
+        UserBO userBO = userService.getUserByID(id);
 
         // 判断用户是否存在
-        if(Objects.isNull(userDAO)){
+        if(Objects.isNull(userBO)){
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserBO
-        return UserConvertor.INSTANCE.DAO2BO(userDAO);
+        // 将UserDO转换为UserBO
+        return userBO;
     }
 
     @Override
-    public List<UserBO> getUserByName(@Valid UserDTO userDTO) throws InvalidParameterException {
+    public List<UserBO> getUserByName(@Valid UserBO userBO) throws InvalidParameterException {
         // 参数判空
-        if(StringUtils.isBlank(userDTO.getName())){
+        if(StringUtils.isBlank(userBO.getName()))
             throw new InvalidParameterException("Invalid parameter");
-        }
-        String name = userDTO.getName();
-        List<UserDAO> userDAOList = userService.getUserByName(name);
+
+        String name = userBO.getName();
+        List<UserBO> userBOList = userService.getUserByName(name);
 
         // 判断用户是否存在
-        if(Objects.isNull(userDAOList)){
+        if(Objects.isNull(userBOList)){
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserBO
-        return userDAOList.stream().map(UserConvertor.INSTANCE::DAO2BO).toList();
+        return userBOList;
     }
 
     @Override
     public List<UserBO> getUserByName(String name) throws InvalidParameterException {
-        List<UserDAO> userDAOList = userService.getUserByName(name);
+        List<UserBO> UserBOList = userService.getUserByName(name);
 
         // 判断用户是否存在
-        if(Objects.isNull(userDAOList)){
+        if(Objects.isNull(UserBOList)){
             throw new RuntimeException("The user does not exist.");
         }
 
-        // 将UserDAO转换为UserBO
-        return userDAOList.stream().map(UserConvertor.INSTANCE::DAO2BO).toList();
+        // 将UserDO转换为UserBO
+        return UserBOList;
     }
 
     @Override
-    public List<UserBO> getUserOrderByCreateTimeAsc(@Valid PageDTO pageDTO){
-        List<UserDAO> userDAOList = userService.getUserOrderByCreateTimeAsc(
-                pageDTO.getCurrent(),
-                pageDTO.getSize());
+    public List<UserBO> getUserOrderByCreateTimeAsc(@Valid PageBO pageBO){
+        List<UserBO> userBOList = userService.getUserOrderByCreateTimeAsc(
+                pageBO.getCurrent(),
+                pageBO.getSize());
 
         // 判断用户列表是否存在
-        if(userDAOList == null){
+        if(userBOList == null){
             throw new RuntimeException("The Subtitles does not exist.");
         }
 
-        // 将DAO转换为BO
-        return userDAOList.stream().map(
-                UserConvertor.INSTANCE::DAO2BO
-        ).toList();
+        // 将DO转换为BO
+        return userBOList;
     }
 
     @Override
     public List<UserBO> getUserByIds(List<Long> ids) {
-        List<UserDAO> userDAOList = userService.getUserByIds(ids);
-        // 将DAO转换为BO
-        return userDAOList.stream().map(
-                UserConvertor.INSTANCE::DAO2BO
-        ).toList();
+        return userService.getUserByIds(ids);
     }
 
     @Override
-    public boolean updateOnePublicModelNumById(@Valid UserDTO userDTO) {
-        if (
-                Objects.isNull(userDTO.getId())
-                || Objects.isNull(userDTO.getPublicModelNum())
-        )
-            throw new InvalidParameterException("Invalid parameter");
-
-        return userService.updateOnePublicModelNumById(userDTO.getId(), userDTO.getPublicModelNum());
-    }
-
-    @Override
-    public boolean updateOnePublicModelNumById(UserBO userBO) throws InstantiationException, IllegalAccessException {
+    public boolean updateOnePublicModelNumById(@Valid UserBO userBO) {
         if (
                 Objects.isNull(userBO.getId())
                 || Objects.isNull(userBO.getPublicModelNum())
         )
             throw new InvalidParameterException("Invalid parameter");
-
-        validUtil.validate(Map.of("id", userBO.getId(), "publicModelNum", userBO.getPublicModelNum()), UserDTO.class);
 
         return userService.updateOnePublicModelNumById(userBO.getId(), userBO.getPublicModelNum());
     }
@@ -293,13 +263,11 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public boolean addOnePublicModelNumById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
-        if (Objects.isNull(userDTO.getId()))
+    public boolean addOnePublicModelNumById(@Valid UserBO userBO) throws InstantiationException, IllegalAccessException {
+        if (Objects.isNull(userBO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", userDTO.getId()), UserDTO.class);
-
-        return userService.addOnePublicModelNumById(userDTO.getId());
+        return userService.addOnePublicModelNumById(userBO.getId());
     }
 
     @Override
@@ -313,13 +281,11 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public boolean removeOnePublicModelNumById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
-        if (Objects.isNull(userDTO.getId()))
+    public boolean removeOnePublicModelNumById(@Valid UserBO userBO) throws InstantiationException, IllegalAccessException {
+        if (Objects.isNull(userBO.getId()))
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", userDTO.getId()), UserDTO.class);
-
-        return userService.removeOnePublicModelNumById(userDTO.getId());
+        return userService.removeOnePublicModelNumById(userBO.getId());
     }
 
     @Override
@@ -336,42 +302,46 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public Long updateOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+    public Long updateOnePublicModelStorageById(@Valid UserBO userBO) throws InstantiationException, IllegalAccessException {
+        Long Id = userBO.getId();
+        Long curStorage = userBO.getModelCurStorage();
         if (
-                Objects.isNull(userDTO.getId())
-                || Objects.isNull(userDTO.getModelCurStorage())
+                Objects.isNull(Id)
+                || Objects.isNull(curStorage)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", userDTO.getId(), "storage", userDTO.getModelCurStorage()), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserDTO.class);
 
-        return userService.updateOnePublicModelStorageById(userDTO.getId(), userDTO.getModelCurStorage());
+        return userService.updateOnePublicModelStorageById(Id, curStorage);
     }
 
     @Override
-    public Long addOnePublicModelStorageById(Long id, Long storage) throws InstantiationException, IllegalAccessException {
+    public Long addOnePublicModelStorageById(Long Id, Long storage) throws InstantiationException, IllegalAccessException {
         if (
-                Objects.isNull(id)
+                Objects.isNull(Id)
                 || Objects.isNull(storage)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", id, "storage", storage), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", storage), UserDTO.class);
 
-        return userService.addOnePublicModelStorageById(id, storage);
+        return userService.addOnePublicModelStorageById(Id, storage);
     }
 
     @Override
-    public Long addOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+    public Long addOnePublicModelStorageById(@Valid UserBO userBO) throws InstantiationException, IllegalAccessException {
+        Long Id = userBO.getId();
+        Long curStorage = userBO.getModelCurStorage();
         if (
-                Objects.isNull(userDTO.getId())
-                || Objects.isNull(userDTO.getModelCurStorage())
+                Objects.isNull(Id)
+                || Objects.isNull(curStorage)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", userDTO.getId(), "storage", userDTO.getModelCurStorage()), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserDTO.class);
 
-        return userService.addOnePublicModelStorageById(userDTO.getId(), userDTO.getModelCurStorage());
+        return userService.addOnePublicModelStorageById(Id, curStorage);
     }
 
     @Override
@@ -388,15 +358,17 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public Long minusOnePublicModelStorageById(UserDTO userDTO) throws InstantiationException, IllegalAccessException {
+    public Long minusOnePublicModelStorageById(UserBO userBO) throws InstantiationException, IllegalAccessException {
+        Long Id = userBO.getId();
+        Long curStorage = userBO.getModelCurStorage();
         if (
-                Objects.isNull(userDTO.getId())
-                || Objects.isNull(userDTO.getModelCurStorage())
+                Objects.isNull(Id)
+                || Objects.isNull(curStorage)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", userDTO.getId(), "storage", userDTO.getModelCurStorage()), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserDTO.class);
 
-        return userService.minusOnePublicModelStorageById(userDTO.getId(), userDTO.getModelCurStorage());
+        return userService.minusOnePublicModelStorageById(Id, curStorage);
     }
 }

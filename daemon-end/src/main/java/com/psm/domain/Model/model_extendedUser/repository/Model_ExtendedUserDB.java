@@ -1,6 +1,6 @@
 package com.psm.domain.Model.model_extendedUser.repository;
 
-import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDAO;
+import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDO;
 
 public interface Model_ExtendedUserDB {
     /**
@@ -8,7 +8,7 @@ public interface Model_ExtendedUserDB {
      *
      * @param id 模型id
      * @param userSelfId 发起查看的用户自身id
-     * @return 模型扩展信息DAO
+     * @return 模型扩展信息DO
      */
-    Model_ExtendedUserDAO selectModelByModelId(Long id, Long userSelfId);
+    Model_ExtendedUserDO selectModelByModelId(Long id, Long userSelfId);
 }

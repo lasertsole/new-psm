@@ -26,20 +26,20 @@ public interface Model3dAdaptor {
     /**
      * 上传模型信息
      *
-     * @param modelDTO  模型信息
+     * @param model3dBO  模型信息
      * @throws TusException    tus异常
      * @throws IOException     IO异常
      * @return 模型BO实体
      */
-    Model3dBO uploadModelInfo(Model3dDTO modelDTO) throws Exception;
+    Model3dBO uploadModelInfo(Model3dBO model3dBO) throws Exception;
 
     /**
      * 根据模型ID查询模型
      *
-     * @param modelDTO  模型信息
+     * @param model3dDTO  模型信息
      * @return 模型BO
      */
-    Model3dBO selectById(Model3dDTO modelDTO);
+    Model3dBO selectById(Model3dDTO model3dDTO);
 
     /**
      * 根据模型ID查询模型

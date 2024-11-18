@@ -1,16 +1,22 @@
 package com.psm.trigger.http.Model;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Model.model.adaptor.Model3dAdaptor;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
+import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserBO;
+import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDTO;
 import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
+import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
+import com.psm.domain.Model.models_user.valueObject.Models_UserDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.utils.VO.ResponseVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -62,25 +68,26 @@ public class ModelController {
     /**
      * 模型信息上传接口
      *
-     * @param modelDTO 模型信息
+     * @param model3dDTO 模型信息
      * @return ResponseVO
      */
     @PostMapping("/uploadInfo")
-    public ResponseVO uploadModelInfo(Model3dDTO modelDTO){
+    public ResponseVO uploadModelInfo(Model3dDTO model3dDTO) {
         Long userId;//当前用户id
         try {
             //获取当前用户id
             userId = userAdaptor.getAuthorizedUserId();
-            modelDTO.setUserId(userId);
+            Model3dBO model3dBO = Model3dBO.from(model3dDTO);
+            model3dBO.setUserId(userId);
 
             // 调用模型信息上传接口,获取上传后的模型id
-            Model3dBO modelBO = modelAdaptor.uploadModelInfo(modelDTO);
+            model3dBO = modelAdaptor.uploadModelInfo(model3dBO);
 
             // 获取上传后模型大小
-            Long modelSize = modelBO.getStorage();
+            Long modelSize = model3dBO.getStorage();
 
             // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
-            if (Objects.equals(modelBO.getVisible(), VisibleEnum.PUBLIC)) {
+            if (Objects.equals(model3dBO.getVisible(), VisibleEnum.PUBLIC)) {
                 userAdaptor.addOnePublicModelNumById(userId);
             }
 
@@ -117,7 +124,10 @@ public class ModelController {
         try {
             if (Objects.nonNull(isFollowing) && isFollowing) userSelfId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(models_UserAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId));
+            Page<Models_UserBO> modelsUserBOPage = models_UserAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId);
+            Page<Models_UserDTO> modelsUserDTOPage = Models_UserDTO.fromBOPage(modelsUserBOPage);
+
+            return ResponseVO.ok(modelsUserDTOPage);
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
@@ -139,7 +149,9 @@ public class ModelController {
             // 获取当前用户ID
             Long userSelfId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId));
+            Model_ExtendedUserBO model_ExtendedUserBO = modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId);
+
+            return ResponseVO.ok(Model_ExtendedUserDTO.fromBO(model_ExtendedUserBO));
         }
         catch (InvalidParameterException e) {
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

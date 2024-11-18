@@ -1,29 +1,14 @@
 package com.psm.domain.Chat.adaptor;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.psm.domain.Chat.entity.ChatDTO;
-import org.apache.rocketmq.client.apis.ClientException;
+
+import com.psm.domain.Chat.entity.ChatBO;
 
 public interface ChatAdaptor {
-    /**
-     * description: 建立连接
-     * @param client 客户端
-     */
-    void connectDM(SocketIOClient client);
 
     /**
-     * description: 断开连接
-     * @param client 客户端
-     */
-    void disconnectDM(SocketIOClient client);
-
-    /**
-     * description: 给指定用户发送通知
-     * date: 2021年-09月-09日 14:09
-     * author: moye
+     * 校验并转换
      *
-     * @param client 客户端
-     * @param message 消息体
+     * @param chatBO 聊天DTO实体
      */
-    void sendMessageDM(SocketIOClient client, ChatDTO message) throws ClientException;
+    void validateAndConvert(ChatBO chatBO);
 }

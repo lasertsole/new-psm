@@ -37,13 +37,13 @@
                     <div class="messageList">
                         <div class="containerBox" v-show="nowChatIndex>=0">
                             <div class="topGap"></div>
-                            <template v-for="(item, inex) in contactItems[nowChatIndex]?.MessageItems">
+                            <template v-for="(item, index) in contactItems[nowChatIndex]?.MessageItems" :key="index">
                                 <messageBox
                                     :avatar="contactItems[nowChatIndex].avatar!"
                                     :name="contactItems[nowChatIndex].name!"
                                     :type="item.type!"
-                                    :senderId="item.senderId!"
-                                    :receiverId="item.receiverId!"
+                                    :srcUserId="item.srcUserId!"
+                                    :tgtUserId="item.tgtUserId!"
                                     :time="item.time!"
                                     :isDeleted="item.isDeleted!"
                                 >
@@ -100,13 +100,13 @@
     }
         
     // 发送信息
-    function send():void{
+    const send = debounce(():void=>{
         if(!validateMessage(message.value))
             return;
 
             sendMessage(message.value);
         message.value="";
-    }
+    });
         
     onActivated(()=>{
         

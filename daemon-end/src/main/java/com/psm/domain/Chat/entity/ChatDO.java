@@ -1,0 +1,56 @@
+package com.psm.domain.Chat.entity;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.domain.Chat.types.convertor.ChatConvertor;
+import com.psm.domain.User.user.entity.User.UserDO;
+import com.psm.domain.User.user.entity.User.UserDODefine;
+import com.tangzc.autotable.annotation.Index;
+import com.tangzc.mpe.annotation.InsertFillTime;
+import com.tangzc.mpe.autotable.annotation.Column;
+import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
+import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
+import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
+import com.tangzc.mpe.processer.annotation.AutoDefine;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+@Data
+@AutoDefine
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(value = "tb_chats", comment = "聊天记录表")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ChatDO implements Serializable {
+    @ColumnId(comment = "id主键")
+    private Long id;
+
+    @Index(name = "tb_chats_tgtUserId_index")
+    @Column(comment = "目标用户id", notNull = true)
+    private Long tgtUserId;
+
+    @Index(name = "tb_chats_srcUserId_index")
+    @Column(comment = "来源用户id", notNull = true)
+    private Long srcUserId;
+
+    @Column(comment = "消息内容")
+    private String content;
+
+    @Index(name = "tb_chats_createTime_index")
+    @InsertFillTime
+    @Column(comment = "创建时间")
+    private String createTime;
+
+    @BindEntity(conditions = @JoinCondition(selfField = ChatDODefine.tgtUserId, joinField = UserDODefine.id))
+    private UserDO tgtUser;
+
+    @BindEntity(conditions = @JoinCondition(selfField = ChatDODefine.srcUserId, joinField = UserDODefine.id))
+    private UserDO srcUser;
+
+    public static ChatDO fromBO(ChatBO chatBO) {
+        return ChatConvertor.INSTANCE.BO2DO(chatBO);
+    }
+}

@@ -2,7 +2,7 @@ package com.psm.domain.Subtitles.adaptor;
 
 import com.psm.domain.Subtitles.entity.SubtitlesDTO;
 import com.psm.domain.Subtitles.entity.SubtitlesVO;
-import com.psm.utils.page.PageDTO;
+import com.psm.utils.page.PageBO;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.security.InvalidParameterException;
@@ -15,7 +15,7 @@ public interface SubtitlesAdaptor {
      * @param pageDTO
      * @return List<SubtitlesVO>
      */
-    public List<SubtitlesVO> getSubtitlesListByPage(PageDTO pageDTO) throws InvalidParameterException;
+    public List<SubtitlesVO> getSubtitlesListByPage(PageBO pageDTO) throws InvalidParameterException;
 
     /**
      * 根据id查询橱窗盒子

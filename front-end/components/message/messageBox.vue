@@ -1,5 +1,5 @@
 <template>
-    <div :class="{messageBox:true, isSelf:senderId==userInfo.id}">
+    <div :class="{messageBox:true, isSelf:srcUserId==userInfo.id}">
         <div class="top">
             
         </div>
@@ -20,13 +20,11 @@
         avatar: {type:String, required: true},
         name: {type:String, required: true},
         type: {type:String, required: true},
-        senderId: {type:String, required: true},
-        receiverId: {type:String, required: true},
+        srcUserId: {type:String, required: true},
+        tgtUserId: {type:String, required: true},
         time: {type:String, required: true},
         isDeleted: {type:Boolean, required: true}
     });
-
-    console.log(props);
 </script>
 
 <style scoped lang="scss">

@@ -2,14 +2,17 @@ package com.psm.domain.User.user.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.domain.User.user.repository.UserOSS;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.UserService;
+import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
-import com.psm.domain.User.user.EventBus.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,13 +53,13 @@ public class UserServiceImpl implements UserService {
     private Long expiration;//jwt有效期
 
     @Override
-    public UserDAO getAuthorizedUser(){
+    public UserBO getAuthorizedUser(){
         // 获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
-        return loginUser.getUserDAO();
+        return UserConvertor.INSTANCE.DO2BO(loginUser.getUserDO());
     }
 
     @Override
@@ -64,7 +68,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Object> login(String name, String password) throws LockedException,BadCredentialsException,DisabledException{
+    public UserBO login(String name, String password) throws LockedException,BadCredentialsException,DisabledException{
         // AuthenticationManager authenticate进行认证
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(name, password);
@@ -72,18 +76,18 @@ public class UserServiceImpl implements UserService {
 
         // 如果认证通过了，使用id生成jwt
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        UserDAO loginUserInfo = loginUser.getUserDAO();
+        UserDO loginUserInfo = loginUser.getUserDO();
         String id = loginUserInfo.getId().toString();
         String jwt = jwtUtil.createJWT(id);
 
         // 把完整信息存入redis，id作为key(如果原先有则覆盖)
         loginUserRedis.addLoginUser(id, loginUser);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("token",jwt);
-        map.put("user",loginUserInfo);
+        UserBO userBO = new UserBO();
+        BeanUtils.copyProperties(loginUserInfo, userBO);
+        userBO.setToken(jwt);
 
-        return map;
+        return userBO;
     }
 
     @Override
@@ -97,9 +101,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Map<String, Object> register(String name, String password, String email) throws DuplicateKeyException{
+    public UserBO register(String name, String password, String email) throws DuplicateKeyException{
         // 将前端传来的user对象拷贝到register对象中,并加密register对象的密码
-        UserDAO register = new UserDAO();
+        UserDO register = new UserDO();
         register.setName(name);
         register.setPassword(password);
         register.setEmail(email);
@@ -109,13 +113,7 @@ public class UserServiceImpl implements UserService {
         userDB.save(register);
 
         // 使用未加密密码的user对象登录
-        Map<String, Object> loginMap = login(name, password);
-
-        if (loginMap.isEmpty()){
-            throw new RuntimeException("The user does not exist.");
-        }
-
-        return loginMap;
+        return login(name, password);
     }
 
     @Override
@@ -124,7 +122,7 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUserDAO().getId();
+        Long id = loginUser.getUserDO().getId();
 
         // 根据用户id删除redis中的用户信息
         loginUserRedis.removeLoginUser(String.valueOf(id));
@@ -134,22 +132,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateAvatar(String oldAvatarUrl, MultipartFile newAvatarFile) throws Exception {
+    public String updateAvatar(String oldAvatar, MultipartFile newAvatarFile) throws Exception {
         // 获取SecurityContextHolder中的用户id
         String userId = String.valueOf(getAuthorizedUserId());
 
         // 更新oss中用户头像信息
-        String avatarUrl = userOSS.updateAvatar(oldAvatarUrl, newAvatarFile, userId);
+        String avatarUrl = userOSS.updateAvatar(oldAvatar, newAvatarFile, userId);
 
         // 更新数据库中用户头像信息
         Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
-        UserDAO userDAO = new UserDAO();
-        userDAO.setId(id);
-        userDAO.setAvatar(avatarUrl);
-        userDB.updateAvatar(userDAO);
+        UserDO userDO = new UserDO();
+        userDO.setId(id);
+        userDO.setAvatar(avatarUrl);
+        userDB.updateAvatar(userDO);
 
         // 更新redis中用户头像信息
-        loginUserRedis.updateLoginUser(userDAO);
+        loginUserRedis.updateLoginUser(userDO);
 
         return avatarUrl;
     }
@@ -159,22 +157,22 @@ public class UserServiceImpl implements UserService {
         // 获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUserDAO().getId();
+        Long id = loginUser.getUserDO().getId();
 
-        // 将UserDTO转化为UserDAO
-        UserDAO userDAO = new UserDAO();
-        if(Objects.nonNull(name)) userDAO.setName(name);
-        if(Objects.nonNull(sex)) userDAO.setSex(sex ? SexEnum.FEMALE : SexEnum.MALE);
-        if(Objects.nonNull(phone)) userDAO.setPhone(phone);
-        if(Objects.nonNull(email)) userDAO.setEmail(email);
-        if(Objects.nonNull(profile)) userDAO.setProfile(profile);
-        userDAO.setId(id);
+        // 将UserDTO转化为UserDO
+        UserDO userDO = new UserDO();
+        if(Objects.nonNull(name)) userDO.setName(name);
+        if(Objects.nonNull(sex)) userDO.setSex(sex ? SexEnum.FEMALE : SexEnum.MALE);
+        if(Objects.nonNull(phone)) userDO.setPhone(phone);
+        if(Objects.nonNull(email)) userDO.setEmail(email);
+        if(Objects.nonNull(profile)) userDO.setProfile(profile);
+        userDO.setId(id);
 
         // 更新用户信息
-        userDB.updateInfo(userDAO);
+        userDB.updateInfo(userDO);
 
         // 更新redis中用户信息
-        loginUserRedis.updateLoginUser(userDAO);
+        loginUserRedis.updateLoginUser(userDO);
     }
 
     @Override
@@ -182,7 +180,7 @@ public class UserServiceImpl implements UserService {
         // 获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUserDAO().getId();
+        Long id = loginUser.getUserDO().getId();
 
         // 判断新密码是否与旧密码相同
         if(password.equals(changePassword)){
@@ -190,9 +188,9 @@ public class UserServiceImpl implements UserService {
         }
 
         // 获取数据库中用户的password
-        UserDAO userDAO = new UserDAO();
-        userDAO.setId(id);
-        String passwordFromDB = userDB.findPasswordById(userDAO);
+        UserDO userDO = new UserDO();
+        userDO.setId(id);
+        String passwordFromDB = userDB.findPasswordById(userDO);
 
         // 判断旧密码是否正确
         if(!passwordEncoder.matches(password,passwordFromDB)){
@@ -203,22 +201,22 @@ public class UserServiceImpl implements UserService {
         String encodePassword = passwordEncoder.encode(changePassword);
 
         // 将新密码覆盖数据库中的password
-        userDAO.setId(id);
-        userDAO.setPassword(encodePassword);
-        userDB.updatePasswordById(userDAO);
+        userDO.setId(id);
+        userDO.setPassword(encodePassword);
+        userDB.updatePasswordById(userDO);
 
         // 更新redis中用户信息
-        loginUserRedis.updateLoginUser(userDAO);
+        loginUserRedis.updateLoginUser(userDO);
     }
 
     @Override
-    public UserDAO getUserByID(Long id) {
+    public UserBO getUserByID(Long id) {
         // 获取用户信息
-        UserDAO userDAO = userDB.getById(id);
+        UserDO userDO = userDB.getById(id);
 
         // 判断用户是否存在
-        if(userDAO != null){
-            return userDAO;
+        if(Objects.isNull(userDO)){
+            return UserConvertor.INSTANCE.DO2BO(userDO);
         }
         else{// 用户不存在
             throw new RuntimeException("User not found");
@@ -226,15 +224,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDAO> getUserByName(String name) {
+    public List<UserBO> getUserByName(String name) {
         // 获取用户信息
-        UserDAO userDAO = new UserDAO();
-        userDAO.setName(name);
-        List<UserDAO> userDAOs = userDB.findUsersByName(userDAO);
+        UserDO userDO = new UserDO();
+        userDO.setName(name);
+        List<UserDO> userDOs = userDB.findUsersByName(userDO);
 
         // 判断用户是否存在
-        if(!userDAOs.isEmpty()){
-            return userDAOs;
+        if(!userDOs.isEmpty()){
+            return userDOs.stream().map(UserConvertor.INSTANCE::DO2BO).collect(Collectors.toList());
         }
         else{// 用户不存在
             throw new RuntimeException("User not found");
@@ -242,40 +240,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDAO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize){
+    public List<UserBO> getUserOrderByCreateTimeAsc(Integer currentPage, Integer pageSize){
         // 分页
-        Page<UserDAO> page = new Page<>(currentPage,pageSize);
+        Page<UserDO> page = new Page<>(currentPage,pageSize);
 
         // 返回结果
-        return userDB.selectUserOrderByCreateTimeAsc(page);
+        return userDB.selectUserOrderByCreateTimeAsc(page).stream().map(UserConvertor.INSTANCE::DO2BO).collect(Collectors.toList());
     }
 
     @Override
-    public List<UserDAO> getUserByIds(List<Long> ids) {
-        return userDB.selectUserByIds(ids);
+    public List<UserBO> getUserByIds(List<Long> ids) {
+        return userDB.selectUserByIds(ids).stream().map(UserConvertor.INSTANCE::DO2BO).collect(Collectors.toList());
     }
 
     @Override
     public boolean updateOnePublicModelNumById(Long id, short work_num) {
-        UserDAO userDAO = new UserDAO();
-        userDAO.setId(id);
-        userDAO.setPublicModelNum(work_num);
+        UserDO userDO = new UserDO();
+        userDO.setId(id);
+        userDO.setPublicModelNum(work_num);
 
-        return userDB.updateById(userDAO);
+        return userDB.updateById(userDO);
     }
 
     @Override
     public boolean addOnePublicModelNumById(Long id) {
-        UserDAO userDAO = userDB.selectById(id);
-        short work_num = userDAO.getPublicModelNum();
+        UserDO userDO = userDB.selectById(id);
+        short work_num = userDO.getPublicModelNum();
 
         return updateOnePublicModelNumById(id, (short) (work_num + 1));
     }
 
     @Override
     public boolean removeOnePublicModelNumById(Long id) {
-        UserDAO userDAO = userDB.selectById(id);
-        short work_num = userDAO.getPublicModelNum();
+        UserDO userDO = userDB.selectById(id);
+        short work_num = userDO.getPublicModelNum();
 
         if ( work_num == 0) return false;
 
@@ -286,19 +284,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long updateOnePublicModelStorageById(Long id, Long storage) {
-        UserDAO userDAO = new UserDAO();
-        userDAO.setId(id);
-        userDAO.setModelCurStorage(storage);
-        if(!userDB.updateById(userDAO)) throw new RuntimeException("The user does not exist.");
+        UserDO userDO = new UserDO();
+        userDO.setId(id);
+        userDO.setModelCurStorage(storage);
+        if(!userDB.updateById(userDO)) throw new RuntimeException("The user does not exist.");
 
         return storage;
     }
 
     @Override
     public Long addOnePublicModelStorageById(Long id, Long storage) {
-        UserDAO userDAO = userDB.selectById(id);
-        long modelCurStorage = userDAO.getModelCurStorage();
-        long modelMaxStorage = userDAO.getModelMaxStorage();
+        UserDO userDO = userDB.selectById(id);
+        long modelCurStorage = userDO.getModelCurStorage();
+        long modelMaxStorage = userDO.getModelMaxStorage();
         long newStorage = modelCurStorage + storage;
         if (newStorage > modelMaxStorage) throw new RuntimeException("The storage exceeds the maximum limit.");
 
@@ -307,8 +305,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long minusOnePublicModelStorageById(Long id, Long storage) {
-        UserDAO userDAO = userDB.selectById(id);
-        long modelCurStorage = userDAO.getModelCurStorage();
+        UserDO userDO = userDB.selectById(id);
+        long modelCurStorage = userDO.getModelCurStorage();
         long newStorage = modelCurStorage - storage;
         if (newStorage < 0) newStorage = 0;
 

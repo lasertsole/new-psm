@@ -1,6 +1,6 @@
 package com.psm.domain.User.relationships.service;
 
-import com.psm.domain.User.relationships.entity.RelationshipsDAO;
+import com.psm.domain.User.relationships.entity.RelationshipsBO;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
@@ -10,9 +10,9 @@ public interface RelationshipsService {
      * 根据源用户id获取关注记录
      *
      * @param tgtUserId 目标用户id
-     * @return 关注记录DAO列表
+     * @return 关注记录BO列表
      */
-    List<RelationshipsDAO> checkFollowers(Long tgtUserId);
+    List<RelationshipsBO> checkFollowers(Long tgtUserId);
 
     /**
      * 根据来源用户id获取关注记录
@@ -20,20 +20,25 @@ public interface RelationshipsService {
      * @param srcUserId 来源用户id
      * @return 关注记录列表
      */
-    List<RelationshipsDAO> checkFollowing(Long srcUserId);
+    List<RelationshipsBO> checkFollowing(Long srcUserId);
 
     /**
      * 更新或保存关系记录
-     * @param relationshipsDAO 关系记录
+     * @param tgtUserId 目标用户id
+     * @param srcUserId 来源用户id
+     * @param isFollowing 是否关注
+     * @param isInContacts 是否在聊天列表内显示
+     * @param isBlocking 是否屏蔽
      */
-    void saveOrUpdateRelationship(RelationshipsDAO relationshipsDAO);
+    void saveOrUpdateRelationship(Long tgtUserId, Long srcUserId, Boolean isFollowing, Boolean isInContacts, Boolean isBlocking);
 
     /**
      * 根据条件查询关系记录
-     * @param relationshipsDAO 关系记录
+     * @param tgtUserId 目标用户id
+     * @param srcUserId 来源用户id
      * @return 关系记录
      */
-    RelationshipsDAO getRelationship(RelationshipsDAO relationshipsDAO);
+    RelationshipsBO getRelationship(Long tgtUserId, Long srcUserId);
 
     /**
      * 添加关注记录
@@ -51,7 +56,7 @@ public interface RelationshipsService {
      * @param srcUserId 来源用户id
      * @return 关注记录
      */
-    RelationshipsDAO checkFollowShip(Long tgtUserId, Long srcUserId);
+    RelationshipsBO checkFollowShip(Long tgtUserId, Long srcUserId);
 
     /**
      * 根据目标用户id和来源用户id删除关注记录

@@ -2,9 +2,7 @@ package com.psm.domain.Model.model.adaptor.impl;
 
 import com.psm.domain.Model.model.adaptor.Model3dAdaptor;
 import com.psm.domain.Model.model.entity.Model3dBO;
-import com.psm.domain.Model.model.entity.Model3dDAO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
-import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.types.enums.VisibleEnum;
@@ -42,32 +40,27 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     }
 
     @Override
-    public Model3dBO uploadModelInfo(@Valid Model3dDTO model3dDTO) throws Exception {
-        Long userId = model3dDTO.getUserId();
-        String title = model3dDTO.getTitle();
-        String content = model3dDTO.getContent();
-        MultipartFile cover = model3dDTO.getCover();
-        String style = model3dDTO.getStyle();
-        String type = model3dDTO.getType();
-        Integer visible = model3dDTO.getVisible();
+    public Model3dBO uploadModelInfo(@Valid Model3dBO model3dBO) throws Exception {
+        Long userId = model3dBO.getUserId();
+        String title = model3dBO.getTitle();
+        String content = model3dBO.getContent();
+        MultipartFile CoverFile = model3dBO.getCoverFile();
+        String style = model3dBO.getStyle();
+        String type = model3dBO.getType();
+        VisibleEnum visible = model3dBO.getVisible();
 
         if (
-                Objects.isNull(userId)
-                || StringUtils.isBlank(title)
-                || StringUtils.isBlank(content)
-                || Objects.isNull(cover)
-                || StringUtils.isBlank(style)
-                || StringUtils.isBlank(type)
-                || Objects.isNull(visible)
+            Objects.isNull(userId)
+            || StringUtils.isBlank(title)
+            || StringUtils.isBlank(content)
+            || Objects.isNull(CoverFile)
+            || StringUtils.isBlank(style)
+            || StringUtils.isBlank(type)
+            || Objects.isNull(visible)
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        Map<String, Long> map = modelService.uploadModelInfo(userId, title, content, cover, style, type, visible);
-        Model3dBO model3dBO = Model3dConvertor.INSTANCE.DTO2BO(model3dDTO);
-        model3dBO.setId(map.get("modelId"));
-        model3dBO.setStorage(map.get("modelStorage"));
-
-        return model3dBO;
+        return modelService.uploadModelInfo(userId, title, content, CoverFile, style, type, visible);
     }
 
     @Override
@@ -78,9 +71,7 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        Model3dDAO model3dDAO = modelService.getById(model3dDTO.getId(), VisibleEnum.fromInteger(model3dDTO.getVisible()));
-
-        return Model3dConvertor.INSTANCE.DAO2BO(model3dDAO);
+        return modelService.getById(model3dDTO.getId(), VisibleEnum.fromInteger(model3dDTO.getVisible()));
     }
 
     @Override
@@ -89,17 +80,13 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
 
         validUtil.validate(Map.of("id", id, "visible", visible), Model3dDTO.class);
 
-        Model3dDAO model3dDAO = modelService.getById(id, VisibleEnum.fromInteger(visible));
-
-        return Model3dConvertor.INSTANCE.DAO2BO(model3dDAO);
+        return modelService.getById(id, VisibleEnum.fromInteger(visible));
     }
 
     @Override
     public List<Model3dBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
         if (Objects.isNull(userIds) || Objects.isNull(visibleEnum)) throw new InvalidParameterException("Invalid parameter");
 
-        List<Model3dDAO> model3dDAOs = modelService.getByUserIds(userIds, visibleEnum);
-
-        return model3dDAOs.stream().map(Model3dConvertor.INSTANCE::DAO2BO).toList();
+        return modelService.getByUserIds(userIds, visibleEnum);
     }
 }

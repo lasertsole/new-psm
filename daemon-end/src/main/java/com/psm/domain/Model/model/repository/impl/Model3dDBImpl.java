@@ -1,7 +1,7 @@
 package com.psm.domain.Model.model.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dDO;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.app.annotation.spring.Repository;
@@ -14,39 +14,39 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class Model3dDBImpl extends BaseDBRepositoryImpl<Model3dMapper, Model3dDAO> implements Model3dDB {
+public class Model3dDBImpl extends BaseDBRepositoryImpl<Model3dMapper, Model3dDO> implements Model3dDB {
     @Autowired
     private Model3dMapper model3dMapper;
 
     @Override
-    public void insert(Model3dDAO model3dDAO) { model3dMapper.insert(model3dDAO); }
+    public void insert(Model3dDO model3dDO) { model3dMapper.insert(model3dDO); }
     @Override
-    public void delete(Model3dDAO model3dDAO) {
-        LambdaQueryWrapper<Model3dDAO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Model3dDAO::getUserId, model3dDAO.getUserId())
-                .and(wrapper -> wrapper.eq(Model3dDAO::getEntity, model3dDAO.getEntity()));
+    public void delete(Model3dDO model3dDO) {
+        LambdaQueryWrapper<Model3dDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Model3dDO::getUserId, model3dDO.getUserId())
+                .and(wrapper -> wrapper.eq(Model3dDO::getEntity, model3dDO.getEntity()));
 
         model3dMapper.delete(lambdaQueryWrapper);
     }
 
     @Override
-    public Model3dDAO selectById(Long modelId, VisibleEnum visibleEnum) {
-        LambdaQueryWrapper<Model3dDAO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Model3dDAO::getId, modelId);
-        wrapper.ge(Model3dDAO::getVisible, visibleEnum);
-        wrapper.select(Model3dDAO::getId, Model3dDAO::getUserId, Model3dDAO::getTitle, Model3dDAO::getCover,
-                Model3dDAO::getStyle, Model3dDAO::getType, Model3dDAO::getCreateTime);
+    public Model3dDO selectById(Long modelId, VisibleEnum visibleEnum) {
+        LambdaQueryWrapper<Model3dDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Model3dDO::getId, modelId);
+        wrapper.ge(Model3dDO::getVisible, visibleEnum);
+        wrapper.select(Model3dDO::getId, Model3dDO::getUserId, Model3dDO::getTitle, Model3dDO::getCover,
+                Model3dDO::getStyle, Model3dDO::getType, Model3dDO::getCreateTime);
 
         return model3dMapper.selectOne(wrapper);
     }
 
     @Override
-    public List<Model3dDAO> selectByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
-        LambdaQueryWrapper<Model3dDAO> modelWrapper = new LambdaQueryWrapper<>();
-        modelWrapper.in(Model3dDAO::getUserId, userIds);
-        modelWrapper.eq(Model3dDAO::getVisible, visibleEnum);
-        modelWrapper.select(Model3dDAO::getId, Model3dDAO::getUserId, Model3dDAO::getTitle, Model3dDAO::getCover,
-                Model3dDAO::getStyle, Model3dDAO::getType, Model3dDAO::getCreateTime);
+    public List<Model3dDO> selectByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
+        LambdaQueryWrapper<Model3dDO> modelWrapper = new LambdaQueryWrapper<>();
+        modelWrapper.in(Model3dDO::getUserId, userIds);
+        modelWrapper.eq(Model3dDO::getVisible, visibleEnum);
+        modelWrapper.select(Model3dDO::getId, Model3dDO::getUserId, Model3dDO::getTitle, Model3dDO::getCover,
+                Model3dDO::getStyle, Model3dDO::getType, Model3dDO::getCreateTime);
 
         return model3dMapper.selectList(modelWrapper);
     }

@@ -26,6 +26,7 @@ public class RelationshipsController {
     @GetMapping("/{tgtUserId}/{srcUserId}")
     public ResponseVO checkFollowShip(@PathVariable Long tgtUserId, @PathVariable Long srcUserId) {
         try {
+
             return ResponseVO.ok(relationshipsAdaptor.checkFollowShip(tgtUserId, srcUserId));
         }
         catch (IllegalArgumentException e){

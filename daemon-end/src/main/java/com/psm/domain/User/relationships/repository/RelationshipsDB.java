@@ -1,26 +1,26 @@
 package com.psm.domain.User.relationships.repository;
 
-import com.psm.domain.User.relationships.entity.RelationshipsDAO;
+import com.psm.domain.User.relationships.entity.RelationshipsDO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 
 import java.util.List;
 
-public interface RelationshipsDB extends BaseDBRepository<RelationshipsDAO> {
+public interface RelationshipsDB extends BaseDBRepository<RelationshipsDO> {
     /**
      * 根据源用户id获取关系记录
      *
-     * @param relationshipsDAO 关系记录
+     * @param relationshipsDO 关系记录
      * @return 关系记录DAO列表
      */
-    List<RelationshipsDAO> selectByTgtUserId(RelationshipsDAO relationshipsDAO);
+    List<RelationshipsDO> selectByTgtUserId(RelationshipsDO relationshipsDO);
 
     /**
      * 根据源用户id获取关系记录
      *
-     * @param relationshipsDAO 关系记录
+     * @param relationshipsDO 关系记录
      * @return 关系记录DAO列表
      */
-    List<RelationshipsDAO> selectBySrcUserId(RelationshipsDAO relationshipsDAO);
+    List<RelationshipsDO> selectBySrcUserId(RelationshipsDO relationshipsDO);
 
     /**
      * 根据目标用户id和源用户id获取关系记录
@@ -29,7 +29,7 @@ public interface RelationshipsDB extends BaseDBRepository<RelationshipsDAO> {
      * @param srcUserId 来源用户id
      * @return 关系记录DAO
      */
-    RelationshipsDAO selectByTgUserIdAndSrcUserId(Long tgtUserId, Long srcUserId);
+    RelationshipsDO selectByTgUserIdAndSrcUserId(Long tgtUserId, Long srcUserId);
 
     /**
      * 根据目标用户id和源用户id删除关系记录
@@ -42,15 +42,15 @@ public interface RelationshipsDB extends BaseDBRepository<RelationshipsDAO> {
     /**
      * 更新或保存关系记录
      *
-     * @param relationshipsDAO 关系记录
+     * @param relationshipsDO 关系记录
      */
-    void insertOrUpdateRelationship(RelationshipsDAO relationshipsDAO);
+    void insertOrUpdateRelationship(RelationshipsDO relationshipsDO);
 
     /**
      * 查询关系记录
      *
-     * @param relationshipsDAO 关系记录
-     * @return RelationshipsDAO
+     * @param relationshipsDO 关系记录
+     * @return RelationshipsDO
      */
-    RelationshipsDAO selectRelationship(RelationshipsDAO relationshipsDAO);
+    RelationshipsDO selectRelationship(RelationshipsDO relationshipsDO);
 }

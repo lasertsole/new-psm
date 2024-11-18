@@ -23,8 +23,8 @@ export type MessageItem = {
     id?: string;
     type?: 'text';
     content?: string;
-    senderId?: string;
-    receiverId?: string;
+    srcUserId?: string;
+    tgtUserId?: string;
     time?: string;
     isRead?: boolean;
     isUrgent?: boolean;

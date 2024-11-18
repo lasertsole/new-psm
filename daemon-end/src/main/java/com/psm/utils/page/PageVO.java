@@ -15,9 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PageVO<T> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -1577207436242422848L;
-
     private List<T> records; // 当前页数据
     private Long total; // 总记录数
     private Long size; // 每页显示条数

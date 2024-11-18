@@ -1,7 +1,7 @@
 package com.psm.domain.User.user.repository;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.domain.User.user.entity.User.UserDAO;
+import com.psm.domain.User.user.entity.User.UserDO;
 
 public interface LoginUserRedis {
     /**
@@ -46,5 +46,5 @@ public interface LoginUserRedis {
      *
      * @param userDAO 用户实体
      */
-    void updateLoginUser(UserDAO userDAO);
+    void updateLoginUser(UserDO userDAO);
 }

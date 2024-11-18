@@ -1,6 +1,6 @@
 package com.psm.domain.Model.model.types.convertor;
 
-import com.psm.domain.Model.model.entity.Model3dDAO;
+import com.psm.domain.Model.model.entity.Model3dDO;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model.entity.Model3dVO;
@@ -28,18 +28,31 @@ public abstract class Model3dConvertor {
     }
 
     @Mappings({
-            @Mapping(source = "cover", target = "cover", ignore = true),
-            @Mapping(target = "visible", qualifiedByName = "fromInteger")
-    })
-    public abstract Model3dDAO DTO2DAO(Model3dDTO model3dDTO);
-
-    @Mappings({
             @Mapping(target = "cover", ignore = true),
-            @Mapping(target = "visible", qualifiedByName = "fromInteger")
+            @Mapping(target = "visible", qualifiedByName = "fromInteger"),
+            @Mapping(target = "storage", ignore = true),
+            @Mapping(target = "createTime", ignore = true),
+            @Mapping(target = "modifyTime", ignore = true)
     })
     public abstract Model3dBO DTO2BO(Model3dDTO model3dDTO);
 
-    public abstract Model3dBO DAO2BO(Model3dDAO model3dDAO);
+    @Mappings({
+        @Mapping(target = "deleted", ignore = true),
+        @Mapping(target = "version", ignore = true)
+    })
+    public abstract Model3dDO BO2DO(Model3dBO model3dBO);
+
+    @Mappings({
+        @Mapping(target = "coverFile", ignore = true)
+    })
+    public abstract Model3dBO DO2BO(Model3dDO model3dDO);
+
+    @Mappings({
+        @Mapping(target = "cover", ignore = true),
+        @Mapping(source = "visible.value", target = "visible", defaultExpression = "java(null)"),
+        @Mapping(target = "coverFile", ignore = true)
+    })
+    public abstract Model3dDTO BO2DTO(Model3dBO model3dBO);
 
     @Named("longToString")
     public String longToString(Long num) {
@@ -52,9 +65,9 @@ public abstract class Model3dConvertor {
     }
 
     @Mappings({
-            @Mapping(source = "visible.value", target = "visible", defaultExpression = "java(null)"),
+            @Mapping(source = "visible", target = "visible", defaultExpression = "java(null)"),
             @Mapping(target = "id", qualifiedByName = "longToString"),
-            @Mapping(target = "userId", qualifiedByName = "longToString")
+            @Mapping(target = "userId", qualifiedByName = "longToString"),
     })
-    public abstract Model3dVO BO2VO(Model3dBO model3dBO);
+    public abstract Model3dVO DTO2VO(Model3dDTO model3dDTO);
 }

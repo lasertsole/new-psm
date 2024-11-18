@@ -35,7 +35,7 @@ export async function uploadModelInfo({title, content, cover, style, type, visib
         const formData = new FormData();
         formData.append('title', title);
         formData.append('content', content);
-        formData.append('cover', cover);
+        formData.append('coverFile', cover);
         formData.append('style', style);
         formData.append('type', type);
         formData.append('visible', visible);
