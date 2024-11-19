@@ -80,19 +80,8 @@ public class ModelController {
             Model3dBO model3dBO = Model3dBO.from(model3dDTO);
             model3dBO.setUserId(userId);
 
-            // 调用模型信息上传接口,获取上传后的模型id
-            model3dBO = modelAdaptor.uploadModelInfo(model3dBO);
-
-            // 获取上传后模型大小
-            Long modelSize = model3dBO.getStorage();
-
-            // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
-            if (Objects.equals(model3dBO.getVisible(), VisibleEnum.PUBLIC)) {
-                userAdaptor.addOnePublicModelNumById(userId);
-            }
-
-            // 增加用户已用的存储空间为当前文件大小
-            userAdaptor.addOnePublicModelStorageById(userId, modelSize);
+            // 模型信息上传
+            modelAdaptor.uploadModelInfo(model3dBO);
         }
         catch (InvalidParameterException e){
             return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

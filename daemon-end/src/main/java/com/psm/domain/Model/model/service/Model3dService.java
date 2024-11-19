@@ -32,9 +32,8 @@ public interface Model3dService {
      * @param visible   可见性
      * @throws TusException tus异常
      * @throws IOException io异常
-     * @return Model3dBO,其中modelId为模型id, modelStorage为模型大小
      */
-    Model3dBO uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception;
+    void uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception;
 
     /**
      * 删除模型信息

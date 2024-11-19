@@ -11,8 +11,6 @@
 </style>
 
 <script lang="ts" setup>
-  const { $emit, $on } = useNuxtApp();
-
   let DMServiceInstance; // 一对一聊天服务
 
   // 这里的代码仅在客户端执行
@@ -23,16 +21,12 @@
       
       // 延时执行(加入事件循环中)
       setTimeout(async ()=>{
-        let isSuccess:boolean = await fastLogin();
-        // 快速登录成功
-        if(isSuccess){
-          $emit("online");
-        };
+        fastLogin();
       }, 0);
     }
   });
   
-  $on("online", ()=>{
+  on("online", ()=>{
     DMServiceInstance = DMService.getInstance();
   });
 

@@ -2,6 +2,8 @@ package com.psm.domain.User.user.Event.EventListener;
 
 import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Chat.entity.ChatBO;
+import com.psm.domain.Model.model.entity.Model3dBO;
+import com.psm.event.UploadModel3DEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +45,7 @@ public class UserEventListener {
     private final String consumerGroup = "DefaultConsumerGroup";
 
     // 指定需要订阅哪个目标Topic，Topic需要提前创建。
-    private final String topic = "User";
+    private final String topic = "USER";
 
     // PushConsumer对象，其作用为消费消息。
     private PushConsumer pushConsumer;
@@ -68,8 +70,8 @@ public class UserEventListener {
 
                     // 将字节数组转换为字符串
                     String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
-//                    ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
-//                    userService.processMessageDM(messageBody);
+                    UploadModel3DEvent uploadModel3DEvent = JSON.parseObject(jsonString, UploadModel3DEvent.class);
+                    userService.processUploadModel3D(uploadModel3DEvent.getUserId(), uploadModel3DEvent.getModelSize(), uploadModel3DEvent.getVisible());
 
                     return ConsumeResult.SUCCESS;
                 })

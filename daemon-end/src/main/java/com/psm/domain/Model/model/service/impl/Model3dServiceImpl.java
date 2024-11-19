@@ -7,6 +7,7 @@ import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.domain.Model.model.repository.Model3dOSS;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
+import com.psm.event.UploadModel3DEvent;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.Tus.Tus;
@@ -71,7 +72,7 @@ public class Model3dServiceImpl implements Model3dService {
 
     @Transactional
     @Override
-    public Model3dBO uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception {
+    public void uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception {
         String _userId = String.valueOf(userId);
 
         // 判断文件是否已上传完成且没有过期fullPath
@@ -134,14 +135,10 @@ public class Model3dServiceImpl implements Model3dService {
             throw new RuntimeException("删除云文件失败");
         }
 
-        Model3dBO model3dBO = new Model3dBO();
-        model3dBO.setId(modelId);
-        model3dBO.setStorage(fileSize);
+        UploadModel3DEvent uploadModel3DEvent = new UploadModel3DEvent(userId, fileSize, visible);
 
-//        // 将消息发送到MQ
-//        mqPublisher.publish(model3dBO, "*", "uploadModel3d", modelId.toString());
-
-        return model3dBO;
+        // 将消息发送到MQ
+        mqPublisher.publish(uploadModel3DEvent, "uploadModel3D", "USER", modelId.toString());
     }
 
     @Override

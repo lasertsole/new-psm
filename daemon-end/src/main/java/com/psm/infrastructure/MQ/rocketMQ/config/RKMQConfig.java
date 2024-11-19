@@ -7,6 +7,8 @@ import org.apache.rocketmq.client.apis.ClientServiceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 @Slf4j
 @Component
 public class RKMQConfig {
@@ -16,6 +18,7 @@ public class RKMQConfig {
     @Bean
     public ClientConfiguration getConfig(){
         ClientConfigurationBuilder builder = ClientConfiguration.newBuilder().setEndpoints(proxyEndpoints);
+        builder.setRequestTimeout(Duration.ofSeconds(30)); // 设置请求代理服务器超时时间为 30秒
         return builder.build();
     }
 

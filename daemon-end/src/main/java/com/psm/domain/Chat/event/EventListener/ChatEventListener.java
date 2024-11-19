@@ -34,7 +34,7 @@ public class ChatEventListener {
     private ClientServiceProvider provider;
 
     // 订阅消息的过滤规则，表示订阅所有Tag的消息。
-    private final String tag = "DM";
+    private final String tag = "DMForward";
 
     // 订阅消息的过滤表达式，表示订阅所有消息。
     private final FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
@@ -43,7 +43,7 @@ public class ChatEventListener {
     private final String consumerGroup = "DefaultConsumerGroup";
 
     // 指定需要订阅哪个目标Topic，Topic需要提前创建。
-    private final String topic = "forwardMS";
+    private final String topic = "CHAT";
 
     // PushConsumer对象，其作用为消费消息。
     private PushConsumer pushConsumer;

@@ -96,7 +96,7 @@ public class DMController implements CommandLineRunner {
                     }
 
                     // 将消息发送到MQ
-                    mqPublisher.publish(chatBO, "DM", "forwardMS", srcUserId);
+                    mqPublisher.publish(chatBO, "DMForward", "CHAT", srcUserId);
 
                     // 返回ack
                     ackRequest.sendAckData(true);

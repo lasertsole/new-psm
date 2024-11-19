@@ -1,6 +1,7 @@
 package com.psm.domain.User.user.service;
 
 import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.types.enums.VisibleEnum;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -166,5 +167,14 @@ public interface UserService {
      * @return 已用的存储空间
      */
     Long minusOnePublicModelStorageById(Long id, Long storage);
+
+    /**
+     * 上传模型后处理
+     *
+     * @param userId 用户ID
+     * @param modelSize 模型大小
+     * @param visible 可见性
+     */
+    void processUploadModel3D(Long userId, Long modelSize, VisibleEnum visible);
 }
 

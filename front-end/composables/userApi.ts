@@ -154,7 +154,7 @@ export async function fastLogin():Promise<boolean>{
         loginApi(data);
     
         import.meta.client&&ElMessage.success('登录成功');
-    
+        emit("online");
         return true;
     }
     catch (error) {

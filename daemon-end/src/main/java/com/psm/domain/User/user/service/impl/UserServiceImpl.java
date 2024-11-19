@@ -11,7 +11,9 @@ import com.psm.domain.User.user.service.UserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
+import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -311,5 +313,16 @@ public class UserServiceImpl implements UserService {
         if (newStorage < 0) newStorage = 0;
 
         return updateOnePublicModelStorageById(id, newStorage);
+    }
+
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void processUploadModel3D(Long userId, Long modelSize, VisibleEnum visible) {
+            // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
+            if (Objects.equals(visible, VisibleEnum.PUBLIC)) {
+                addOnePublicModelNumById(userId);
+            }
+
+            // 增加用户已用的存储空间为当前文件大小
+            addOnePublicModelStorageById(userId, modelSize);
     }
 }

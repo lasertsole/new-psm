@@ -40,7 +40,7 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     }
 
     @Override
-    public Model3dBO uploadModelInfo(@Valid Model3dBO model3dBO) throws Exception {
+    public void uploadModelInfo(@Valid Model3dBO model3dBO) throws Exception {
         Long userId = model3dBO.getUserId();
         String title = model3dBO.getTitle();
         String content = model3dBO.getContent();
@@ -60,7 +60,7 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        return modelService.uploadModelInfo(userId, title, content, CoverFile, style, type, visible);
+        modelService.uploadModelInfo(userId, title, content, CoverFile, style, type, visible);
     }
 
     @Override

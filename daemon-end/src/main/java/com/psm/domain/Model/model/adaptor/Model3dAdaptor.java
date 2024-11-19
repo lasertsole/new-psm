@@ -29,9 +29,8 @@ public interface Model3dAdaptor {
      * @param model3dBO  模型信息
      * @throws TusException    tus异常
      * @throws IOException     IO异常
-     * @return 模型BO实体
      */
-    Model3dBO uploadModelInfo(Model3dBO model3dBO) throws Exception;
+    void uploadModelInfo(Model3dBO model3dBO) throws Exception;
 
     /**
      * 根据模型ID查询模型
