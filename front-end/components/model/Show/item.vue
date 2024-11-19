@@ -49,7 +49,7 @@
     .itemBox{
         margin-top: 15px;
         padding-bottom: 15px;
-        height: 175px;
+        @include fixedHeight(235px);
         border-bottom: 1px solid rgba(165, 165, 165, 0.3568627451);
         display: flex;
         flex-direction: row;
@@ -124,13 +124,20 @@
                 }
             }
         }
+        
         .author_works{
+            @include fixedHeight(220px);
             width: 100%;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            padding-left: 15px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); // 自动适应列数，每列最小宽度为 100px
+            gap: 15px; // 网格项之间的间距
+            justify-content: start;
+            justify-items: start;
+            @include scrollBar(8px);
+            
+            @media (min-width: 1020px){
+                grid-template-columns: repeat(3, minmax(250px, 1fr));
+            }
         }
     }
 </style>

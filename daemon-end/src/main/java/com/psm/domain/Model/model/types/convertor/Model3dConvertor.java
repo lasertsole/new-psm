@@ -28,7 +28,6 @@ public abstract class Model3dConvertor {
     }
 
     @Mappings({
-            @Mapping(target = "cover", ignore = true),
             @Mapping(target = "visible", qualifiedByName = "fromInteger"),
             @Mapping(target = "storage", ignore = true),
             @Mapping(target = "createTime", ignore = true),
@@ -48,7 +47,6 @@ public abstract class Model3dConvertor {
     public abstract Model3dBO DO2BO(Model3dDO model3dDO);
 
     @Mappings({
-        @Mapping(target = "cover", ignore = true),
         @Mapping(source = "visible.value", target = "visible", defaultExpression = "java(null)"),
         @Mapping(target = "coverFile", ignore = true)
     })

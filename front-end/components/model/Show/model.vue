@@ -1,5 +1,7 @@
 <template>
-  <div class="entity" ref="entity"></div>
+  <div class="entity">
+    <canvas class="entity" ref="entity"></canvas>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -11,7 +13,7 @@
     entity: {type: String, required: false}
   });
   
-  const entity = ref<HTMLElement>();
+  const entity = ref<HTMLCanvasElement>();
 
   onMounted(async ()=>{
     // 初始化场景
@@ -34,13 +36,13 @@
 
       // 初始化渲染器
       const renderer = new THREE.WebGLRenderer({
-        antialias:true // 开启抗锯齿
+        antialias:true, // 开启抗锯齿
+        canvas:entity.value
       });
       renderer.setSize(entity.value!.offsetWidth, entity.value!.offsetHeight);
-      entity.value?.appendChild(renderer.domElement);
 
       // 初始化控制器
-      const controls = new OrbitControls(camera, renderer.domElement);
+      const controls = new OrbitControls(camera, entity.value);
       controls.enableDamping = true; // 开启阻尼   
       
       // 初始化loader
@@ -93,5 +95,9 @@
   
   .entity{
     @include fullInParent;
+    
+    canvas{
+      @include fullInParent;
+    }
   }
 </style>

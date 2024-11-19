@@ -11,6 +11,13 @@
             <div class="gap"></div>
             
             <div class="text"><slot name="text"></slot></div>
+
+            <div class="gap"></div>
+            
+            <div class="status" v-if="status!='sent'">
+                <div class="loading" v-if="status!='pending'"></div>
+                <div class="error" v-if="status!='error'" ></div>
+            </div>
         </div>
     </div>
 </template>
@@ -23,7 +30,8 @@
         srcUserId: {type:String, required: true},
         tgtUserId: {type:String, required: true},
         time: {type:String, required: true},
-        isDeleted: {type:Boolean, required: true}
+        isDeleted: {type:Boolean, required: true},
+        status: {type:String, required: false, default: "sent"}
     });
 </script>
 
@@ -47,7 +55,7 @@
             @include fullWidth;
             display: flex;
             flex-direction: row;
-            align-self: start;
+            align-items: start;
             padding: 0px 16px 16px 16px;
             
             $avatarSize: 30px;
@@ -70,6 +78,31 @@
                 border-radius: 0 16px 16px 16px;
                 overflow: hidden;
                 background: #fff;
+            }
+
+            .status{
+                @include fixedSquare(16px);
+                align-self: flex-end;
+
+                >div{
+                    @include fullInParent;
+                    background-size: 100%;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                }
+                
+                .loading{
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    animation: spin 2s linear infinite;
+                    background-image: url("/icons/msPending.svg");
+                }
+
+                .error{
+                    background-image: url("/icons/msError.svg");
+                }
             }
         }
     }

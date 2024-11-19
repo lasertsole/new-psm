@@ -21,12 +21,14 @@ export type Sender = {
 
 export type MessageItem = {
     id?: string;
+    tgtUserId?: string;
+    srcUserId?: string;
     type?: 'text';
     content?: string;
-    srcUserId?: string;
-    tgtUserId?: string;
     time?: string;
     isRead?: boolean;
     isUrgent?: boolean;
     isDeleted?: boolean;
+    status?: 'pending' | 'sent' | 'error' | 'read';
+    request?: (MessageItems: MessageItem[], this) => Promise<any>;//异步发送函数与回调函数
 };

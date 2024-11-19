@@ -32,14 +32,13 @@
     
     .workBox{
         box-sizing: border-box;
-        @include fixedWidth(200px);
-        height: 150px;
+        @include fullWidth();
+        @include fixedHeight(220px);
         display: flex;
         flex-direction: column;
         border: 2px solid #959595;
         border-radius: 10px;
         padding: 5px;
-        margin-left: 15px;
         cursor: pointer;
         
         &::v-deep(.el-image){

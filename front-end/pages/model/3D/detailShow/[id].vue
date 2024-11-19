@@ -119,6 +119,8 @@
 
     .page{
       @include fixedWidth(65%);
+      display: flex;
+      flex-direction: column;
 
       >div{
         background-color: white;
@@ -191,10 +193,12 @@
         @include fullWidth();
         margin-top: 20px;
         margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
 
         .entity{
           @include minWidthInParent();
-          @include minHeight(550px);  
+          height: 550px;
         }
         
         .info{
@@ -203,10 +207,7 @@
           color: #9b9b9b;
           display: flex;
           justify-content: space-between;
-
-          .createTime{
-            margin-bottom: 10px;
-          }
+          align-items: center;
           
           .category{
             .style{
@@ -230,7 +231,28 @@
         @include fullWidth;
         margin: 0px;
         .main{
-          margin-top: 0px;
+          margin: 0px;
+          flex-grow: 1;
+          
+          
+          .entity{
+            height: auto;
+            flex-grow: 1;
+          }
+          
+          .info{
+            @include fixedHeight(60px);
+            margin: 0px;
+            padding: 5px 10px;
+            display: flex;
+          }
+        }
+
+        .userBar{
+          @include fixedHeight(60px);
+          margin: 0px;
+          padding: 5px 10px;
+          display: flex;
         }
       }
     }

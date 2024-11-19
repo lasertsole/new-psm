@@ -1,3 +1,3 @@
 import { throttle, debounce } from "lodash-es";
 
-export {throttle, debounce};
+export { throttle, debounce };

@@ -38,7 +38,7 @@
 <script setup lang="ts">
     import type { FilterItem } from "@/types/common";
     import type { PropType } from "vue";
-    import { ref, defineProps, defineEmits, watch } from "vue";
+    import { ref, defineProps, defineEmits } from "vue";
 
     const props = defineProps({
         filterItem:{ type:Object as PropType<FilterItem>, required: true },
@@ -82,8 +82,6 @@
         .el-switch{
             margin-right: 15px;
             width: 100%;
-            // display: flex;
-            // justify-content: center;
         }
         .el-button{
             @include fixedWidth(80px);

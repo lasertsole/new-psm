@@ -8,6 +8,7 @@
 </template>
 
 <style lang="scss">
+  .el-loading-mask{z-index: 1 !important;}
 </style>
 
 <script lang="ts" setup>

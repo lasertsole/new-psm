@@ -22,6 +22,7 @@
                                 :isMuted="item.isMuted!"
                                 :isGroup="item.isGroup!"
                                 :isSeleted="index==nowChatIndex"
+                                :status="item.status!"
                             >
                             </MessageContactsBox>
                         </template>

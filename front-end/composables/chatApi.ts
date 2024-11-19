@@ -14,21 +14,21 @@ export const nowChatIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系�
 
 export class DMService { // 单例模式
   private static instance: DMService;
-  private socket: Socket;
+  private DMSocket: Socket;
   private interval:NodeJS.Timeout|null = null;
 
   private constructor() {
-    this.socket = manager.socket("/DM", {
+    this.DMSocket = manager.socket("/DM", {
       auth: {
         token: localStorage.getItem("token") || ""
-      }
+      }, retries: 3 // 最大重试次数。超过限制，数据包将被丢弃。
     });
 
-    this.socket.on('connect', () => {
+    this.DMSocket.on('connect', () => {
       console.log('Manager Connected to server');
     });
 
-    this.socket.on('connect_error', (error) => {
+    this.DMSocket.on('connect_error', (error) => {
       console.error('Manager Connection error:', error);
       // 可以在这里处理重连逻辑
       if(this.interval) return;
@@ -39,11 +39,11 @@ export class DMService { // 单例模式
       }, 5000); // 5秒后重试
     });
 
-    this.socket.on('reconnect_error', (error) => {
+    this.DMSocket.on('reconnect_error', (error) => {
       console.error('Manager Reconnection error:', error);
     });
 
-    this.socket.on('disconnect', (reason) => {
+    this.DMSocket.on('disconnect', (reason) => {
       console.log('Manager Disconnected:', reason);
       if (reason === 'io server disconnect') {
         // 服务器主动断开连接，可以尝试重新连接
@@ -53,31 +53,18 @@ export class DMService { // 单例模式
       };
     });
 
-    this.socket.on("receiveMessage", (MessageItem: MessageItem)=>{
-      console.log(MessageItem);
-      let userIds: string[] = contactItems.value.length!=0?contactItems.value.map(user => user.id!):[];
-      let index = userIds.indexOf(MessageItem.srcUserId!);
+    // this.DMSocket.on("receiveMessage", (MessageItem: MessageItem)=>{
+    //   console.log(MessageItem);
+    //   let userIds: string[] = contactItems.value.length!=0?contactItems.value.map(user => user.id!):[];
+    //   let index = userIds.indexOf(MessageItem.srcUserId!);
 
-      if(index!== -1){
-        contactItems.value[index].MessageItems!.push(MessageItem)
-      }
-      else{// 如果用户不存在于联系人列表中
-        // // 将用户插入到列表头部
-        // let newContactItem: ContactItem = {
-        //   id: MessageItem.id,
-        //   name: MessageItem,
-        //   avatar,
-        //   lastMessage: "",
-        //   lastTime: "",
-        //   unread: 0,
-        //   isMuted: false,
-        //   isGroup: false,
-        //   MessageItems: []
-        // };
-    
-        // contactItems.value.unshift(newContactItem);
-      }
-    });
+    //   if(index!== -1){
+    //     contactItems.value[index].MessageItems!.push(MessageItem)
+    //   }
+    //   else{// 如果用户不存在于联系人列表中,则向服务器请求该联系人个人信息，得到头像和名字后再添加到联系列表
+        
+    //   }
+    // });
   };
 
   public static getInstance(): DMService {
@@ -89,15 +76,15 @@ export class DMService { // 单例模式
   };
 
   public getSocket(): Socket {
-    return this.socket;
+    return this.DMSocket;
   };
 
   private connect() {
-    this.socket.connect();
+    this.DMSocket.connect();
   };
 
   public disconnect() {
-    this.socket.disconnect();
+    this.DMSocket.disconnect();
   };
 };
 
