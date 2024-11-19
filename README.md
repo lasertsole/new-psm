@@ -3,10 +3,12 @@
 ### Nuxt3(SSR服务端首页渲染+SPA单页面组件)
 ### mitt全局事件机制
 ### element-plus/nuxt 快速搭建组件库
-### gsap动画组件
+### gsap.js动画组件
 ### loadsh防抖与节流
 ### three.js 浏览器3D渲染
 ### pixi.js 游戏动画库
+### rx.js 简化异步操作api
+### dexie.js 简化indexedDB操作api
 ### vite-pwa + service-worker + sessionStorage + cacheStorage + indexedDB全平台适配方案与离线缓存
 ### tus-js-client大文件分片上传
 ### socket.io(client) websocket全双工通信框架
