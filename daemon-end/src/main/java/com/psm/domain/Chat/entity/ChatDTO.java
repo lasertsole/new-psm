@@ -15,6 +15,7 @@ public class ChatDTO implements DTO2VOable<ChatVO>, Serializable {
     private Long id;
     private Long tgtUserId;
     private Long srcUserId;
+    private String timestamp;
     private String content;
 
     public static ChatDTO fromBO(ChatBO chatBO) {

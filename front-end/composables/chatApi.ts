@@ -1,5 +1,6 @@
 import { Manager, Socket } from 'socket.io-client';
-import type { ContactItem, MessageItem, Sender } from '@/types/socketIO';
+import type { ContactsItem, MessageItem, MessageDBItem, ContactsDBItem } from '@/types/chat';
+import type { Reactive } from 'vue';
 
 let socketUrl:string = "ws://localhost:8001";
 
@@ -9,8 +10,10 @@ const manager: Manager= new Manager(socketUrl, {
   , upgrade: false // 关闭自动升级
 });
 
-export const contactItems: Ref<ContactItem[]> = ref<ContactItem[]>([] as ContactItem[]);// 联系人列表
-export const nowChatIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
+
+/*************************************以下为DM命名空间逻辑****************************************/
+export const contactsItems: Ref<ContactsItem[]> = ref<ContactsItem[]>([] as ContactsItem[]);// 联系人列表
+export const nowDMContactsIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
 
 export class DMService { // 单例模式
   private static instance: DMService;
@@ -23,10 +26,8 @@ export class DMService { // 单例模式
         token: localStorage.getItem("token") || ""
       }, retries: 3 // 最大重试次数。超过限制，数据包将被丢弃。
     });
-
-    this.DMSocket.on('connect', () => {
-      console.log('Manager Connected to server');
-    });
+    
+    this.DMSocket.on('connect', () => {});
 
     this.DMSocket.on('connect_error', (error) => {
       console.error('Manager Connection error:', error);
@@ -34,7 +35,7 @@ export class DMService { // 单例模式
       if(this.interval) return;
       this.interval = setInterval(() => {
         this.connect(); // 重新连接
-        this.interval&&clearInterval(this.interval);
+        this.interval && clearInterval(this.interval);
         this.interval=null;
       }, 5000); // 5秒后重试
     });
@@ -55,11 +56,11 @@ export class DMService { // 单例模式
 
     // this.DMSocket.on("receiveMessage", (MessageItem: MessageItem)=>{
     //   console.log(MessageItem);
-    //   let userIds: string[] = contactItems.value.length!=0?contactItems.value.map(user => user.id!):[];
+    //   let userIds: string[] = contactsItems.value.length!=0?contactsItems.value.map(user => user.id!):[];
     //   let index = userIds.indexOf(MessageItem.srcUserId!);
 
     //   if(index!== -1){
-    //     contactItems.value[index].MessageItems!.push(MessageItem)
+    //     contactsItems.value[index].MessageItems!.push(MessageItem)
     //   }
     //   else{// 如果用户不存在于联系人列表中,则向服务器请求该联系人个人信息，得到头像和名字后再添加到联系列表
         
@@ -91,25 +92,30 @@ export class DMService { // 单例模式
 /**
  * 跳转到私聊页面
  */
-export function toDM(id:string, name:string, avatar:string):void {
-  if(userInfo.id==id) {
-    import.meta.client&&ElMessage.warning('不能私信自己');
+export async function toDM(tgtUserId:string, name:string, avatar:string): Promise<void> {
+  
+  if(userInfo.id==tgtUserId) {
+    import.meta.client && ElMessage.warning('不能私信自己');
     return;
   }
+
+  // 初始化联系人和信息
+  await initDM();
+
+  let tgtUserIds: string[] = contactsItems.value.length!=0?contactsItems.value.map(user => user.tgtUserId!):[];
+  let index = tgtUserIds.indexOf(tgtUserId);
   
-  let userIds: string[] = contactItems.value.length!=0?contactItems.value.map(user => user.id!):[];
-  let index = userIds.indexOf(id);
-  
-  if(index!== -1){// 如果用户存在于联系人列表中
+  if(index!== -1) {// 如果用户存在于联系人列表中
     // 将用户从原位置移除
-    const [movedElement] = contactItems.value.splice(index, 1);
+    const [movedElement] = contactsItems.value.splice(index, 1);
     // 将用户插入到列表头部
-    contactItems.value.unshift(movedElement);
+    contactsItems.value.unshift(movedElement);
   }
-  else{// 如果用户不存在于联系人列表中
+  else {// 如果用户不存在于联系人列表中
     // 将用户插入到列表头部
-    let newContactItem: ContactItem = {
-      id,
+    let newContactItem: ContactsItem = {
+      tgtUserId,
+      srcUserId: userInfo.id!,
       name,
       avatar,
       lastMessage: "",
@@ -117,37 +123,124 @@ export function toDM(id:string, name:string, avatar:string):void {
       unread: 0,
       isMuted: false,
       isGroup: false,
-      MessageItems: []
+      messageItems: []
     };
 
-    contactItems.value.unshift(newContactItem);
-  }
+    contactsItems.value.unshift(newContactItem);
+  };
   
-  nowChatIndex.value = 0;// 将当前聊天窗口设置为第一个
+  nowDMContactsIndex.value = 0;// 将当前聊天窗口设置为第一个
   
   navigateTo("/message");
 };
 
-export function sendMessage(message:string) {
+// 初始化(获取联系人列表和信息)
+export async function initDM(): Promise<void> {
+  // 如果已经有联系人列表，则说明已初始化过，直接退出
+  if(!userInfo.isLogin || contactsItems.value.length!=0) return;
   
+  // 从本地indexedDB拿去最新联系人列表
+  let contactsDBItems: ContactsDBItem[] = await db.ContactsDBItems
+  .where('srcUserId')
+  .equals(userInfo.id!)
+  .sortBy('timestamp');
   
-  const messageItem: MessageItem ={
+  // 将每个 ContactsDBItem 转换为 ContactsItem
+  contactsItems.value = contactsDBItems.map(contactDBItem => ({
+    ...contactDBItem,
+    messageItems: [] as MessageItem[] // 消息列表
+  }) as ContactsItem);
+
+  // 从本地indexedDB拿去最新聊天信息
+  contactsItems.value.forEach(async (item, index)=>{
+    let messageDBItems: MessageDBItem[] = await db.MessageDBItems
+    .where('[maxUserId+minUserId]')
+    .equals([max(item.tgtUserId, item.srcUserId), min(item.tgtUserId, item.srcUserId)])
+    .sortBy('timestamp');
+
+    messageDBItems.map((item)=>{
+      let { maxUserId, minUserId, ...messageItem } = item;
+      return messageItem;
+    });
+    
+    item.messageItems = messageDBItems as Reactive<MessageItem>[];
+  });
+  
+  // 从服务器获取最新聊天信息
+  let socket: Socket = DMService.getInstance().getSocket();
+  socket.timeout(5000).emit('updateMessage');
+};
+
+// 发送信息逻辑
+export function sendMessage(message:string): void {
+  // 创建一个联系人对象
+  let constactsObj:ContactsItem = contactsItems.value[nowDMContactsIndex.value];
+  
+  // 创建一个消息对象
+  let messageObj:MessageItem = {
     type: 'text',
     content: message,
     srcUserId: userInfo.id,
-    tgtUserId: contactItems.value[nowChatIndex.value].id,
-    time: new Date().toISOString(),
+    tgtUserId: constactsObj.tgtUserId,
     isDeleted: false,
+    status: 'pending'
   };
   
-  let socket: Socket = DMService.getInstance().getSocket();
-  socket.timeout(5000).emit('sendMessage', messageItem, (err:any, response:any)=>{
-    if (err) {
-      // the other side did not acknowledge the event in the given delay
-    } else {
-      console.log(response);
-    }
-  });
+  // 根据消息对象，创建一个响应式消息对象
+  const messageItem: Reactive<MessageItem> = reactive<MessageItem>(messageObj);
   
-  contactItems.value[nowChatIndex.value].MessageItems!.push(messageItem);
+  // 将消息对象添加到消息列表
+  constactsObj.messageItems!.push(messageItem);
+  
+  // 生成发送信息时客户端的时间戳（UTC国际通用）,精确到微秒级别
+  const now = new Date();
+  const milliseconds = now.getUTCMilliseconds();
+  const microseconds = (milliseconds * 1000 + Math.floor((now.getTime() % 1) * 1000000)) % 1000000;
+  const formattedTimestamp = now.toISOString().slice(0, -1) + '.' + microseconds.toString().padStart(6, '0') + 'Z';
+
+  messageItem.timestamp = formattedTimestamp;
+  
+  // 发送消息
+  let socket: Socket = DMService.getInstance().getSocket();
+  socket.timeout(5000).emit('sendMessage', messageItem, (err:any, res:any)=> {
+    // 如果有错误，则显示错误信息状态
+    if (err) {
+      messageItem.status = 'error';
+      return;
+    };
+
+    // 更新消息状态
+    messageItem.status = 'sent';
+
+    // 服务器返回的时间戳更新消息时间
+    messageItem.timestamp = res;
+
+    // 若该联系人在indexedDB数据库的联系人列表，则更新该联系人的最近联系时间，否则插入该联系人的记录
+    let {messageItems, ...contactsDBItem} = constactsObj;
+    contactsDBItem.lastTime = res;
+    contactsDBItem.lastMessage = message;
+    contactsDBItem = {
+      ...contactsDBItem,
+      tgtUserId: messageObj.tgtUserId,
+      srcUserId: messageObj.srcUserId,
+    } as ContactsDBItem;
+    db.ContactsDBItems.put(contactsDBItem);
+    
+    // 将消息对象添加到indexedDB数据库
+    let messageDBItem: MessageDBItem = {
+      ...messageObj,
+      maxUserId: max( messageObj.srcUserId!, messageObj.tgtUserId! ), 
+      minUserId: min( messageObj.srcUserId!, messageObj.tgtUserId! ),
+    };
+    db.MessageDBItems.add(messageDBItem);
+
+    // 更新左侧联系人列表
+    constactsObj.lastTime = res;
+    constactsObj.lastMessage = message;
+  });
 };
+
+/*************************************以上为DM命名空间逻辑****************************************/
+
+/*************************************以下为非命名空间逻辑****************************************/
+/*************************************以上为根命名空间逻辑****************************************/

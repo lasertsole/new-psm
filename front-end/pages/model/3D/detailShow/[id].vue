@@ -60,6 +60,10 @@
   import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
   import type { Model3DInfoDetail, Model3DInfo } from "@/types/model3d";
 
+  definePageMeta({
+    name: 'model-3D-detailShow'
+  });
+
   // 将枚举转换为对象
   const styleEnumObject = Object.fromEntries(Object.entries(StyleEnum).map(([k, v]) => [v, k]));
   const typeEnumObject = Object.fromEntries(Object.entries(TypeEnum).map(([k, v]) => [v, k]));
@@ -99,10 +103,6 @@
       modelInfoDetail.value = res;
       isFollowing.value = res.user.isFollowed!;
     }
-  });
-
-  definePageMeta({
-    name: 'model-3D-detailShow'
   });
 </script>
 

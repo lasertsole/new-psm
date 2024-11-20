@@ -162,6 +162,7 @@
             @include fullWidth();
             min-height: 100%;
             justify-self: flex-start;
+            padding-bottom: 10px;
 
             .filterBar{
                 margin-top: 10px;

@@ -83,6 +83,10 @@ public class DMController implements CommandLineRunner {
                     // 校验参数
                     ChatBO chatBO = ChatBO.fromDTO(chatDTO);
 
+                    // 获取信息的发送时间戳，如果时间戳与上一次发信息相同，则证明是重复信息
+                    if(Objects.nonNull(srcClient.get("DMLastTime")) && srcClient.get("DMLastTime").equals(chatDTO.getTimestamp())) return;
+                    srcClient.set("DMLastTime", chatDTO.getTimestamp());
+
                     // 获取来源用户id
                     String srcUserId = srcClient.get("userId");
 
@@ -95,11 +99,14 @@ public class DMController implements CommandLineRunner {
                         tgtClient.sendEvent("receiveMessage", chatDTO.toVO());
                     }
 
+                    //生成返回时间戳(UTC国际化时间戳)
+                    String timestamp = chatBO.generateTimestamp();
+
                     // 将消息发送到MQ
                     mqPublisher.publish(chatBO, "DMForward", "CHAT", srcUserId);
 
-                    // 返回ack
-                    ackRequest.sendAckData(true);
+                    // 返回ack和消息接收时间戳
+                    ackRequest.sendAckData(timestamp);
                 }
                 catch (ClientException e) {
                     ackRequest.sendAckData("MQ error");

@@ -11,9 +11,9 @@
                 <div class="left">
                     <div class="title">近期消息</div>
                     <div class="contactList">
-                        <template v-for="(item, index) in contactItems" :key="item.id">
+                        <template v-for="(item, index) in contactsItems" :key="item.id">
                             <MessageContactsBox
-                                :id="item.id!"
+                                :tgtUserId="item.tgtUserId!"
                                 :name="item.name!"
                                 :avatar="item.avatar!"
                                 :lastMessage="item.lastMessage!"
@@ -21,8 +21,8 @@
                                 :unread="item.unread!"
                                 :isMuted="item.isMuted!"
                                 :isGroup="item.isGroup!"
-                                :isSeleted="index==nowChatIndex"
-                                :status="item.status!"
+                                :isSeleted="index==nowDMContactsIndex"
+                                :index="index"
                             >
                             </MessageContactsBox>
                         </template>
@@ -31,22 +31,24 @@
                 
                 <div class="right">
                     <div class="title">
-                        <span v-show="nowChatIndex>=0">
-                            {{ contactItems[nowChatIndex]?.name }}
+                        <span v-show="nowDMContactsIndex>=0">
+                            {{ contactsItems[nowDMContactsIndex]?.name }}
                         </span>
                     </div>
                     <div class="messageList">
-                        <div class="containerBox" v-show="nowChatIndex>=0">
+                        <div class="containerBox" v-show="nowDMContactsIndex>=0">
                             <div class="topGap"></div>
-                            <template v-for="(item, index) in contactItems[nowChatIndex]?.MessageItems" :key="index">
+                            <template v-for="(item, index) in contactsItems[nowDMContactsIndex]?.messageItems" :key="index">
                                 <messageBox
-                                    :avatar="contactItems[nowChatIndex].avatar!"
-                                    :name="contactItems[nowChatIndex].name!"
+                                    :avatar="contactsItems[nowDMContactsIndex].avatar!"
+                                    :name="contactsItems[nowDMContactsIndex].name!"
                                     :type="item.type!"
                                     :srcUserId="item.srcUserId!"
                                     :tgtUserId="item.tgtUserId!"
-                                    :time="item.time!"
+                                    :timestamp="item.timestamp!"
                                     :isDeleted="item.isDeleted!"
+                                    :status="item.status!"
+                                    
                                 >
                                     <template #text>
                                         {{ item.content }}
@@ -57,7 +59,7 @@
                     </div>
                     <div class="sendBox">
                         <el-input
-                            v-show="nowChatIndex>=0"
+                            v-show="nowDMContactsIndex>=0"
                             v-model="message"
                             type="textarea"
                             placeholder="请输入文字"
@@ -69,7 +71,7 @@
                             plain
                             type="primary"
                             @click="send"
-                            v-show="nowChatIndex>=0"
+                            v-show="nowDMContactsIndex>=0"
                         >
                             发送
                         </el-button>
@@ -107,6 +109,11 @@
 
             sendMessage(message.value);
         message.value="";
+    });
+
+    onMounted(()=>{
+        // 初始化私信
+        initDM();
     });
         
     onActivated(()=>{
@@ -239,7 +246,7 @@
                     $countHeight: 14px;
                     
                     .sendBox{
-                        height: 162px;
+                        @include fixedHeight(162px);
                         margin-top: 0.8px;
                         position: relative;
                         

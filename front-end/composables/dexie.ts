@@ -1,23 +1,14 @@
-// db.ts
+import type { ContactsDBItem, MessageDBItem } from '~/types/chat';
 import Dexie, { type EntityTable } from 'dexie';
 
-interface Friend {
-  id: number;
-  name: string;
-  age: number;
-}
-
-const db = new Dexie('FriendsDatabase') as Dexie & {
-  friends: EntityTable<
-    Friend,
-    'id' // primary key "id" (for the typings only)
-  >;
+const db = new Dexie('psmDB') as Dexie & {
+  ContactsDBItems: EntityTable< ContactsDBItem, 'id'>;// 联系人记录的id不使用自动生成
+  MessageDBItems: EntityTable< MessageDBItem, 'id'>;// 聊天记录的id使用自动生成
 };
 
-// Schema declaration:
 db.version(1).stores({
-  friends: '++id, name, age' // primary key "id" (for the runtime!)
+  ContactsDBItems: '++id, srcUserId, name, timestamp',
+  MessageDBItems: '++id, [maxUserId+minUserId], timestamp'
 });
 
-export type { Friend };
 export { db };

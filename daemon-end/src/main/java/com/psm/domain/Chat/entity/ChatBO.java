@@ -1,11 +1,9 @@
 package com.psm.domain.Chat.entity;
 
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
-import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.domain.User.user.types.convertor.UserConvertor;
-import com.psm.utils.VO.DTO2VOable;
-import com.psm.utils.Valid.ValidUtil;
-import com.tangzc.mpe.bind.Binder;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +24,8 @@ public class ChatBO implements Serializable {
     @Min(value = 1, message = "The srcUserId must be greater than or equal to 1")
     private Long srcUserId;
 
+    private String timestamp;
+
     private String content;
 
     public static ChatBO fromDTO(ChatDTO chatDTO) {
@@ -34,5 +34,16 @@ public class ChatBO implements Serializable {
 
     public static ChatBO fromDO(ChatDO chatDO) {
         return ChatConvertor.INSTANCE.DO2BO(chatDO);
+    }
+
+    public String generateTimestamp() {
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        String timestamp = now.format(formatter);
+
+        // ChatBO的timestamp属性设置时间戳
+        this.timestamp = timestamp;
+        return timestamp;
     }
 }

@@ -5,7 +5,7 @@
         </div>
         <div class="bottom">
             <div class="avatar">
-                <CommonAvatar :src="avatar"></CommonAvatar>
+                <CommonAvatar :src="srcUserId==userInfo.id?userInfo.avatar:avatar"></CommonAvatar>
             </div>
             
             <div class="gap"></div>
@@ -15,8 +15,8 @@
             <div class="gap"></div>
             
             <div class="status" v-if="status!='sent'">
-                <div class="loading" v-if="status!='pending'"></div>
-                <div class="error" v-if="status!='error'" ></div>
+                <div class="pending" v-if="status=='pending'"></div>
+                <div class="error" v-else-if="status=='error'" ></div>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
         type: {type:String, required: true},
         srcUserId: {type:String, required: true},
         tgtUserId: {type:String, required: true},
-        time: {type:String, required: true},
+        timestamp: {type:String, required: false},
         isDeleted: {type:Boolean, required: true},
         status: {type:String, required: false, default: "sent"}
     });
@@ -91,7 +91,7 @@
                     background-position: center;
                 }
                 
-                .loading{
+                .pending{
                     @keyframes spin {
                         0% { transform: rotate(0deg); }
                         100% { transform: rotate(360deg); }

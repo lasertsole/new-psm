@@ -267,3 +267,13 @@
 		border-radius: $thumbSize; /* 轨道的圆角 */
 	}
 }
+
+@mixin wordEllipsis{
+	word-wrap: break-word;
+	word-break: break-all;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1; // 限制显示的行数
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

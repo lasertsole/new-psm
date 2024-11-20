@@ -36,6 +36,10 @@ public class ChatDO implements Serializable {
     @Column(comment = "来源用户id", notNull = true)
     private Long srcUserId;
 
+    @Index(name = "tb_chats_timestamp_index")
+    @Column(comment = "信息时间戳")
+    private String timestamp;
+
     @Column(comment = "消息内容")
     private String content;
 

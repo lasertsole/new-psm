@@ -125,7 +125,6 @@
     }
 
     async function handerFilterCommit({ typeArr, switchArr }: { typeArr:string[], switchArr: boolean[] }): Promise<void> {
-        console.log(typeArr, switchArr);
         style.value = typeArr[0];
         type.value = typeArr[1];
         isIdle.value = switchArr[0];
@@ -165,7 +164,7 @@
             @include fullWidth();
             min-height: 100%;
             justify-self: flex-start;
-            padding: 0px;
+            padding-bottom: 10px;
             display: flex;
             flex-direction: column;
             
