@@ -12,9 +12,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatDTO implements DTO2VOable<ChatVO>, Serializable {
-    private Long id;
-    private Long tgtUserId;
-    private Long srcUserId;
+    private String id;
+    private String tgtUserId;
+    private String srcUserId;
     private String timestamp;
     private String content;
 

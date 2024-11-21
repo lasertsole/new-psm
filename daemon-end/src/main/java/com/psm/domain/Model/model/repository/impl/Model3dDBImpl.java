@@ -15,6 +15,7 @@ import java.util.List;
 @Slf4j
 @Repository
 public class Model3dDBImpl extends BaseDBRepositoryImpl<Model3dMapper, Model3dDO> implements Model3dDB {
+
     @Autowired
     private Model3dMapper model3dMapper;
 

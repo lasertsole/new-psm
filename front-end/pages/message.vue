@@ -14,16 +14,17 @@
                         <template v-for="(item, index) in contactsItems" :key="item.id">
                             <MessageContactsBox
                                 :tgtUserId="item.tgtUserId!"
-                                :name="item.name!"
                                 :avatar="item.avatar!"
                                 :lastMessage="item.lastMessage!"
-                                :lastTime="item.lastTime!"
                                 :unread="item.unread!"
                                 :isMuted="item.isMuted!"
                                 :isGroup="item.isGroup!"
                                 :isSeleted="index==nowDMContactsIndex"
                                 :index="index"
                             >
+                                <template #lastTime>{{ formatToLocalTime(item.lastTime) }}</template>
+                                <template #name>{{ item.name }}</template>
+                                <template #lastMessage>{{ item.lastMessage }}</template>
                             </MessageContactsBox>
                         </template>
                     </div>
@@ -112,12 +113,11 @@
     });
 
     onMounted(()=>{
-        // 初始化私信
-        initDM();
     });
         
     onActivated(()=>{
-        
+        // 初始化私信
+        initDM();
     });
 
     definePageMeta({

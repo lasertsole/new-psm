@@ -1,23 +1,20 @@
 <template>
     <div :class="{messageBox:true, isSelf:srcUserId==userInfo.id}">
-        <div class="top">
-            
+        <div class="avatar">
+            <CommonAvatar :src="srcUserId==userInfo.id?userInfo.avatar:avatar"></CommonAvatar>
         </div>
-        <div class="bottom">
-            <div class="avatar">
-                <CommonAvatar :src="srcUserId==userInfo.id?userInfo.avatar:avatar"></CommonAvatar>
-            </div>
-            
-            <div class="gap"></div>
-            
+        
+        <div class="gap"></div>
+        
+        <div class="content">
             <div class="text"><slot name="text"></slot></div>
+        </div>
 
-            <div class="gap"></div>
-            
-            <div class="status" v-if="status!='sent'">
-                <div class="pending" v-if="status=='pending'"></div>
-                <div class="error" v-else-if="status=='error'" ></div>
-            </div>
+        <div class="gap"></div>
+        
+        <div class="status" v-if="status!='sent'">
+            <div class="pending" v-if="status=='pending'"></div>
+            <div class="error" v-else-if="status=='error'" ></div>
         </div>
     </div>
 </template>
@@ -40,36 +37,28 @@
     @import "@/common.scss";
 
     .messageBox{
-        &.isSelf{
-            .bottom{
-                flex-direction: row-reverse;
-                
-                .text{
-                    background-color: #80b9f2;
-                    border-radius: 16px 0 16px 16px;
-                }
-            }
+        @include fullWidth;
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        padding: 0px 16px 16px 16px;
+        
+        $avatarSize: 30px;
+        $gapSize: 8px;
+        .avatar{
+            @include fixedSquare($avatarSize);
+        }
+
+        .gap{
+            @include fixedWidth($gapSize);
         }
         
-        .bottom{
-            @include fullWidth;
+        .content{
+            max-width: calc(100% - 2 * ($avatarSize + $gapSize));
             display: flex;
-            flex-direction: row;
-            align-items: start;
-            padding: 0px 16px 16px 16px;
-            
-            $avatarSize: 30px;
-            $gapSize: 8px;
-            .avatar{
-                @include fixedSquare($avatarSize);
-            }
+            flex-direction: column;
 
-            .gap{
-                @include fixedWidth($gapSize);
-            }
-            
             .text{
-                max-width: calc(100% - 2 * ($avatarSize + $gapSize));
                 padding: 8px 16px;
                 display: inline-block;
                 font-size: 14px;
@@ -79,30 +68,39 @@
                 overflow: hidden;
                 background: #fff;
             }
+        }
 
-            .status{
-                @include fixedSquare(16px);
-                align-self: flex-end;
+        .status{
+            @include fixedSquare(16px);
+            align-self: flex-end;
 
-                >div{
-                    @include fullInParent;
-                    background-size: 100%;
-                    background-repeat: no-repeat;
-                    background-position: center;
+            >div{
+                @include fullInParent;
+                background-size: 100%;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            
+            .pending{
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
                 }
-                
-                .pending{
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                    animation: spin 2s linear infinite;
-                    background-image: url("/icons/msPending.svg");
-                }
+                animation: spin 2s linear infinite;
+                background-image: url("/icons/msPending.svg");
+            }
 
-                .error{
-                    background-image: url("/icons/msError.svg");
-                }
+            .error{
+                background-image: url("/icons/msError.svg");
+            }
+        }
+
+        &.isSelf{
+            flex-direction: row-reverse;
+            
+            .text{
+                background-color: #80b9f2;
+                border-radius: 16px 0 16px 16px;
             }
         }
     }

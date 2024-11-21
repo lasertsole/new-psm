@@ -1,5 +1,7 @@
 package com.psm.domain.Chat.adaptor.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Chat.entity.ChatBO;
@@ -24,4 +26,9 @@ public class ChatAdaptorImpl implements ChatAdaptor {
             throw new IllegalArgumentException("Invalid parameter");
         }
     }
+
+    @Override
+    public void patchInitMessage(SocketIOClient srcClient, String timestamp) {
+        chatService.patchInitMessage(srcClient, timestamp);
+    };
 }

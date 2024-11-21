@@ -1,4 +1,4 @@
-package com.psm.infrastructure.Websocket.Handler;
+package com.psm.infrastructure.SocketIO.Handler;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;

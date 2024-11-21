@@ -1,4 +1,4 @@
-package com.psm.infrastructure.Websocket.config;
+package com.psm.infrastructure.SocketIO.config;
 
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;

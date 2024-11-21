@@ -1,3 +1,4 @@
+// 比较string或number大小，选出大的
 export function max<T extends number | string>(a: T, b: T): T {
     if (a > b) {
         return a;
@@ -6,10 +7,103 @@ export function max<T extends number | string>(a: T, b: T): T {
     }
 }
 
+// 比较string或number大小，选出小的
 export function min<T extends number | string>(a: T, b: T): T {
     if (a < b) {
         return a;
     } else {
         return b;
     }
+}
+
+// 将日期转换为格式化字符串(本地化时间)
+export function getFormattedDate(date: Date):string {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const oneDay = 24 * 60 * 60 * 1000; // 一天的毫秒数
+    const oneYear = 365 * oneDay; // 一年的毫秒数
+
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    };
+
+    const formattedDate = date.toLocaleString('en-US', options);
+    const [timePart, amPm] = formattedDate.split(', ');
+    const [monthDayYear] = timePart.split(' ');
+    const [month, day, year] = monthDayYear.split('/');
+
+    if (diff >= oneYear) {
+        return `${year}.${month}.${day}`;
+    } else if (diff >= oneDay) {
+        return `${month}.${day}`;
+    } else {
+        return `${amPm}`;
+    };
+};
+
+// 将字符串转换为日期
+export function stringToDate(dateString: string): Date | null {
+    // 检查是否为数字，可能是时间戳
+    if (!isNaN(Number(dateString))) {
+        const timestamp = Number(dateString);
+        const date = new Date(timestamp);
+
+        if (isNaN(date.getTime())) {
+        console.error('Invalid date:', dateString);
+            return null; // 或者返回其他默认值
+        };
+
+        return date;
+    }
+
+    // 将自定义格式转换为标准 ISO 8601 格式
+    const isoTime = dateString.replace(' ', 'T') + 'Z';
+    const date = new Date(isoTime);
+    if (isNaN(date.getTime())) {
+        console.error('Invalid date:', dateString);
+        return null; // 或者返回其他默认值
+    };
+
+    return date;
+};
+
+// 计算属性，用于将 UTC 时间转换为本地时间
+export function formatToLocalTime(utcTime: string | undefined):string | null {
+    if (!utcTime) return '';
+
+    let date:Date | null = stringToDate(utcTime);
+    if (!date) {
+        return null
+    };
+
+    return getFormattedDate(date);
+};
+
+// 比较Date时间，返回时间差,若为正数，则a在b之后，若为负数，则a在b之前，若为0，则a和b相等
+export function compareDate(a: Date, b: Date): number {
+    return a.getTime() - b.getTime();
+};
+
+// 判断Date时间是否晚于另一个Date时间
+export function isLate(a: Date, b: Date):boolean {
+    return a.getTime() > b.getTime();
+};
+
+// 筛选出最大的Date
+export function maxDate(a: Date, b: Date): Date {
+    return isLate(a, b) ? a : b;
+};
+
+// 获取现在的UTC国际通用时间,精确到微秒级别
+export function getUTCTimeNow(): string {
+    const now = new Date();
+    const milliseconds = now.getUTCMilliseconds();
+    const microseconds = (milliseconds * 1000 + Math.floor((now.getTime() % 1) * 1000000)) % 1000000;
+    return now.toISOString().slice(0, -1) + '.' + microseconds.toString().padStart(6, '0') + 'Z';
 }

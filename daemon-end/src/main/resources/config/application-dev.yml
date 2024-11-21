@@ -170,6 +170,11 @@ socketio:
   ping-timeout: 6000000
   # Ping消息间隔（毫秒），默认25秒。客户端向服务器发送一条心跳消息间隔
   ping-interval: 25000
+  # 应用配置
+  app:
+    configuration:
+      DMExpireDay: 7
+      DMMaxInitCountInPage: 50 # 分批初始化时每页最大数量，按照实际情况跳转
 
 #服务器地址及端口
 server:

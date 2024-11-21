@@ -6,6 +6,7 @@ import com.psm.domain.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Chat.entity.ChatBO;
 import com.psm.domain.Chat.entity.ChatDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
+import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +34,9 @@ public class DMController implements CommandLineRunner {
 
     @Autowired
     private MQPublisher mqPublisher;
+
+    @Autowired
+    private SocketAppProperties socketAppProperties;
 
     // 存储用户id和对应的socket的映射（因为websocket连接在本地主机，所以不需要考虑多节点问题）
     private final Map<String, SocketIOClient> userIdMapClient = new ConcurrentHashMap<>();
@@ -57,16 +62,17 @@ public class DMController implements CommandLineRunner {
 
         // 添加连接监听器
         dm.addConnectListener(client -> {
-            try {
-                userIdMapClient.put(client.get("userId"), client);
-            }
-            catch (Exception e) {
-                log.info("connect DM error");
-            }
+            userIdMapClient.put(client.get("userId"), client);
+
+            // 向客户端发送配置信息
+            Map<String, Object> map = new HashMap<>();
+            map.put("DMExpireDay", socketAppProperties.getDMExpireDay());
+
+            client.sendEvent("initDMConfig", map);
         });
 
         // 添加断开连接监听器
-        dm.addDisconnectListener(client ->{
+        dm.addDisconnectListener(client -> {
             try {
                 userIdMapClient.remove(client.get("userId"));
             }
@@ -83,7 +89,7 @@ public class DMController implements CommandLineRunner {
                     // 校验参数
                     ChatBO chatBO = ChatBO.fromDTO(chatDTO);
 
-                    // 获取信息的发送时间戳，如果时间戳与上一次发信息相同，则证明是重复信息
+                    // 获取信息的发送时间戳，如果时间戳与上一次发信息相同，则证明是重复信息,直接丢弃.
                     if(Objects.nonNull(srcClient.get("DMLastTime")) && srcClient.get("DMLastTime").equals(chatDTO.getTimestamp())) return;
                     srcClient.set("DMLastTime", chatDTO.getTimestamp());
 
@@ -97,7 +103,9 @@ public class DMController implements CommandLineRunner {
                     SocketIOClient tgtClient = userIdMapClient.get(tgtUserId);
                     if (Objects.nonNull(tgtClient)){
                         tgtClient.sendEvent("receiveMessage", chatDTO.toVO());
-                    }
+
+                        //TODO 如果目标用户不在本台机器，则把消息广播到MQ，让其他机器查找目标用户SocketIOClient
+                    };
 
                     //生成返回时间戳(UTC国际化时间戳)
                     String timestamp = chatBO.generateTimestamp();
@@ -110,6 +118,22 @@ public class DMController implements CommandLineRunner {
                 }
                 catch (ClientException e) {
                     ackRequest.sendAckData("MQ error");
+                }
+                catch (Exception e) {
+                    ackRequest.sendAckData("server error");
+                }
+            }
+        });
+
+        dm.addEventListener("initMessage", String.class, new DataListener<>() {
+            @Override
+            public void onData(SocketIOClient srcClient, String timestamp, AckRequest ackRequest) {
+                try {
+                    // 用户信息可能很庞大，需要异步处理
+                    chatAdaptor.patchInitMessage(srcClient, timestamp);
+
+                    // 返回ack和消息接收时间戳
+                    ackRequest.sendAckData(timestamp);
                 }
                 catch (Exception e) {
                     ackRequest.sendAckData("server error");

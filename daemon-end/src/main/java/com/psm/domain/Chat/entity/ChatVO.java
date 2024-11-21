@@ -1,11 +1,18 @@
 package com.psm.domain.Chat.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatVO implements Serializable {
-    private Long id;
-    private Long tgtUserId;
-    private Long srcUserId;
+    private String id;
+    private String tgtUserId;
+    private String srcUserId;
     private String timestamp;
     private String content;
 }

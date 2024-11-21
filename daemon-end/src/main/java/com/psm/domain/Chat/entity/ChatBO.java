@@ -1,5 +1,6 @@
 package com.psm.domain.Chat.entity;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.Min;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -34,6 +36,14 @@ public class ChatBO implements Serializable {
 
     public static ChatBO fromDO(ChatDO chatDO) {
         return ChatConvertor.INSTANCE.DO2BO(chatDO);
+    }
+
+    public static Page<ChatBO> fromDOPage(Page<ChatDO> chatDOPage) {
+        Page<ChatBO> chatBOPage = new Page<>();
+        BeanUtils.copyProperties(chatDOPage, chatBOPage);
+        chatBOPage.setRecords(chatDOPage.getRecords().stream().map(ChatConvertor.INSTANCE::DO2BO).toList());
+
+        return chatBOPage;
     }
 
     public String generateTimestamp() {

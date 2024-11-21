@@ -12,14 +12,21 @@ const manager: Manager= new Manager(socketUrl, {
 
 
 /*************************************以下为DM命名空间逻辑****************************************/
-export const contactsItems: Ref<ContactsItem[]> = ref<ContactsItem[]>([] as ContactsItem[]);// 联系人列表
+export const contactsItems: Reactive<ContactsItem>[] = reactive([] as ContactsItem[]);// 联系人列表
 export const nowDMContactsIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
+let isInitDM:boolean = false;// 是否已初始化
+
+type DMConfig = {
+  DMExpireDay: number
+}
 
 export class DMService { // 单例模式
   private static instance: DMService;
   private DMSocket: Socket;
   private interval:NodeJS.Timeout|null = null;
-
+  private config: DMConfig = { // 配置项
+    DMExpireDay: 7, // 默认7天
+  };
   private constructor() {
     this.DMSocket = manager.socket("/DM", {
       auth: {
@@ -52,6 +59,20 @@ export class DMService { // 单例模式
           this.connect();
         }, 5000); // 5秒后重试
       };
+    });
+
+    /**
+     * 初始化DMConfig
+     */
+    this.DMSocket.on("initDMConfig", (item: DMConfig) => {
+      this.config = item;
+    });
+
+    /**
+     * 从服务器接收历史信息记录
+     */
+    this.DMSocket.on("initMessage", (item: MessageItem[]) => {
+      
     });
 
     // this.DMSocket.on("receiveMessage", (MessageItem: MessageItem)=>{
@@ -102,18 +123,18 @@ export async function toDM(tgtUserId:string, name:string, avatar:string): Promis
   // 初始化联系人和信息
   await initDM();
 
-  let tgtUserIds: string[] = contactsItems.value.length!=0?contactsItems.value.map(user => user.tgtUserId!):[];
+  let tgtUserIds: string[] = contactsItems.length!=0?contactsItems.map(user => user.tgtUserId!):[];
   let index = tgtUserIds.indexOf(tgtUserId);
   
-  if(index!== -1) {// 如果用户存在于联系人列表中
+  if(index!== -1) { // 如果用户存在于联系人列表中
     // 将用户从原位置移除
-    const [movedElement] = contactsItems.value.splice(index, 1);
+    const [movedElement] = contactsItems.splice(index, 1);
     // 将用户插入到列表头部
-    contactsItems.value.unshift(movedElement);
+    contactsItems.unshift(movedElement);
   }
   else {// 如果用户不存在于联系人列表中
     // 将用户插入到列表头部
-    let newContactItem: ContactsItem = {
+    let newContactItem: Reactive<ContactsItem> = reactive<ContactsItem>({
       tgtUserId,
       srcUserId: userInfo.id!,
       name,
@@ -124,9 +145,9 @@ export async function toDM(tgtUserId:string, name:string, avatar:string): Promis
       isMuted: false,
       isGroup: false,
       messageItems: []
-    };
+    });
 
-    contactsItems.value.unshift(newContactItem);
+    contactsItems.unshift(newContactItem);
   };
   
   nowDMContactsIndex.value = 0;// 将当前聊天窗口设置为第一个
@@ -136,8 +157,9 @@ export async function toDM(tgtUserId:string, name:string, avatar:string): Promis
 
 // 初始化(获取联系人列表和信息)
 export async function initDM(): Promise<void> {
-  // 如果已经有联系人列表，则说明已初始化过，直接退出
-  if(!userInfo.isLogin || contactsItems.value.length!=0) return;
+  // 如果已初始化过，直接退出
+  if(!userInfo.isLogin || isInitDM) return;
+  isInitDM = true;
   
   // 从本地indexedDB拿去最新联系人列表
   let contactsDBItems: ContactsDBItem[] = await db.ContactsDBItems
@@ -145,14 +167,24 @@ export async function initDM(): Promise<void> {
   .equals(userInfo.id!)
   .sortBy('timestamp');
   
+  // 最晚的信息的时间戳(默认是UTC国际时间戳，来着服务端)
+  let maxLastTime: Date = new Date(0);
+
   // 将每个 ContactsDBItem 转换为 ContactsItem
-  contactsItems.value = contactsDBItems.map(contactDBItem => ({
-    ...contactDBItem,
-    messageItems: [] as MessageItem[] // 消息列表
-  }) as ContactsItem);
+  contactsDBItems.forEach(contactDBItem => {
+    // 筛选出最大的时间戳
+    maxLastTime = maxDate(maxLastTime, new Date(contactDBItem.lastTime!));
+    // console.log(contactDBItem);
+
+    // 返回 ContactsItem类型数据
+    contactsItems.push({
+      ...contactDBItem,
+      messageItems: [] as MessageItem[] // 消息列表
+    } );
+  });
 
   // 从本地indexedDB拿去最新聊天信息
-  contactsItems.value.forEach(async (item, index)=>{
+  contactsItems.forEach(async item => {
     let messageDBItems: MessageDBItem[] = await db.MessageDBItems
     .where('[maxUserId+minUserId]')
     .equals([max(item.tgtUserId, item.srcUserId), min(item.tgtUserId, item.srcUserId)])
@@ -168,13 +200,13 @@ export async function initDM(): Promise<void> {
   
   // 从服务器获取最新聊天信息
   let socket: Socket = DMService.getInstance().getSocket();
-  socket.timeout(5000).emit('updateMessage');
+  socket.timeout(5000).emit('initMessage', maxLastTime);
 };
 
 // 发送信息逻辑
 export function sendMessage(message:string): void {
   // 创建一个联系人对象
-  let constactsObj:ContactsItem = contactsItems.value[nowDMContactsIndex.value];
+  let constactsObj:ContactsItem = contactsItems[nowDMContactsIndex.value];
   
   // 创建一个消息对象
   let messageObj:MessageItem = {
@@ -193,10 +225,7 @@ export function sendMessage(message:string): void {
   constactsObj.messageItems!.push(messageItem);
   
   // 生成发送信息时客户端的时间戳（UTC国际通用）,精确到微秒级别
-  const now = new Date();
-  const milliseconds = now.getUTCMilliseconds();
-  const microseconds = (milliseconds * 1000 + Math.floor((now.getTime() % 1) * 1000000)) % 1000000;
-  const formattedTimestamp = now.toISOString().slice(0, -1) + '.' + microseconds.toString().padStart(6, '0') + 'Z';
+  const formattedTimestamp = getUTCTimeNow();
 
   messageItem.timestamp = formattedTimestamp;
   
@@ -212,7 +241,7 @@ export function sendMessage(message:string): void {
     // 更新消息状态
     messageItem.status = 'sent';
 
-    // 服务器返回的时间戳更新消息时间
+    // 根据服务器返回的时间戳,更新消息时间
     messageItem.timestamp = res;
 
     // 若该联系人在indexedDB数据库的联系人列表，则更新该联系人的最近联系时间，否则插入该联系人的记录
