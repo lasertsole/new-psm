@@ -18,7 +18,7 @@
 ### springsecurity+OAuth2安全框架
 ### mybatis-plus + mybatis-plus-join + mybatis-plus-ext 兼具JPA（Hibernate）特性的sql代码生成器
 ### postgresql(podman)下一代单体关系型数据库
-### redis(podman) 键值型内存数据库
+### redis + caffeine + jetCache 分布式多级缓存
 ### mongodb(podman) bson型内存数据库
 ### nginx(podman) 正反向代理
 ### rocketMQ 消息中间件
