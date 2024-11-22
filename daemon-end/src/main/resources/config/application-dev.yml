@@ -1,3 +1,14 @@
+constants:
+  # redis配置
+  redis:
+    host: 127.0.0.1
+    # 端口
+    port: 6379
+    # 数据库索引
+    database: 0
+    # 密码
+    password: 123456
+
 spring:
   #开发环境申明
   config:
@@ -20,13 +31,13 @@ spring:
 #redis的主机ip及端口
   data:
     redis:
-      host: 127.0.0.1
+      host: ${constants.redis.host}
       # 端口
-      port: 6379
+      port: ${constants.redis.port}
       # 数据库索引
-      database: 0
+      database: ${constants.redis.database}
       # 密码
-      password: 123456
+      password: ${constants.redis.password}
       # 连接超时时间
       timeout: 10s
       #lettuce连接池配置
@@ -175,6 +186,48 @@ socketio:
     configuration:
       DMExpireDay: 7
       DMMaxInitCountInPage: 50 # 分批初始化时每页最大数量，按照实际情况跳转
+
+# jetCache多級緩存
+jetcache:
+  statIntervalMinutes: 15 # 統計信息收集間隔
+  areaInCacheName: false # 是否在缓存名上添加区域标识
+  hidePackages: com.example # 隱藏包名
+  local: # 本地緩存配置
+    default:
+      type: caffeine
+      limit: 100 # 緩存數量
+      keyConvertor: fastjson # key轉換器
+      expireAfterWriteInMillis: 100000 #寫入後過期時間
+    otherArea: # 其他區域
+      type: linkedhashmap
+      limit: 100
+      keyConvertor: none
+      expireAfterWriteInMillis: 100000
+  remote: # 遠程緩存配置
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5 # 连接池最小空闲连接数
+        maxIdle: 20 # 连接池最大空闲连接数
+        maxTotal: 50 # 连接池最大连接数
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
+    otherArea:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: kryo
+      valueDecoder: kryo
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
 
 #服务器地址及端口
 server:

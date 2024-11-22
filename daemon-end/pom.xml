@@ -9,8 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.psm</groupId>
-	<artifactId>rocketmq</artifactId>
+	<artifactId>daemon-end</artifactId>
 	<version>1.1.1</version>
+<!--	<packaging>pom</packaging> &lt;!&ndash; 聚合項目打包方式 &ndash;&gt;-->
 	<name>daemon-end</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -35,6 +36,9 @@
 		<mybatisPlusJoin.version>1.5.2</mybatisPlusJoin.version>
 		<mybatisPlusExt.version>3.5.8-EXT722</mybatisPlusExt.version>
 		<redssion.version>3.38.1</redssion.version>
+		<!--以下是jetCache依赖-->
+		<jetCache.version>2.7.7</jetCache.version>
+		<!--以上是j2cache依赖-->
 		<fastjson2.version>2.0.52</fastjson2.version>
 		<jjwt.version>0.12.3</jjwt.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -98,13 +102,26 @@
 			<version>${mybatisPlusExt.version}</version>
 		</dependency>
 
+		<!-- jetCache多級緩存 -->
+		<dependency>
+			<groupId>com.alicp.jetcache</groupId>
+			<artifactId>jetcache-starter-redis</artifactId>
+			<version>${jetCache.version}</version>
+		</dependency>
+
+		<!--caffeine一级缓存-->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+
 		<!--redis起步依赖-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
-		<!--基于redis的分布式自旋锁-->
+		<!--redis高级客户端，主要要来实现分布式自旋锁-->
 		<dependency>
 			<groupId>org.redisson</groupId>
 			<artifactId>redisson-spring-boot-starter</artifactId>
@@ -117,7 +134,7 @@
 			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
 
-		<!--引入springsecurity依赖-->
+		<!--引入springSecurity依赖-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -305,6 +322,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.psm.DaemonEndApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

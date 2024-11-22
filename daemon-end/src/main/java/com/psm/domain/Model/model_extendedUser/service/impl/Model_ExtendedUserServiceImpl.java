@@ -1,5 +1,6 @@
 package com.psm.domain.Model.model_extendedUser.service.impl;
 
+import com.alicp.jetcache.anno.Cached;
 import com.psm.domain.Model.model_extendedUser.repository.Model_ExtendedUserDB;
 import com.psm.domain.Model.model_extendedUser.service.Model_ExtendedUserService;
 import com.psm.domain.Model.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
@@ -12,10 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class Model_ExtendedUserServiceImpl implements Model_ExtendedUserService {
     @Autowired
-    private Model_ExtendedUserDB modelExtendedUserBindDB;
+    private Model_ExtendedUserDB model_ExtendedUserDB;
 
     @Override
     public Model_ExtendedUserBO getModelByModelId(Long id, Long userSelfId) {
-        return Model_ExtendedUserConvertor.INSTANCE.DO2BO(modelExtendedUserBindDB.selectModelByModelId(id, userSelfId));
+        return Model_ExtendedUserConvertor.INSTANCE.DO2BO(model_ExtendedUserDB.selectModelByModelId(id, userSelfId));
     }
 }

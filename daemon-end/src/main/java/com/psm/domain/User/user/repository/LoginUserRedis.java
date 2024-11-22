@@ -13,13 +13,6 @@ public interface LoginUserRedis {
     void addLoginUser(String id, LoginUser loginUser);
 
     /**
-     * 添加登录用户
-     *
-     * @param loginUser 登录用户实体
-     */
-    void addLoginUser(LoginUser loginUser);
-
-    /**
      * 获取登录用户
      *
      * @param id 登录用户id

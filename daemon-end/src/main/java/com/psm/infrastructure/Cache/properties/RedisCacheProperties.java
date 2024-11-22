@@ -1,4 +1,4 @@
-package com.psm.infrastructure.Redis.properties;
+package com.psm.infrastructure.Cache.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -17,9 +17,6 @@ public class ChatDBImpl extends BaseDBRepositoryImpl<ChatMapper, ChatDO> impleme
     @Autowired
     private ChatMapper chatMapper;
 
-    @Autowired
-    private SocketAppProperties socketAppProperties;
-
     @Override
     public void insert(ChatDO chatDO) {
         log.info("chatDO is {}", chatDO);
@@ -27,10 +24,13 @@ public class ChatDBImpl extends BaseDBRepositoryImpl<ChatMapper, ChatDO> impleme
     }
 
     @Override
-    public Page<ChatDO> patchInitMessage(String timestamp, Integer current, Integer size) {
+    public Page<ChatDO> patchInitMessage(String timestamp, String userId, Integer current, Integer size) {
         Page<ChatDO> page = new Page<>(current, size);
         LambdaQueryWrapper<ChatDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.gt(ChatDO::getTimestamp, timestamp);
+
+        wrapper.gt(ChatDO::getTimestamp, timestamp)
+            .and(w->w.eq(ChatDO::getTgtUserId, userId).or(w2->w2.eq(ChatDO::getSrcUserId, userId)));
+
         chatMapper.selectPage(page, wrapper);
 
         return page;

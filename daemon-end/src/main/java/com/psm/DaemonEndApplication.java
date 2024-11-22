@@ -10,7 +10,6 @@ public class DaemonEndApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(DaemonEndApplication.class);
 	public static void main(String[] args) {
-		logger.info("DaemonEndApplication start");
 		SpringApplication.run(DaemonEndApplication.class, args);
 	}
 

@@ -1,8 +1,11 @@
 package com.psm.domain.User.user.Event.EventBus.security.filter;
 
+import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.CreateCache;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
-import com.psm.infrastructure.Redis.RedisCache;
+import com.psm.infrastructure.Cache.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 @ConfigurationProperties(prefix = "spring.security.jwt")//配置和jwt一样的过期时间
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
+    @CreateCache(name = "localJWTCache", cacheType = CacheType.LOCAL, expire = 60 * 10)
+    private Cache<String, LoginUser> localJWTCache;
+
     @Autowired
     private RedisCache redisCache;
 
@@ -51,7 +57,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             //放行
             filterChain.doFilter(request, response);
             return;
-        }
+        };
 
         //解析token
         String userid;
@@ -60,15 +66,19 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             userid = claims.getSubject();
         } catch (Exception e) {
             throw new RuntimeException("Invalid token");
-        }
+        };
 
-        //从redis中获取用户信息
         String redisKey = "login:" + userid;
-        LoginUser loginUser = redisCache.getCacheObject(redisKey);
+        LoginUser loginUser;
+        // 先從caffeine取數據
+        loginUser = localJWTCache.get(redisKey);
 
         if(Objects.isNull(loginUser)){
-            throw new RuntimeException("User not logged in");
-        }
+            // 如果caffeine沒有命中，則从redis中获取用户信息
+            loginUser = redisCache.getCacheObject(redisKey);
+
+            if(Objects.isNull(loginUser)){throw new RuntimeException("User not logged in");};
+        };
 
         //如果JWT验证信息过期时间小于一小时则重置JWT
         if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= refreshExpiration/1000){
@@ -77,7 +87,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
 
             //重置的token通过返回头的方式通知客户端
             response.setHeader("token",jwt);
-        }
+        };
 
         //存入SecurityContextHolder,并跳过验证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);

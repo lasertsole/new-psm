@@ -1,6 +1,6 @@
-package com.psm.infrastructure.Redis;
+package com.psm.infrastructure.Cache;
 
-import com.psm.infrastructure.Redis.properties.RedisCacheProperties;
+import com.psm.infrastructure.Cache.properties.RedisCacheProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;

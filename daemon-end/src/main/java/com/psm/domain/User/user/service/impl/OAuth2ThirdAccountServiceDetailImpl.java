@@ -8,7 +8,7 @@ import com.psm.domain.User.user.types.convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.User.user.Event.EventBus.security.utils.Oauth2UserIdContextHolder;
 import com.psm.domain.User.user.repository.OAuth2ThirdAccountDB;
 import com.psm.domain.User.user.repository.UserDB;
-import com.psm.infrastructure.Redis.RedisCache;
+import com.psm.infrastructure.Cache.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

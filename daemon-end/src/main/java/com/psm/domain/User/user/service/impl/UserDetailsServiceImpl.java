@@ -1,11 +1,12 @@
 package com.psm.domain.User.user.service.impl;
 
+import com.alicp.jetcache.anno.CacheUpdate;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.AuthUserService;
 import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
-import com.psm.infrastructure.Redis.RedisCache;
+import com.psm.infrastructure.Cache.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

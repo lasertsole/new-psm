@@ -2,7 +2,7 @@ package com.psm.domain.Model.model.repository.impl;
 
 import com.psm.domain.Model.model.repository.Model3dRedis;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.infrastructure.Redis.RedisCache;
+import com.psm.infrastructure.Cache.RedisCache;
 import com.psm.infrastructure.Tus.Tus;
 import org.springframework.beans.factory.annotation.Autowired;
 

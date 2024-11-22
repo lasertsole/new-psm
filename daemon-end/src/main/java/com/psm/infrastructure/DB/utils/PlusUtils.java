@@ -2,8 +2,8 @@ package com.psm.infrastructure.DB.utils;
 
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.psm.infrastructure.Redis.utils.RedisConstants;
-import com.psm.infrastructure.Redis.utils.RedisUtils;
+import com.psm.infrastructure.Cache.utils.RedisConstants;
+import com.psm.infrastructure.Cache.utils.RedisUtils;
 import com.psm.utils.Boolean.BooleanUtils;
 import com.psm.utils.Collect.ColUtils;
 import com.psm.utils.Entity.EntityUtils;

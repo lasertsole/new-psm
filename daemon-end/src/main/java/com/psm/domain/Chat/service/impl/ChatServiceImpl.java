@@ -38,11 +38,11 @@ public class ChatServiceImpl implements ChatService {
         Integer size = socketAppProperties.getDMMaxInitCountInPage();// 从环境配置中获取每页显示条数
         int current = 1;// 初始页码为1
         while(true) {
-            Page<ChatDO> chatDOPage = chatDB.patchInitMessage(timestamp, current, size);
+            Page<ChatDO> chatDOPage = chatDB.patchInitMessage(timestamp, srcClient.get("userId"), current, size);
 
             List<ChatVO> chatVOs = chatDOPage.getRecords().stream().map(ChatConvertor.INSTANCE::DO2VO).toList();
 
-            srcClient.sendEvent("initMessage", chatVOs, current);
+            srcClient.sendEvent("initMessage",  chatVOs, current);
             current ++;
             if (chatDOPage.getPages() < current) break;// 如果当前页码大于等于总页码，则跳出循环
         };

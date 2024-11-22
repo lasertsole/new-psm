@@ -16,8 +16,9 @@ public interface ChatDB {
      *
      * @param timestamp 时间戳
      * @param current 当前页
+     * @param userId 用户id
      * @param size 每页大小
      * @return 聊天记录Page对象
      */
-    Page<ChatDO> patchInitMessage(String timestamp, Integer current, Integer size);
+    Page<ChatDO> patchInitMessage(String timestamp, String userId, Integer current, Integer size);
 }
