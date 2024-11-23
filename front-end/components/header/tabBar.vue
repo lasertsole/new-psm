@@ -35,7 +35,7 @@
                 color: #707070;
                 
                 &.selected{
-                    color: #f87299;
+                    color: #4091ff;
                 }
             }
         }

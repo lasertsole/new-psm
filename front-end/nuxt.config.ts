@@ -10,7 +10,9 @@ export default defineNuxtConfig({
     '@element-plus/nuxt'
     ,'@vite-pwa/nuxt'
   ],
-  
+  build: {
+    transpile: ['rxjs', 'three'],
+  },
   pwa: {
     strategies: "generateSW",
     srcDir: "service-worker",

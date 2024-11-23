@@ -28,8 +28,10 @@ public class ChatDBImpl extends BaseDBRepositoryImpl<ChatMapper, ChatDO> impleme
         Page<ChatDO> page = new Page<>(current, size);
         LambdaQueryWrapper<ChatDO> wrapper = new LambdaQueryWrapper<>();
 
-        wrapper.gt(ChatDO::getTimestamp, timestamp)
-            .and(w->w.eq(ChatDO::getTgtUserId, userId).or(w2->w2.eq(ChatDO::getSrcUserId, userId)));
+        wrapper
+            .gt(ChatDO::getTimestamp, timestamp)
+            .and(w->w.eq(ChatDO::getTgtUserId, userId).or(w2->w2.eq(ChatDO::getSrcUserId, userId)))
+            .orderByDesc(ChatDO::getTimestamp);
 
         chatMapper.selectPage(page, wrapper);
 

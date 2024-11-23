@@ -1,6 +1,5 @@
 package com.psm.domain.Chat.adaptor.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Chat.adaptor.ChatAdaptor;

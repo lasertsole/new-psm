@@ -1,6 +1,6 @@
+import type { Reactive } from 'vue';
 import { Manager, Socket } from 'socket.io-client';
 import type { ContactsItem, MessageItem, MessageDBItem, ContactsDBItem } from '@/types/chat';
-import type { Reactive } from 'vue';
 
 let socketUrl:string = "ws://localhost:8001";
 
@@ -71,9 +71,55 @@ export class DMService { // 单例模式
     /**
      * 从服务器接收历史信息记录
      */
-    this.DMSocket.on("initMessage", (item: MessageItem[]) => {
+    // this.DMSocket.on("initMessage", (messageObj: MessageItem[]) => {
+    //   // 找出服务器返回的信息中的所有联系人并绑定相关聊天记录，放在Map(key为userId,value为ContactsItem)里,每个联系人只放一次
+    //   const contactsMap:Map<string, Reactive<contactItem>> = new Map();
+    //   messageObj.forEach((item)=>{
+        
+    //     let contactItem:Reactive<contactItem> = reactive<ContactsItem>({
+    //       tgtUserId: item.tgtUserId,
+    //       srcUserId: userInfo.id!,
+    //       lastMessage: item.content,
+    //       lastTime: item.timestamp,
+    //       messageItems: []
+    //     });
+
+    //     if(item.srcUserId==userInfo.id) {
+
+    //       if(!contactsMap.has(item.tgtUserId)) {
+    //         contactsMap.set(item.tgtUserId, contactItem);
+    //       };
+    //       contactsMap.get(item.tgtUserId).messageItems.push(item);
+    //     } else {
+
+    //       if(!contactsMap.has(item.srcUserId)) {
+    //         contactsMap.set(item.srcUserId, contactItem);
+    //       };
+    //       contactsMap.get(item.srcUserId).messageItems.push(item);
+    //     };
+
+    //     //将信息放进indexedDB里
+    //     db.MessageDBItems.add({
+    //       ...messageObj,
+    //       isDeleted: false,
+    //       status: 'pending',
+    //       type: 'text',
+    //       maxUserId: max( messageObj.srcUserId!, messageObj.tgtUserId! ), 
+    //       minUserId: min( messageObj.srcUserId!, messageObj.tgtUserId! ),
+    //     });
+    //   });
       
-    });
+    //   // 筛选出新的联系人
+    //   contactsItems.forEach((item)=>{
+    //     if(contactsMap.has(item.tgtUserId)) contactsMap.delete(item.tgtUserId);
+    //   });
+    //   let newContacts:Reactive<ContactsItem>[] = [...contactsMap.values()];
+
+    //   // 将新的联系人插入联系人列表里
+    //   newContacts.forEach((item)=>{
+    //     contactsItems.push(item);
+    //   });
+    // });
 
     // this.DMSocket.on("receiveMessage", (MessageItem: MessageItem)=>{
     //   console.log(MessageItem);
@@ -183,7 +229,7 @@ export async function initDM(): Promise<void> {
     } );
   });
 
-  // 从本地indexedDB拿去最新聊天信息
+  // 从本地indexedDB拿取最新聊天信息
   contactsItems.forEach(async item => {
     let messageDBItems: MessageDBItem[] = await db.MessageDBItems
     .where('[maxUserId+minUserId]')

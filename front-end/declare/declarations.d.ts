@@ -13,3 +13,9 @@ declare module "three/examples/jsm/loaders/OBJLoader" {
     }
     export {OBJLoader};
 }
+
+declare module 'rxjs' {
+  export interface Observable<T> {}
+  export function of<T>(...args: T[]): Observable<T>;
+  export function from<T>(input: Iterable<T> | ArrayLike<T> | Promise<T> | ObservableInput<T>): Observable<T>;
+};

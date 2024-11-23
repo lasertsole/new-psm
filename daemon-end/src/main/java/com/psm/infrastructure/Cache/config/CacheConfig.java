@@ -87,7 +87,7 @@ public class CacheConfig {
         MultiLevelChannel multiLevelChannel = new MultiLevelChannel(redissonClient, caffeine);
         Map<String, MultiLevelCacheConfig> config = new ConcurrentHashMap<>();
 
-        config.put("loginCache", new MultiLevelCacheConfig(60 * 60 * 1000,  10 * 60 * 1000, 1000));
+        config.put("loginCache", new MultiLevelCacheConfig(60 * 60 * 1000,  60 * 60 * 1000, 1000));
         config.put("models_UserCache", new MultiLevelCacheConfig(60 * 60 * 1000,  60 * 60 * 1000, 500));
         config.put("model_ExtendedUserCache", new MultiLevelCacheConfig(30 * 60 * 1000,  5 * 60 * 1000, 200));
 

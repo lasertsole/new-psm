@@ -196,9 +196,11 @@
 
                 .left{
                     @include fixedWidth(220px);
-                    margin-right: 1.6px;
-                    display: flex;
-                    flex-direction: column;
+                    &{
+                        margin-right: 1.6px;
+                        display: flex;
+                        flex-direction: column;
+                    }
 
                     .title{
                         color: #666666;
@@ -209,8 +211,8 @@
                     }
 
                     .contactList{
-                        @include scrollBar(8px);
                         flex-grow: 1;
+                        @include scrollBar(8px);
                     }
                 }
                 
@@ -260,9 +262,11 @@
                             .el-textarea__inner{
                                 @include scrollBar(8px);
                                 
-                                width: 100% !important;
-                                height: 100% !important;
-                                padding: $padding;
+                                &{
+                                    width: 100% !important;
+                                    height: 100% !important;
+                                    padding: $padding;
+                                }
                             }
 
                             .el-input__count{

@@ -45,6 +45,7 @@
         
         $avatarSize: 30px;
         $gapSize: 8px;
+
         .avatar{
             @include fixedSquare($avatarSize);
         }
@@ -82,12 +83,12 @@
             }
             
             .pending{
+                animation: spin 2s linear infinite;
+                background-image: url("/icons/msPending.svg");
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
                 }
-                animation: spin 2s linear infinite;
-                background-image: url("/icons/msPending.svg");
             }
 
             .error{
