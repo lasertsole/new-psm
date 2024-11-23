@@ -1,8 +1,5 @@
 package com.psm.domain.User.user.Event.EventBus.security.filter;
 
-import com.alicp.jetcache.Cache;
-import com.alicp.jetcache.anno.CacheType;
-import com.alicp.jetcache.anno.CreateCache;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.Cache.RedisCache;
@@ -11,6 +8,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -30,9 +29,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 @ConfigurationProperties(prefix = "spring.security.jwt")//配置和jwt一样的过期时间
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
-    @CreateCache(name = "localJWTCache", cacheType = CacheType.LOCAL, expire = 60 * 10)
-    private Cache<String, LoginUser> localJWTCache;
-
     @Autowired
     private RedisCache redisCache;
 
@@ -48,6 +44,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
      * jwt刷新时间
      */
     private Long refreshExpiration;
+
+    /**
+     * 登录多级缓存
+     */
+    private final Cache loginCache;
+
+    public JwtAuthenticationTokenFilter (CacheManager cacheManager) {
+        this.loginCache = cacheManager.getCache("loginCache");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -68,22 +73,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
             throw new RuntimeException("Invalid token");
         };
 
-        String redisKey = "login:" + userid;
-        LoginUser loginUser;
-        // 先從caffeine取數據
-        loginUser = localJWTCache.get(redisKey);
-
-        if(Objects.isNull(loginUser)){
-            // 如果caffeine沒有命中，則从redis中获取用户信息
-            loginUser = redisCache.getCacheObject(redisKey);
-
-            if(Objects.isNull(loginUser)){throw new RuntimeException("User not logged in");};
-        };
+        // 如果多级缓存沒有命中，則从redis中获取用户信息,如何没有则抛出异常
+        String cachekey = "login:" + userid;
+        LoginUser loginUser = loginCache.get(cachekey, LoginUser.class);
+        if(Objects.isNull(loginUser)){throw new RuntimeException("User not logged in");};
 
         //如果JWT验证信息过期时间小于一小时则重置JWT
-        if(redisCache.getExpire(redisKey, TimeUnit.SECONDS) <= refreshExpiration/1000){
+        if(redisCache.getExpire(cachekey, TimeUnit.SECONDS) <= refreshExpiration/1000){
             String jwt = jwtUtil.createJWT(loginUser.getUserDO().getId().toString());
-            redisCache.setCacheObject(redisKey,loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+            redisCache.setCacheObject(cachekey,loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
 
             //重置的token通过返回头的方式通知客户端
             response.setHeader("token",jwt);

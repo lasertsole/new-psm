@@ -171,9 +171,8 @@
         navigateTo("/accountInfo");
     }
 
-    const { $emit } = useNuxtApp();
     async function clickLogout():Promise<void> { //点击下线事件
-        await logout()&&$emit("offline");
+        await logout()&&emit("offline");
     }
 </script>
 

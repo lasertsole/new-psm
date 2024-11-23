@@ -36,9 +36,6 @@
 		<mybatisPlusJoin.version>1.5.2</mybatisPlusJoin.version>
 		<mybatisPlusExt.version>3.5.8-EXT722</mybatisPlusExt.version>
 		<redssion.version>3.38.1</redssion.version>
-		<!--以下是jetCache依赖-->
-		<jetCache.version>2.7.7</jetCache.version>
-		<!--以上是j2cache依赖-->
 		<fastjson2.version>2.0.52</fastjson2.version>
 		<jjwt.version>0.12.3</jjwt.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -102,11 +99,10 @@
 			<version>${mybatisPlusExt.version}</version>
 		</dependency>
 
-		<!-- jetCache多級緩存 -->
+		<!-- springCache多級緩存 -->
 		<dependency>
-			<groupId>com.alicp.jetcache</groupId>
-			<artifactId>jetcache-starter-redis</artifactId>
-			<version>${jetCache.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
 		<!--caffeine一级缓存-->

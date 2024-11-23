@@ -1,6 +1,5 @@
 package com.psm.domain.User.user.service.impl;
 
-import com.alicp.jetcache.anno.CacheUpdate;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.UserDB;
@@ -9,7 +8,9 @@ import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.Cache.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,18 @@ public class UserDetailsServiceImpl implements AuthUserService {
     @Autowired
     private JWTUtil jwtUtil;
 
+    private final Cache loginCache;
+
+    public UserDetailsServiceImpl(CacheManager cacheManager) {
+        loginCache = cacheManager.getCache("loginCache");
+    }
+
     /**
      * SpringSecurity会自动调用这个方法进行用户名密码校验
      *
-     * @param username
+     * @param username 用户名
      * @return UserDetails
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException 用户不存在异常
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -71,8 +78,8 @@ public class UserDetailsServiceImpl implements AuthUserService {
         }
 
         //从redis中获取用户信息
-        String redisKey = "login:" + userid;
-        LoginUser loginUser = redisCache.getCacheObject(redisKey);
+        String cachekey = "login:" + userid;
+        LoginUser loginUser = loginCache.get(cachekey, LoginUser.class);
 
         if(Objects.isNull(loginUser)){
             throw new RuntimeException("User not logged in");

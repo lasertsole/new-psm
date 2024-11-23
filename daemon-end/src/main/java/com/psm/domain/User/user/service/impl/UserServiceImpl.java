@@ -13,6 +13,8 @@ import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,15 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.security.jwt.expiration}")
     private Long expiration;//jwt有效期
 
+    /**
+     * 登录多级缓存
+     */
+    private final Cache loginCache;
+
+    public UserServiceImpl(CacheManager cacheManager) {
+        this.loginCache = cacheManager.getCache("loginCache");
+    }
+
     @Override
     public UserBO getAuthorizedUser(){
         // 获取SecurityContextHolder中的用户id
@@ -82,8 +93,9 @@ public class UserServiceImpl implements UserService {
         String id = loginUserInfo.getId().toString();
         String jwt = jwtUtil.createJWT(id);
 
+
         // 把完整信息存入redis，id作为key(如果原先有则覆盖)
-        loginUserRedis.addLoginUser(id, loginUser);
+        loginCache.put("login:"+id, loginUser);
 
         UserBO userBO = new UserBO();
         BeanUtils.copyProperties(loginUserInfo, userBO);
@@ -98,7 +110,7 @@ public class UserServiceImpl implements UserService {
         Long id = getAuthorizedUserId();
 
         // 根据用户id删除redis中的用户信息
-        loginUserRedis.removeLoginUser(String.valueOf(id));
+        loginCache.evict("login:"+id);
     }
 
     @Override

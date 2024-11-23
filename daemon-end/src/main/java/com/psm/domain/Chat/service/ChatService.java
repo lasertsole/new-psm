@@ -22,7 +22,8 @@ public interface ChatService {
      * 初始化聊天记录
      *
      * @param srcClient 客户端
+     * @param userId    用户id
      * @param timestamp 时间戳
      */
-    void patchInitMessage(SocketIOClient srcClient, String timestamp);
+    void patchInitMessage(SocketIOClient srcClient, Long userId, String timestamp);
 }

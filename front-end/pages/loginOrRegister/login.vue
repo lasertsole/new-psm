@@ -112,7 +112,6 @@
         password: [{ validator: validatePass, trigger: 'blur' }],
     })
 
-    const { $emit }= useNuxtApp();
     const router = useRouter();
     const submit = debounce((formEl: FormInstance | undefined)=>{
         if (!formEl) return;
@@ -121,7 +120,7 @@
                 loading.value = true;
                 login(userInfo.name, userInfo.password).then(isSuccuss => {
                     if(isSuccuss){
-                        $emit("online");
+                        emit("online");
                         router.push("/");
                     }
                 }).finally(() => loading.value = false);

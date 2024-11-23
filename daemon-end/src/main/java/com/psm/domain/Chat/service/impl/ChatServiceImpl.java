@@ -33,12 +33,12 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
-    public void patchInitMessage(SocketIOClient srcClient, String timestamp) {
+    public void patchInitMessage(SocketIOClient srcClient, Long userId, String timestamp) {
 
         Integer size = socketAppProperties.getDMMaxInitCountInPage();// 从环境配置中获取每页显示条数
         int current = 1;// 初始页码为1
         while(true) {
-            Page<ChatDO> chatDOPage = chatDB.patchInitMessage(timestamp, srcClient.get("userId"), current, size);
+            Page<ChatDO> chatDOPage = chatDB.patchInitMessage(timestamp, userId, current, size);
 
             List<ChatVO> chatVOs = chatDOPage.getRecords().stream().map(ChatConvertor.INSTANCE::DO2VO).toList();
 

@@ -131,7 +131,6 @@
 <script lang="ts" setup>
     import gsap from "gsap";
     import { ElMessage } from 'element-plus';
-    const { $on }= useNuxtApp();
 
     const loadding:Ref<boolean> = ref<boolean>(false); // 是否显示加载中
 
@@ -181,7 +180,7 @@
     const modifyIndex = ref<number>(-1);//展开显示索引
 
     // 登录时刷新
-    $on("online", ()=>{
+    on("online", ()=>{
         temptUserName.value = userInfo.name||"";
         temptSex.value = userInfo.sex!=undefined?userInfo.sex:undefined
         temptUserPhoneNumber.value = userInfo.phone||""
@@ -193,7 +192,7 @@
     });
 
     // 登出时刷新
-    $on("offline", ()=>{
+    on("offline", ()=>{
         temptUserName.value = "";
         temptSex.value = undefined
         temptUserPhoneNumber.value = ""

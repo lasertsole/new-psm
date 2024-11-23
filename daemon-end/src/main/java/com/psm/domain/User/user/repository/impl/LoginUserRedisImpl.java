@@ -1,6 +1,5 @@
 package com.psm.domain.User.user.repository.impl;
 
-import com.alicp.jetcache.anno.CacheUpdate;
 import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.app.annotation.spring.Repository;
@@ -23,7 +22,6 @@ public class LoginUserRedisImpl implements LoginUserRedis {
     private RedisCache redisCache;
 
     @Override
-    @CacheUpdate(name = "localJWTCache", key = "#id", value = "#loginUser")
     public void addLoginUser(String id, LoginUser loginUser){
         redisCache.setCacheObject("login:"+id,loginUser,Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
     }

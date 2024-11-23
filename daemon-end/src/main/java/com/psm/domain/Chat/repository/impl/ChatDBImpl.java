@@ -24,7 +24,7 @@ public class ChatDBImpl extends BaseDBRepositoryImpl<ChatMapper, ChatDO> impleme
     }
 
     @Override
-    public Page<ChatDO> patchInitMessage(String timestamp, String userId, Integer current, Integer size) {
+    public Page<ChatDO> patchInitMessage(String timestamp, Long userId, Integer current, Integer size) {
         Page<ChatDO> page = new Page<>(current, size);
         LambdaQueryWrapper<ChatDO> wrapper = new LambdaQueryWrapper<>();
 

@@ -29,6 +29,6 @@ public class ChatAdaptorImpl implements ChatAdaptor {
 
     @Override
     public void patchInitMessage(SocketIOClient srcClient, String timestamp) {
-        chatService.patchInitMessage(srcClient, timestamp);
+        chatService.patchInitMessage(srcClient, Long.parseLong(srcClient.get("userId")), timestamp);
     };
 }
