@@ -1,6 +1,6 @@
 <template>
     <div class="message">
-        <el-main class="container">
+        <el-main class="container" v-loading="!isInitDM">
             
             <div class="titleBox">
                 <span>我的消息</span>

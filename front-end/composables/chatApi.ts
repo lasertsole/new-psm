@@ -1,8 +1,8 @@
-import { fromEvent, concatAll, concatMap, scan, map, filter, tap } from "rxjs"; 
 import type { Reactive } from 'vue';
 import type { Page } from "@/types/common";
 import type { UserInfo } from "@/types/user";
 import { Manager, Socket } from 'socket.io-client';
+import { fromEvent, concatAll, concatMap, scan, map, filter, tap } from "rxjs"; 
 import type { ContactsItem, MessageItem, MessageDBItem, ContactsDBItem } from '@/types/chat';
 
 let socketUrl:string = "ws://localhost:8001";
@@ -17,7 +17,7 @@ const manager: Manager= new Manager(socketUrl, {
 /*************************************以下为DM命名空间逻辑****************************************/
 export const contactsItems: Reactive<ContactsItem>[] = reactive([] as ContactsItem[]);// 联系人列表
 export const nowDMContactsIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
-const isInitDM:Ref<boolean> = ref<boolean>(false);// 是否已初始化
+export const isInitDM:Ref<boolean> = ref<boolean>(false);// 是否已初始化
 
 type DMConfig = {
   DMExpireDay: number
@@ -74,8 +74,8 @@ export class DMService { // 单例模式
     /**
      * 从服务器接收历史信息记录
      */
-    type InitStatus = {processArr:Page<MessageItem>[], unProcessArr:Page<MessageItem>[], total:number, count:number, minIndex:number};
-    const status:InitStatus = {processArr:[], unProcessArr:[], total: 0, count: 0, minIndex: 1};
+    type InitStatus = { processArr:Page<MessageItem>[], unProcessArr:Page<MessageItem>[], count:number, minIndex:number };
+    const initStatus:InitStatus = {processArr:[], unProcessArr:[], count: 0, minIndex: 1};
     fromEvent(this.DMSocket, 'initMessage').pipe(
       scan((status:any, curPage: Page<MessageItem>) => {
         status.total = curPage.total!;
@@ -93,14 +93,14 @@ export class DMService { // 单例模式
         };
         status.count++;
         return status;
-      }, status)
+      }, initStatus)
       , filter((status:any)=>status.processArr.length!=0)
       , map(item=>{return item.processArr}),
       tap((value:any)=>{
-        status.processArr = [];
+        initStatus.processArr = [];
       })
       , concatAll()
-      ,concatMap(async (messageObjPage: Page<MessageItem>):Promise<void> => {
+      ,concatMap(async (messageObjPage: Page<MessageItem>):Promise<Page<MessageItem> | undefined> => {
         // 确保返回的是有效数据
         if(!messageObjPage||messageObjPage.records?.length==0) return undefined;
         let messageObjs:MessageItem[] = messageObjPage.records!;
@@ -194,9 +194,39 @@ export class DMService { // 单例模式
             srcUserId: contactsItem!.srcUserId// srcUserId为登录用户Id
           });
         });
-        return;
+        return messageObjPage;
       })
-    ).subscribe((x:any)=>{});
+    ).subscribe((page:Page<MessageItem> | undefined)=>{
+      if(page==undefined||page.current==page.total) {// 如果当前页是最后一页，则说明所有消息都接收完毕，初始化状态置为true
+        if(contactsItems.length==0) { // 如果没有联系人，则说明所有消息都接收完毕，初始化状态置为true
+          // DM初始化状态置为true
+          isInitDM.value = true;
+          return;
+        }
+
+        // 按照时间顺序对左边列表进行排序
+        let sortArr:Reactive<ContactsItem>[];
+        let startIndex:number = 0;
+        if(nowDMContactsIndex.value==0) {// nowDMContactsIndex如果不为-1，说明已执行toDM函数，则排除索引下表为0的元素
+          startIndex=1;
+        }
+        // 将所有联系人列表复制一份用于排序
+        sortArr=contactsItems.slice(startIndex);
+
+        // 排序,按时间降序
+        sortArr.sort((a,b)=>{
+          return b.lastTime!.localeCompare(a.lastTime!);
+        });
+
+        // 将排序后的数组赋值给contactsItems
+        for(let i=0; i < contactsItems.length - startIndex; i++) {
+          contactsItems[i + startIndex] = sortArr[i];
+        }
+
+        // DM初始化状态置为true
+        isInitDM.value = true;
+      }
+    });
 
     this.DMSocket.on("receiveMessage", async (messageItem: MessageItem)=>{
       console.log(messageItem);
@@ -296,7 +326,6 @@ export async function toDM(tgtUserId:string, name:string, avatar:string): Promis
 export async function initDM(): Promise<void> {
   // 如果已初始化过，直接退出
   if(!userInfo.isLogin || isInitDM.value) return;
-  isInitDM.value = true;
   
   // 从本地indexedDB拿去最新联系人列表
   let contactsDBItems: ContactsDBItem[] = await db.ContactsDBItems

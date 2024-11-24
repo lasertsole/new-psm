@@ -5,7 +5,6 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Chat.entity.ChatBO;
 import com.psm.domain.Chat.entity.ChatDO;
 import com.psm.domain.Chat.entity.ChatDTO;
-import com.psm.domain.Chat.entity.ChatVO;
 import com.psm.domain.Chat.repository.ChatDB;
 import com.psm.domain.Chat.service.ChatService;
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
