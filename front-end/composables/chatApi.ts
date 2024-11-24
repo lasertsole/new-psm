@@ -1,4 +1,7 @@
+import { fromEvent, concatAll, concatMap, scan, map, filter, tap } from "rxjs"; 
 import type { Reactive } from 'vue';
+import type { Page } from "@/types/common";
+import type { UserInfo } from "@/types/user";
 import { Manager, Socket } from 'socket.io-client';
 import type { ContactsItem, MessageItem, MessageDBItem, ContactsDBItem } from '@/types/chat';
 
@@ -14,7 +17,7 @@ const manager: Manager= new Manager(socketUrl, {
 /*************************************以下为DM命名空间逻辑****************************************/
 export const contactsItems: Reactive<ContactsItem>[] = reactive([] as ContactsItem[]);// 联系人列表
 export const nowDMContactsIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
-let isInitDM:boolean = false;// 是否已初始化
+const isInitDM:Ref<boolean> = ref<boolean>(false);// 是否已初始化
 
 type DMConfig = {
   DMExpireDay: number
@@ -71,68 +74,156 @@ export class DMService { // 单例模式
     /**
      * 从服务器接收历史信息记录
      */
-    // this.DMSocket.on("initMessage", (messageObj: MessageItem[]) => {
-    //   // 找出服务器返回的信息中的所有联系人并绑定相关聊天记录，放在Map(key为userId,value为ContactsItem)里,每个联系人只放一次
-    //   const contactsMap:Map<string, Reactive<contactItem>> = new Map();
-    //   messageObj.forEach((item)=>{
-        
-    //     let contactItem:Reactive<contactItem> = reactive<ContactsItem>({
-    //       tgtUserId: item.tgtUserId,
-    //       srcUserId: userInfo.id!,
-    //       lastMessage: item.content,
-    //       lastTime: item.timestamp,
-    //       messageItems: []
-    //     });
+    type InitStatus = {processArr:Page<MessageItem>[], unProcessArr:Page<MessageItem>[], total:number, count:number, minIndex:number};
+    const status:InitStatus = {processArr:[], unProcessArr:[], total: 0, count: 0, minIndex: 1};
+    fromEvent(this.DMSocket, 'initMessage').pipe(
+      scan((status:any, curPage: Page<MessageItem>) => {
+        status.total = curPage.total!;
+        if(curPage.current!<=status.minIndex) {
+          status.processArr.push(curPage);
+          status.minIndex++;
+          while (status.unProcessArr.indexOf(status.minIndex)>=0) {
+            status.processArr.push(status.minIndex);
+            status.unProcessArr.splice(status.unProcessArr.indexOf(status.minIndex), 1);
+            status.minIndex++;
+          }
+        }
+        else{
+          status.unProcessArr.push(curPage);
+        };
+        status.count++;
+        return status;
+      }, status)
+      , filter((status:any)=>status.processArr.length!=0)
+      , map(item=>{return item.processArr}),
+      tap((value:any)=>{
+        status.processArr = [];
+      })
+      , concatAll()
+      ,concatMap(async (messageObjPage: Page<MessageItem>):Promise<void> => {
+        // 确保返回的是有效数据
+        if(!messageObjPage||messageObjPage.records?.length==0) return undefined;
+        let messageObjs:MessageItem[] = messageObjPage.records!;
+        // 找出服务器返回的信息中的所有联系人并绑定相关聊天记录，放在Map(key为userId,value为ContactsItem)里,每个联系人只放一次
+        const contactsMap:Map<string, Reactive<ContactsItem>> = new Map();
+        messageObjs.forEach((messageObj)=>{
+          
+          let contactItem:Reactive<ContactsItem> = reactive<ContactsItem>({
+            tgtUserId: messageObj.tgtUserId!,
+            srcUserId: userInfo.id!,
+            lastMessage: messageObj.content!,
+            lastTime: messageObj.timestamp,
+            messageItems: []
+          });
 
-    //     if(item.srcUserId==userInfo.id) {
+          let modifyId:string;
+          if(messageObj.srcUserId==userInfo.id) {
+            modifyId=messageObj.tgtUserId!;
+          } else {
+            modifyId=messageObj.srcUserId!;
+          };
+          if(!contactsMap.has(modifyId)) {
+            contactsMap.set(modifyId, contactItem);
+          };
+          contactsMap.get(modifyId)!.messageItems.push(messageObj);
+          contactsMap.get(modifyId)!.lastMessage = messageObj.content!;
+          contactsMap.get(modifyId)!.lastTime = messageObj.timestamp;
 
-    //       if(!contactsMap.has(item.tgtUserId)) {
-    //         contactsMap.set(item.tgtUserId, contactItem);
-    //       };
-    //       contactsMap.get(item.tgtUserId).messageItems.push(item);
-    //     } else {
+          //将信息放进indexedDB里
+          db.MessageDBItems.add({
+            ...messageObj,
+            isDeleted: false,
+            status: 'sent',
+            type: 'text',
+            maxUserId: max( messageObj.srcUserId!, messageObj.tgtUserId! ), 
+            minUserId: min( messageObj.srcUserId!, messageObj.tgtUserId! ),
+          } as MessageDBItem);
+        });
 
-    //       if(!contactsMap.has(item.srcUserId)) {
-    //         contactsMap.set(item.srcUserId, contactItem);
-    //       };
-    //       contactsMap.get(item.srcUserId).messageItems.push(item);
-    //     };
+        // 筛选出新的联系人
+        contactsItems.forEach((item)=>{
+          // 如果有，则先更新联系人列表聊天记录和indexedDB，再把联系人从contactsMap中删除
+          if(contactsMap.has(item.tgtUserId)) {
+            //更新页面左侧显示的联系人列表
+            item.lastMessage = contactsMap.get(item.tgtUserId)!.lastMessage;
+            item.lastTime = contactsMap.get(item.tgtUserId)!.lastTime;
+            item.messageItems = item.messageItems.concat(contactsMap.get(item.tgtUserId)!.messageItems);
 
-    //     //将信息放进indexedDB里
-    //     db.MessageDBItems.add({
-    //       ...messageObj,
-    //       isDeleted: false,
-    //       status: 'pending',
-    //       type: 'text',
-    //       maxUserId: max( messageObj.srcUserId!, messageObj.tgtUserId! ), 
-    //       minUserId: min( messageObj.srcUserId!, messageObj.tgtUserId! ),
-    //     });
-    //   });
-      
-    //   // 筛选出新的联系人
-    //   contactsItems.forEach((item)=>{
-    //     if(contactsMap.has(item.tgtUserId)) contactsMap.delete(item.tgtUserId);
-    //   });
-    //   let newContacts:Reactive<ContactsItem>[] = [...contactsMap.values()];
+            //更新indexedDB里的联系人列表
+            db.ContactsDBItems.where('tgtUserId').equals(item.tgtUserId).modify({
+              lastMessage: item.lastMessage,
+              lastTime: item.lastTime
+            });
 
-    //   // 将新的联系人插入联系人列表里
-    //   newContacts.forEach((item)=>{
-    //     contactsItems.push(item);
-    //   });
-    // });
+            // 把联系人从contactsMap中删除
+            contactsMap.delete(item.tgtUserId)
+          };
+        });
+        let newContacts:Reactive<ContactsItem>[] = [...contactsMap.values()];
+        // 如果没有新的联系人，则直接退出
+        if(newContacts.length==0) return;
 
-    // this.DMSocket.on("receiveMessage", (MessageItem: MessageItem)=>{
-    //   console.log(MessageItem);
-    //   let userIds: string[] = contactsItems.value.length!=0?contactsItems.value.map(user => user.id!):[];
-    //   let index = userIds.indexOf(MessageItem.srcUserId!);
+        // 请求联系人信息
+        let userInfos:UserInfo[] = await getUserByIds(newContacts.map(item=>item.tgtUserId));
 
-    //   if(index!== -1){
-    //     contactsItems.value[index].MessageItems!.push(MessageItem)
-    //   }
-    //   else{// 如果用户不存在于联系人列表中,则向服务器请求该联系人个人信息，得到头像和名字后再添加到联系列表
-        
-    //   }
-    // });
+        // 将新的联系人插入联系人列表里和indexedDB里
+        userInfos.forEach((user)=>{
+          let contactsItem = contactsMap.get(user.id!);
+          contactsItems.push({
+            tgtUserId:contactsItem!.tgtUserId!,
+            srcUserId:contactsItem!.srcUserId!,
+            name: user.name,
+            avatar: user.avatar,
+            lastMessage: contactsItem!.lastMessage,
+            lastTime: contactsItem!.lastTime,
+            unread: 0,
+            isMuted: false,
+            isGroup: false,
+            messageItems: contactsItem!.messageItems
+          });
+
+          db.ContactsDBItems.add({
+            name: user.name,
+            avatar: user.avatar,
+            lastMessage: contactsItem!.lastMessage,
+            lastTime: contactsItem!.lastTime,
+            unread: 0,
+            isMuted: false,
+            isGroup: false,
+            tgtUserId: contactsItem!.tgtUserId,// tgtUserId为登录用户的联系人Id
+            srcUserId: contactsItem!.srcUserId// srcUserId为登录用户Id
+          });
+        });
+        return;
+      })
+    ).subscribe((x:any)=>{});
+
+    this.DMSocket.on("receiveMessage", async (messageItem: MessageItem)=>{
+      console.log(messageItem);
+      let userIds: string[] = contactsItems.length!=0?contactsItems.map(user => user.id!):[];
+      let index = userIds.indexOf(messageItem.srcUserId!);
+
+      if(index!== -1){
+        contactsItems[index].messageItems!.push(messageItem)
+      } else {// 如果用户不存在于联系人列表中,则向服务器请求该联系人个人信息，得到头像和名字后再添加到联系列表
+        let srcUserInfo:UserInfo|null = await getUserById(messageItem.srcUserId!);
+        if(!srcUserInfo) throw new Error("用户不存在");
+        // 将用户插入到列表头部
+        let newContactItem: Reactive<ContactsItem> = reactive<ContactsItem>({
+          tgtUserId: userInfo.id!,
+          srcUserId: messageItem.srcUserId!,
+          name: srcUserInfo.name,
+          avatar: srcUserInfo.avatar,
+          lastMessage: messageItem.content!,
+          lastTime: messageItem.timestamp,
+          unread: 0,
+          isMuted: false,
+          isGroup: false,
+          messageItems: [reactive(messageItem)]
+        });
+        // TODO
+      }
+    });
   };
 
   public static getInstance(): DMService {
@@ -204,8 +295,8 @@ export async function toDM(tgtUserId:string, name:string, avatar:string): Promis
 // 初始化(获取联系人列表和信息)
 export async function initDM(): Promise<void> {
   // 如果已初始化过，直接退出
-  if(!userInfo.isLogin || isInitDM) return;
-  isInitDM = true;
+  if(!userInfo.isLogin || isInitDM.value) return;
+  isInitDM.value = true;
   
   // 从本地indexedDB拿去最新联系人列表
   let contactsDBItems: ContactsDBItem[] = await db.ContactsDBItems

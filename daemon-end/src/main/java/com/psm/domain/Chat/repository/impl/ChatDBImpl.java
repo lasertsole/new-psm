@@ -31,7 +31,7 @@ public class ChatDBImpl extends BaseDBRepositoryImpl<ChatMapper, ChatDO> impleme
         wrapper
             .gt(ChatDO::getTimestamp, timestamp)
             .and(w->w.eq(ChatDO::getTgtUserId, userId).or(w2->w2.eq(ChatDO::getSrcUserId, userId)))
-            .orderByDesc(ChatDO::getTimestamp);
+            .orderByAsc(ChatDO::getTimestamp);
 
         chatMapper.selectPage(page, wrapper);
 

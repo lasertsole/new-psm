@@ -244,26 +244,24 @@ public class UserController {
     }
 
     /**
-     * 根据用户名获取用户信息
+     * 根据用户ID获取用户信息
      *
-     * @param name 用户名
+     * @param userIds 用户ID列表
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO getUserByName(@RequestParam String name) {
-        UserBO userBO = new UserBO();
-        userBO.setName(name);
-
+    public ResponseVO getUserByIds(@RequestParam List<String> userIds) {
         try {
-            // 获取用户信息
-            List<UserBO> userBOs = userAdaptor.getUserByName(userBO);
+            // 将用户ID列表转换为UserDTO列表
+            List<Long> ids = userIds.stream().map(Long::valueOf).toList();
 
-            return new ResponseVO(HttpStatus.OK, "Get users successful", userBOs);
-        }
-        catch (IllegalArgumentException e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
-        }
-        catch (Exception e){
+            // 调用服务层方法获取用户信息列表
+            List<UserDTO> userDTOList = userAdaptor.getUserByIds(ids).stream().map(UserDTO::fromBO).toList();
+
+            return new ResponseVO(HttpStatus.OK, "Get users successful", userDTOList);
+        } catch (InvalidParameterException e) {
+            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+        } catch (Exception e) {
             return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }

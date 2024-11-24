@@ -21,10 +21,10 @@
 <script setup lang="ts">
     const props = defineProps({
         tgtUserId: {type:String, required: true},
-        avatar: {type:String, required: true},
-        unread: {type:Number, required: true},
-        isMuted: {type:Boolean, required: true},
-        isGroup: {type:Boolean, required: true},
+        avatar: {type:String, required: false, default: process.env.Default_User_Avatar},
+        unread: {type:Number, required: false, default: 0},
+        isMuted: {type:Boolean, required: false, default: false},
+        isGroup: {type:Boolean, required: false, default: false},
         isSeleted: {type:Boolean, required:true},
         index: {type:Number, required: true}
     });

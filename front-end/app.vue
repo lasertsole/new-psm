@@ -24,7 +24,7 @@
       setTimeout(async ()=>{
         fastLogin();
       }, 0);
-    }
+    };
   });
   
   on("online", ()=>{

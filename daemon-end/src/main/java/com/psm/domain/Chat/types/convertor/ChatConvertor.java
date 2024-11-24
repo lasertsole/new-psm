@@ -54,7 +54,7 @@ public abstract class ChatConvertor {
         @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
         @Mapping(target = "srcUserId", qualifiedByName = "longToString")
     })
-    public abstract ChatDTO DO2DTO(ChatBO chatDO);
+    public abstract ChatDTO DO2DTO(ChatDO chatDO);
 
     public abstract ChatVO DTO2VO(ChatDTO chatDTO);
 

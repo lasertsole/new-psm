@@ -21,13 +21,13 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        avatar: {type:String, required: true},
-        name: {type:String, required: true},
-        type: {type:String, required: true},
+        avatar: {type:String, required: false, default: process.env.Default_User_Avatar},
+        name: {type:String, required: false, default: ""},
+        type: {type:String, required: false, default: 'text'},
         srcUserId: {type:String, required: true},
         tgtUserId: {type:String, required: true},
         timestamp: {type:String, required: false},
-        isDeleted: {type:Boolean, required: true},
+        isDeleted: {type:Boolean, required: false, default: false},
         status: {type:String, required: false, default: "sent"}
     });
 </script>

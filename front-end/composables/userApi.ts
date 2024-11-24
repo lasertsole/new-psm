@@ -30,10 +30,7 @@ export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
  * @author: moye
  * @param data 要更新的数据对象
  */
-function updateUserInfo(data:UserInfo): void{
-    // 将 sessionStorage中的userInfo删除
-    sessionStorage.removeItem('userInfo');
-    
+function updateUserInfo(data:UserInfo): void {
     data.isAdmin && (userInfo.isAdmin = data.isAdmin);
     data.id && (userInfo.id = data.id);
     data.name && (userInfo.name = data.name);
@@ -44,19 +41,6 @@ function updateUserInfo(data:UserInfo): void{
     data.profile && (userInfo.profile = data.profile);
     data.sex != undefined && (userInfo.sex = data.sex);
     data.createTime && (userInfo.createTime = data.createTime);
-
-    // 将 userInfo 存储到 sessionStorage
-    sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
-};
-
-function copyUserInfoFromSessionStorage(): boolean{
-    const storedUserInfo = sessionStorage.getItem("userInfo");
-    if (storedUserInfo) {
-        Object.assign(userInfo, JSON.parse(storedUserInfo));
-        return true;
-    } else {
-        return false;
-    };
 };
 
 function clearUserInfo(): void{
@@ -70,9 +54,6 @@ function clearUserInfo(): void{
     userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
-
-    // 将 sessionStorage中的userInfo删除
-    sessionStorage.removeItem('userInfo');
 };
 
 function loginApi(data:UserInfo): void{
@@ -128,10 +109,6 @@ export async function login(name:string | undefined, password:string | undefined
 export async function fastLogin():Promise<boolean>{
     try{
         if(import.meta.client&&!localStorage.getItem('token')) return false;
-        if(copyUserInfoFromSessionStorage()){
-            import.meta.client&&ElMessage.success('登录成功');
-            return true;
-        }
         
         const res:Response = await fetchApi({
             url: '/users/fastLogin',
@@ -340,5 +317,53 @@ export async function logout():Promise<boolean>{
     catch (error) {
         import.meta.client&&ElMessage.error('登出失败');
         return false;
+    }
+};
+
+export async function getUserById(userId:string):Promise<UserInfo|null>{
+    try{
+        const res:Response = await fetchApi({
+            url: `/users/${userId}`,
+            method: 'get',
+        });
+
+        if(res.code!=200){
+            ElMessage.error('获取用户信息失败:'+res.msg);
+    
+            return null;
+        }
+    
+        import.meta.client&&localStorage.removeItem('token');
+    
+        return res.data;
+    }catch (error) {
+        ElMessage.error('获取用户信息失败:'+error);
+        return null;
+    }
+};
+
+export async function getUserByIds(userIds:string[]):Promise<UserInfo[]>{
+    try{
+        const res:Response = await fetchApi({
+            url: '/users',
+            method: 'get',
+            opts: {
+                userIds: userIds
+            }
+        });
+        
+        if(res.code!=200){
+            ElMessage.error('获取用户信息失败:'+res.msg);
+    
+            return [];
+        }
+    
+        import.meta.client&&localStorage.removeItem('token');
+    
+        return res.data;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('获取用户信息失败');
+        return [];
     }
 };

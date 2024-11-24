@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Chat.entity.ChatBO;
 import com.psm.domain.Chat.entity.ChatDO;
+import com.psm.domain.Chat.entity.ChatDTO;
 import com.psm.domain.Chat.entity.ChatVO;
 import com.psm.domain.Chat.repository.ChatDB;
 import com.psm.domain.Chat.service.ChatService;
@@ -40,9 +41,7 @@ public class ChatServiceImpl implements ChatService {
         while(true) {
             Page<ChatDO> chatDOPage = chatDB.patchInitMessage(timestamp, userId, current, size);
 
-            List<ChatVO> chatVOs = chatDOPage.getRecords().stream().map(ChatConvertor.INSTANCE::DO2VO).toList();
-
-            srcClient.sendEvent("initMessage",  chatVOs, current);
+            srcClient.sendEvent("initMessage",  ChatDTO.fromDOPage(chatDOPage));
             current ++;
             if (chatDOPage.getPages() < current) break;// 如果当前页码大于等于总页码，则跳出循环
         };

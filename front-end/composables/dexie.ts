@@ -7,7 +7,7 @@ const db = new Dexie('psmDB') as Dexie & {
 };
 
 db.version(1).stores({
-  ContactsDBItems: '++id, srcUserId, name, timestamp',
+  ContactsDBItems: '++id, srcUserId, tgtUserId, name, timestamp',
   MessageDBItems: '++id, [maxUserId+minUserId], timestamp'
 });
 

@@ -4,8 +4,8 @@ export type ContactsItem = {
     id?: string;
     tgtUserId: string;// tgtUserId为登录用户的联系人Id
     srcUserId: string;// srcUserId为登录用户Id
-    name: string;
-    avatar: string;
+    name?: string;
+    avatar?: string;
     lastMessage: string;
     lastTime?: string; //最后一次联系时间
     unread?: number;

@@ -15,7 +15,11 @@ declare module "three/examples/jsm/loaders/OBJLoader" {
 }
 
 declare module 'rxjs' {
-  export interface Observable<T> {}
-  export function of<T>(...args: T[]): Observable<T>;
-  export function from<T>(input: Iterable<T> | ArrayLike<T> | Promise<T> | ObservableInput<T>): Observable<T>;
+  export function fromEvent<T>(target: any, eventName: string, options?: EventListenerOptions | ((...args: any[]) => T), resultSelector?: (...args: any[]) => T): Observable<T>;
+  export function concatAll<O extends ObservableInput<any>>(): OperatorFunction<O, ObservedValueOf<O>>;
+  export function concatMap<T, R, O extends ObservableInput<any>>(project: (value: T, index: number) => O, resultSelector?: (outerValue: T, innerValue: ObservedValueOf<O>, outerIndex: number, innerIndex: number) => R): OperatorFunction<T, ObservedValueOf<O> | R>;
+  export function scan<V, A, S>(accumulator: (acc: V | A | S, value: V, index: number) => A, seed?: S): OperatorFunction<V, V | A>;
+  export function filter<T>(predicate: (value: T, index: number) => boolean, thisArg?: any): MonoTypeOperatorFunction<T>;
+  export function map(project: (value: T, index: number) => R): OperatorFunction<T, R>;
+  export function tap(observerOrNext?: Partial<TapObserver<T>> | ((value: T) => void)): MonoTypeOperatorFunction<T>;
 };
