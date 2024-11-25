@@ -10,6 +10,7 @@
 ### rx.js 处理复杂的异步流操作api
 ### dexie.js 简化indexedDB操作api
 ### vite-pwa + service-worker + sessionStorage + cacheStorage + indexedDB全平台适配方案与离线缓存
+### wasm + rust 可移植其他语言到浏览器的中间代码 性能与c++相同的内存安全语言
 ### tus-js-client大文件分片上传
 ### socket.io(client) websocket全双工通信框架
 ## 后端:
@@ -21,6 +22,8 @@
 ### redis + caffeine + springCache 分布式多级缓存
 ### mongodb(podman) bson型内存数据库
 ### nginx(podman) 正反向代理
-### rocketMQ 消息中间件
+### rocketMQ + kafka 消息中间件
 ### tus-java-server大文件分片上传
 ### Netty socket.io(server) websocket+nio全双工通信框架
+### flink cdc 数据库变动捕捉中间件
+### elasticSearch 专门的关键字搜索，倒排索引数据库
