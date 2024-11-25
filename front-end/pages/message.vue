@@ -21,6 +21,7 @@
                                 :isGroup="item.isGroup!"
                                 :isSeleted="index==nowDMContactsIndex"
                                 :index="index"
+                                :callBack="scrollToBottom"
                             >
                                 <template #lastTime>{{ formatToLocalTime(item.lastTime) }}</template>
                                 <template #name>{{ item.name }}</template>
@@ -36,7 +37,7 @@
                             {{ contactsItems[nowDMContactsIndex]?.name }}
                         </span>
                     </div>
-                    <div class="messageList">
+                    <div class="messageList" ref="messageList">
                         <div class="containerBox" v-show="nowDMContactsIndex>=0">
                             <div class="topGap"></div>
                             <template v-for="(item, index) in contactsItems[nowDMContactsIndex]?.messageItems" :key="index">
@@ -49,7 +50,6 @@
                                     :timestamp="item.timestamp!"
                                     :isDeleted="item.isDeleted!"
                                     :status="item.status!"
-                                    
                                 >
                                     <template #text>
                                         {{ item.content }}
@@ -86,9 +86,6 @@
 </template>
 
 <script lang="ts" setup>
-    // 获取当前路由对象
-    const route = useRoute();
-
     const message:Ref<string> = ref<string>("");
 
     function validateMessage(content:string):boolean {
@@ -102,17 +99,31 @@
         }
         return true;
     }
-        
+
+    // 获取聊天记录栏对象
+    const messageList:Ref<HTMLElement | undefined> = ref<HTMLElement>();
+    // 聊天记录列表滚动到底部
+    function scrollToBottom():void {
+        messageList.value!.scrollTop=messageList.value!.scrollHeight;
+    }
+
     // 发送信息
     const send = debounce(():void=>{
         if(!validateMessage(message.value))
             return;
 
-            sendMessage(message.value);
+            sendMessage(message.value).then(()=>{
+                scrollToBottom();// 发送完消息后滑动到底部
+            });
         message.value="";
     });
 
     onMounted(()=>{
+        if(nowDMContactsIndex.value>=0) { // 如果挂载完成时nowDMContactsIndex.value不为-1，说明是通过toDM事件跳转到本页面的
+            nextTick(()=>{// 这时需要把聊天记录列表滑动到底部
+                scrollToBottom();
+            });
+        }
     });
         
     onActivated(()=>{

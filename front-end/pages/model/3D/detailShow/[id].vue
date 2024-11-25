@@ -93,9 +93,9 @@
     }
   }, 1000);
 
-  const triggerDM = debounce(async ():Promise<void>=> {
+  const triggerDM = throttle(async ():Promise<void>=> { // 节流触发跳转，防止多次调用toDM函数使聊天列表显示异常
     toDM(authorInfo.value!.id!, authorInfo.value!.name!, authorInfo.value!.avatar||useRuntimeConfig().public.defaultAvatar);
-  });
+  }, 1000);
 
   onMounted(async ()=>{
     let res : Model3DInfoDetail = await getModelByModelId({modelId: id as string});

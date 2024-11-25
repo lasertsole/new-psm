@@ -63,8 +63,9 @@ export function stringToDate(dateString: string): Date | null {
     }
 
     // 将自定义格式转换为标准 ISO 8601 格式
+    dateString=dateString.replace(/T/gi, ' ').replace(/Z/gi, "");
     const isoTime = dateString.replace(' ', 'T') + 'Z';
-    const date = new Date(isoTime);
+    const date = new Date(dateString);
     if (isNaN(date.getTime())) {
         console.error('Invalid date:', dateString);
         return null; // 或者返回其他默认值
@@ -103,7 +104,13 @@ export function maxDate(a: Date, b: Date): Date {
 // 获取现在的UTC国际通用时间,精确到微秒级别
 export function getUTCTimeNow(): string {
     const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = now.getUTCMonth() + 1;
+    const day = now.getUTCDate();
+    const hours = now.getUTCHours();
+    const minutes = now.getUTCMinutes();
+    const seconds = now.getUTCSeconds();
     const milliseconds = now.getUTCMilliseconds();
     const microseconds = (milliseconds * 1000 + Math.floor((now.getTime() % 1) * 1000000)) % 1000000;
-    return now.toISOString().slice(0, -1) + '.' + microseconds.toString().padStart(6, '0') + 'Z';
+    return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + '.' + microseconds.toString().padStart(6, '0') + 'Z';
 }

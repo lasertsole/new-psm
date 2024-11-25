@@ -26,11 +26,15 @@
         isMuted: {type:Boolean, required: false, default: false},
         isGroup: {type:Boolean, required: false, default: false},
         isSeleted: {type:Boolean, required:true},
-        index: {type:Number, required: true}
+        index: {type:Number, required: true},
+        callBack: {type:Function, required: true},
     });
     
     function clickEvent():void {
         nowDMContactsIndex.value = props.index;
+        nextTick(()=>{
+            props.callBack();
+        });
     };
 </script>
 

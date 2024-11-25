@@ -16,7 +16,6 @@ public class Model_ExtendedUserServiceImpl implements Model_ExtendedUserService 
     private Model_ExtendedUserDB model_ExtendedUserDB;
 
     @Override
-    @Cacheable(value = "model_ExtendedUserCache", key = "#current+'_'+#isIdle+'_'+#canUrgent+'_'+#style+'_'+#type+'_'+#userSelfId+'_'+#size")
     public Model_ExtendedUserBO getModelByModelId(Long id, Long userSelfId) {
         return Model_ExtendedUserConvertor.INSTANCE.DO2BO(model_ExtendedUserDB.selectModelByModelId(id, userSelfId));
     }

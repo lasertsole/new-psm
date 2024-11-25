@@ -52,7 +52,7 @@ public class CacheConfig {
     @Bean
     public Caffeine<Object, Object> caffeine() {
     	return Caffeine.newBuilder()
-                .expireAfterWrite(5, TimeUnit.MINUTES)
+                .expireAfterWrite(10, TimeUnit.MINUTES)
                 .initialCapacity(100)
                 .maximumSize(1000)
                 .weakKeys().recordStats();
@@ -89,7 +89,6 @@ public class CacheConfig {
 
         config.put("loginCache", new MultiLevelCacheConfig(60 * 60 * 1000,  60 * 60 * 1000, 1000));
         config.put("models_UserCache", new MultiLevelCacheConfig(60 * 60 * 1000,  60 * 60 * 1000, 500));
-        config.put("model_ExtendedUserCache", new MultiLevelCacheConfig(30 * 60 * 1000,  5 * 60 * 1000, 200));
 
         return new MultiLevelCacheManager(multiLevelChannel, config);
     }

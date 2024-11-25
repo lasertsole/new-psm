@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -34,7 +32,6 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void patchInitMessage(SocketIOClient srcClient, Long userId, String timestamp) {
-
         Integer size = socketAppProperties.getDMMaxInitCountInPage();// 从环境配置中获取每页显示条数
         int current = 1;// 初始页码为1
         while(true) {

@@ -19,7 +19,6 @@ public class ChatDBImpl extends BaseDBRepositoryImpl<ChatMapper, ChatDO> impleme
 
     @Override
     public void insert(ChatDO chatDO) {
-        log.info("chatDO is {}", chatDO);
         save(chatDO);
     }
 

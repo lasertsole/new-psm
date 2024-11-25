@@ -102,7 +102,7 @@ public class DMController implements CommandLineRunner {
                     // 如果目标用户存在，则发送消息
                     SocketIOClient tgtClient = userIdMapClient.get(tgtUserId);
                     if (Objects.nonNull(tgtClient)){
-                        tgtClient.sendEvent("receiveMessage", chatDTO.toVO());
+                        tgtClient.sendEvent("receiveMessage", ChatDTO.fromBO(chatBO));
 
                         //TODO 如果目标用户不在本台机器，则把消息广播到MQ，让其他机器查找目标用户SocketIOClient
                     };
