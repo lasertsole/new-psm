@@ -35,10 +35,10 @@ public interface Model3dAdaptor {
     /**
      * 根据模型ID查询模型
      *
-     * @param model3dDTO  模型信息
+     * @param model3dBO  模型信息
      * @return 模型BO
      */
-    Model3dBO selectById(Model3dDTO model3dDTO);
+    Model3dBO selectById(Model3dBO model3dBO);
 
     /**
      * 根据模型ID查询模型

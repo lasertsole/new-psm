@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PageVO<T> implements Serializable {
+public class PageDTO<T> implements Serializable {
     private List<T> records; // 当前页数据
     private Long total; // 总记录数
     private Long size; // 每页显示条数

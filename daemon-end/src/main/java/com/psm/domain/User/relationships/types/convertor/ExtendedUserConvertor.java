@@ -3,12 +3,13 @@ package com.psm.domain.User.relationships.types.convertor;
 import com.psm.domain.User.relationships.valueObject.ExtendedUserBO;
 import com.psm.domain.User.relationships.valueObject.ExtendedUserDO;
 import com.psm.domain.User.relationships.valueObject.ExtendedUserDTO;
-import com.psm.domain.User.relationships.valueObject.ExtendedUserVO;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import com.psm.domain.User.user.types.enums.SexEnum;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Mapper
@@ -18,9 +19,21 @@ public abstract class ExtendedUserConvertor {
 
     private static final UserConvertor userConvertor = UserConvertor.INSTANCE;
 
+    @Named("longToString")
+    public String longToString(Long num) {
+        if (Objects.isNull(num)) return null;
+        return num.toString();
+    }
+
+    @Named("stringToLong")
+    public Long stringToLong(String str) {
+        if (Objects.isNull(str) || str.isEmpty()) return null;
+        return Long.parseLong(str);
+    }
+
     public ExtendedUserBO DTO2BO(ExtendedUserDTO extendedUserDTO) {
         return new ExtendedUserBO(
-                extendedUserDTO.getId(),
+                stringToLong(extendedUserDTO.getId()),
                 extendedUserDTO.getName(),
                 extendedUserDTO.getPassword(),
                 extendedUserDTO.getPhone(),
@@ -29,8 +42,8 @@ public abstract class ExtendedUserConvertor {
                 SexEnum.fromBoolean(extendedUserDTO.getSex()),
                 extendedUserDTO.getProfile(),
                 extendedUserDTO.getPublicModelNum(),
-                extendedUserDTO.getModelMaxStorage(),
-                extendedUserDTO.getModelCurStorage(),
+                stringToLong(extendedUserDTO.getModelMaxStorage()),
+                stringToLong(extendedUserDTO.getModelCurStorage()),
                 extendedUserDTO.getIsIdle(),
                 extendedUserDTO.getCanUrgent(),
                 extendedUserDTO.getCreateTime(),
@@ -62,41 +75,21 @@ public abstract class ExtendedUserConvertor {
 
     public ExtendedUserDTO BO2DTO(ExtendedUserBO extendedUserBO) {
         return new ExtendedUserDTO(
-                extendedUserBO.getId(),
+                longToString(extendedUserBO.getId()),
                 extendedUserBO.getName(),
-                extendedUserBO.getPassword(),
-                extendedUserBO.getPhone(),
+                null,
+                null,
                 extendedUserBO.getAvatar(),
-                extendedUserBO.getEmail(),
+                null,
                 Optional.ofNullable(extendedUserBO.getSex()).map(SexEnum::getValue).orElse(null),
                 extendedUserBO.getProfile(),
                 extendedUserBO.getPublicModelNum(),
-                extendedUserBO.getModelMaxStorage(),
-                extendedUserBO.getModelCurStorage(),
+                null,
+                null,
                 extendedUserBO.getIsIdle(),
                 extendedUserBO.getCanUrgent(),
                 extendedUserBO.getCreateTime(),
                 extendedUserBO.getIsFollowed()
-        );
-    }
-
-    public ExtendedUserVO DTO2VO(ExtendedUserDTO extendedUserDTO) {
-        return new ExtendedUserVO(
-                Optional.ofNullable(extendedUserDTO.getId()).map(Object::toString).orElse(null),
-                extendedUserDTO.getName(),
-                null,
-                null,
-                extendedUserDTO.getAvatar(),
-                null,
-                extendedUserDTO.getSex(),
-                extendedUserDTO.getProfile(),
-                extendedUserDTO.getPublicModelNum(),
-                null,
-                null,
-                extendedUserDTO.getIsIdle(),
-                extendedUserDTO.getCanUrgent(),
-                extendedUserDTO.getCreateTime(),
-                extendedUserDTO.getIsFollowed()
         );
     }
 }

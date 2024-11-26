@@ -2,16 +2,9 @@ package com.psm.domain.Chat.adaptor;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Chat.entity.ChatBO;
+import org.apache.rocketmq.client.apis.ClientException;
 
 public interface ChatAdaptor {
-
-    /**
-     * 校验并转换
-     *
-     * @param chatBO 聊天DTO实体
-     */
-    void validateAndConvert(ChatBO chatBO);
-
     /**
      * 初始化聊天记录
      *
@@ -19,4 +12,13 @@ public interface ChatAdaptor {
      * @param timestamp 时间戳
      */
     void patchInitMessage(SocketIOClient srcClient, String timestamp);
+
+    /**
+     * 发送聊天信息
+     *
+     * @param srcClient 客户端
+     * @param chatBO 聊天信息
+     * @return 本次聊天记录的时间戳
+     */
+    String sendMessage(SocketIOClient srcClient, ChatBO chatBO)  throws ClientException;
 }

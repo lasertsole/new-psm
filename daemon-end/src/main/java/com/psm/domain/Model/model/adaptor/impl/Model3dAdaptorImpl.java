@@ -64,14 +64,14 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     }
 
     @Override
-    public Model3dBO selectById(@Valid Model3dDTO model3dDTO) throws InvalidParameterException{
+    public Model3dBO selectById(@Valid Model3dBO model3dBO) throws InvalidParameterException{
         if (
-                Objects.isNull(model3dDTO.getId())
-                || Objects.isNull(model3dDTO.getVisible())
+                Objects.isNull(model3dBO.getId())
+                || Objects.isNull(model3dBO.getVisible())
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        return modelService.getById(model3dDTO.getId(), VisibleEnum.fromInteger(model3dDTO.getVisible()));
+        return modelService.getById(model3dBO.getId(), model3dBO.getVisible());
     }
 
     @Override

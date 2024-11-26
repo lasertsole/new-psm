@@ -5,6 +5,8 @@ import com.psm.domain.Chat.types.convertor.ChatConvertor;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+
+import com.psm.utils.DTO.BO2DTOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatBO implements Serializable {
+public class ChatBO implements Serializable, BO2DTOable<ChatDTO> {
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 
@@ -55,5 +57,10 @@ public class ChatBO implements Serializable {
         // ChatBO的timestamp属性设置时间戳
         this.timestamp = timestamp;
         return timestamp;
+    }
+
+    @Override
+    public ChatDTO toDTO() {
+        return ChatConvertor.INSTANCE.BO2DTO(this);
     }
 }

@@ -36,7 +36,7 @@ public class Models_UserAdaptorImpl implements Models_UserAdaptor {
 
         return models_UserService.getModelsShowBars(
                 pageBO.getCurrent(), pageBO.getSize(), userDTO.getIsIdle(), userDTO.getCanUrgent(),
-                model3dDTO.getStyle(), model3dDTO.getType(), userDTO.getId());
+                model3dDTO.getStyle(), model3dDTO.getType(), Long.parseLong(userDTO.getId()));
     }
 
     @Override

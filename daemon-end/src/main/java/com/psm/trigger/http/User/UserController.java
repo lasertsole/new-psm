@@ -3,10 +3,9 @@ package com.psm.trigger.http.User;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.utils.VO.ResponseVO;
+import com.psm.utils.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -49,30 +48,29 @@ public class UserController {
      * @return ResponseVO
      */
     @PostMapping("/login")
-    public ResponseVO login(@RequestBody UserDTO userDTO, HttpServletResponse response){
+    public ResponseDTO login(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
             UserBO userBO = UserBO.fromDTO(userDTO);
             // 登录
             userBO = userAdaptor.login(userBO);
             response.setHeader("token", userBO.getToken());
 
-            BeanUtils.copyProperties(userBO, userDTO);
-            return new ResponseVO(HttpStatus.OK, "Login successful", userDTO.toCurrentUserVO());
+            return new ResponseDTO(HttpStatus.OK, "Login successful", userBO.toCurrentDTO());
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (LockedException e){
-            return new ResponseVO(HttpStatus.TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS");
+            return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS");
         }
         catch (BadCredentialsException e){
-            return new ResponseVO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
+            return new ResponseDTO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
         }
         catch (DisabledException e){
-            return new ResponseVO(HttpStatus.FORBIDDEN, "SERVER FORBIDDEN");
+            return new ResponseDTO(HttpStatus.FORBIDDEN, "SERVER FORBIDDEN");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -82,14 +80,14 @@ public class UserController {
      * @return ResponseVO
      */
     @GetMapping("/fastLogin")
-    public ResponseVO fastLogin() {
+    public ResponseDTO fastLogin() {
         try {
             UserBO userBO = userAdaptor.getAuthorizedUser();
-            UserDTO userDTO = UserDTO.fromBO(userBO);
-            return ResponseVO.ok("FastLogin successful", userDTO.toCurrentUserVO());
+
+            return ResponseDTO.ok("FastLogin successful", userBO.toCurrentDTO());
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -101,24 +99,23 @@ public class UserController {
      * @return ResponseVO
      */
     @PostMapping("/register")
-    public ResponseVO register(@RequestBody UserDTO userDTO, HttpServletResponse response){
+    public ResponseDTO register(@RequestBody UserDTO userDTO, HttpServletResponse response){
         try {
             UserBO userBO = UserBO.fromDTO(userDTO);
             //注册
             userBO = userAdaptor.register(userBO);
             response.setHeader("token", userBO.getToken());
 
-            BeanUtils.copyProperties(userBO, userDTO);
-            return new ResponseVO(HttpStatus.OK, "register successful", userDTO.toCurrentUserVO());
+            return new ResponseDTO(HttpStatus.OK, "register successful", userBO.toCurrentDTO());
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (DuplicateKeyException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "DuplicateKey");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "DuplicateKey");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -128,13 +125,13 @@ public class UserController {
      * @return ResponseVO
      */
     @DeleteMapping("/logout")
-    public ResponseVO logout() {
+    public ResponseDTO logout() {
         try {
             userAdaptor.logout();
-            return ResponseVO.ok("Logout successful");
+            return ResponseDTO.ok("Logout successful");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -144,13 +141,13 @@ public class UserController {
      * @return ResponseVO
      */
     @DeleteMapping("/deleteUser")
-    public ResponseVO deleteUser() {
+    public ResponseDTO deleteUser() {
         try {
             userAdaptor.deleteUser();
-            return ResponseVO.ok("Delete user successful");
+            return ResponseDTO.ok("Delete user successful");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -161,17 +158,17 @@ public class UserController {
      * @return ResponseVO
      */
     @PutMapping("/updateAvatar")
-    public ResponseVO updateAvatar(UserDTO userDTO) {
+    public ResponseDTO updateAvatar(UserDTO userDTO) {
         try {
             UserBO userBO = UserBO.fromDTO(userDTO);
             String avatarUrl = userAdaptor.updateAvatar(userBO);
-            return ResponseVO.ok("Update avatar successful", avatarUrl);
+            return ResponseDTO.ok("Update avatar successful", avatarUrl);
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -182,17 +179,17 @@ public class UserController {
      * @return ResponseVO
      */
     @PutMapping("/updateInfo")
-    public ResponseVO updateUser(@RequestBody UserDTO userDTO) {
+    public ResponseDTO updateUser(@RequestBody UserDTO userDTO) {
         try {
             UserBO userBO = UserBO.fromDTO(userDTO);
             userAdaptor.updateInfo(userBO);
-            return ResponseVO.ok("Update user successful");
+            return ResponseDTO.ok("Update user successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -203,17 +200,17 @@ public class UserController {
      * @return ResponseVO
      */
     @PutMapping("/updatePassword")
-    public ResponseVO updatePassword(@RequestBody UserDTO userDTO) {
+    public ResponseDTO updatePassword(@RequestBody UserDTO userDTO) {
         try {
             UserBO userBO = UserBO.fromDTO(userDTO);
             userAdaptor.updatePassword(userBO);
-            return ResponseVO.ok("Update password successful");
+            return ResponseDTO.ok("Update password successful");
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -224,7 +221,7 @@ public class UserController {
      * @return ResponseVO
      */
     @GetMapping("/{id}")
-    public ResponseVO getUserByID(@PathVariable Long id) {
+    public ResponseDTO getUserByID(@PathVariable String id) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(id);
 
@@ -233,13 +230,13 @@ public class UserController {
             // 获取用户信息
             userBO = userAdaptor.getUserById(userBO);
 
-            return new ResponseVO(HttpStatus.OK, "Get user successful", userBO);
+            return new ResponseDTO(HttpStatus.OK, "Get user successful", userBO);
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -250,19 +247,19 @@ public class UserController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO getUserByIds(@RequestParam List<String> userIds) {
+    public ResponseDTO getUserByIds(@RequestParam List<String> userIds) {
         try {
             // 将用户ID列表转换为UserDTO列表
             List<Long> ids = userIds.stream().map(Long::valueOf).toList();
 
             // 调用服务层方法获取用户信息列表
-            List<UserDTO> userDTOList = userAdaptor.getUserByIds(ids).stream().map(UserDTO::fromBO).toList();
+            List<UserBO> userBOList = userAdaptor.getUserByIds(ids);
 
-            return new ResponseVO(HttpStatus.OK, "Get users successful", userDTOList);
+            return new ResponseDTO(HttpStatus.OK, "Get users successful", userBOList);
         } catch (InvalidParameterException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "InvalidParameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
         } catch (Exception e) {
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 }

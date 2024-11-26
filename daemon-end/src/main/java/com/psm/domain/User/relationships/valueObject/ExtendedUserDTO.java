@@ -1,7 +1,6 @@
 package com.psm.domain.User.relationships.valueObject;
 
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.domain.User.relationships.types.convertor.ExtendedUserConvertor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -14,7 +13,7 @@ public class ExtendedUserDTO extends UserDTO implements Serializable {
 
     // 全参构造函数
     public ExtendedUserDTO(
-        Long id,
+        String id,
         String name,
         String password,
         String phone,
@@ -23,8 +22,8 @@ public class ExtendedUserDTO extends UserDTO implements Serializable {
         Boolean sex,
         String profile,
         Short publicModelNum,
-        Long modelMaxStorage,
-        Long modelCurStorage,
+        String modelMaxStorage,
+        String modelCurStorage,
         Boolean isIdle,
         Boolean canUrgent,
         String createTime,
@@ -34,6 +33,7 @@ public class ExtendedUserDTO extends UserDTO implements Serializable {
             id,
             name,
             password,
+            null,
             null,
             phone,
             avatar,
@@ -58,6 +58,7 @@ public class ExtendedUserDTO extends UserDTO implements Serializable {
             userDTO.getName(),
             userDTO.getPassword(),
             null,
+            null,
             userDTO.getPhone(),
             userDTO.getAvatar(),
             null,
@@ -77,10 +78,5 @@ public class ExtendedUserDTO extends UserDTO implements Serializable {
 
     public static ExtendedUserDTO from(UserDTO userDTO, Boolean followed) {
         return new ExtendedUserDTO(userDTO, followed);
-    }
-
-    @Override
-    public ExtendedUserVO toVO() {
-        return ExtendedUserConvertor.INSTANCE.DTO2VO(this);
     }
 }

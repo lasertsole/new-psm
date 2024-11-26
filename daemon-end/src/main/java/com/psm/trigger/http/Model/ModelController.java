@@ -11,12 +11,10 @@ import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
 import com.psm.domain.Model.models_user.valueObject.Models_UserDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.types.enums.VisibleEnum;
-import com.psm.utils.VO.ResponseVO;
+import com.psm.utils.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +48,7 @@ public class ModelController {
     @RequestMapping(value = {"/upload/**"}, method = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.HEAD,
             RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.GET})
     @CrossOrigin(exposedHeaders = {"Location", "Upload-Offset", "Upload-Length"})//暴露header
-    public ResponseVO uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
+    public ResponseDTO uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
         try {
             //获取当前用户id
             Long userId = userAdaptor.getAuthorizedUserId();
@@ -58,10 +56,10 @@ public class ModelController {
             // 调用模型上传接口
             modelAdaptor.uploadModelEntity(servletRequest, servletResponse, String.valueOf(userId));
 
-            return ResponseVO.ok("upload model's Entity successful");
+            return ResponseDTO.ok("upload model's Entity successful");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:"+e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:"+e.getCause());
         }
     }
 
@@ -72,7 +70,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @PostMapping("/uploadInfo")
-    public ResponseVO uploadModelInfo(Model3dDTO model3dDTO) {
+    public ResponseDTO uploadModelInfo(Model3dDTO model3dDTO) {
         Long userId;//当前用户id
         try {
             //获取当前用户id
@@ -84,13 +82,13 @@ public class ModelController {
             modelAdaptor.uploadModelInfo(model3dBO);
         }
         catch (InvalidParameterException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
         }
 
-        return ResponseVO.ok("upload model's info successful");
+        return ResponseDTO.ok("upload model's info successful");
     }
 
     /**
@@ -99,7 +97,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO getModelsShowBars(
+    public ResponseDTO getModelsShowBars(
             @RequestParam Integer current,
             @RequestParam Integer size,
             @RequestParam(required = false) Boolean isIdle,
@@ -114,15 +112,14 @@ public class ModelController {
             if (Objects.nonNull(isFollowing) && isFollowing) userSelfId = userAdaptor.getAuthorizedUserId();
 
             Page<Models_UserBO> modelsUserBOPage = models_UserAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId);
-            Page<Models_UserDTO> modelsUserDTOPage = Models_UserDTO.fromBOPage(modelsUserBOPage);
 
-            return ResponseVO.ok(modelsUserDTOPage);
+            return ResponseDTO.ok(modelsUserBOPage);
         }
         catch (InvalidParameterException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
         }
     }
 
@@ -133,20 +130,20 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping("/{id}")
-    public ResponseVO getModelByModelId(@PathVariable Long id) {
+    public ResponseDTO getModelByModelId(@PathVariable Long id) {
         try {
             // 获取当前用户ID
             Long userSelfId = userAdaptor.getAuthorizedUserId();
 
             Model_ExtendedUserBO model_ExtendedUserBO = modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId);
 
-            return ResponseVO.ok(Model_ExtendedUserDTO.fromBO(model_ExtendedUserBO));
+            return ResponseDTO.ok(model_ExtendedUserBO);
         }
         catch (InvalidParameterException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
         }
     }
 }

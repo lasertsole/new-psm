@@ -5,12 +5,12 @@ import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
+import com.psm.utils.DTO.BO2DTOable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.*;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -19,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserBO implements Serializable {
+public class UserBO implements Serializable, BO2DTOable<UserDTO> {
     private String token;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
@@ -86,5 +86,18 @@ public class UserBO implements Serializable {
 
     public static UserBO fromDO(UserDO userDO) {
         return UserConvertor.INSTANCE.DO2BO(userDO);
+    }
+
+    public UserDTO toOtherDTO() {
+        return UserConvertor.INSTANCE.BO2OtherDTO(this);
+    }
+
+    public UserDTO toCurrentDTO() {
+        return UserConvertor.INSTANCE.BO2CurrentDTO(this);
+    }
+
+    @Override
+    public UserDTO toDTO() {
+        return toOtherDTO();
     }
 }

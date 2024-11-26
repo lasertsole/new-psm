@@ -2,7 +2,7 @@ package com.psm.trigger.http.User;
 
 import com.psm.domain.User.relationships.adaptor.RelationshipsAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.utils.VO.ResponseVO;
+import com.psm.utils.DTO.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,16 +24,16 @@ public class RelationshipsController {
      * @return ResponseVO
      */
     @GetMapping("/{tgtUserId}/{srcUserId}")
-    public ResponseVO checkFollowShip(@PathVariable Long tgtUserId, @PathVariable Long srcUserId) {
+    public ResponseDTO checkFollowShip(@PathVariable Long tgtUserId, @PathVariable Long srcUserId) {
         try {
 
-            return ResponseVO.ok(relationshipsAdaptor.checkFollowShip(tgtUserId, srcUserId));
+            return ResponseDTO.ok(relationshipsAdaptor.checkFollowShip(tgtUserId, srcUserId));
         }
         catch (IllegalArgumentException e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -42,7 +42,7 @@ public class RelationshipsController {
      * @return ResponseVO
      */
     @GetMapping("/{tgtUserId}/self")
-    public ResponseVO checkFollowing(@PathVariable Long tgtUserId) {
+    public ResponseDTO checkFollowing(@PathVariable Long tgtUserId) {
         // 获取当前用户id
         Long srcUserId = userAdaptor.getAuthorizedUserId();
 
@@ -54,18 +54,18 @@ public class RelationshipsController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseVO checkFollowing() {
+    public ResponseDTO checkFollowing() {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(relationshipsAdaptor.checkFollowing(srcUserId));
+            return ResponseDTO.ok(relationshipsAdaptor.checkFollowing(srcUserId));
         }
         catch (IllegalArgumentException e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -74,18 +74,18 @@ public class RelationshipsController {
      * @return ResponseVO
      */
     @GetMapping("/self")
-    public ResponseVO checkFollowers() {
+    public ResponseDTO checkFollowers() {
         try {
             // 获取当前用户id
             Long tgtUserId = userAdaptor.getAuthorizedUserId();
 
-            return ResponseVO.ok(relationshipsAdaptor.checkFollowers(tgtUserId));
+            return ResponseDTO.ok(relationshipsAdaptor.checkFollowers(tgtUserId));
         }
         catch (IllegalArgumentException e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "The parameters cannot be empty");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -94,7 +94,7 @@ public class RelationshipsController {
      * @return ResponseVO
      */
     @PostMapping("/{tgtUserId}")
-    public ResponseVO followUser(@PathVariable Long tgtUserId) {
+    public ResponseDTO followUser(@PathVariable Long tgtUserId) {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
@@ -102,16 +102,16 @@ public class RelationshipsController {
             // 关注用户
             relationshipsAdaptor.addFollowing(tgtUserId, srcUserId);
 
-            return ResponseVO.ok("Get users successful");
+            return ResponseDTO.ok("Get users successful");
         }
         catch (DuplicateKeyException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "DuplicateKey");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "DuplicateKey");
         }
         catch (IllegalArgumentException e){
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "Invalid parameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "Invalid parameter");
         }
         catch (Exception e){
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 
@@ -120,20 +120,20 @@ public class RelationshipsController {
      * @return ResponseVO
      */
     @DeleteMapping("/{tgtUserId}")
-    public ResponseVO unFollowUser(@PathVariable Long tgtUserId) {
+    public ResponseDTO unFollowUser(@PathVariable Long tgtUserId) {
         try {
             // 获取当前用户id
             Long srcUserId = userAdaptor.getAuthorizedUserId();
 
             relationshipsAdaptor.removeFollowing(tgtUserId, srcUserId);
 
-            return ResponseVO.ok("Unfollow user successful");
+            return ResponseDTO.ok("Unfollow user successful");
         }
         catch (IllegalArgumentException e) {
-            return new ResponseVO(HttpStatus.BAD_REQUEST, "Invalid parameter");
+            return new ResponseDTO(HttpStatus.BAD_REQUEST, "Invalid parameter");
         }
         catch (Exception e) {
-            return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
 }

@@ -169,7 +169,7 @@ export class DMService { // 单例模式
         // 请求联系人信息
         let userInfos:UserInfo[] = await getUserByIds(newContacts.map(item=>item.tgtUserId));
         // 将新的联系人插入联系人列表里和indexedDB里
-        userInfos.forEach((user)=>{
+        userInfos.forEach((user)=> {
           let contactsItem = contactsMap.get(user.id!);
           contactsItems.push({
             tgtUserId:contactsItem!.tgtUserId!,

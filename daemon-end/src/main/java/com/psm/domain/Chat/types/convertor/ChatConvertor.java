@@ -3,7 +3,6 @@ package com.psm.domain.Chat.types.convertor;
 import com.psm.domain.Chat.entity.ChatBO;
 import com.psm.domain.Chat.entity.ChatDO;
 import com.psm.domain.Chat.entity.ChatDTO;
-import com.psm.domain.Chat.entity.ChatVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -55,20 +54,4 @@ public abstract class ChatConvertor {
         @Mapping(target = "srcUserId", qualifiedByName = "longToString")
     })
     public abstract ChatDTO DO2DTO(ChatDO chatDO);
-
-    public abstract ChatVO DTO2VO(ChatDTO chatDTO);
-
-    @Mappings({
-        @Mapping(target = "id", qualifiedByName = "longToString"),
-        @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
-        @Mapping(target = "srcUserId", qualifiedByName = "longToString")
-    })
-    public abstract ChatVO BO2VO(ChatBO chatBO);
-
-    @Mappings({
-        @Mapping(target = "id", qualifiedByName = "longToString"),
-        @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
-        @Mapping(target = "srcUserId", qualifiedByName = "longToString")
-    })
-    public abstract ChatVO DO2VO(ChatDO chatDO);
 }

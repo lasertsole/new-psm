@@ -3,7 +3,6 @@ package com.psm.domain.User.relationships.types.convertor;
 import com.psm.domain.User.relationships.entity.RelationshipsBO;
 import com.psm.domain.User.relationships.entity.RelationshipsDO;
 import com.psm.domain.User.relationships.entity.RelationshipsDTO;
-import com.psm.domain.User.relationships.entity.RelationshipsVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -21,17 +20,15 @@ public abstract class RelationshipsConvertor {
 
     public abstract RelationshipsBO DO2BO(RelationshipsDO followerDO);
 
+    @Mappings({
+            @Mapping(target = "id", qualifiedByName = "longToString"),
+            @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
+            @Mapping(target = "srcUserId", qualifiedByName = "longToString")
+    })
     public abstract RelationshipsDTO BO2DTO(RelationshipsBO followerBO);
 
     @Named("longToString")
     public String longToString(Long num) {
         return num.toString();
     }
-
-    @Mappings({
-            @Mapping(target = "id", qualifiedByName = "longToString"),
-            @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
-            @Mapping(target = "srcUserId", qualifiedByName = "longToString")
-    })
-    public abstract RelationshipsVO DTO2VO(RelationshipsDTO followerDTO);
 }

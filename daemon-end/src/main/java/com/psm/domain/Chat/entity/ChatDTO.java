@@ -1,7 +1,6 @@
 package com.psm.domain.Chat.entity;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.utils.VO.DTO2VOable;
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatDTO implements DTO2VOable<ChatVO>, Serializable {
+public class ChatDTO implements Serializable {
     private String id;
     private String tgtUserId;
     private String srcUserId;
@@ -37,10 +36,5 @@ public class ChatDTO implements DTO2VOable<ChatVO>, Serializable {
         chatDTOPage.setRecords(chatDOPage.getRecords().stream().map(ChatConvertor.INSTANCE::DO2DTO).toList());
 
         return chatDTOPage;
-    }
-
-    @Override
-    public ChatVO toVO() {
-        return ChatConvertor.INSTANCE.DTO2VO(this);
     }
 }

@@ -3,11 +3,11 @@ package com.psm.domain.User.relationships.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.psm.domain.User.relationships.types.convertor.RelationshipsConvertor;
+import com.psm.utils.DTO.BO2DTOable;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RelationshipsBO implements Serializable {
+public class RelationshipsBO implements Serializable, BO2DTOable<RelationshipsDTO> {
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
@@ -38,5 +38,10 @@ public class RelationshipsBO implements Serializable {
 
     public static RelationshipsBO fromDO(RelationshipsDO relationshipsDO) {
         return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsDO);
+    }
+
+    @Override
+    public RelationshipsDTO toDTO() {
+        return RelationshipsConvertor.INSTANCE.BO2DTO(this);
     }
 }

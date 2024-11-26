@@ -6,6 +6,7 @@ import com.psm.domain.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Chat.entity.ChatBO;
 import com.psm.domain.Chat.entity.ChatDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
+import com.psm.infrastructure.SocketIO.SocketIOGlobalVariable;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
@@ -37,9 +37,6 @@ public class DMController implements CommandLineRunner {
 
     @Autowired
     private SocketAppProperties socketAppProperties;
-
-    // 存储用户id和对应的socket的映射（因为websocket连接在本地主机，所以不需要考虑多节点问题）
-    private final Map<String, SocketIOClient> userIdMapClient = new ConcurrentHashMap<>();
 
     @Override
     public void run(String... args) throws Exception {
@@ -62,7 +59,7 @@ public class DMController implements CommandLineRunner {
 
         // 添加连接监听器
         dm.addConnectListener(client -> {
-            userIdMapClient.put(client.get("userId"), client);
+            SocketIOGlobalVariable.userIdMapClient.put(client.get("userId"), client);
 
             // 向客户端发送配置信息
             Map<String, Object> map = new HashMap<>();
@@ -74,7 +71,7 @@ public class DMController implements CommandLineRunner {
         // 添加断开连接监听器
         dm.addDisconnectListener(client -> {
             try {
-                userIdMapClient.remove(client.get("userId"));
+                SocketIOGlobalVariable.userIdMapClient.remove(client.get("userId"));
             }
             catch (Exception e) {
                 log.info("disconnect DM error");
@@ -86,32 +83,11 @@ public class DMController implements CommandLineRunner {
             @Override
             public void onData(SocketIOClient srcClient, ChatDTO chatDTO, AckRequest ackRequest) {
                 try {
-                    // 校验参数
                     ChatBO chatBO = ChatBO.fromDTO(chatDTO);
-
                     // 获取信息的发送时间戳，如果时间戳与上一次发信息相同，则证明是重复信息,直接丢弃.
-                    if(Objects.nonNull(srcClient.get("DMLastTime")) && srcClient.get("DMLastTime").equals(chatDTO.getTimestamp())) return;
-                    srcClient.set("DMLastTime", chatDTO.getTimestamp());
+                    if(Objects.nonNull(srcClient.get("DMLastTime")) && srcClient.get("DMLastTime").equals(chatBO.getTimestamp())) return;
 
-                    // 获取来源用户id
-                    String srcUserId = srcClient.get("userId");
-
-                    // 获取目标用户id
-                    String tgtUserId = String.valueOf(chatBO.getTgtUserId());
-
-                    // 如果目标用户存在，则发送消息
-                    SocketIOClient tgtClient = userIdMapClient.get(tgtUserId);
-                    if (Objects.nonNull(tgtClient)){
-                        tgtClient.sendEvent("receiveMessage", ChatDTO.fromBO(chatBO));
-
-                        //TODO 如果目标用户不在本台机器，则把消息广播到MQ，让其他机器查找目标用户SocketIOClient
-                    };
-
-                    //生成返回时间戳(UTC国际化时间戳)
-                    String timestamp = chatBO.generateTimestamp();
-
-                    // 将消息发送到MQ
-                    mqPublisher.publish(chatBO, "DMForward", "CHAT", srcUserId);
+                    String timestamp = chatAdaptor.sendMessage(srcClient, chatBO);
 
                     // 返回ack和消息接收时间戳
                     ackRequest.sendAckData(timestamp);

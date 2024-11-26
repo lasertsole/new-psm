@@ -6,6 +6,7 @@ import com.psm.domain.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Chat.entity.ChatBO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.psm.domain.Chat.service.ChatService;
 
@@ -15,19 +16,13 @@ import java.util.Objects;
 public class ChatAdaptorImpl implements ChatAdaptor {
     @Autowired
     private ChatService chatService;
-
-    public void validateAndConvert(@Valid ChatBO chatBO) {
-        if (
-            Objects.isNull(chatBO.getTgtUserId())
-            || Objects.isNull(chatBO.getSrcUserId())
-            || StringUtils.isBlank(chatBO.getContent())
-        ) {
-            throw new IllegalArgumentException("Invalid parameter");
-        }
-    }
-
     @Override
     public void patchInitMessage(SocketIOClient srcClient, String timestamp) {
         chatService.patchInitMessage(srcClient, Long.parseLong(srcClient.get("userId")), timestamp);
+    };
+
+    @Override
+    public String sendMessage(SocketIOClient srcClient, @Valid ChatBO chatBO) throws ClientException {
+        return chatService.sendMessage(srcClient, chatBO);
     };
 }

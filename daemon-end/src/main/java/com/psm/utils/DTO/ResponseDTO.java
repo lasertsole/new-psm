@@ -1,8 +1,8 @@
-package com.psm.utils.VO;
+package com.psm.utils.DTO;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.utils.page.PageVO;
+import com.psm.utils.page.PageDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseVO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -8677493536001866352L;
-
+public class ResponseDTO implements Serializable {
     /**
      *状态码
      */
@@ -37,13 +34,13 @@ public class ResponseVO implements Serializable {
     private Object data = null;
 
     protected static Object processData(Object data) {
-        if(data instanceof DTO2VOable) {
-            data = ((DTO2VOable) data).toVO();
+        if(data instanceof BO2DTOable) {
+            data = ((BO2DTOable) data).toDTO();
         }
         else if (data instanceof List) {
             data = ((List) data).stream().map(item -> {
-                if(item instanceof DTO2VOable) {
-                    return ((DTO2VOable) item).toVO();
+                if(item instanceof BO2DTOable) {
+                    return ((BO2DTOable) item).toDTO();
                 }
                 else{
                     return item;
@@ -53,15 +50,15 @@ public class ResponseVO implements Serializable {
         else if (data instanceof Page<?>) {
             Page<?> page = (Page<?>) data;
             List records = page.getRecords().stream().map(item -> {
-                if(item instanceof DTO2VOable) {
-                    return ((DTO2VOable) item).toVO();
+                if(item instanceof BO2DTOable) {
+                    return ((BO2DTOable) item).toDTO();
                 }
                 else{
                     return item;
                 }
             }).toList();
 
-            PageVO pageVO =  new PageVO();
+            PageDTO pageVO =  new PageDTO();
             BeanUtils.copyProperties(page, pageVO);
             pageVO.setRecords(records);
 
@@ -71,36 +68,36 @@ public class ResponseVO implements Serializable {
         return data;
     }
 
-    public ResponseVO(Object data) {
+    public ResponseDTO(Object data) {
         data = processData(data);
         this.code = HttpStatus.OK.value();
         this.data = data;
         this.msg = "success";
     }
 
-    public ResponseVO(Integer code, String msg) {
+    public ResponseDTO(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public ResponseVO(HttpStatus httpStatus, String msg) {
+    public ResponseDTO(HttpStatus httpStatus, String msg) {
         this(httpStatus.value(), msg);
     }
 
-    public ResponseVO(Integer code, String msg, Object data) {
+    public ResponseDTO(Integer code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
         data = processData(data);
         this.data = data;
     }
 
-    public ResponseVO(HttpStatus httpStatus, String msg, Object data) { this(httpStatus.value(), msg, data);}
+    public ResponseDTO(HttpStatus httpStatus, String msg, Object data) { this(httpStatus.value(), msg, data);}
 
-    public static ResponseVO ok(Object data){ return new ResponseVO(HttpStatus.OK, "success", data);}
+    public static ResponseDTO ok(Object data){ return new ResponseDTO(HttpStatus.OK, "success", data);}
 
-    public static ResponseVO ok(String msg){ return new ResponseVO(HttpStatus.OK, msg);}
+    public static ResponseDTO ok(String msg){ return new ResponseDTO(HttpStatus.OK, msg);}
 
-    public static ResponseVO ok(String msg, Object data){
-        return new ResponseVO(HttpStatus.OK, msg, data);
+    public static ResponseDTO ok(String msg, Object data){
+        return new ResponseDTO(HttpStatus.OK, msg, data);
     }
 }

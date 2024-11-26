@@ -3,6 +3,7 @@ package com.psm.domain.Chat.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Chat.entity.ChatBO;
+import org.apache.rocketmq.client.apis.ClientException;
 
 /**聊天领域服务
  *
@@ -26,4 +27,13 @@ public interface ChatService {
      * @param timestamp 时间戳
      */
     void patchInitMessage(SocketIOClient srcClient, Long userId, String timestamp);
+
+    /**
+     * 发送聊天信息
+     *
+     * @param srcClient 客户端
+     * @param chatBO 聊天信息
+     * @return 本次聊天记录的时间戳
+     */
+    String sendMessage(SocketIOClient srcClient, ChatBO chatBO) throws ClientException;
 }

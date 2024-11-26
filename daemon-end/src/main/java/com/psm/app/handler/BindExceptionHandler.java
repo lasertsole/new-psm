@@ -1,6 +1,6 @@
 package com.psm.app.handler;
 
-import com.psm.utils.VO.ResponseVO;
+import com.psm.utils.DTO.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,6 @@ public class BindExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         }
 
-        return new ResponseEntity<>(new ResponseVO(HttpStatus.BAD_REQUEST, "parameters is incorrect", errors),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseDTO(HttpStatus.BAD_REQUEST, "parameters is incorrect", errors),HttpStatus.BAD_REQUEST);
     }
 }

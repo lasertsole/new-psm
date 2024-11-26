@@ -3,7 +3,6 @@ package com.psm.domain.Model.model.types.convertor;
 import com.psm.domain.Model.model.entity.Model3dDO;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
-import com.psm.domain.Model.model.entity.Model3dVO;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
@@ -12,10 +11,18 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Objects;
+
 @Slf4j
 @Mapper
 public abstract class Model3dConvertor {
     public static final Model3dConvertor INSTANCE = Mappers.getMapper(Model3dConvertor.class);
+
+    @Named("stringToLong")
+    public Long stringToLong(String str) {
+        if (Objects.isNull(str) || str.isEmpty()) return null;
+        return Long.parseLong(str);
+    }
 
     @Named("fromInteger")
     public VisibleEnum fromShort(Integer visible) {
@@ -28,10 +35,12 @@ public abstract class Model3dConvertor {
     }
 
     @Mappings({
-            @Mapping(target = "visible", qualifiedByName = "fromInteger"),
-            @Mapping(target = "storage", ignore = true),
-            @Mapping(target = "createTime", ignore = true),
-            @Mapping(target = "modifyTime", ignore = true)
+        @Mapping(target = "visible", qualifiedByName = "fromInteger"),
+        @Mapping(target = "storage", ignore = true),
+        @Mapping(target = "createTime", ignore = true),
+        @Mapping(target = "modifyTime", ignore = true),
+        @Mapping(target = "id", qualifiedByName = "stringToLong"),
+        @Mapping(target = "userId", qualifiedByName = "stringToLong"),
     })
     public abstract Model3dBO DTO2BO(Model3dDTO model3dDTO);
 
@@ -48,7 +57,9 @@ public abstract class Model3dConvertor {
 
     @Mappings({
         @Mapping(source = "visible.value", target = "visible", defaultExpression = "java(null)"),
-        @Mapping(target = "coverFile", ignore = true)
+        @Mapping(target = "coverFile", ignore = true),
+        @Mapping(target = "id", qualifiedByName = "longToString"),
+        @Mapping(target = "userId", qualifiedByName = "longToString"),
     })
     public abstract Model3dDTO BO2DTO(Model3dBO model3dBO);
 
@@ -61,11 +72,4 @@ public abstract class Model3dConvertor {
             return null;
         }
     }
-
-    @Mappings({
-            @Mapping(source = "visible", target = "visible", defaultExpression = "java(null)"),
-            @Mapping(target = "id", qualifiedByName = "longToString"),
-            @Mapping(target = "userId", qualifiedByName = "longToString"),
-    })
-    public abstract Model3dVO DTO2VO(Model3dDTO model3dDTO);
 }

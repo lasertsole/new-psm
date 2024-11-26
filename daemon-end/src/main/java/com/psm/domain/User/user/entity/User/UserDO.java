@@ -84,7 +84,7 @@ public class UserDO implements Serializable {
     @Column(comment = "乐观锁版本控制", defaultValue = "0")
     private Integer version;
 
-    public UserDO fromBO(UserBO userBO) {
+    public static UserDO fromBO(UserBO userBO) {
         return UserConvertor.INSTANCE.BO2DO(userBO);
     }
 }
