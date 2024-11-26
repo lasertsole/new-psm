@@ -15,6 +15,10 @@
                 <template v-for="(item, index) in ModelShowItems.records" :key="index">
                     <ModelShowItem
                         :boxInfo="item"
+                        :style="style"
+                        :type="type"
+                        :isIdle="isIdle"
+                        :canUrgent="canUrgent"
                     >
                     </ModelShowItem>
                 </template>
@@ -104,23 +108,23 @@
     async function handleSizeChange(): Promise<void> {
         loading.value = true;
         fetchModelsShowBars({
-            current:currentPage.value, 
-            size:pageSize.value,
-            style:style.value,
-            type:type.value,
-            isIdle:isIdle.value,
-            canUrgent:canUrgent.value
+            current: currentPage.value, 
+            size: pageSize.value,
+            style: style.value,
+            type: type.value,
+            isIdle: isIdle.value,
+            canUrgent: canUrgent.value
         });
     }
 
     async function handleCurrentChange(): Promise<void> {
         fetchModelsShowBars({
-            current:currentPage.value, 
-            size:pageSize.value,
-            style:style.value,
-            type:type.value,
-            isIdle:isIdle.value,
-            canUrgent:canUrgent.value
+            current: currentPage.value, 
+            size: pageSize.value,
+            style: style.value,
+            type: type.value,
+            isIdle: isIdle.value,
+            canUrgent: canUrgent.value
         });
     }
 
@@ -131,12 +135,12 @@
         canUrgent.value = switchArr[1];
 
         fetchModelsShowBars({
-            current:currentPage.value, 
-            size:pageSize.value,
-            style:style.value,
-            type:type.value,
-            isIdle:isIdle.value,
-            canUrgent:canUrgent.value
+            current: currentPage.value, 
+            size: pageSize.value,
+            style: style.value,
+            type: type.value,
+            isIdle: isIdle.value,
+            canUrgent: canUrgent.value
         });
     }
 

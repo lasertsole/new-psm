@@ -14,6 +14,10 @@
             <template v-for="(item, index) in ModelShowItems?.records" :key="index">
                 <ModelShowItem
                     :boxInfo="item"
+                    :style="style"
+                    :type="type"
+                    :isIdle="isIdle"
+                    :canUrgent="canUrgent"
                 >
                 </ModelShowItem>
             </template>

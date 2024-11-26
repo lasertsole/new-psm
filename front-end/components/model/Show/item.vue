@@ -11,6 +11,10 @@
                 <div class="honour">
                     <div class="name">{{boxInfo.user.name}}</div>
                     <div class="publicModelNum">{{boxInfo.models.length}} 个公开模型</div>
+                    <div class="statusBar">
+                        <div :class="{green: isIdle}">{{ isIdle?"空闲":"忙碌" }}</div>
+                        <div :class="{green: canUrgent}">{{ canUrgent?"可加急":"不可加急" }}</div>
+                    </div>
                 </div>
             </div>
             <div class="recomment">
@@ -26,6 +30,9 @@
                     :cover="typeof(item.cover) === 'string' ? item.cover : ''"
                     :style="item.style||''"
                     :type="item.type||''"
+                    :createTime="item.createTime||''"
+                    :optionStyle="style"
+                    :optionType="type"
                 >
                 </ModelShowWorkBox>
             </template>
@@ -38,7 +45,11 @@
     import type { PropType } from "vue";
     
     const props = defineProps({
-        boxInfo:{type:Object as PropType<Model3DInfos>, required: true}
+        boxInfo: {type:Object as PropType<Model3DInfos>, required: true},
+        style: {type: String, required: false, default: ""},
+        type: {type: String, required: false, default: ""},
+        isIdle: {type: Boolean, required: false, default: true},
+        canUrgent: {type: Boolean, required: false, default: true},
     });
 </script>
 
@@ -55,19 +66,19 @@
         flex-direction: row;
         
         .author_info{
-            min-width: 150px;
-            max-width: 150px;
+            @include fixedWidth(150px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             
             .base{
-                height: 50px;
+                height: 70px;
                 display: flex;
                 flex-direction: row;
+                align-items: center;
                 
                 .profile{
-                    @include fixedSquare(50px);
+                    @include fixedSquare(60px);
                     border-radius: 50%;
                     overflow: hidden;
                     cursor: pointer;
@@ -77,7 +88,9 @@
                         height: 100%;
                     }
                 }
+
                 .honour{
+                    flex: 1;
                     margin-left: 10px;
                     overflow: hidden; /* 溢出部分隐藏 */
                     
@@ -97,6 +110,27 @@
                         color: #707070;
                         font-size: 10px;
                         line-height: 15px;
+                    }
+
+                    .statusBar{
+                        color: #707070;
+                        font-size: 12px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+
+                        >div{
+                            &::before{
+                                @include fixedCircle(10px);
+                                content: "";
+                                background-color: orange;
+                                margin-right: 5px;
+                            }
+
+                            &.green::before{
+                                background-color: greenyellow;
+                            }
+                        }
                     }
                 }
             }
