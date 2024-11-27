@@ -10,7 +10,7 @@
                 </div>
                 <div class="honour">
                     <div class="name">{{boxInfo.user.name}}</div>
-                    <div class="publicModelNum">{{boxInfo.models.length}} 个公开模型</div>
+                    <div class="publicModelNum">{{boxInfo.user.publicModelNum!}} 个公开模型</div>
                     <div class="statusBar">
                         <div :class="{green: isIdle}">{{ isIdle?"空闲":"忙碌" }}</div>
                         <div :class="{green: canUrgent}">{{ canUrgent?"可加急":"不可加急" }}</div>

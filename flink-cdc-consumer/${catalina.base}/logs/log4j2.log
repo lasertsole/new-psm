@@ -1,0 +1,121 @@
+13:56:55.609 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.logging.InternalLoggerFactory 76 useLog4J2LoggerFactory - Using Log4J2 as the default logging framework
+13:56:55.620 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 496 explicitNoUnsafeCause0 - -Dio.netty.noUnsafe: false
+13:56:55.621 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 1000 javaVersion0 - Java version: 21
+13:56:55.622 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 137 <clinit> - sun.misc.Unsafe.theUnsafe: available
+13:56:55.624 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 161 <clinit> - sun.misc.Unsafe.copyMemory: available
+13:56:55.626 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 193 <clinit> - sun.misc.Unsafe.storeFence: available
+13:56:55.627 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 236 <clinit> - java.nio.Buffer.address: available
+13:56:55.629 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 317 <clinit> - direct buffer constructor: unavailable java.lang.NoSuchMethodException: java.nio.DirectByteBuffer.<init>(long,int)
+	at java.base/java.lang.Class.getConstructor0(Class.java:3761) ~[?:?]
+	at java.base/java.lang.Class.getDeclaredConstructor(Class.java:2930) ~[?:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0$5.run(PlatformDependent0.java:287) ~[flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:319) ~[?:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0.<clinit>(PlatformDependent0.java:282) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent.isAndroid(PlatformDependent.java:333) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:88) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.<init>(AsciiString.java:225) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.<init>(AsciiString.java:212) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.cached(AsciiString.java:1403) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.<clinit>(AsciiString.java:48) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.http.HttpHeaderNames.<clinit>(HttpHeaderNames.java:31) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.runtime.rest.RestServerEndpointConfiguration.fromConfiguration(RestServerEndpointConfiguration.java:175) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.rest.RestServerEndpoint.<init>(RestServerEndpoint.java:120) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.webmonitor.WebMonitorEndpoint.<init>(WebMonitorEndpoint.java:246) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint.<init>(DispatcherRestEndpoint.java:68) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.rest.SessionRestEndpointFactory.createRestEndpoint(SessionRestEndpointFactory.java:62) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.entrypoint.component.DefaultDispatcherResourceManagerComponentFactory.create(DefaultDispatcherResourceManagerComponentFactory.java:168) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.minicluster.MiniCluster.createDispatcherResourceManagerComponents(MiniCluster.java:554) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.minicluster.MiniCluster.setupDispatcherResourceManagerComponents(MiniCluster.java:521) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.minicluster.MiniCluster.start(MiniCluster.java:465) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.client.program.PerJobMiniClusterFactory.submitJob(PerJobMiniClusterFactory.java:76) [flink-clients-1.20.0.jar:1.20.0]
+	at org.apache.flink.client.deployment.executors.LocalExecutor.execute(LocalExecutor.java:84) [flink-clients-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.executeAsync(StreamExecutionEnvironment.java:2472) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:2351) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.LocalStreamEnvironment.execute(LocalStreamEnvironment.java:68) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:2325) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at com.psm.FlinkCDCConsumer.main(FlinkCDCApplication.java:59) [classes/:?]
+
+13:56:55.646 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 385 <clinit> - java.nio.Bits.unaligned: available, true
+13:56:55.647 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 449 <clinit> - jdk.internal.misc.Unsafe.allocateUninitializedArray(int): unavailable java.lang.IllegalAccessException: class org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0$7 cannot access class jdk.internal.misc.Unsafe (in module java.base) because module java.base does not export jdk.internal.misc to unnamed module @1dba4e06
+	at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:394) ~[?:?]
+	at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:714) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:571) ~[?:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0$7.run(PlatformDependent0.java:410) ~[flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:319) ~[?:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0.<clinit>(PlatformDependent0.java:401) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent.isAndroid(PlatformDependent.java:333) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:88) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.<init>(AsciiString.java:225) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.<init>(AsciiString.java:212) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.cached(AsciiString.java:1403) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.AsciiString.<clinit>(AsciiString.java:48) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.http.HttpHeaderNames.<clinit>(HttpHeaderNames.java:31) [flink-shaded-netty-4.1.91.Final-17.0.jar:?]
+	at org.apache.flink.runtime.rest.RestServerEndpointConfiguration.fromConfiguration(RestServerEndpointConfiguration.java:175) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.rest.RestServerEndpoint.<init>(RestServerEndpoint.java:120) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.webmonitor.WebMonitorEndpoint.<init>(WebMonitorEndpoint.java:246) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint.<init>(DispatcherRestEndpoint.java:68) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.rest.SessionRestEndpointFactory.createRestEndpoint(SessionRestEndpointFactory.java:62) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.entrypoint.component.DefaultDispatcherResourceManagerComponentFactory.create(DefaultDispatcherResourceManagerComponentFactory.java:168) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.minicluster.MiniCluster.createDispatcherResourceManagerComponents(MiniCluster.java:554) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.minicluster.MiniCluster.setupDispatcherResourceManagerComponents(MiniCluster.java:521) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.runtime.minicluster.MiniCluster.start(MiniCluster.java:465) [flink-runtime-1.20.0.jar:1.20.0]
+	at org.apache.flink.client.program.PerJobMiniClusterFactory.submitJob(PerJobMiniClusterFactory.java:76) [flink-clients-1.20.0.jar:1.20.0]
+	at org.apache.flink.client.deployment.executors.LocalExecutor.execute(LocalExecutor.java:84) [flink-clients-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.executeAsync(StreamExecutionEnvironment.java:2472) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:2351) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.LocalStreamEnvironment.execute(LocalStreamEnvironment.java:68) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:2325) [flink-streaming-java-1.20.0.jar:1.20.0]
+	at com.psm.FlinkCDCConsumer.main(FlinkCDCApplication.java:59) [classes/:?]
+
+13:56:55.654 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent0 482 <clinit> - java.nio.DirectByteBuffer.<init>(long, int): unavailable
+13:56:55.655 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 1159 unsafeUnavailabilityCause0 - sun.misc.Unsafe: available
+13:56:55.658 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 1270 estimateMaxDirectMemory - maxDirectMemory: 2118123520 bytes (maybe)
+13:56:55.660 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 1289 tmpdir0 - -Dio.netty.tmpdir: C:\Users\ZhuanZ\AppData\Local\Temp (java.io.tmpdir)
+13:56:55.661 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 1368 bitMode0 - -Dio.netty.bitMode: 64 (sun.arch.data.model)
+13:56:55.663 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 1119 isWindows0 - Platform: Windows
+13:56:55.669 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 178 <clinit> - -Dio.netty.maxDirectMemory: -1 bytes
+13:56:55.669 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 185 <clinit> - -Dio.netty.uninitializedArrayAllocationThreshold: -1
+13:56:55.671 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.CleanerJava9 71 <clinit> - java.nio.ByteBuffer.cleaner(): available
+13:56:55.672 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent 205 <clinit> - -Dio.netty.noPreferDirect: false
+13:56:56.169 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.InternalThreadLocalMap 100 <clinit> - -Dio.netty.threadLocalMap.stringBuilder.initialSize: 1024
+13:56:56.172 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.InternalThreadLocalMap 101 <clinit> - -Dio.netty.threadLocalMap.stringBuilder.maxSize: 4096
+13:56:56.292 DEBUG org.apache.flink.shaded.netty4.io.netty.channel.MultithreadEventLoopGroup 44 <clinit> - -Dio.netty.eventLoopThreads: 8
+13:56:56.302 DEBUG org.apache.flink.shaded.netty4.io.netty.util.concurrent.GlobalEventExecutor 53 <clinit> - -Dio.netty.globalEventExecutor.quietPeriodSeconds: 1
+13:56:56.321 DEBUG org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 110 <clinit> - -Dio.netty.noKeySetOptimization: false
+13:56:56.323 DEBUG org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 111 <clinit> - -Dio.netty.selectorAutoRebuildThreshold: 512
+13:56:56.331 DEBUG org.apache.flink.shaded.netty4.io.netty.util.internal.PlatformDependent$Mpsc 1010 <clinit> - org.jctools-core.MpscChunkedArrayQueue: available
+13:56:56.406 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@7fbd3e75
+13:56:56.418 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@6f9ab79d
+13:56:56.429 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@64ae105d
+13:56:56.435 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@10a18e3e
+13:56:56.440 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@69364b2d
+13:56:56.442 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@53aa2fc9
+13:56:56.445 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@4792f119
+13:56:56.455 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@5bde57ab
+13:56:56.460 TRACE org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop 264 openSelector - instrumented a special java.util.Set into: sun.nio.ch.WEPollSelectorImpl@ea00de
+13:56:56.502 DEBUG org.apache.flink.shaded.netty4.io.netty.channel.DefaultChannelId 79 <clinit> - -Dio.netty.processId: 15728 (auto-detected)
+13:56:56.506 DEBUG org.apache.flink.shaded.netty4.io.netty.util.NetUtil 148 <clinit> - -Djava.net.preferIPv4Stack: false
+13:56:56.506 DEBUG org.apache.flink.shaded.netty4.io.netty.util.NetUtil 149 <clinit> - -Djava.net.preferIPv6Addresses: false
+13:56:56.511 DEBUG org.apache.flink.shaded.netty4.io.netty.util.NetUtilInitializations 145 determineLoopback - Loopback interface: loopback_0 (Software Loopback Interface 1, 0:0:0:0:0:0:0:1)
+13:56:56.512 DEBUG org.apache.flink.shaded.netty4.io.netty.util.NetUtil$SoMaxConnAction 206 run - Failed to get SOMAXCONN from sysctl and file \proc\sys\net\core\somaxconn. Default: 200
+13:56:56.514 DEBUG org.apache.flink.shaded.netty4.io.netty.channel.DefaultChannelId 101 <clinit> - -Dio.netty.machineId: 40:a3:cc:ff:fe:1f:e2:ad (auto-detected)
+13:56:56.523 DEBUG org.apache.flink.shaded.netty4.io.netty.util.ResourceLeakDetector 129 <clinit> - -Dorg.apache.flink.shaded.netty4.io.netty.leakDetection.level: simple
+13:56:56.524 DEBUG org.apache.flink.shaded.netty4.io.netty.util.ResourceLeakDetector 130 <clinit> - -Dorg.apache.flink.shaded.netty4.io.netty.leakDetection.targetRecords: 4
+13:56:56.553 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 157 <clinit> - -Dio.netty.allocator.numHeapArenas: 8
+13:56:56.554 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 158 <clinit> - -Dio.netty.allocator.numDirectArenas: 8
+13:56:56.554 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 160 <clinit> - -Dio.netty.allocator.pageSize: 8192
+13:56:56.554 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 165 <clinit> - -Dio.netty.allocator.maxOrder: 9
+13:56:56.554 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 169 <clinit> - -Dio.netty.allocator.chunkSize: 4194304
+13:56:56.555 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 170 <clinit> - -Dio.netty.allocator.smallCacheSize: 256
+13:56:56.555 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 171 <clinit> - -Dio.netty.allocator.normalCacheSize: 64
+13:56:56.556 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 172 <clinit> - -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+13:56:56.557 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 173 <clinit> - -Dio.netty.allocator.cacheTrimInterval: 8192
+13:56:56.558 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 174 <clinit> - -Dio.netty.allocator.cacheTrimIntervalMillis: 0
+13:56:56.558 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 175 <clinit> - -Dio.netty.allocator.useCacheForAllThreads: false
+13:56:56.558 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.PooledByteBufAllocator 176 <clinit> - -Dio.netty.allocator.maxCachedByteBuffersPerChunk: 1023
+13:56:56.572 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.ByteBufUtil 88 <clinit> - -Dio.netty.allocator.type: pooled
+13:56:56.572 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.ByteBufUtil 97 <clinit> - -Dio.netty.threadLocalDirectBufferSize: 0
+13:56:56.573 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.ByteBufUtil 100 <clinit> - -Dio.netty.maxThreadLocalCharBufferSize: 16384
+13:56:57.502 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.AbstractByteBuf 63 <clinit> - -Dorg.apache.flink.shaded.netty4.io.netty.buffer.checkAccessible: true
+13:56:57.504 DEBUG org.apache.flink.shaded.netty4.io.netty.buffer.AbstractByteBuf 64 <clinit> - -Dorg.apache.flink.shaded.netty4.io.netty.buffer.checkBounds: true
+13:56:57.505 DEBUG org.apache.flink.shaded.netty4.io.netty.util.ResourceLeakDetectorFactory$DefaultResourceLeakDetectorFactory 196 newResourceLeakDetector - Loaded default ResourceLeakDetector: org.apache.flink.shaded.netty4.io.netty.util.ResourceLeakDetector@7f5dd712

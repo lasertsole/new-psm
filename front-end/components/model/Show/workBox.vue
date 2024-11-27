@@ -93,6 +93,7 @@
         }
 
         .classify{
+            padding: 0px 5px;
             font-size: 12px;
             display: flex;
             justify-content: space-between;

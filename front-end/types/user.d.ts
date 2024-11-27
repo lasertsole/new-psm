@@ -15,4 +15,5 @@ export type UserInfo = {
     isFollowed?: boolean;
     isIdle?: boolean,
     canUrgent?: boolean
+    publicModelNum? : number;
 };

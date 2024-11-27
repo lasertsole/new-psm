@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error">
+    <Appenders>
+        <!--输出控制台的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--控制台只输出level1及以上级别的信息(onMatch),其他的直接拒绝(onMismatch)-->
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--输出日志格式-->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </Console>
+
+        <!--文件会打印所有信息，这个log每次运行程序都会清空，由append属性决定，适合临时测试用-->
+        <!--append为TRUE表示消息增加到指定文件中，false表示覆盖指定文件，默认值为TRUE-->
+        <File name="Log" fileName="${catalina.base}/logs/log4j2.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </File>
+
+        <!--添加过滤器ThresholdFilter,可以有选择的输出某个级别以上的类型-->
+        <File name="ERROR" fileName="${catalina.base}/logs/error.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </File>
+
+        <!--打印所有信息，每次大小超过size，则这size大小的日志会自动按存入年份-月份建立的文件夹下面并进行压缩，作为存储-->
+        <RollingFile name="RollingFile" fileName="${catalina.base}/logs/web.log"
+                     filePattern="${catalina.base}/logs/$${date:yyyy-MM}/web-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+            <SizeBasedTriggeringPolicy size="2MB"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ERROR"/>
+            <AppenderRef ref="Log"/>
+        </Root>
+    </Loggers>
+</Configuration>
