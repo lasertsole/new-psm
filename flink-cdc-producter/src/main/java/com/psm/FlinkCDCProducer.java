@@ -57,11 +57,10 @@ public class FlinkCDCProducer {
 		);
 
 		// 将数据流发送到 Kafka
-		stringDataStreamSource.addSink(kafkaProducer)
-				.setParallelism(1);
+		stringDataStreamSource.addSink(kafkaProducer);
 
 		stringDataStreamSource.print();
-		env.execute("flinkPgCDC");
+		env.execute("flinkPgCDCProducer");
 	}
 }
 
