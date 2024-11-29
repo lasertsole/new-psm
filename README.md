@@ -10,7 +10,10 @@
 ### rx.js 处理复杂的异步流操作api
 ### dexie.js 简化indexedDB操作api
 ### vite-pwa + service-worker + sessionStorage + cacheStorage + indexedDB全平台适配方案与离线缓存
-### wasm + rust 可移植其他语言到浏览器的中间代码 性能与c++相同的内存安全语言
+### wasm + wasmEdge + rust 可移植其他语言到浏览器的中间代码与运行时容器 性能与c++相同的内存安全语言
+
+### wujie 无界微前端
+
 ### tus-js-client大文件分片上传
 ### socket.io(client) websocket全双工通信框架
 ## 后端:
