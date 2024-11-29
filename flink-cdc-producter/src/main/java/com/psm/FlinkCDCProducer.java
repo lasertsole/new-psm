@@ -26,7 +26,7 @@ public class FlinkCDCProducer {
 				.port(5432)
 				.database("psm")
 				.schemaList("public")
-				.tableList("public.tb_chats")
+				.tableList("public.tb_users", "public.tb_3d_models")
 				.username("replicator")
 				.password("XiaoDaoZei990508*")
 				.decodingPluginName("pgoutput")

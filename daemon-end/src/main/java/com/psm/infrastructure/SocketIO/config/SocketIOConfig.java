@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Setter
-@ConfigurationProperties(prefix = "socketio")
 @Configuration
+@ConfigurationProperties(prefix = "socketio")
 public class SocketIOConfig {
     private String host;
     private Integer port;
