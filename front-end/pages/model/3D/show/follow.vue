@@ -90,7 +90,7 @@
     {current: number, size: number, style?:string, type?:string, isIdle:boolean, canUrgent:boolean}):void
     {
         loading.value = true;
-        getFollowingModelsShowBars({current, size, style, type, isIdle, canUrgent}).then((res:Page<Model3DInfos>)=>{
+        getFollowingModel3dsShowBars({current, size, style, type, isIdle, canUrgent}).then((res:Page<Model3DInfos>)=>{
             ModelShowItems.value = res;
         }).finally(()=>{loading.value = false;});
     };

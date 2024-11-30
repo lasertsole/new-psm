@@ -37,7 +37,7 @@ public class FlinkCDCConsumer {
 		);
 
 		// 设置 Watermark 策略（可选）
-		kafkaConsumer.setStartFromEarliest(); // 从最早的偏移量开始消费
+//		kafkaConsumer.setStartFromEarliest(); // 从最早的偏移量开始消费
 
 		// 创建 Flink 执行环境
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();

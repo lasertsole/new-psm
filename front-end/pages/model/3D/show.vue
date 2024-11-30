@@ -7,6 +7,8 @@
         >
             <CommonTagBar
                 :tabList="tabList"
+                :blurSearch="blurSearch"
+                :detaliSearch="detaliSearch"
             >
             </CommonTagBar>
         </div>
@@ -18,8 +20,11 @@
 </template>
 
 <script setup lang="ts">
+    import type { Ref } from "vue";
     import type { TagBarItem } from "@/types/common";
-    import { StyleEnum, TypeEnum, PrimarySort } from "@/enums/model3d.d"
+    import type { Model3DInfo } from "@/types/model3d";
+    import { ref, nextTick, onActivated, onDeactivated } from "vue";
+    import { StyleEnum, TypeEnum, PrimarySort } from "@/enums/model3d.d";
     
     // 样式标签列表
     const styleOpts = Object.entries(StyleEnum);
@@ -56,7 +61,7 @@
         - Number(window.getComputedStyle(show.value).paddingBottom.replace('px',''))
         - tagBar.value.clientHeight
         + 'px';
-    }
+    };
 
     onActivated (async ()=>{
         await computeHeight();
@@ -67,6 +72,17 @@
     onDeactivated (()=>{
         window.removeEventListener('resize', computeHeight);
     });
+
+    async function blurSearch(keyword:string):Promise<Model3DInfo[]> {
+        return await blurSearchModel3d(keyword);
+    };
+
+    async function detaliSearch(keyword:string):Promise<void> {
+        navigateTo({
+            path: '/model/3D/search',
+            query: { keyword }
+        });
+    };
 
     definePageMeta({
         name: 'model-3D-show'
@@ -88,6 +104,12 @@
 
         @media screen and (max-width: 800px){
             padding: 30px 0px;
+        }
+
+        .tagBar{
+            :deep(.classify) {
+                padding: 0px 20px;
+            }
         }
 
         .content{

@@ -43,7 +43,7 @@
 
     const requestModel = async (params:any):Promise<void>=>{//替换掉原本的xhr请求
         hadUpload.value = true;
-        await uploadModel(params.file
+        await uploadModel3d(params.file
         , (progress:string):void=>{
             emits('upload-progress', progress);
         }

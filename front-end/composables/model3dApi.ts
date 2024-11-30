@@ -11,7 +11,7 @@ import type { Model3DInfo, Model3DInfos, Model3DInfoDetail } from "@/types/model
  * @param targetFilePathRef 文件上传到云端路径ref
  * @returns 
  */
-export async function uploadModel(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
+export async function uploadModel3d(file:File, progressFuc:Function, targetFilePathRef:Ref):Promise<void> {
     try{
         return await tusUploadApi({
             file:file, 
@@ -29,7 +29,7 @@ export async function uploadModel(file:File, progressFuc:Function, targetFilePat
     }
 };
 
-export async function uploadModelInfo({title, content, cover, style, type, visible}:Model3DInfo):Promise<Boolean> {
+export async function uploadModel3dInfo({title, content, cover, style, type, visible}:Model3DInfo):Promise<Boolean> {
     try{
         if(!title || !content || !cover || !style || !type || !visible) return false;
         const formData = new FormData();
@@ -68,7 +68,7 @@ export async function uploadModelInfo({title, content, cover, style, type, visib
 };
 
 
-export async function getModelsShowBars(
+export async function getModel3dsShowBars(
     {current, size, isIdle, canUrgent, style, type}:
     Page<Model3DInfos>&UserInfo&Model3DInfo): Promise<Page<Model3DInfos>> {
 
@@ -116,7 +116,7 @@ export async function getModelsShowBars(
     }
 };
 
-export async function getFollowingModelsShowBars(
+export async function getFollowingModel3dsShowBars(
     {current, size, isIdle, canUrgent, style, type}:
     Page<Model3DInfos>&UserInfo&Model3DInfo): Promise<Page<Model3DInfos>> {
 
@@ -162,7 +162,7 @@ export async function getFollowingModelsShowBars(
     }
 };
 
-export async function getModelByModelId({ modelId }:{modelId:string}):Promise<Model3DInfoDetail> {
+export async function getModelByModel3dId({ modelId }:{modelId:string}):Promise<Model3DInfoDetail> {
     try {
         const res:Response = await fetchApi({
             url: `/models/${modelId}`,
@@ -177,3 +177,37 @@ export async function getModelByModelId({ modelId }:{modelId:string}):Promise<Mo
         return {} as Model3DInfoDetail; 
     }
 };
+
+export async function blurSearchModel3d(keyword:string):Promise<Model3DInfo[]> {
+    try {
+        const res:Response = await fetchApi({
+            url: `/models/blurSearch`,
+            method: 'get',
+            opts:{keyword}
+        });
+    
+        return res.data;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('搜索模型失败');
+        
+        return [] as Model3DInfo[]; 
+    }
+}
+
+export async function detailSearchModel3d(keyword:string):Promise<Model3DInfo[]> {
+    try {
+        const res:Response = await fetchApi({
+            url: `/models/detailSearch`,
+            method: 'get',
+            opts:{keyword}
+        });
+    
+        return res.data;
+    }
+    catch (error) {
+        import.meta.client&&ElMessage.error('搜索模型失败');
+        
+        return [] as Model3DInfo[]; 
+    }
+}

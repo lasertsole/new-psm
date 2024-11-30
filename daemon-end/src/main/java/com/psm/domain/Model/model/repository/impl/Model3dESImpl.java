@@ -2,10 +2,13 @@ package com.psm.domain.Model.model.repository.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.psm.app.annotation.spring.Repository;
+import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.repository.Model3dES;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -45,5 +48,15 @@ public class Model3dESImpl implements Model3dES {
                 .properties("content", p -> p.text(t -> t.analyzer("ik_smart")))
             )
         ).acknowledged();
+    }
+
+    @Override
+    public List<Model3dBO> selectBlurSearchModel3d(String keyword) {
+        return List.of();
+    }
+
+    @Override
+    public List<Model3dBO> selectDetailSearchModel3d(String keyword) {
+        return List.of();
     }
 }

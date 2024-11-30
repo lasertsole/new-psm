@@ -89,4 +89,18 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
 
         return modelService.getByUserIds(userIds, visibleEnum);
     }
+
+    @Override
+    public List<Model3dBO> getBlurSearchModel3d(String keyword) {
+        if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
+
+        return modelService.getBlurSearchModel3d(keyword);
+    }
+
+    @Override
+    public List<Model3dBO> getDetailSearchModel3d(String keyword) {
+        if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
+
+        return modelService.getDetailSearchModel3d(keyword);
+    }
 }

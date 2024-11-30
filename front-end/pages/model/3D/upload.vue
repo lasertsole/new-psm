@@ -267,7 +267,7 @@
         };
         
         loading.value = true;
-        uploadModelInfo({
+        uploadModel3dInfo({
             cover: cover.value,
             title: title.value,
             content: content.value,

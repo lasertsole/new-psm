@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref } from "vue";
   import type { UserInfo } from "@/types/user";
   import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
   import type { Model3DInfoDetail, Model3DInfo } from "@/types/model3d";
@@ -71,7 +72,7 @@
   // 获取当前路由对象
   const route = useRoute();
 
-  // 从 query 参数中获取 id
+  // 从 path 参数中获取 id
   const id = route.params.id;
 
   const modelInfoDetail = ref<Model3DInfoDetail>();
@@ -98,7 +99,7 @@
   }, 1000);
 
   onMounted(async ()=>{
-    let res : Model3DInfoDetail = await getModelByModelId({modelId: id as string});
+    let res : Model3DInfoDetail = await getModelByModel3dId({modelId: id as string});
     if(res){
       modelInfoDetail.value = res;
       isFollowing.value = res.user.isFollowed!;
@@ -180,9 +181,11 @@
             border-radius: 4px;
             cursor: pointer;
           }
+
           .follow{
             background-color: #fb7299;
           }
+
           .sms{
             background-color: #00a8e9;
           }

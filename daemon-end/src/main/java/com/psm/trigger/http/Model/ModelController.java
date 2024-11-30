@@ -6,10 +6,8 @@ import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
 import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserBO;
-import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserDTO;
 import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
-import com.psm.domain.Model.models_user.valueObject.Models_UserDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.utils.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +46,7 @@ public class ModelController {
     @RequestMapping(value = {"/upload/**"}, method = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.HEAD,
             RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.GET})
     @CrossOrigin(exposedHeaders = {"Location", "Upload-Offset", "Upload-Length"})//暴露header
-    public ResponseDTO uploadModelEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
+    public ResponseDTO uploadModel3dEntity(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
         try {
             //获取当前用户id
             Long userId = userAdaptor.getAuthorizedUserId();
@@ -70,7 +68,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @PostMapping("/uploadInfo")
-    public ResponseDTO uploadModelInfo(Model3dDTO model3dDTO) {
+    public ResponseDTO uploadModel3dInfo(Model3dDTO model3dDTO) {
         Long userId;//当前用户id
         try {
             //获取当前用户id
@@ -97,7 +95,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping
-    public ResponseDTO getModelsShowBars(
+    public ResponseDTO getModel3dsShowBars(
             @RequestParam Integer current,
             @RequestParam Integer size,
             @RequestParam(required = false) Boolean isIdle,
@@ -130,7 +128,7 @@ public class ModelController {
      * @return ResponseVO
      */
     @GetMapping("/{id}")
-    public ResponseDTO getModelByModelId(@PathVariable Long id) {
+    public ResponseDTO getModel3dByModelId(@PathVariable Long id) {
         try {
             // 获取当前用户ID
             Long userSelfId = userAdaptor.getAuthorizedUserId();
@@ -144,6 +142,32 @@ public class ModelController {
         }
         catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
+        }
+    }
+
+    @GetMapping("/blurSearch")
+    public ResponseDTO getBlurSearchModel3d(@RequestParam String keyword) {
+        try {
+            return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e.getCause());
+        }
+    }
+
+    @GetMapping("/detailSearch")
+    public ResponseDTO getDetailSearchModel3d(@RequestParam String keyword) {
+        try {
+            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword));
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e.getCause());
         }
     }
 }

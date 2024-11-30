@@ -1,7 +1,7 @@
 <template>
     <div class="classify">
-        <div class="full-contain">
-            <div class="tabBox">
+        <div class="fullContain">
+            <div :class="{tabBox:true, isInputFocus}">
                 <div>
                     <template v-for="item,index in tabList">
                         <NuxtLink
@@ -18,56 +18,150 @@
                     <div class="line" :style="`width:${1/tabList.length*100}%; transform: translateX(${tabIndex*100}%);`"></div>
                 </div>
             </div>
+
+            <div :class="{searchBar:true, isInputFocus}">
+                <el-input
+                    placeholder="查找模型信息"
+                    clearable
+                    class="input-with-select"
+                    @focus="inputFocus"
+                    @blur="inputBlur"
+                    v-model="searchText"
+                    @input="searchBarInputEvent"
+                    @keydown.enter="detaliSearchEvent"
+                >
+                    <template #prepend>
+                        <el-button
+                            @focus="inputFocus"    
+                            @click="detaliSearchEvent"
+                            :icon="Search"
+                        />
+                    </template>
+                </el-input>
+
+                <el-skeleton v-show="isInputFocus" :rows="3" animated :loading="false">
+                    <template #default>
+                        <data v-show="isInputFocus" class="searchResult">
+                            <template v-for="(item, index) in blurSearchResults" :key="index">
+                                <div>{{ item }}</div>
+                            </template>
+                        </data>
+                    </template>
+                </el-skeleton>
+            </div>
         </div>
-        <div class="full-line"></div>
+        <div :class="{fullLine:true, isInputFocus}"></div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { ref, defineProps, defineEmits, watchEffect } from "vue";
     import type { PropType } from "vue";
     import type { TagBarItem } from "@/types/common";
+    import { Search } from '@element-plus/icons-vue';
+    import { ref, defineProps, defineEmits, watchEffect } from "vue";
 
     const props = defineProps({
         tabList:{type:Array as PropType<TagBarItem[]>, required: true},
         focusIndex:{type:Number, required: false, default: 0},
+        blurSearch: {type:Function, required: false},
+        detaliSearch: {type:Function, required: false},
     });
 
     const emits = defineEmits(["changeClassifyIndex"]);
 
     const tabIndex = ref<number>(0);
-    function changeTabIndex(index:number):void{
+    function changeTabIndex(index:number):void {
         tabIndex.value=index;
         emits("changeClassifyIndex", tabIndex.value);
     }
 
     watchEffect(()=>{
         tabIndex.value = props.focusIndex;
-    })
+    });
+
+    /******以下是搜索框部分******/
+    const searchText:Ref<string> = ref<string>("");
+    const isInputFocus:Ref<boolean> = ref<boolean>(false);
+    const blurSearchResults: Ref<string[]> = ref<string[]>([]);
+    function inputFocus():void {
+        isInputFocus.value = true;
+    };
+    function inputBlur():void {
+        isInputFocus.value = false;
+    };
+
+    const searchBarInputEvent = debounce(():void => {
+        if(searchText.value=="") { ElMessage.warning('请输入搜索内容'); return }; 
+
+        blurSearch(searchText.value);
+    }, 1000);
+
+    const detaliSearchEvent = debounce(():void => {
+        if(searchText.value=="") { ElMessage.warning('请输入搜索内容'); return }; 
+
+        detaliSearch(searchText.value);
+    }, 1000);
+
+
+    async function blurSearch(keyword:string):Promise<void> {
+        if(keyword=="") { ElMessage.warning('请输入搜索内容'); return }; 
+
+        props.blurSearch&&(blurSearchResults.value=await props.blurSearch(keyword));
+    }
+
+    async function detaliSearch(keyword:string):Promise<void> {
+        if(keyword=="") { ElMessage.warning('请输入搜索内容'); return }; 
+
+        props.detaliSearch&&props.detaliSearch(keyword);
+    }
 </script>
 
 <style lang="scss" scoped>
     .classify{
-        .full-contain{
+        .fullContain{
             display: flex;
             flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            height: 45px;
+
             .tabBox{
                 display: flex;
                 flex-direction: column;
+                height: 100%;
+                position: relative;
+                transition: all .3s;
+
+                &.isInputFocus{
+                    overflow: hidden;
+                    transform: translateX(-100%);
+                    width: 0%;
+                    div{
+                        overflow: hidden;
+                        opacity: 0;
+                    }
+                }
+
                 div{
+                    height: 100%;
                     display: flex;
+                    overflow: hidden;
                     a{
+                        height: 100%;
+                        overflow: hidden;
                         display: flex;
                         justify-content: center;
                         align-items: center;
                         padding: 10px;
                         cursor: pointer;
                         color: #707070;
+                        word-wrap: break-word;
                         &.selected{
                             color: #00a8e9;
                         }
                     }
                 }
+                
                 .lineBar{
                     height: 2px;
                     .line{
@@ -77,13 +171,44 @@
                     }
                 }
             }
+
+            .searchBar{
+                height: 100%;
+                width: 230px;
+                transition: all .3s ease-in;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+
+                &.isInputFocus{
+                    width: 100%;
+                }
+
+                .el-input{
+                    width: 100%;
+                }
+
+                :deep(.el-skeleton) {
+                    background-color: white !important;
+                    z-index: 2;
+                    border: #00a8e9 1px solid;
+                    border-radius: 0px 0px 5px 5px;
+                    padding: 10px;
+                }
+            }
         }
-        .full-line{
+        .fullLine{
             height: 1.5px;
             background-color: #a5a5a55b;
             position: relative;
             z-index: 1;
             transform: translateY(-1.75px);
+            transition: opacity .3s;
+            opacity: 1;
+
+            &.isInputFocus{
+                opacity: 0;
+            }
         }
     }
 </style>

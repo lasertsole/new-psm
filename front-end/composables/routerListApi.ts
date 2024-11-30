@@ -16,8 +16,8 @@ export const routerList:Router[] = [
         tarbar: true,
     },
     {
-        name: '企划',
-        path: '/#',
+        name: '应用',
+        path: '/application',
         needOnLine: false,
         needOffLine: false,
         tarbar: true,

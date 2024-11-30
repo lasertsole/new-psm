@@ -1,7 +1,6 @@
 package com.psm.domain.Model.model.adaptor;
 
 import com.psm.domain.Model.model.entity.Model3dBO;
-import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,4 +59,20 @@ public interface Model3dAdaptor {
      * @return 模型BO
      */
     List<Model3dBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum);
+
+    /**
+     * 根据模型ID查询简要模型信息
+     *
+     * @param keyword 关键字
+     * @return 模型BO列表
+     */
+    List<Model3dBO> getBlurSearchModel3d(String keyword);
+
+    /**
+     * 根据模型ID查询详细模型信息
+     *
+     * @param keyword 关键字
+     * @return 模型BO列表
+     */
+    List<Model3dBO> getDetailSearchModel3d(String keyword);
 }

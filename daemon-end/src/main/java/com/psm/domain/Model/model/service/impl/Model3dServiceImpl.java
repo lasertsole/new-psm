@@ -2,6 +2,7 @@ package com.psm.domain.Model.model.service.impl;
 
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDO;
+import com.psm.domain.Model.model.repository.Model3dES;
 import com.psm.domain.Model.model.repository.Model3dRedis;
 import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.domain.Model.model.repository.Model3dOSS;
@@ -43,6 +44,9 @@ public class Model3dServiceImpl implements Model3dService {
 
     @Autowired
     private Model3dDB modelDB;
+
+    @Autowired
+    private Model3dES modelES;
 
     @Autowired
     private MQPublisher mqPublisher;
@@ -154,5 +158,15 @@ public class Model3dServiceImpl implements Model3dService {
     @Override
     public List<Model3dBO> getByUserIds(List<Long> userIds, VisibleEnum visibleEnum) {
         return modelDB.selectByUserIds(userIds, visibleEnum).stream().map(Model3dConvertor.INSTANCE::DO2BO).toList();
+    }
+
+    @Override
+    public List<Model3dBO> getBlurSearchModel3d(String keyword) {
+        return modelES.selectBlurSearchModel3d(keyword);
+    }
+
+    @Override
+    public List<Model3dBO> getDetailSearchModel3d(String keyword) {
+        return modelES.selectDetailSearchModel3d(keyword);
     }
 }
