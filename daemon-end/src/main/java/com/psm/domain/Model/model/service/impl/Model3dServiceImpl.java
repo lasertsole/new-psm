@@ -10,6 +10,8 @@ import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.event.UploadModel3DEvent;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
+import com.psm.types.common.ES.BO.ESResultBO;
+import com.psm.types.common.ES.BO.ESResultPageBO;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.Tus.Tus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -161,12 +163,12 @@ public class Model3dServiceImpl implements Model3dService {
     }
 
     @Override
-    public List<Model3dBO> getBlurSearchModel3d(String keyword) {
+    public List<Map<String, Object>> getBlurSearchModel3d(String keyword) throws IOException {
         return modelES.selectBlurSearchModel3d(keyword);
     }
 
     @Override
-    public List<Model3dBO> getDetailSearchModel3d(String keyword) {
-        return modelES.selectDetailSearchModel3d(keyword);
+    public ESResultPageBO getDetailSearchModel3d(String keyword) throws IOException {
+        return new ESResultPageBO(modelES.selectDetailSearchModel3d(keyword));
     }
 }

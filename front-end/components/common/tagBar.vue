@@ -29,6 +29,7 @@
                     v-model="searchText"
                     @input="searchBarInputEvent"
                     @keydown.enter="detaliSearchEvent"
+                    @clear="clearEvent"
                 >
                     <template #prepend>
                         <el-button
@@ -39,13 +40,27 @@
                     </template>
                 </el-input>
 
-                <el-skeleton v-show="isInputFocus" :rows="3" animated :loading="false">
+                <el-skeleton v-show="isInputFocus" :rows="3" animated :loading="skeletonLoading">
                     <template #default>
-                        <data v-show="isInputFocus" class="searchResult">
+                        <div v-show="isInputFocus&&!skeletonLoading&&showSearchBar" class="searchResult">
                             <template v-for="(item, index) in blurSearchResults" :key="index">
-                                <div>{{ item }}</div>
+                                <CommonSearchItem
+                                    :Id="item.id"
+                                >
+                                    <template v-slot:title v-show="item.highlight.title">
+                                        <template v-for="(subItem,subIndex) in item.highlight.title" :key="subIndex">
+                                            标题: <div v-html="subItem"></div>
+                                        </template>
+                                    </template>
+                                    <template v-slot:content v-show="item.highlight.content">
+                                        <template v-for="(subItem,subIndex) in item.highlight.content" :key="subIndex">
+                                            介绍: <span v-html="subItem"></span>
+                                        </template>
+                                    </template>
+                                </CommonSearchItem>
                             </template>
-                        </data>
+                            <div v-show="blurSearchResults.length==0">未查询到对应结果</div>
+                        </div>
                     </template>
                 </el-skeleton>
             </div>
@@ -91,9 +106,15 @@
     };
 
     const searchBarInputEvent = debounce(():void => {
-        if(searchText.value=="") { ElMessage.warning('请输入搜索内容'); return }; 
+        if(searchText.value=="") { 
+            showSearchBar.value = false;
+            return; 
+        }; 
 
-        blurSearch(searchText.value);
+        
+        blurSearch(searchText.value).then(()=>{
+            showSearchBar.value = true;
+        });
     }, 1000);
 
     const detaliSearchEvent = debounce(():void => {
@@ -103,17 +124,24 @@
     }, 1000);
 
 
+    const skeletonLoading:Ref<boolean> = ref<boolean>(false);
     async function blurSearch(keyword:string):Promise<void> {
-        if(keyword=="") { ElMessage.warning('请输入搜索内容'); return }; 
-
+        if(keyword=="") { return }; 
+        skeletonLoading.value = true;
         props.blurSearch&&(blurSearchResults.value=await props.blurSearch(keyword));
-    }
+        skeletonLoading.value = false;
+    };
 
     async function detaliSearch(keyword:string):Promise<void> {
         if(keyword=="") { ElMessage.warning('请输入搜索内容'); return }; 
-
         props.detaliSearch&&props.detaliSearch(keyword);
-    }
+    };
+
+    const showSearchBar:Ref<boolean> = ref<boolean>(false);
+    async function clearEvent():Promise<void> {
+        blurSearchResults.value = [];
+        showSearchBar.value = false;
+    };
 </script>
 
 <style lang="scss" scoped>
@@ -184,13 +212,21 @@
                     width: 100%;
                 }
 
+                >div{
+                    background-color: white;
+                }
+
                 .el-input{
                     width: 100%;
                 }
 
+                .searchResult{
+                    border: #00a8e9 1px solid;
+                    border-radius: 0px 0px 5px 5px;
+                    padding: 10px;
+                }
+
                 :deep(.el-skeleton) {
-                    background-color: white !important;
-                    z-index: 2;
                     border: #00a8e9 1px solid;
                     border-radius: 0px 0px 5px 5px;
                     padding: 10px;

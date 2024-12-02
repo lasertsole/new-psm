@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import com.psm.utils.DTO.BO2DTOable;
+import com.psm.types.common.BO.BO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatBO implements Serializable, BO2DTOable<ChatDTO> {
+public class ChatBO implements Serializable, BO<ChatDTO> {
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 

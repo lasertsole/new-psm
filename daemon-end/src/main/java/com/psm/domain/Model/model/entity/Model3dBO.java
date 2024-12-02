@@ -5,7 +5,7 @@ import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
 import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.types.enums.VisibleEnum;
-import com.psm.utils.DTO.BO2DTOable;
+import com.psm.types.common.BO.BO;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -21,7 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model3dBO implements Serializable, BO2DTOable<Model3dDTO> {
+public class Model3dBO implements Serializable, BO<Model3dDTO> {
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 

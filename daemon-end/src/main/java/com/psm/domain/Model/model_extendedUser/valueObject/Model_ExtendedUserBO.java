@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
 import com.psm.domain.User.relationships.valueObject.ExtendedUserBO;
-import com.psm.utils.DTO.BO2DTOable;
+import com.psm.types.common.BO.BO;
 import lombok.Value;
 
 import java.io.Serializable;
 
 @Value
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model_ExtendedUserBO implements Serializable, BO2DTOable<Model_ExtendedUserDTO> {
+public class Model_ExtendedUserBO implements Serializable, BO<Model_ExtendedUserDTO> {
     ExtendedUserBO user;
     Model3dBO model;
 

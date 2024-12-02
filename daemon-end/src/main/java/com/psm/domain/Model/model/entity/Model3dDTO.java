@@ -1,6 +1,7 @@
 package com.psm.domain.Model.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.types.common.DTO.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model3dDTO implements Serializable {
+public class Model3dDTO implements Serializable, DTO {
     private String id;
     private String userId;
     private String title;

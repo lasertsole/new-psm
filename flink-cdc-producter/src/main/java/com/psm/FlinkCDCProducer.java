@@ -1,5 +1,6 @@
 package com.psm;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.psm.utils.CustomDeserialization;
 import com.ververica.cdc.connectors.postgres.PostgreSQLSource;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class FlinkCDCProducer {
 				.port(5432)
 				.database("psm")
 				.schemaList("public")
-				.tableList("public.tb_users", "public.tb_3d_models")
+				.tableList("public.tb_3d_models")
 				.username("replicator")
 				.password("XiaoDaoZei990508*")
 				.decodingPluginName("pgoutput")
@@ -44,6 +45,10 @@ public class FlinkCDCProducer {
 		env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);//限制最大checkpoint并发
 
 		DataStreamSource<String> stringDataStreamSource = env.addSource(sourceFunction);
+		stringDataStreamSource.filter(jsonString -> {
+			JSONObject jsonObject = JSONObject.parseObject(jsonString);
+			return jsonObject.getInteger("visible").equals(0);//过滤掉非可见数据
+		});
 
 		// 创建 Kafka 生产者
 		Properties kafkaProps = new Properties();

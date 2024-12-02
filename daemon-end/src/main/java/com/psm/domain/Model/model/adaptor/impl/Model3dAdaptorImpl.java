@@ -1,10 +1,12 @@
 package com.psm.domain.Model.model.adaptor.impl;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.psm.domain.Model.model.adaptor.Model3dAdaptor;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
+import com.psm.types.common.ES.BO.ESResultPageBO;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.utils.Valid.ValidUtil;
 import io.micrometer.common.util.StringUtils;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -91,14 +94,20 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     }
 
     @Override
-    public List<Model3dBO> getBlurSearchModel3d(String keyword) {
+    public List<Map<String, Object>> getBlurSearchModel3d(String keyword) throws IOException {
         if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
 
-        return modelService.getBlurSearchModel3d(keyword);
+        List<Map<String, Object>> blurSearchModel3d = modelService.getBlurSearchModel3d(keyword);
+
+        return blurSearchModel3d.stream().map(map -> {
+            JSONObject document = (JSONObject) map.get("document");
+            Model3dDTO model3dDTO = JSONObject.parseObject(document.toJSONString(), Model3dDTO.class);
+            return Map.of("document", model3dDTO, "highlight", map.get("highlight"));
+        }).toList();
     }
 
     @Override
-    public List<Model3dBO> getDetailSearchModel3d(String keyword) {
+    public ESResultPageBO getDetailSearchModel3d(String keyword) throws IOException {
         if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
 
         return modelService.getDetailSearchModel3d(keyword);

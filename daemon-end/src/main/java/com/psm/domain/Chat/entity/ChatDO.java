@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
 import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.entity.User.UserDODefine;
+import com.psm.types.common.DO.DO;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
@@ -23,7 +24,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_chats", comment = "聊天记录表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ChatDO implements Serializable {
+public class ChatDO implements Serializable, DO<ChatBO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -50,5 +51,10 @@ public class ChatDO implements Serializable {
 
     public static ChatDO fromBO(ChatBO chatBO) {
         return ChatConvertor.INSTANCE.BO2DO(chatBO);
+    }
+
+    @Override
+    public ChatBO toBO() {
+        return ChatConvertor.INSTANCE.DO2BO(this);
     }
 }

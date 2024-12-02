@@ -5,9 +5,12 @@ import org.apache.rocketmq.client.apis.ClientConfiguration;
 import org.apache.rocketmq.client.apis.ClientConfigurationBuilder;
 import org.apache.rocketmq.client.apis.ClientServiceProvider;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
+@Slf4j
+@Configuration
 public class RKMQConfig {
     // 接入点地址，需要设置成Proxy的地址和端口列表，一般是xxx:8080;xxx:8081
     private static final String proxyEndpoints = "localhost:8081";

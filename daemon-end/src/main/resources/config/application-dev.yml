@@ -75,6 +75,8 @@ spring:
         - /users/register
       permit-all:
         - /models
+        - /models/blurSearch
+        - /models/detailSearch
 
     oauth2:
       client:

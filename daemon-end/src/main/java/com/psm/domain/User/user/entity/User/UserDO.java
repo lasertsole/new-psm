@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
+import com.psm.types.common.DO.DO;
 import com.tangzc.autotable.annotation.*;
 import com.tangzc.mpe.annotation.InsertFillTime;
 import com.tangzc.mpe.annotation.InsertUpdateFillTime;
@@ -25,7 +26,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_users", comment="用户表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDO implements Serializable {
+public class UserDO implements Serializable, DO<UserBO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -86,5 +87,10 @@ public class UserDO implements Serializable {
 
     public static UserDO fromBO(UserBO userBO) {
         return UserConvertor.INSTANCE.BO2DO(userBO);
+    }
+
+    @Override
+    public UserBO toBO() {
+        return UserConvertor.INSTANCE.DO2BO(this);
     }
 }

@@ -2,19 +2,26 @@ package com.psm.domain.Model.model.repository.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.repository.Model3dES;
+import com.psm.infrastructure.ES.ESApi;
+import com.psm.types.common.ES.DO.ESResultPageDO;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
 public class Model3dESImpl implements Model3dES {
     @Autowired
     private ElasticsearchClient elasticsearchClient;
+
+    @Autowired
+    private ESApi esApi;
 
     @PostConstruct
     public void startup() throws Exception {
@@ -50,13 +57,44 @@ public class Model3dESImpl implements Model3dES {
         ).acknowledged();
     }
 
-    @Override
-    public List<Model3dBO> selectBlurSearchModel3d(String keyword) {
-        return List.of();
+    private boolean canConvertToLong(String str) {
+        try {
+            Long.parseLong(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     @Override
-    public List<Model3dBO> selectDetailSearchModel3d(String keyword) {
-        return List.of();
+    public List<Map<String, Object>> selectBlurSearchModel3d(String keyword) throws IOException {
+        Map<String, Object> params = new HashMap<>();
+        if (canConvertToLong(keyword)) {
+            params.put("id", Long.parseLong(keyword));
+            params.put("userId", Long.parseLong(keyword));
+        };
+        params.put("title", keyword);
+        params.put("content", keyword);
+
+        Map<String, Object> map = esApi.searchESHighLightData("tb_3d_models", params, 0, 10);
+        List<Map<String, Object>> records = (List<Map<String, Object>>) map.get("records");
+
+        return records;
+    }
+
+    @Override
+    public ESResultPageDO selectDetailSearchModel3d(String keyword) throws IOException {
+        Map<String, Object> params = new HashMap<>();
+        if (canConvertToLong(keyword)) {
+            params.put("id", Long.parseLong(keyword));
+            params.put("userId", Long.parseLong(keyword));
+        };
+        params.put("title", keyword);
+        params.put("content", keyword);
+
+        Map<String, Object> map = esApi.searchESHighLightData("tb_3d_models", params, 0, 10);
+        log.info("map: " + map);
+
+        return null;
     }
 }

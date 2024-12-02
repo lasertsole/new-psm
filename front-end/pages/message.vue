@@ -126,10 +126,10 @@
         }
     });
         
-    onActivated(()=>{
+    onActivated(debounce(()=>{
         // 初始化私信
         initDM();
-    });
+    }, 1000));
 
     definePageMeta({
         name: 'message'

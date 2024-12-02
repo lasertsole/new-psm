@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
 @AllArgsConstructor
-public enum VisibleEnum {
+public enum VisibleEnum implements Serializable {
     PUBLIC(0,"公开"),
     PROTECTED(1,"半公开"),
     PRIVATE(2,"未公开");

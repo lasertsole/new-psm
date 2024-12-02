@@ -2,6 +2,8 @@ package com.psm.domain.Model.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
+import com.psm.types.common.DO.DO;
 import com.psm.types.enums.VisibleEnum;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.mpe.annotation.InsertFillTime;
@@ -20,7 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_3d_models", comment="3D模型表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model3dDO implements Serializable {
+public class Model3dDO implements Serializable, DO<Model3dBO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -68,4 +70,9 @@ public class Model3dDO implements Serializable {
     @Version
     @Column(comment = "乐观锁版本控制", defaultValue = "0")
     private Integer version;
+
+    @Override
+    public Model3dBO toBO() {
+        return Model3dConvertor.INSTANCE.DO2BO(this);
+    }
 }

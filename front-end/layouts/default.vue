@@ -103,6 +103,7 @@
         }
         
         main{
+            z-index: 1;
             flex-grow: 1;
             $nowMainHeight: v-bind(nowMainHeight);
             @include fixedHeight($nowMainHeight);

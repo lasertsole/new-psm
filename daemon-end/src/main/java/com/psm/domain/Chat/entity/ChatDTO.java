@@ -2,6 +2,7 @@ package com.psm.domain.Chat.entity;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
+import com.psm.types.common.DTO.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatDTO implements Serializable {
+public class ChatDTO implements Serializable, DTO {
     private String id;
     private String tgtUserId;
     private String srcUserId;

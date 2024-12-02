@@ -5,7 +5,7 @@ import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
-import com.psm.utils.DTO.BO2DTOable;
+import com.psm.types.common.BO.BO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserBO implements Serializable, BO2DTOable<UserDTO> {
+public class UserBO implements Serializable, BO<UserDTO> {
     private String token;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")

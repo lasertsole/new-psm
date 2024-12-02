@@ -5,12 +5,37 @@
                 placeholder="查找模型信息"
                 clearable
                 v-model="searchKeyword"
-                @keydown.enter="detailSearch()"
+                @input="blurSearch"
+                @keydown.enter="detailSearch"
             >
                 <template #prepend>
                     <el-button :icon="Search" @click="detailSearch"/>
                 </template>
             </el-input>
+
+            <el-skeleton v-show="isInputFocus" :rows="3" animated :loading="skeletonLoading">
+                <template #default>
+                    <div v-show="isInputFocus&&!skeletonLoading&&showSearchBar" class="searchResult">
+                        <template v-for="(item, index) in blurSearchResults" :key="index">
+                            <CommonSearchItem
+                                :Id="item.document.id"
+                            >
+                                <template v-slot:title v-show="item.highlight.title">
+                                    <template v-for="(subItem,subIndex) in item.highlight.title" :key="subIndex">
+                                        标题: <div v-html="subItem"></div>
+                                    </template>
+                                </template>
+                                <template v-slot:content v-show="item.highlight.content">
+                                    <template v-for="(subItem,subIndex) in item.highlight.content" :key="subIndex">
+                                        介绍: <span v-html="subItem"></span>
+                                    </template>
+                                </template>
+                            </CommonSearchItem>
+                        </template>
+                        <div v-show="blurSearchResults.length==0">未查询到对应结果</div>
+                    </div>
+                </template>
+            </el-skeleton>
         </div>
     </div>
 </template>
@@ -35,7 +60,7 @@
     const detaliSearchBars:Ref<Model3DInfo[]> = ref<Model3DInfo[]>([]);
 
     const blurSearch = debounce(async():Promise<void>=> {
-        if(searchKeyword.value=="") { ElMessage.warning('请输入搜索内容'); return; }; 
+        if(searchKeyword.value=="") return;
         
         blurSearchBars.value = await blurSearchModel3d(searchKeyword.value);
     }, 1000);

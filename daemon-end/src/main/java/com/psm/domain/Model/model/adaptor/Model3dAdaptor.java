@@ -1,6 +1,8 @@
 package com.psm.domain.Model.model.adaptor;
 
 import com.psm.domain.Model.model.entity.Model3dBO;
+import com.psm.types.common.ES.BO.ESResultBO;
+import com.psm.types.common.ES.BO.ESResultPageBO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,6 +11,7 @@ import me.desair.tus.server.exception.TusException;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Map;
 
 public interface Model3dAdaptor {
     /**
@@ -64,15 +67,15 @@ public interface Model3dAdaptor {
      * 根据模型ID查询简要模型信息
      *
      * @param keyword 关键字
-     * @return 模型BO列表
+     * @return 模型id和高亮字段 的列表
      */
-    List<Model3dBO> getBlurSearchModel3d(String keyword);
+    List<Map<String, Object>> getBlurSearchModel3d(String keyword) throws IOException;
 
     /**
      * 根据模型ID查询详细模型信息
      *
      * @param keyword 关键字
-     * @return 模型BO列表
+     * @return 文档和高亮字段 的分页
      */
-    List<Model3dBO> getDetailSearchModel3d(String keyword);
+    ESResultPageBO getDetailSearchModel3d(String keyword) throws IOException;
 }

@@ -5,15 +5,19 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.elasticsearch.client.RestClientBuilder;
 
-@Component
+@Slf4j
+@Configuration
 public class ESClientConfig {
+    private ElasticsearchClient elasticsearchClient;
+
     @Bean
     public ElasticsearchClient elasticsearchClient() {
         RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
@@ -28,7 +32,9 @@ public class ESClientConfig {
     }
 
     @PreDestroy
-    public void exit(@Autowired ElasticsearchClient elasticsearchClient) {
-        elasticsearchClient.shutdown();
+    public void exit() {
+        if (elasticsearchClient != null) {
+            elasticsearchClient.shutdown();
+        }
     }
 }

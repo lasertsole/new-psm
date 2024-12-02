@@ -9,7 +9,7 @@ import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserBO;
 import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.utils.DTO.ResponseDTO;
+import com.psm.types.common.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -146,16 +147,17 @@ public class ModelController {
     }
 
     @GetMapping("/blurSearch")
-    public ResponseDTO getBlurSearchModel3d(@RequestParam String keyword) {
-        try {
-            return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
-        }
-        catch (InvalidParameterException e) {
-            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e.getCause());
-        }
+    public ResponseDTO getBlurSearchModel3d(@RequestParam String keyword) throws IOException {
+        return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
+//        try {
+//
+//        }
+//        catch (InvalidParameterException e) {
+//            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+//        }
+//        catch (Exception e){
+//            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e);
+//        }
     }
 
     @GetMapping("/detailSearch")
@@ -167,7 +169,7 @@ public class ModelController {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e.getCause());
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
         }
     }
 }

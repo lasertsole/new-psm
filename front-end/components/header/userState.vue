@@ -320,7 +320,6 @@
                                     color: black;
                                     display: flex;
                                     align-items: center;
-                                    span{}
 
                                     img{
                                         @include fixedSquare(15px);

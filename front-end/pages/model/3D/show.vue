@@ -107,12 +107,14 @@
         }
 
         .tagBar{
+            z-index: 2;
             :deep(.classify) {
                 padding: 0px 20px;
             }
         }
 
         .content{
+            z-index: 1;
             $contentHeight: v-bind(contentHeight);
             height: $contentHeight;
         }

@@ -1,7 +1,8 @@
-package com.psm.utils.DTO;
+package com.psm.types.common.DTO;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.types.common.BO.BO;
 import com.psm.utils.page.PageDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,13 +34,13 @@ public class ResponseDTO implements Serializable {
     private Object data = null;
 
     protected static Object processData(Object data) {
-        if(data instanceof BO2DTOable) {
-            data = ((BO2DTOable) data).toDTO();
+        if(data instanceof BO) {
+            data = ((BO) data).toDTO();
         }
         else if (data instanceof List) {
             data = ((List) data).stream().map(item -> {
-                if(item instanceof BO2DTOable) {
-                    return ((BO2DTOable) item).toDTO();
+                if(item instanceof BO) {
+                    return ((BO) item).toDTO();
                 }
                 else{
                     return item;
@@ -50,8 +50,8 @@ public class ResponseDTO implements Serializable {
         else if (data instanceof Page<?>) {
             Page<?> page = (Page<?>) data;
             List records = page.getRecords().stream().map(item -> {
-                if(item instanceof BO2DTOable) {
-                    return ((BO2DTOable) item).toDTO();
+                if(item instanceof BO) {
+                    return ((BO) item).toDTO();
                 }
                 else{
                     return item;

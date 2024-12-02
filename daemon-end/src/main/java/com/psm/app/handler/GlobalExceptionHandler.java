@@ -1,6 +1,6 @@
 package com.psm.app.handler;
 
-import com.psm.utils.DTO.ResponseDTO;
+import com.psm.types.common.DTO.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
