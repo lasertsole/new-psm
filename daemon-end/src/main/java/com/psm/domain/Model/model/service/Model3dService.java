@@ -1,8 +1,6 @@
 package com.psm.domain.Model.model.service;
 
 import com.psm.domain.Model.model.entity.Model3dBO;
-import com.psm.types.common.ES.BO.ESResultBO;
-import com.psm.types.common.ES.BO.ESResultPageBO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -76,7 +74,9 @@ public interface Model3dService {
      * 根据模型ID查询详细模型信息
      *
      * @param keyword 关键字
-     * @return 文档和高亮字段 的分页
+     * @param current 当前页码
+     * @param size 每页数量
+     * @return 文档分页信息，其中 records 为匹配到的原始记录， total为匹配到的总记录数， size为每页数量, from为启始文档号
      */
-    ESResultPageBO getDetailSearchModel3d(String keyword) throws IOException;
+    Map<String, Object> getDetailSearchModel3d(String keyword, Integer current, Integer size) throws IOException;
 }

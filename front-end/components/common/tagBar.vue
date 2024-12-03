@@ -19,14 +19,15 @@
                 </div>
             </div>
 
-            <div :class="{searchBar:true, isInputFocus}">
+            <div :class="{searchBar:true, isInputFocus}"
+                v-clickOutside="inputBlur"
+            >
                 <el-input
                     placeholder="查找模型信息"
                     clearable
                     class="input-with-select"
-                    @focus="inputFocus"
-                    @blur="inputBlur"
-                    v-model="searchText"
+                    @click="inputFocus"
+                    v-model="searchKeyword"
                     @input="searchBarInputEvent"
                     @keydown.enter="detaliSearchEvent"
                     @clear="clearEvent"
@@ -40,29 +41,31 @@
                     </template>
                 </el-input>
 
-                <el-skeleton v-show="isInputFocus" :rows="3" animated :loading="skeletonLoading">
-                    <template #default>
-                        <div v-show="isInputFocus&&!skeletonLoading&&showSearchBar" class="searchResult">
-                            <template v-for="(item, index) in blurSearchResults" :key="index">
-                                <CommonSearchItem
-                                    :Id="item.id"
-                                >
-                                    <template v-slot:title v-show="item.highlight.title">
-                                        <template v-for="(subItem,subIndex) in item.highlight.title" :key="subIndex">
-                                            标题: <div v-html="subItem"></div>
+                <div class="skeleton" v-show="isInputFocus">
+                    <el-skeleton  :rows="3" animated :loading="skeletonLoading">
+                        <template #default>
+                            <div v-show="isInputFocus&&!skeletonLoading&&showSearchBar" class="searchResult">
+                                <template v-for="(item, index) in blurSearchResults" :key="index">
+                                    <CommonSearchItem
+                                        :ID="item.document.id"
+                                    >
+                                        <template v-slot:title v-show="item.highlight.title">
+                                            <template v-for="(subItem,subIndex) in item.highlight.title" :key="subIndex">
+                                                标题: <div v-html="subItem"></div>
+                                            </template>
                                         </template>
-                                    </template>
-                                    <template v-slot:content v-show="item.highlight.content">
-                                        <template v-for="(subItem,subIndex) in item.highlight.content" :key="subIndex">
-                                            介绍: <span v-html="subItem"></span>
+                                        <template v-slot:content v-show="item.highlight.content">
+                                            <template v-for="(subItem,subIndex) in item.highlight.content" :key="subIndex">
+                                                介绍: <span v-html="subItem"></span>
+                                            </template>
                                         </template>
-                                    </template>
-                                </CommonSearchItem>
-                            </template>
-                            <div v-show="blurSearchResults.length==0">未查询到对应结果</div>
-                        </div>
-                    </template>
-                </el-skeleton>
+                                    </CommonSearchItem>
+                                </template>
+                                <div v-show="blurSearchResults.length==0">未查询到对应结果</div>
+                            </div>
+                        </template>
+                    </el-skeleton>
+                </div>
             </div>
         </div>
         <div :class="{fullLine:true, isInputFocus}"></div>
@@ -71,8 +74,8 @@
 
 <script setup lang="ts">
     import type { PropType } from "vue";
-    import type { TagBarItem } from "@/types/common";
     import { Search } from '@element-plus/icons-vue';
+    import type { TagBarItem, ESResult } from "@/types/common";
     import { ref, defineProps, defineEmits, watchEffect } from "vue";
 
     const props = defineProps({
@@ -95,9 +98,9 @@
     });
 
     /******以下是搜索框部分******/
-    const searchText:Ref<string> = ref<string>("");
+    const searchKeyword:Ref<string> = ref<string>("");
     const isInputFocus:Ref<boolean> = ref<boolean>(false);
-    const blurSearchResults: Ref<string[]> = ref<string[]>([]);
+    const blurSearchResults: Ref<ESResult[]> = ref<ESResult[]>([]);
     function inputFocus():void {
         isInputFocus.value = true;
     };
@@ -106,21 +109,21 @@
     };
 
     const searchBarInputEvent = debounce(():void => {
-        if(searchText.value=="") { 
+        if(searchKeyword.value=="") { 
             showSearchBar.value = false;
             return; 
         }; 
 
         
-        blurSearch(searchText.value).then(()=>{
+        blurSearch(searchKeyword.value).then(()=>{
             showSearchBar.value = true;
         });
     }, 1000);
 
     const detaliSearchEvent = debounce(():void => {
-        if(searchText.value=="") { ElMessage.warning('请输入搜索内容'); return }; 
+        if(searchKeyword.value=="") { ElMessage.warning('请输入搜索内容'); return }; 
 
-        detaliSearch(searchText.value);
+        detaliSearch(searchKeyword.value);
     }, 1000);
 
 
@@ -226,10 +229,13 @@
                     padding: 10px;
                 }
 
-                :deep(.el-skeleton) {
-                    border: #00a8e9 1px solid;
-                    border-radius: 0px 0px 5px 5px;
-                    padding: 10px;
+                .skeleton{
+                    :deep(.el-skeleton) {
+                        border: #00a8e9 1px solid;
+                        border-radius: 0px 0px 5px 5px;
+                        padding: 10px;
+                        overflow: hidden;
+                    }
                 }
             }
         }

@@ -22,7 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_3d_models", comment="3D模型表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model3dDO implements Serializable, DO<Model3dBO> {
+public class Model3dDO implements Serializable, DO<Model3dBO, Model3dDTO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -74,5 +74,10 @@ public class Model3dDO implements Serializable, DO<Model3dBO> {
     @Override
     public Model3dBO toBO() {
         return Model3dConvertor.INSTANCE.DO2BO(this);
+    }
+
+    @Override
+    public Model3dDTO toDTO() {
+        return Model3dConvertor.INSTANCE.DO2DTO(this);
     }
 }

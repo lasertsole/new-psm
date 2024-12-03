@@ -1,7 +1,7 @@
 <template>
-    <div class="workBox" @click="jumpToShowcaseDetail()">
+    <div class="workBox" @click="jumpToShowcaseDetail">
         <div class="cover">
-            <CommonImage :src="cover"></CommonImage>
+            <slot name="cover"></slot>
         </div>
         <div class="classify">
             <div :class="{ yellow: optionStyle==style }">
@@ -36,7 +36,6 @@
     const props = defineProps({
         ID: { type: String, required: true },
         title: { type: String, required: true },
-        cover: { type: String, required: true },
         createTime: { type: String, required: true },
         style: { type: String, required: true },
         type: { type: String, required: true },
@@ -51,7 +50,7 @@
                 id:props.ID,
             }
         });
-    }
+    };
 </script>
 
 <style lang="scss" scoped>

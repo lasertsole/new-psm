@@ -1,4 +1,7 @@
 package com.psm.types.common.DTO;
 
-public interface DTO {
+import com.psm.types.common.BO.BO;
+
+public interface DTO<B extends BO> {
+    B toBO();
 }

@@ -6,7 +6,6 @@ import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
-import com.psm.types.common.ES.BO.ESResultPageBO;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.utils.Valid.ValidUtil;
 import io.micrometer.common.util.StringUtils;
@@ -97,19 +96,19 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     public List<Map<String, Object>> getBlurSearchModel3d(String keyword) throws IOException {
         if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
 
-        List<Map<String, Object>> blurSearchModel3d = modelService.getBlurSearchModel3d(keyword);
-
-        return blurSearchModel3d.stream().map(map -> {
-            JSONObject document = (JSONObject) map.get("document");
-            Model3dDTO model3dDTO = JSONObject.parseObject(document.toJSONString(), Model3dDTO.class);
-            return Map.of("document", model3dDTO, "highlight", map.get("highlight"));
-        }).toList();
+        return modelService.getBlurSearchModel3d(keyword);
     }
 
     @Override
-    public ESResultPageBO getDetailSearchModel3d(String keyword) throws IOException {
-        if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
+    public Map<String, Object> getDetailSearchModel3d(String keyword, Integer current, Integer size) throws IOException {
+        if (
+            StringUtils.isBlank(keyword)
+            && Objects.isNull(current)
+            && current <= 0
+            && Objects.isNull(size)
+            && (size < 10 || size > 50)
+        ) throw new InvalidParameterException("Invalid parameter");
 
-        return modelService.getDetailSearchModel3d(keyword);
+        return modelService.getDetailSearchModel3d(keyword, current, size);
     }
 }

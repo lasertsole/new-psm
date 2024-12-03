@@ -26,7 +26,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_users", comment="用户表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDO implements Serializable, DO<UserBO> {
+public class UserDO implements Serializable, DO<UserBO, UserDTO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -92,5 +92,10 @@ public class UserDO implements Serializable, DO<UserBO> {
     @Override
     public UserBO toBO() {
         return UserConvertor.INSTANCE.DO2BO(this);
+    }
+
+    @Override
+    public UserDTO toDTO() {
+        return UserConvertor.INSTANCE.DO2OtherDTO(this);
     }
 }

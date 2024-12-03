@@ -44,6 +44,26 @@ public abstract class Model_ExtendedUserConvertor {
         return new Model_ExtendedUserBO(extendedUserBO, model3dBO);
     }
 
+    public Model_ExtendedUserDTO DO2DTO(Model_ExtendedUserDO modelUserBindDO) {
+        ExtendedUserDO extendedUserDO = modelUserBindDO.getUser();
+        Model3dDO model3dDO = modelUserBindDO.getModel();
+
+        ExtendedUserDTO extendedUserDTO = extendedUserConvertor.DO2DTO(extendedUserDO);
+        Model3dDTO model3dDTO = model3dConvertor.DO2DTO(model3dDO);
+
+        return new Model_ExtendedUserDTO(extendedUserDTO, model3dDTO);
+    }
+
+    public Model_ExtendedUserDO BO2DO(Model_ExtendedUserBO modelUserBindBO) {
+        ExtendedUserBO extendedUserBO = modelUserBindBO.getUser();
+        Model3dBO model3dBO = modelUserBindBO.getModel();
+
+        ExtendedUserDO extendedUserDO = extendedUserConvertor.BO2DO(extendedUserBO);
+        Model3dDO model3dDO = model3dConvertor.BO2DO(model3dBO);
+
+        return new Model_ExtendedUserDO(extendedUserDO, model3dDO);
+    }
+
     public Model_ExtendedUserDTO BO2DTO(Model_ExtendedUserBO modelUserBindBO) {
         ExtendedUserBO extendedUserBO = modelUserBindBO.getUser();
         Model3dBO model3dBO = modelUserBindBO.getModel();

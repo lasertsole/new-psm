@@ -147,29 +147,32 @@ public class ModelController {
     }
 
     @GetMapping("/blurSearch")
-    public ResponseDTO getBlurSearchModel3d(@RequestParam String keyword) throws IOException {
-        return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
-//        try {
-//
-//        }
-//        catch (InvalidParameterException e) {
-//            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-//        }
-//        catch (Exception e){
-//            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e);
-//        }
-    }
-
-    @GetMapping("/detailSearch")
-    public ResponseDTO getDetailSearchModel3d(@RequestParam String keyword) {
+    public ResponseDTO getBlurSearchModel3d(@RequestParam String keyword) {
         try {
-            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword));
+            return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
         }
         catch (InvalidParameterException e) {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         }
         catch (Exception e){
-            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e);
         }
+    }
+
+    @GetMapping("/detailSearch")
+    public ResponseDTO getDetailSearchModel3d(
+            @RequestParam String keyword,
+            @RequestParam Integer current,
+            @RequestParam Integer size) throws IOException {
+        return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, current, size));
+//        try {
+//            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword));
+//        }
+//        catch (InvalidParameterException e) {
+//            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+//        }
+//        catch (Exception e){
+//            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
+//        }
     }
 }

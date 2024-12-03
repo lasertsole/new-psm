@@ -21,7 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model3dBO implements Serializable, BO<Model3dDTO> {
+public class Model3dBO implements Serializable, BO<Model3dDTO, Model3dDO> {
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 
@@ -74,5 +74,10 @@ public class Model3dBO implements Serializable, BO<Model3dDTO> {
     @Override
     public Model3dDTO toDTO() {
         return Model3dConvertor.INSTANCE.BO2DTO(this);
+    }
+
+    @Override
+    public Model3dDO toDO() {
+        return Model3dConvertor.INSTANCE.BO2DO(this);
     }
 }

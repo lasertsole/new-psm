@@ -2,6 +2,7 @@ package com.psm.domain.User.relationships.entity;
 
 import com.psm.domain.User.relationships.types.convertor.RelationshipsConvertor;
 import com.psm.domain.User.user.entity.User.UserDO;
+import com.psm.types.common.DO.DO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_relationships", comment="关注表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RelationshipsDO implements Serializable {
+public class RelationshipsDO implements Serializable, DO<RelationshipsBO, RelationshipsDTO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -57,5 +58,15 @@ public class RelationshipsDO implements Serializable {
 
     public static RelationshipsDO fromBO(RelationshipsBO relationshipsBO) {
         return RelationshipsConvertor.INSTANCE.BO2DO(relationshipsBO);
+    }
+
+    @Override
+    public RelationshipsBO toBO() {
+        return RelationshipsConvertor.INSTANCE.DO2BO(this);
+    }
+
+    @Override
+    public RelationshipsDTO toDTO() {
+        return RelationshipsConvertor.INSTANCE.DO2DTO(this);
     }
 }

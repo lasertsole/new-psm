@@ -17,9 +17,14 @@ export type TagBarItem = {
 export type OptionInfo = {
     label: string,
     value: string | number
-}
+};
 
 export type FilterItem = {
     selectList?: OptionInfo[][],
     switchList?: OptionInfo[]
-}
+};
+
+export type ESResult = {
+    document: any&{ id: string };
+    highlight: any;
+};

@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatBO implements Serializable, BO<ChatDTO> {
+public class ChatBO implements Serializable, BO<ChatDTO, ChatDO> {
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     private Long id;
 
@@ -62,5 +62,10 @@ public class ChatBO implements Serializable, BO<ChatDTO> {
     @Override
     public ChatDTO toDTO() {
         return ChatConvertor.INSTANCE.BO2DTO(this);
+    }
+
+    @Override
+    public ChatDO toDO() {
+        return ChatConvertor.INSTANCE.BO2DO(this);
     }
 }

@@ -11,16 +11,19 @@
                 </CommonFilterBar>
             </div>
 
-            <template v-for="(item, index) in ModelShowItems?.records" :key="index">
-                <ModelShowItem
-                    :boxInfo="item"
-                    :style="style"
-                    :type="type"
-                    :isIdle="isIdle"
-                    :canUrgent="canUrgent"
-                >
-                </ModelShowItem>
-            </template>
+            <div class="list">
+                <template v-for="(item, index) in ModelShowItems?.records" :key="index">
+                    <ModelShowItem
+                        :boxInfo="item"
+                        :style="style"
+                        :type="type"
+                        :isIdle="isIdle"
+                        :canUrgent="canUrgent"
+                    >
+                    </ModelShowItem>
+                </template>
+                <el-empty v-show="ModelShowItems.records?.length==0" description="未找到相关信息" />
+            </div>
         </el-main>
 
         <el-pagination 
@@ -156,6 +159,7 @@
     @import "@/common.scss";
 
     .follow{
+        @include scrollBar(8px);
         @include fullWidth();
         min-height: 100%;
         display: flex;
@@ -167,27 +171,25 @@
             min-height: 100%;
             justify-self: flex-start;
             padding-bottom: 10px;
+            display: flex;
+            flex-direction: column;
 
             .filterBar{
-                margin-top: 10px;
+                padding: 0px 20px 0px 20px;
             }
 
-                        /* 滚动条整体部分 */
-                        &::-webkit-scrollbar {
-                width: 10px; /* 滚动条的宽度 */
-                height: 10px; /* 水平滚动条的高度 */
-            }
+            .list{
+                height: 200px;
+                flex-grow: 1;
+                padding: 0px 20px 30px 20px;
+                @include scrollBar(8px);
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
 
-            /* 滚动条的滑块部分 */
-            &::-webkit-scrollbar-thumb {
-                background-color: darkgrey; /* 滑块的颜色 */
-                border-radius: 10px; /* 滑块的圆角 */
-            }
-
-            /* 滚动条的轨道部分 */
-            &::-webkit-scrollbar-track {
-                background-color: lightgrey; /* 轨道的颜色 */
-                border-radius: 10px; /* 轨道的圆角 */
+                :deep(.el-empty){
+                    height: 100%;
+                }
             }
         }
 

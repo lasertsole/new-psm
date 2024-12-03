@@ -25,6 +25,13 @@ public abstract class RelationshipsConvertor {
             @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
             @Mapping(target = "srcUserId", qualifiedByName = "longToString")
     })
+    public abstract RelationshipsDTO DO2DTO(RelationshipsDO followerDO);
+
+    @Mappings({
+            @Mapping(target = "id", qualifiedByName = "longToString"),
+            @Mapping(target = "tgtUserId", qualifiedByName = "longToString"),
+            @Mapping(target = "srcUserId", qualifiedByName = "longToString")
+    })
     public abstract RelationshipsDTO BO2DTO(RelationshipsBO followerBO);
 
     @Named("longToString")

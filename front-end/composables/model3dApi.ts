@@ -1,6 +1,6 @@
-import type { Page } from "@/types/common";
 import type { UserInfo } from "@/types/user";
 import type { Response } from "@/types/request";
+import type { Page, ESResult } from "@/types/common";
 import type { Model3DInfo, Model3DInfos, Model3DInfoDetail } from "@/types/model3d";
 
 /**
@@ -178,7 +178,7 @@ export async function getModelByModel3dId({ modelId }:{modelId:string}):Promise<
     }
 };
 
-export async function blurSearchModel3d(keyword:string):Promise<Model3DInfo[]> {
+export async function blurSearchModel3d(keyword:string):Promise<ESResult[]> {
     try {
         const res:Response = await fetchApi({
             url: `/models/blurSearch`,
@@ -187,27 +187,35 @@ export async function blurSearchModel3d(keyword:string):Promise<Model3DInfo[]> {
         });
     
         return res.data;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('搜索模型失败');
         
-        return [] as Model3DInfo[]; 
-    }
-}
+        return [] as ESResult[]; 
+    };
+};
 
-export async function detailSearchModel3d(keyword:string):Promise<Model3DInfo[]> {
+export async function detailSearchModel3d(keyword:string, current: number, size: number):Promise<Page<ESResult>> {
     try {
         const res:Response = await fetchApi({
             url: `/models/detailSearch`,
             method: 'get',
-            opts:{keyword}
+            opts:{
+                keyword,
+                current,
+                size
+            }
         });
     
         return res.data;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('搜索模型失败');
         
-        return [] as Model3DInfo[]; 
-    }
-}
+        return {
+            total: 0,
+            records: [] as ESResult[],
+            current: 1,
+            size: 10,
+            pages: 0
+        } as Page<ESResult>; 
+    };
+};

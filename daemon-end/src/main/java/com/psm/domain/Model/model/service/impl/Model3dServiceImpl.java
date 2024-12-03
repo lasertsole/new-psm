@@ -10,8 +10,6 @@ import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
 import com.psm.event.UploadModel3DEvent;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
-import com.psm.types.common.ES.BO.ESResultBO;
-import com.psm.types.common.ES.BO.ESResultPageBO;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.Tus.Tus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -168,7 +166,15 @@ public class Model3dServiceImpl implements Model3dService {
     }
 
     @Override
-    public ESResultPageBO getDetailSearchModel3d(String keyword) throws IOException {
-        return new ESResultPageBO(modelES.selectDetailSearchModel3d(keyword));
+    public Map<String, Object> getDetailSearchModel3d(String keyword, Integer current, Integer size) throws IOException {
+        Integer from = (current - 1) * size;
+        Map<String, Object> map = modelES.selectDetailSearchModel3d(keyword, from, size);
+        // 计算查询到的总页数
+        long total = (long) map.get("total");
+        Integer pages = (int) Math.ceil(total / (double) size);
+
+        map.put("pages", pages);
+        map.put("current", current);
+        return map;
     }
 }

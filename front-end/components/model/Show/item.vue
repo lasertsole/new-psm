@@ -27,13 +27,15 @@
                 <ModelShowWorkBox
                     :ID="item.id||''"
                     :title="item.title||''"
-                    :cover="typeof(item.cover) === 'string' ? item.cover : ''"
                     :style="item.style||''"
                     :type="item.type||''"
                     :createTime="item.createTime||''"
                     :optionStyle="style"
                     :optionType="type"
                 >
+                    <template #cover>
+                        <CommonImage :src="typeof(item.cover) === 'string' ? item.cover : ''"></CommonImage>
+                    </template>
                 </ModelShowWorkBox>
             </template>
         </div>

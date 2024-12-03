@@ -44,6 +44,17 @@ public abstract class UserConvertor {
     })
     public abstract UserBO DO2BO(UserDO userDO);
 
+    @Mappings({
+            @Mapping(source = "sex.value", target = "sex"),
+            @Mapping(target = "hasPass", ignore = true),
+            @Mapping(target = "id", qualifiedByName = "longToString"),
+            @Mapping(target = "phone", ignore = true),
+            @Mapping(target = "email", ignore = true),
+            @Mapping(target = "modelMaxStorage", ignore = true),
+            @Mapping(target = "modelCurStorage", ignore = true)
+    })
+    public abstract UserDTO DO2OtherDTO(UserDO userDO);
+
     @Named("longToString")
     public String longToString(Long num) {
         if (Objects.isNull(num)) return null;

@@ -24,7 +24,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_chats", comment = "聊天记录表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ChatDO implements Serializable, DO<ChatBO> {
+public class ChatDO implements Serializable, DO<ChatBO, ChatDTO> {
     @ColumnId(comment = "id主键")
     private Long id;
 
@@ -56,5 +56,10 @@ public class ChatDO implements Serializable, DO<ChatBO> {
     @Override
     public ChatBO toBO() {
         return ChatConvertor.INSTANCE.DO2BO(this);
+    }
+
+    @Override
+    public ChatDTO toDTO() {
+        return ChatConvertor.INSTANCE.DO2DTO(this);
     }
 }

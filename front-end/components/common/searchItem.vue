@@ -1,18 +1,27 @@
 <template>
-    <div class="searchItem" @click="$emit('click', $event)">
+    <div class="searchItem" @click="jumpToShowcaseDetail">
         <div class="searchItem-title">
-            <slot name="title">{{title}}</slot>
+            <slot name="title"></slot>
         </div>
         <div class="searchItem-content">
-            <slot name="content">{{content}}</slot>
+            <slot name="content"></slot>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
     const props = defineProps({
-        Id: {type:String, required: true},
+        ID: {type:String, required: true},
     });
+
+    function jumpToShowcaseDetail():void{
+        navigateTo({ 
+            name: 'model-3D-detailShow',
+            params:{
+                id:props.ID,
+            }
+        });
+    };
 </script>
 
 <style lang="scss" scoped>

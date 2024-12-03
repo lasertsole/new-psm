@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   modules: [
     '@element-plus/nuxt'
     ,'@vite-pwa/nuxt'
+    ,'@nuxtjs/tailwindcss'
   ],
   build: {
     transpile: ['rxjs', 'three'],

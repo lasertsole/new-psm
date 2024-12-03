@@ -19,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserBO implements Serializable, BO<UserDTO> {
+public class UserBO implements Serializable, BO<UserDTO, UserDO> {
     private String token;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
@@ -99,5 +99,10 @@ public class UserBO implements Serializable, BO<UserDTO> {
     @Override
     public UserDTO toDTO() {
         return toOtherDTO();
+    }
+
+    @Override
+    public UserDO toDO() {
+        return UserConvertor.INSTANCE.BO2DO(this);
     }
 }

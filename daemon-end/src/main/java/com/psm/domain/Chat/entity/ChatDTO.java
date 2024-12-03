@@ -2,6 +2,7 @@ package com.psm.domain.Chat.entity;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.domain.Chat.types.convertor.ChatConvertor;
+import com.psm.types.common.BO.BO;
 import com.psm.types.common.DTO.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,5 +38,10 @@ public class ChatDTO implements Serializable, DTO {
         chatDTOPage.setRecords(chatDOPage.getRecords().stream().map(ChatConvertor.INSTANCE::DO2DTO).toList());
 
         return chatDTOPage;
+    }
+
+    @Override
+    public BO toBO() {
+        return ChatConvertor.INSTANCE.DTO2BO(this);
     }
 }

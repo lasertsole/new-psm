@@ -1,6 +1,8 @@
 package com.psm.domain.Model.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
+import com.psm.types.common.BO.BO;
 import com.psm.types.common.DTO.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,4 +28,9 @@ public class Model3dDTO implements Serializable, DTO {
     private Integer visible;
     private String storage;
     private String createTime;
+
+    @Override
+    public BO toBO() {
+        return Model3dConvertor.INSTANCE.DTO2BO(this);
+    }
 }

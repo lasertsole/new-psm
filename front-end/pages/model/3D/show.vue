@@ -21,8 +21,7 @@
 
 <script setup lang="ts">
     import type { Ref } from "vue";
-    import type { TagBarItem } from "@/types/common";
-    import type { Model3DInfo } from "@/types/model3d";
+    import type { TagBarItem, ESResult } from "@/types/common";
     import { ref, nextTick, onActivated, onDeactivated } from "vue";
     import { StyleEnum, TypeEnum, PrimarySort } from "@/enums/model3d.d";
     
@@ -73,7 +72,7 @@
         window.removeEventListener('resize', computeHeight);
     });
 
-    async function blurSearch(keyword:string):Promise<Model3DInfo[]> {
+    async function blurSearch(keyword:string):Promise<ESResult[]> {
         return await blurSearchModel3d(keyword);
     };
 

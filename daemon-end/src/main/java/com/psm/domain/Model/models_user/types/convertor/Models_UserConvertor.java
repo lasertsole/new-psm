@@ -37,6 +37,26 @@ public abstract class Models_UserConvertor {
         return new Models_UserBO(userBO, model3dBOs);
     }
 
+    public Models_UserDTO DO2DTO(Models_UserDO modelsUserBindDO) {
+        UserDO userDO = modelsUserBindDO.getUser();
+        List<Model3dDO> modelDOs = modelsUserBindDO.getModels();
+
+        UserDTO userDTO = userConvertor.DO2OtherDTO(userDO);
+        List<Model3dDTO> model3dDTOs = modelDOs.stream().map(model3dConvertor::DO2DTO).toList();
+
+        return new Models_UserDTO(userDTO, model3dDTOs);
+    }
+
+    public Models_UserDO BO2DO(Models_UserBO modelsUserBindBO) {
+        UserBO userBO = modelsUserBindBO.getUser();
+        List<Model3dBO> modelBOs = modelsUserBindBO.getModels();
+
+        UserDO userDO = userConvertor.BO2DO(userBO);
+        List<Model3dDO> model3dDOs = modelBOs.stream().map(model3dConvertor::BO2DO).toList();
+
+        return new Models_UserDO(userDO, model3dDOs);
+    }
+
     public Models_UserDTO BO2DTO(Models_UserBO modelsUserBO) {
         UserBO userBO = modelsUserBO.getUser();
         List<Model3dBO> model3dBOs = modelsUserBO.getModels();
@@ -45,5 +65,15 @@ public abstract class Models_UserConvertor {
         List<Model3dDTO> model3dDTOS = model3dBOs.stream().map(model3dConvertor::BO2DTO).toList();
 
         return new Models_UserDTO(userDTO, model3dDTOS);
+    }
+
+    public Models_UserBO DTO2BO(Models_UserDTO modelsUserDTO) {
+        UserDTO userDTO = modelsUserDTO.getUser();
+        List<Model3dDTO> model3dDTOs = modelsUserDTO.getModels();
+
+        UserBO userBO = userConvertor.DTO2BO(userDTO);
+        List<Model3dBO> model3dBOS = model3dDTOs.stream().map(model3dConvertor::DTO2BO).toList();
+
+        return new Models_UserBO(userBO, model3dBOS);
     }
 }

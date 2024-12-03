@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @Value
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model_ExtendedUserBO implements Serializable, BO<Model_ExtendedUserDTO> {
+public class Model_ExtendedUserBO implements Serializable, BO<Model_ExtendedUserDTO, Model_ExtendedUserDO> {
     ExtendedUserBO user;
     Model3dBO model;
 
@@ -26,5 +26,10 @@ public class Model_ExtendedUserBO implements Serializable, BO<Model_ExtendedUser
     @Override
     public Model_ExtendedUserDTO toDTO() {
         return Model_ExtendedUserConvertor.INSTANCE.BO2DTO(this);
+    }
+
+    @Override
+    public Model_ExtendedUserDO toDO() {
+        return Model_ExtendedUserConvertor.INSTANCE.BO2DO(this);
     }
 }

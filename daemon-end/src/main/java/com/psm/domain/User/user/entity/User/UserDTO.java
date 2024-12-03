@@ -2,6 +2,8 @@ package com.psm.domain.User.user.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
+import com.psm.types.common.BO.BO;
+import com.psm.types.common.DTO.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO implements Serializable {
+public class UserDTO implements Serializable, DTO {
     private String id;
     private String name;
     private String password;
@@ -38,5 +40,10 @@ public class UserDTO implements Serializable {
 
     public static UserDTO otherFromBO(UserBO userBO) {
         return UserConvertor.INSTANCE.BO2OtherDTO(userBO);
+    }
+
+    @Override
+    public BO toBO() {
+        return UserConvertor.INSTANCE.DTO2BO(this);
     }
 }

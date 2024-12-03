@@ -22,6 +22,7 @@
                     >
                     </ModelShowItem>
                 </template>
+                <el-empty v-show="ModelShowItems.records?.length==0" description="未找到相关信息" />
             </div>
         </el-main>
 
@@ -173,7 +174,7 @@
             flex-direction: column;
             
             .filterBar{
-                padding: 30px 20px 0px 20px;
+                padding: 0px 20px 0px 20px;
             }
 
             .list{
@@ -184,6 +185,10 @@
                 display: flex;
                 flex-direction: column;
                 overflow: auto;
+
+                :deep(.el-empty){
+                    height: 100%;
+                }
             }
         }
 

@@ -73,6 +73,49 @@ public abstract class ExtendedUserConvertor {
         );
     };
 
+    public ExtendedUserDTO DO2DTO(ExtendedUserDO extendedUserDO) {
+        return new ExtendedUserDTO(
+                longToString(extendedUserDO.getId()),
+                extendedUserDO.getName(),
+                extendedUserDO.getPassword(),
+                extendedUserDO.getPhone(),
+                extendedUserDO.getAvatar(),
+                extendedUserDO.getEmail(),
+                Optional.ofNullable(extendedUserDO.getSex()).map(SexEnum::getValue).orElse(null),
+                extendedUserDO.getProfile(),
+                extendedUserDO.getPublicModelNum(),
+                null,
+                null,
+                extendedUserDO.getIsIdle(),
+                extendedUserDO.getCanUrgent(),
+                extendedUserDO.getCreateTime(),
+                extendedUserDO.getIsFollowed()
+        );
+    };
+
+    public ExtendedUserDO BO2DO(ExtendedUserBO extendedUserBO) {
+        return new ExtendedUserDO(
+                extendedUserBO.getId(),
+                extendedUserBO.getName(),
+                extendedUserBO.getPassword(),
+                extendedUserBO.getPhone(),
+                extendedUserBO.getAvatar(),
+                extendedUserBO.getEmail(),
+                extendedUserBO.getSex(),
+                extendedUserBO.getProfile(),
+                extendedUserBO.getPublicModelNum(),
+                extendedUserBO.getModelMaxStorage(),
+                extendedUserBO.getModelCurStorage(),
+                extendedUserBO.getIsIdle(),
+                extendedUserBO.getCanUrgent(),
+                extendedUserBO.getCreateTime(),
+                extendedUserBO.getModifyTime(),
+                null,
+                null,
+                extendedUserBO.getIsFollowed()
+        );
+    };
+
     public ExtendedUserDTO BO2DTO(ExtendedUserBO extendedUserBO) {
         return new ExtendedUserDTO(
                 longToString(extendedUserBO.getId()),

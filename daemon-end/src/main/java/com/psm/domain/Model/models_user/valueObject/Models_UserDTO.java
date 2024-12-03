@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.models_user.types.convertor.Models_UserConvertor;
 import com.psm.domain.User.user.entity.User.UserDTO;
+import com.psm.types.common.BO.BO;
+import com.psm.types.common.DTO.DTO;
 import lombok.Value;
 import org.springframework.beans.BeanUtils;
 
@@ -13,7 +15,7 @@ import java.util.List;
 
 @Value
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Models_UserDTO implements Serializable {
+public class Models_UserDTO implements Serializable, DTO {
     UserDTO user;
     List<Model3dDTO> models;
 
@@ -27,5 +29,10 @@ public class Models_UserDTO implements Serializable {
 
     public static Models_UserDTO fromBO(Models_UserBO modelsUserBO) {
         return Models_UserConvertor.INSTANCE.BO2DTO(modelsUserBO);
+    }
+
+    @Override
+    public BO toBO() {
+        return Models_UserConvertor.INSTANCE.DTO2BO(this);
     }
 }

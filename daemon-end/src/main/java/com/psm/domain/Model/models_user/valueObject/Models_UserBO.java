@@ -14,7 +14,7 @@ import java.util.List;
 
 @Value
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Models_UserBO implements Serializable, BO<Models_UserDTO> {
+public class Models_UserBO implements Serializable, BO<Models_UserDTO, Models_UserDO> {
     UserBO user;
     List<Model3dBO> models;
 
@@ -33,5 +33,10 @@ public class Models_UserBO implements Serializable, BO<Models_UserDTO> {
     @Override
     public Models_UserDTO toDTO() {
         return Models_UserConvertor.INSTANCE.BO2DTO(this);
+    }
+
+    @Override
+    public Models_UserDO toDO() {
+        return Models_UserConvertor.INSTANCE.BO2DO(this);
     }
 }
