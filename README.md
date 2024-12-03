@@ -3,6 +3,7 @@
 ### Nuxt3(SSR服务端首页渲染+SPA单页面组件)
 ### mitt全局事件机制
 ### element-plus/nuxt 快速搭建组件库
+### scss+tailwindcss组合样式方案
 ### gsap.js动画组件
 ### loadsh防抖与节流
 ### three.js 浏览器3D渲染
