@@ -6,9 +6,10 @@
 
 <script lang="ts" setup>
   import * as THREE from 'three';
-  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';//控制器
   import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-  
+
+
   const props = defineProps({
     entity: {type: String, required: false}
   });
@@ -16,12 +17,13 @@
   const entity = ref<HTMLCanvasElement>();
 
   onMounted(async ()=>{
+    const THREEGPU = await import('three/webgpu');
     // 初始化场景
-    const scene = new THREE.Scene();
+    const scene = new THREEGPU.Scene();
 
       
     // 初始化相机
-    const camera = new THREE.PerspectiveCamera(
+    const camera = new THREEGPU.PerspectiveCamera(
       75,//视锥体角度
       entity.value!.offsetWidth / entity.value!.offsetHeight,//成像宽高比
         0.1,//近端极限
@@ -35,12 +37,12 @@
       camera.updateProjectionMatrix();
 
       // 初始化渲染器
-      const renderer = new THREE.WebGLRenderer({
+      const renderer = new THREEGPU.WebGPURenderer({
         antialias:true, // 开启抗锯齿
-        canvas:entity.value
+        canvas:entity.value,
       });
       renderer.setSize(entity.value!.offsetWidth, entity.value!.offsetHeight);
-
+      renderer.setClearColor(new THREE.Color(0xff0000));// 背景色
       // 初始化控制器
       const controls = new OrbitControls(camera, entity.value);
       controls.enableDamping = true; // 开启阻尼   
@@ -57,18 +59,18 @@
       );
       
       // 添加平行光
-      const light = new THREE.DirectionalLight(0xffffff, 1);
+      const light = new THREEGPU.DirectionalLight(0xffffff, 1);
       light.position.set(0, 20, 0);
       scene.add(light);
 
       // 增加环境灯光
-      const pointLight = new THREE.PointLight(0xffffff, 1);//增加环境光,0.1强度（无光源，四面八方都是
+      const pointLight = new THREEGPU.PointLight(0xffffff, 1);//增加环境光,0.1强度（无光源，四面八方都是
       scene.add(pointLight);
       
       // 渲染函数
       function render() {
         requestAnimationFrame(render);
-        renderer.render(scene, camera);
+        renderer.renderAsync(scene, camera);
         controls.update();
       };
       

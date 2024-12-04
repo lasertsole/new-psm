@@ -17,4 +17,5 @@ ul{
 :root{
     --layout-samll-width: 600px;
     --layout-big-width: 800px;
+    font-size: 16px; // 16px = 1rem，给浏览器设置一个默认字体大小，用于tailwind
 }
