@@ -1,6 +1,9 @@
-import { resolve } from 'pathe'
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from 'pathe';
+
 export default defineNuxtConfig({
+  plugins: [
+    { src: '~/plugins/wujie.ts', mode: 'client' }
+  ],
   compatibilityDate: '2024-04-03',
   // 不使用开发工具
   devtools: { enabled: false },

@@ -94,7 +94,7 @@
     
     .show{
         border-radius: 5px;
-        padding: 20px;
+        padding: 20px 0px 10px;
         @include fullInParent;
         box-sizing: border-box;
         display: flex;
@@ -102,7 +102,7 @@
         background-color: white;
 
         @media screen and (max-width: 800px){
-            padding: 30px 0px;
+            padding: 30px 0px 10px;
         }
 
         .tagBar{

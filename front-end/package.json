@@ -28,6 +28,8 @@
     "tus-js-client": "^4.1.0",
     "vue": "latest",
     "vue-awesome-swiper": "^5.0.1",
+    "wujie-polyfill": "^1.1.0",
+    "wujie-vue3": "^1.0.23",
     "xgplayer": "^3.0.20"
   },
   "overrides": {

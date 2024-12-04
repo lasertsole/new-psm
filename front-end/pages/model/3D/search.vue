@@ -46,6 +46,15 @@
             </div>
             <el-empty v-show="detailSearchResults.records?.length==0" description="未找到相关信息" />
         </el-main>
+        <el-pagination 
+            class="pagination"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="detailSearchResults.total"
+            v-model:page-size="detailSearchResults.size"
+            v-model:current-page="detailSearchResults.current"
+            @current-change="detaliSearch(searchKeyword, detailSearchResults.current!, detailSearchResults.size!)"
+        />
     </div>
 </template>
 
@@ -110,15 +119,21 @@
         @include fullInParent;
         background-color: white;
         display: flex;
+        align-items: center;
         flex-direction: column;
+        padding: 30px 20px 10px;
+
+        >*{
+            @include fullWidth;
+        }
 
         .searchBar{
-            padding: 20px 40px 10px 40px;
             transition: all .3s ease-in;
             display: flex;
             flex-direction: column;
             position: relative;
-            height: 82px;
+            height: 52px;
+            padding-bottom: 10px;
 
             &.isInputFocus{
                 width: 100%;
@@ -164,6 +179,11 @@
             :deep(.el-empty){
                 height: 100%;
             }
+        }
+
+        .pagination{
+            display: flex;
+            justify-content: center;
         }
     }
 </style>
