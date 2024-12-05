@@ -1,6 +1,6 @@
 <template>
   <div class="entity">
-    <canvas class="entity" ref="entity"></canvas>
+    <canvas class="entity" ref="entity" @dblclick="fullScreenOrNot"></canvas>
   </div>
 </template>
 
@@ -9,12 +9,22 @@
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';//控制器
   import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-
   const props = defineProps({
     entity: {type: String, required: false}
   });
   
   const entity = ref<HTMLCanvasElement>();
+  let renderer: any;
+    /*鼠标双击全屏或退出全屏*/
+    function fullScreenOrNot():void {
+      if(!document||!renderer) return;
+      if(!document.fullscreenElement) { //若不存在已全屏dom,则进入全屏。分钟退出全屏
+        renderer.domElement.requestFullscreen();
+      }
+      else{
+        document.exitFullscreen();
+      }
+    }
 
   onMounted(async ()=>{
     const THREEGPU = await import('three/webgpu');
@@ -37,12 +47,12 @@
       camera.updateProjectionMatrix();
 
       // 初始化渲染器
-      const renderer = new THREEGPU.WebGPURenderer({
+      renderer = new THREEGPU.WebGPURenderer({
         antialias:true, // 开启抗锯齿
         canvas:entity.value,
       });
       renderer.setSize(entity.value!.offsetWidth, entity.value!.offsetHeight);
-      renderer.setClearColor(new THREE.Color(0xff0000));// 背景色
+      renderer.setClearColor(new THREE.Color(0x000000));// 背景色
       // 初始化控制器
       const controls = new OrbitControls(camera, entity.value);
       controls.enableDamping = true; // 开启阻尼   

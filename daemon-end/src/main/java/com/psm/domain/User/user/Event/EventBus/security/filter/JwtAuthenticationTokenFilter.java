@@ -30,20 +30,7 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties(prefix = "spring.security.jwt")//配置和jwt一样的过期时间
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
-    private RedisCache redisCache;
-
-    @Autowired
     private JWTUtil jwtUtil;
-
-    /**
-     * jwt有效期
-     */
-    private Long expiration;
-
-    /**
-     * jwt刷新时间
-     */
-    private Long refreshExpiration;
 
     /**
      * 登录多级缓存
@@ -78,14 +65,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         LoginUser loginUser = loginCache.get(cachekey, LoginUser.class);
         if(Objects.isNull(loginUser)){throw new RuntimeException("User not logged in");};
 
-        //如果JWT验证信息过期时间小于一小时则重置JWT
-        if(redisCache.getExpire(cachekey, TimeUnit.SECONDS) <= refreshExpiration/1000){
-            String jwt = jwtUtil.createJWT(loginUser.getUserDO().getId().toString());
-            redisCache.setCacheObject(cachekey,loginUser, Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
-
-            //重置的token通过返回头的方式通知客户端
-            response.setHeader("token",jwt);
-        };
+        // 如果命中就刷新缓存
+        loginCache.put(cachekey, loginUser);
 
         //存入SecurityContextHolder,并跳过验证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);

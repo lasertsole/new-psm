@@ -32,21 +32,29 @@
         ></ModelShowModel>
 
         <div class="info">
-          <div class="createTime">
-            上传时间: {{ modelInfo 
-            && modelInfo.createTime 
-            && new Date(modelInfo?.createTime).toLocaleDateString('zh-CN', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric'
-            }) }}
+
+          <div class="content">
+            <div class="leftBox">简介: </div>
+            <div class="rightBox">{{modelInfo?.content?modelInfo.content:'无'}}</div>
           </div>
 
-          <div class="category"
-            v-if="modelInfo"
-          >
-            <span class="style">风格: {{ modelInfo.style&&styleEnumObject[modelInfo.style] }}</span>
-            <span class="type">类型: {{ modelInfo.type&&typeEnumObject[modelInfo.type] }}</span>
+          <div class="other">
+            <div class="createTime">
+              上传时间: {{ modelInfo 
+              && modelInfo.createTime 
+              && new Date(modelInfo?.createTime).toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+              }) }}
+            </div>
+
+            <div class="category"
+              v-if="modelInfo"
+            >
+              <span class="style">风格: {{ modelInfo.style&&styleEnumObject[modelInfo.style] }}</span>
+              <span class="type">类型: {{ modelInfo.type&&typeEnumObject[modelInfo.type] }}</span>
+            </div>
           </div>
         </div>
 
@@ -209,12 +217,27 @@
           font-size: 12px;
           color: #9b9b9b;
           display: flex;
-          justify-content: space-between;
-          align-items: center;
+          flex-direction: column;
+          justify-content: center;
+
+          .content{
+            display: flex;
+
+            .rightBox{
+              flex-grow: 1;
+              margin-left: 5px;
+            }
+          }
           
-          .category{
-            .style{
-              margin-right: 10px;
+          .other{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+
+            .category{
+              .style{
+                margin-right: 10px;
+              }
             }
           }
         }
