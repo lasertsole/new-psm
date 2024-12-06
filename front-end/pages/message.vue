@@ -106,13 +106,14 @@
     function scrollToBottom():void {
         messageList.value!.scrollTop=messageList.value!.scrollHeight;
     }
-
+        
+    let DMServiceInstance;
     // 发送信息
     const send = debounce(():void=>{
         if(!validateMessage(message.value))
             return;
 
-            sendMessage(message.value).then(()=>{
+            DMServiceInstance.sendMessage(message.value).then(()=>{
                 scrollToBottom();// 发送完消息后滑动到底部
             });
         message.value="";
@@ -125,10 +126,12 @@
             });
         }
     });
-        
+
     onActivated(debounce(()=>{
+        if(!userInfo.isLogin) return;
+        DMServiceInstance=DMService.getInstance();
         // 初始化私信
-        initDM();
+        DMServiceInstance.initDM();
     }, 1000));
 
     definePageMeta({

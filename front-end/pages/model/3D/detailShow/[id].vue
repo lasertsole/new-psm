@@ -1,6 +1,6 @@
 <template>
   <div class="detailShow"
-      ref="rootDom"
+    ref="rootDom"
   >
     <div class="page">
       <div class="userBar">
@@ -103,8 +103,9 @@
     }
   }, 1000);
 
+  const DMServiceInstance = DMService.getInstance(); // 获取DM服务实例
   const triggerDM = throttle(async ():Promise<void>=> { // 节流触发跳转，防止多次调用toDM函数使聊天列表显示异常
-    toDM(authorInfo.value!.id!, authorInfo.value!.name!, authorInfo.value!.avatar||useRuntimeConfig().public.defaultAvatar);
+    DMServiceInstance.toDM(authorInfo.value!.id!, authorInfo.value!.name!, authorInfo.value!.avatar||useRuntimeConfig().public.defaultAvatar);
   }, 1000);
 
   onMounted(async ()=>{

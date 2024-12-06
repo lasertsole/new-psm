@@ -11,9 +11,7 @@
   .el-loading-mask{z-index: 1 !important;}
 </style>
 
-<script lang="ts" setup>
-  let DMServiceInstance; // 一对一聊天服务
-  
+<script lang="ts" setup>  
   // 这里的代码仅在客户端执行
   // 配置登录事件
   onMounted(async ()=>{
@@ -27,6 +25,7 @@
     };
   });
   
+  let DMServiceInstance; // 一对一聊天服务
   on("online", ()=>{
     DMServiceInstance = DMService.getInstance();
   });
