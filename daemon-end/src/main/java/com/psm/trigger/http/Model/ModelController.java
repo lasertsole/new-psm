@@ -163,16 +163,15 @@ public class ModelController {
     public ResponseDTO getDetailSearchModel3d(
             @RequestParam String keyword,
             @RequestParam Integer current,
-            @RequestParam Integer size) throws IOException {
-        return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, current, size));
-//        try {
-//            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword));
-//        }
-//        catch (InvalidParameterException e) {
-//            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-//        }
-//        catch (Exception e){
-//            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
-//        }
+            @RequestParam Integer size) {
+        try {
+            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, current, size));
+        }
+        catch (InvalidParameterException e) {
+            return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
+        }
+        catch (Exception e){
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
+        }
     }
 }

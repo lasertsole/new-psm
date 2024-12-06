@@ -1,6 +1,5 @@
 package com.psm.infrastructure.Cache.config;
 
-import org.springframework.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.psm.infrastructure.Cache.decorator.MultiLevelCacheConfig;
 import com.psm.infrastructure.Cache.decorator.MultiLevelCacheManager;
@@ -75,6 +74,7 @@ public class CacheConfig {
         singleServerConfig.setAddress("redis://"+redisHost+":"+redisPort);
         singleServerConfig.setPassword(redisPassword);
         RedissonClient redisson = Redisson.create(config);
+
         return redisson;
     }
 

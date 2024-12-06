@@ -94,7 +94,7 @@ public class Model3dServiceImpl implements Model3dService {
             ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), coverFile, _userId);
         }
         catch (Exception e){
-            throw new RuntimeException("文件上传失败");
+            throw new RuntimeException("文件上传失败", e);
         }
 
         // 将ModelDO存入数据库

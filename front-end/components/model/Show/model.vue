@@ -1,30 +1,61 @@
 <template>
-  <div class="entity">
-    <canvas class="entity" ref="entity" @dblclick="fullScreenOrNot"></canvas>
-  </div>
+  <el-main class="entity" :loading="loading">
+    <canvas class="entity" ref="entity"
+      @dblclick="fullScreenOrNot"
+      @keydown.enter="snapShotEvent"
+    >
+    </canvas>
+  </el-main>
 </template>
 
 <script lang="ts" setup>
   import * as THREE from 'three';
-  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';//控制器
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';//轨道控制器
   import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
+  const loading:Ref<Boolean> = ref<Boolean>(true);
+
   const props = defineProps({
-    entity: {type: String, required: false}
+    entityUrl: {type: String, required: false},
+    isSnapshot: {type: Boolean, required: false }
   });
   
+  const emits = defineEmits(['snapShotBlob']);
+
   const entity = ref<HTMLCanvasElement>();
+
   let renderer: any;
-    /*鼠标双击全屏或退出全屏*/
-    function fullScreenOrNot():void {
-      if(!document||!renderer) return;
-      if(!document.fullscreenElement) { //若不存在已全屏dom,则进入全屏。分钟退出全屏
-        renderer.domElement.requestFullscreen();
-      }
-      else{
-        document.exitFullscreen();
+
+  function snapShotEvent(event: KeyboardEvent):void {
+    if(event.key!="Enter" ||!entity.value) return;
+
+    entity.value!.toBlob((blob:Blob|null)=>{
+      if(!blob) return;
+
+      const file = new File([blob], 'snapshot.jpg', { type: blob.type });
+      emits('snapShotBlob', file);
+    }, 'image/jpeg', 0.9);
+    
+    document.exitFullscreen();
+    document.removeEventListener('keydown', snapShotEvent);
+  };
+
+  /*鼠标双击全屏或退出全屏*/
+  function fullScreenOrNot():void {
+    if(!document||!renderer) return;
+    if(!document.fullscreenElement) { //若不存在已全屏dom,则进入全屏。分钟退出全屏
+      renderer.domElement.requestFullscreen();
+      if(props.isSnapshot){
+        document.addEventListener('keydown', snapShotEvent);
       }
     }
+    else{
+      document.exitFullscreen();
+      if(props.isSnapshot){
+        document.removeEventListener('keydown', snapShotEvent);
+      }
+    }
+  }
 
   onMounted(async ()=>{
     const THREEGPU = await import('three/webgpu');
@@ -60,11 +91,12 @@
       // 初始化loader
       const objLoader = new OBJLoader();
       objLoader.load(
-        props.entity,
+        props.entityUrl,
         (obj:any)=>{
           obj.scale.set(0.01,0.01,0.01);
           obj.position.set(0,0,0);
           scene.add(obj);
+          loading.value = false;
         },
       );
       
@@ -107,7 +139,8 @@
   
   .entity{
     @include fullInParent;
-    
+    padding: 0px;
+
     canvas{
       @include fullInParent;
     }

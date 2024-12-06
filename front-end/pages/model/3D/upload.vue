@@ -6,6 +6,7 @@
                 v-show="!hadUpload"
                 @upload-start="uploadStart"
                 @upload-progress="progressChange"
+                @file-url="processFileUrl"
             >
             </model-upload-entity>
 
@@ -30,9 +31,20 @@
                 
                 <div class="cover">
                     <span>封面</span>
-                    <div>
+                    <div class="modelEntity"
+                        v-if="entityLocalUrl"
+                        title="双击全屏预览,进入预览后按回车截图"
+                    >
+                        <ModelShowModel
+                            :entityUrl="entityLocalUrl"
+                            :isSnapshot="true"
+                            @snapShotBlob="processSnapShot"
+                        ></ModelShowModel>
+                    </div>
+
+                    <div class="coverEntity">
                         <model-upload-cover
-                            @upload-start="changeCover"
+                            ref="coverUploadDom"
                         ></model-upload-cover>
                     </div>
                 </div>
@@ -47,11 +59,11 @@
                             placement="top"
                         >
                             <el-option
-                                    v-for="item in visibleOpts"
-                                    :key="item[0]"
-                                    :label="item[0]"
-                                    :value="item[1]"
-                                />
+                                v-for="item in visibleOpts"
+                                :key="item[0]"
+                                :label="item[0]"
+                                :value="item[1]"
+                            />
                         </el-select>
                     </div>
                 </div>
@@ -120,23 +132,35 @@
 </template>
 
 <script lang="ts" setup>
-    import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
     import { VisibleEnum } from "@/enums/visible.d";
+    import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
+    import ModelUploadCover from '@/components/model/Upload/uploadCover.vue';
 
     const loading:Ref<boolean> = ref<boolean>(false);
     const progress:Ref<string> = ref<string>('0.00%');
     const hadUpload:Ref<boolean> = ref<boolean>(false);
     const fileName:Ref<string> = ref<string>("");
 
+    const coverUploadDom: Ref<InstanceType<typeof ModelUploadCover> | undefined> = ref<InstanceType<typeof ModelUploadCover> | undefined>();
+    function processSnapShot(snapshot:File) {
+        coverUploadDom.value?.changeCover(snapshot);
+        cover.value = snapshot;
+    }
+
     // 开始上传模型文件回调
-    function uploadStart(fln:any):void {
+    function uploadStart(fln:string):void {
         fileName.value = fln;
         hadUpload.value = true;
     }
     
     // 进度条回调
-    function progressChange(pgs:any):void {
+    function progressChange(pgs:string):void {
         progress.value = pgs;
+    }
+
+    const entityLocalUrl: Ref<string|undefined> = ref<string>();
+    function processFileUrl(fileUrl:string):void {
+        entityLocalUrl.value = fileUrl;
     }
     
     // 可见性列表
@@ -146,17 +170,12 @@
     // 类型标签列表
     const typeOpts = Object.entries(TypeEnum);
 
-    const cover = ref<Blob>();//封面
+    const cover = ref<File>();//封面
     const visible = ref<string>("");//可见性
     const title = ref<string>("");//标题
     const content = ref<string>("");//简介
     const style = ref<string>("");//模型风格
     const type = ref<string>("");// 模型类型
-    
-    function changeCover(coverFile:any):void {//封面上传回调
-        cover.value = coverFile;
-        return;
-    }
     
     // 校验输入标题
     function validateTitle(title:string):boolean {
@@ -419,6 +438,17 @@
             .send{
                 display: flex;
                 justify-content: center;
+            }
+
+            .cover{
+                .modelEntity{
+                    @include fixedRetangle(220px, 180px);
+                    cursor: pointer;
+                }
+
+                .coverEntity{
+                    margin-left: 10px;
+                }
             }
         }
     }

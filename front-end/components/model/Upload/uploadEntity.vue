@@ -36,7 +36,7 @@
     import type { UploadProps, UploadRawFile } from 'element-plus';
     import { UploadFilled } from '@element-plus/icons-vue'
 
-    const emits = defineEmits(['upload-start','upload-progress']);
+    const emits = defineEmits(['upload-start', 'upload-progress', "file-url"]);
 
     const hadUpload = ref<boolean>(false);
     const targetFilePath = ref<string>("");
@@ -63,7 +63,15 @@
             return false;
         }
 
-        emits("upload-start", rawFile.name);
+        // 生成 File URL
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const fileUrl = URL.createObjectURL(rawFile);
+            emits('file-url', fileUrl); // 传递 Blob URL 给父组件
+            emits("upload-start", rawFile.name);
+        };
+        reader.readAsDataURL(rawFile); // 或者使用 readAsArrayBuffer
+
         return true;
     }
 </script>

@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
+import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Component
+@Controller
 public class DMController implements CommandLineRunner {
     @Autowired
     private UserAdaptor userAdaptor;
@@ -31,9 +31,6 @@ public class DMController implements CommandLineRunner {
 
     @Autowired
     private SocketIOServer socketIOServer;
-
-    @Autowired
-    private MQPublisher mqPublisher;
 
     @Autowired
     private SocketAppProperties socketAppProperties;

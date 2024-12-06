@@ -22,12 +22,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Setter
 @Component
-@ConfigurationProperties(prefix = "spring.security.jwt")//配置和jwt一样的过期时间
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
     private JWTUtil jwtUtil;
