@@ -38,6 +38,7 @@
 		<redssion.version>3.38.1</redssion.version>
 		<fastjson2.version>2.0.52</fastjson2.version>
 		<jjwt.version>0.12.3</jjwt.version>
+		<commonsText.version>1.12.0</commonsText.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<hutool.version>5.8.25</hutool.version>
 		<!--以下是阿里云oss依赖其他依赖-->
@@ -161,6 +162,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!--引入文本处理以及校验依赖-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commonsText.version}</version>
 		</dependency>
 
 		<!--Bean构建简化-->

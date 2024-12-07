@@ -39,10 +39,14 @@ public class Tus {
     }
 
     public String getFolderName(HttpServletRequest servletRequest) throws TusException, IOException {
-        String uploadUrl = servletRequest.getRequestURI();
+        try {
+            String uploadUrl = servletRequest.getRequestURI();
 
-        UploadInfo info = tusFileUploadService.getUploadInfo(uploadUrl);
-        return info.getId().getOriginalObject().toString();
+            UploadInfo info = tusFileUploadService.getUploadInfo(uploadUrl);
+            return info.getId().getOriginalObject().toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getFolderName(String fullName) {

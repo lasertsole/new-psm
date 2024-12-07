@@ -85,21 +85,33 @@
 }
 
 /* 限定最小长方形 */
-@mixin minRetangle($widthSize, $heightSize){
+@mixin minRetangle($widthSize, $heightSize) {
 	@include minWidth($widthSize);
 	@include minHeight($heightSize);
 }
 
 /* 限定最大长方形 */
-@mixin maxRetangle($widthSize, $heightSize){
+@mixin maxRetangle($widthSize, $heightSize) {
 	@include maxWidth($widthSize);
 	@include maxHeight($heightSize);
 }
 
 /* 固定长方形 */
-@mixin fixedRetangle($widthSize, $heightSize){
+@mixin fixedRetangle($widthSize, $heightSize) {
 	@include fixedWidth($widthSize);
 	@include fixedHeight($heightSize);
+}
+
+/* 满宽长方形 */
+@mixin fullWidthRetangle($heightSize) {
+	@include fullWidth;
+	@include fixedHeight($heightSize);
+}
+
+/* 满高长方形 */
+@mixin fullHeightRetangle($widthSize) {
+	@include fixedWidth($widthSize);
+	@include fullHeight;
 }
 
 /* 最小正方形 */

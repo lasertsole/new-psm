@@ -39,7 +39,7 @@ public interface UserAdaptor {
      * @param userBO 用户BO实体
      * @return 用户BO实体，其中token为令牌，user为用户信息
      */
-    UserBO login(UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException;
+    UserBO login(UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException, InstantiationException, IllegalAccessException;
 
     /**
      * 退出登录
@@ -52,7 +52,7 @@ public interface UserAdaptor {
      * @param userBO 用户BO实体
      * @return 用户BO实体，其中token为令牌，user为用户BO信息
      */
-    UserBO register(UserBO userBO) throws DuplicateKeyException;
+    UserBO register(UserBO userBO) throws DuplicateKeyException, InstantiationException, IllegalAccessException;
 
     /**
      * 销号
@@ -72,7 +72,7 @@ public interface UserAdaptor {
      *
      * @param userBO 用户BO实体，应包含 除了密码和头像 以外的信息
      */
-    void updateInfo(UserBO userBO) throws InvalidParameterException;
+    void updateInfo(UserBO userBO) throws InvalidParameterException, InstantiationException, IllegalAccessException;
 
     /**
      * 更新密码
@@ -95,7 +95,7 @@ public interface UserAdaptor {
      * @param id 用户ID
      * @return 用户BO实体
      */
-    UserBO getUserById(Long id) throws InvalidParameterException;
+    UserBO getUserById(Long id) throws InvalidParameterException, InstantiationException, IllegalAccessException;
 
     /**
      * 通过用户名获取用户信息
@@ -103,7 +103,7 @@ public interface UserAdaptor {
      * @param userBO 用户BO实体, 应包含 用户名
      * @return 用户BO实体列表
      */
-    List<UserBO> getUserByName(UserBO userBO) throws InvalidParameterException;
+    List<UserBO> getUserByName(UserBO userBO) throws InvalidParameterException, InstantiationException, IllegalAccessException;
 
     /**
      * 通过用户名获取用户信息
@@ -111,7 +111,7 @@ public interface UserAdaptor {
      * @param name 用户名
      * @return 用户BO实体列表
      */
-    List<UserBO> getUserByName(String name) throws InvalidParameterException;
+    List<UserBO> getUserByName(String name) throws InvalidParameterException, InstantiationException, IllegalAccessException;
 
     /**
      * 按创建时间排序获取用户列表

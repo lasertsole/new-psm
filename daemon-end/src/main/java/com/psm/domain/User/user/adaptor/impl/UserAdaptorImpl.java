@@ -3,7 +3,6 @@ package com.psm.domain.User.user.adaptor.impl;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.service.AuthUserService;
 import com.psm.domain.User.user.service.UserService;
 import com.psm.utils.Valid.ValidUtil;
@@ -12,6 +11,7 @@ import com.psm.utils.page.PageBO;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,6 +36,8 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Autowired
     AuthUserService authUserService;
+
+    @Override
     public String authUserToken(String token) {
         return authUserService.authUserToken(token);
     }
@@ -51,8 +53,8 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public UserBO login(@Valid UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException{
-        String name = userBO.getName();
+    public UserBO login(UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException, InstantiationException, IllegalAccessException {
+        String name = StringEscapeUtils.escapeHtml4(userBO.getName());
         String password = userBO.getPassword();
 
         // 参数判空
@@ -61,6 +63,8 @@ public class UserAdaptorImpl implements UserAdaptor {
                 ||StringUtils.isBlank(password)
         )
             throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("name", name), UserBO.class);
 
         // 登录
         userBO = userService.login(name, password);
@@ -79,10 +83,10 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public UserBO register(@Valid UserBO userBO) throws DuplicateKeyException, InvalidParameterException {
-        String name = userBO.getName();
+    public UserBO register(UserBO userBO) throws DuplicateKeyException, InvalidParameterException, InstantiationException, IllegalAccessException {
+        String name = StringEscapeUtils.escapeHtml4(userBO.getName());
         String password = userBO.getPassword();
-        String email = userBO.getEmail();
+        String email = StringEscapeUtils.escapeHtml4(userBO.getEmail());
 
         // 参数判空
         if(
@@ -91,6 +95,8 @@ public class UserAdaptorImpl implements UserAdaptor {
                 ||StringUtils.isBlank(email)
         )
             throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("name", name, "email", email), UserBO.class);
 
         // 注册
         userBO = userService.register(name, password, email);
@@ -123,12 +129,12 @@ public class UserAdaptorImpl implements UserAdaptor {
     };
 
     @Override
-    public void updateInfo(@Valid UserBO userBO) throws InvalidParameterException {
-        String name = userBO.getName();
+    public void updateInfo(UserBO userBO) throws InvalidParameterException, InstantiationException, IllegalAccessException {
+        String name = StringEscapeUtils.escapeHtml4(userBO.getName());
         Boolean sex = Optional.ofNullable(userBO.getSex()).map(SexEnum::getValue).orElse(null);
         String phone = userBO.getPhone();
-        String email = userBO.getEmail();
-        String profile = userBO.getProfile();
+        String email = StringEscapeUtils.escapeHtml4(userBO.getEmail());
+        String profile = StringEscapeUtils.escapeHtml4(userBO.getProfile());
 
         // 参数判空
         if(
@@ -140,6 +146,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
+        validUtil.validate(Map.of("name", name, "phone", phone, "email", email, "profile", profile), UserBO.class);
 
         // 修改用户
         userService.updateInfo(name, sex, phone, email, profile);
@@ -179,7 +186,8 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public UserBO getUserById(Long id) throws InvalidParameterException {
+    public UserBO getUserById(Long id) throws InvalidParameterException, InstantiationException, IllegalAccessException {
+        validUtil.validate(Map.of("id", id), UserBO.class);
         UserBO userBO = userService.getUserByID(id);
 
         // 判断用户是否存在
@@ -192,12 +200,14 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public List<UserBO> getUserByName(@Valid UserBO userBO) throws InvalidParameterException {
+    public List<UserBO> getUserByName(UserBO userBO) throws InvalidParameterException, InstantiationException, IllegalAccessException {
         // 参数判空
+        String name = StringEscapeUtils.escapeHtml4(userBO.getName());
         if(StringUtils.isBlank(userBO.getName()))
             throw new InvalidParameterException("Invalid parameter");
 
-        String name = userBO.getName();
+        validUtil.validate(Map.of("name", name), UserBO.class);
+
         List<UserBO> userBOList = userService.getUserByName(name);
 
         // 判断用户是否存在
@@ -209,7 +219,10 @@ public class UserAdaptorImpl implements UserAdaptor {
     }
 
     @Override
-    public List<UserBO> getUserByName(String name) throws InvalidParameterException {
+    public List<UserBO> getUserByName(String name) throws InvalidParameterException, InstantiationException, IllegalAccessException {
+        name = StringEscapeUtils.escapeHtml4(name);
+        validUtil.validate(Map.of("name", name), UserBO.class);
+
         List<UserBO> UserBOList = userService.getUserByName(name);
 
         // 判断用户是否存在
@@ -257,7 +270,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         if (Objects.isNull(id))
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", id), UserDTO.class);
+        validUtil.validate(Map.of("id", id), UserBO.class);
 
         return userService.addOnePublicModelNumById(id);
     }
@@ -275,7 +288,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         if (Objects.isNull(id))
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", id), UserDTO.class);
+        validUtil.validate(Map.of("id", id), UserBO.class);
 
         return userService.removeOnePublicModelNumById(id);
     }
@@ -296,7 +309,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", id, "storage", storage), UserDTO.class);
+        validUtil.validate(Map.of("id", id, "storage", storage), UserBO.class);
 
         return userService.updateOnePublicModelStorageById(id, storage);
     }
@@ -311,7 +324,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserBO.class);
 
         return userService.updateOnePublicModelStorageById(Id, curStorage);
     }
@@ -324,7 +337,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", Id, "storage", storage), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", storage), UserBO.class);
 
         return userService.addOnePublicModelStorageById(Id, storage);
     }
@@ -339,8 +352,6 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserDTO.class);
-
         return userService.addOnePublicModelStorageById(Id, curStorage);
     }
 
@@ -352,7 +363,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", id, "storage", storage), UserDTO.class);
+        validUtil.validate(Map.of("id", id, "storage", storage), UserBO.class);
 
         return userService.minusOnePublicModelStorageById(id, storage);
     }
@@ -367,7 +378,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserDTO.class);
+        validUtil.validate(Map.of("id", Id, "storage", curStorage), UserBO.class);
 
         return userService.minusOnePublicModelStorageById(Id, curStorage);
     }

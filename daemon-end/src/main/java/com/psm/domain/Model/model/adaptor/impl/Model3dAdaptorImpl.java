@@ -1,11 +1,10 @@
 package com.psm.domain.Model.model.adaptor.impl;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.psm.domain.Model.model.adaptor.Model3dAdaptor;
 import com.psm.domain.Model.model.entity.Model3dBO;
-import com.psm.domain.Model.model.entity.Model3dDTO;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
+import com.psm.infrastructure.Tus.Tus;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.utils.Valid.ValidUtil;
 import io.micrometer.common.util.StringUtils;
@@ -14,12 +13,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import me.desair.tus.server.exception.TusException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +27,9 @@ import java.util.Objects;
 @Adaptor
 public class Model3dAdaptorImpl implements Model3dAdaptor {
     @Autowired
+    Tus tus;
+
+    @Autowired
     ValidUtil validUtil;
 
     @Autowired
@@ -35,20 +37,25 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
 
     @Override
     public void uploadModelEntity(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String userId) throws IOException, TusException {
-        if(Objects.isNull(servletRequest) || Objects.isNull(servletResponse) || StringUtils.isBlank(userId))
+        String folderName = tus.getFolderName(servletRequest);
+        if(Objects.isNull(servletRequest)
+                || Objects.isNull(servletResponse)
+                || StringUtils.isBlank(userId)
+                || (StringUtils.isNotEmpty(folderName) && folderName.chars().filter(c -> c == '.').count()!=1) // 文件名必须有且仅有一个点
+        )
             throw new InvalidParameterException("Invalid parameter");
 
         modelService.uploadModelEntity(servletRequest, servletResponse, userId);
     }
 
     @Override
-    public void uploadModelInfo(@Valid Model3dBO model3dBO) throws Exception {
+    public void uploadModelInfo(Model3dBO model3dBO) throws Exception {
         Long userId = model3dBO.getUserId();
-        String title = model3dBO.getTitle();
-        String content = model3dBO.getContent();
+        String title = StringEscapeUtils.escapeHtml4(model3dBO.getTitle());
+        String content = StringEscapeUtils.escapeHtml4(model3dBO.getContent());
         MultipartFile CoverFile = model3dBO.getCoverFile();
-        String style = model3dBO.getStyle();
-        String type = model3dBO.getType();
+        String style = StringEscapeUtils.escapeHtml4(model3dBO.getStyle());
+        String type = StringEscapeUtils.escapeHtml4(model3dBO.getType());
         VisibleEnum visible = model3dBO.getVisible();
 
         if (
@@ -61,6 +68,8 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
             || Objects.isNull(visible)
         )
             throw new InvalidParameterException("Invalid parameter");
+
+        validUtil.validate(Map.of("title", title, "content", content, "cover", StringEscapeUtils.escapeHtml4(CoverFile.getOriginalFilename()), "style", style, "type", type), Model3dBO.class);
 
         modelService.uploadModelInfo(userId, title, content, CoverFile, style, type, visible);
     }
@@ -80,7 +89,7 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     public Model3dBO selectById(Long id, Integer visible) throws InvalidParameterException, InstantiationException, IllegalAccessException {
         if (Objects.isNull(id) || Objects.isNull(visible)) throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("id", id, "visible", visible), Model3dDTO.class);
+        validUtil.validate(Map.of("id", id, "visible", visible), Model3dBO.class);
 
         return modelService.getById(id, VisibleEnum.fromInteger(visible));
     }
@@ -94,6 +103,7 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
 
     @Override
     public List<Map<String, Object>> getBlurSearchModel3d(String keyword) throws IOException {
+        keyword = StringEscapeUtils.escapeHtml4(keyword);
         if (StringUtils.isBlank(keyword)) throw new InvalidParameterException("Invalid parameter");
 
         return modelService.getBlurSearchModel3d(keyword);
@@ -101,6 +111,7 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
 
     @Override
     public Map<String, Object> getDetailSearchModel3d(String keyword, Integer current, Integer size) throws IOException {
+        keyword = StringEscapeUtils.escapeHtml4(keyword);
         if (
             StringUtils.isBlank(keyword)
             && Objects.isNull(current)
