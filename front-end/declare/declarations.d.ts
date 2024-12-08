@@ -1,10 +1,9 @@
 declare module 'three/examples/jsm/controls/OrbitControls' {
-    class OrbitControls {
-        constructor(object: THREE.Camera, domElement?: HTMLElement);
-        enableDamping: boolean;
-        update(): void;
-      }
-    export {OrbitControls};
+  export class OrbitControls {
+      constructor(object: THREE.Camera, domElement?: HTMLElement);
+      enableDamping: boolean;
+      update(): void;
+  };
 }
 
 declare module "three/examples/jsm/loaders/OBJLoader" {
@@ -22,4 +21,15 @@ declare module 'rxjs' {
   export function filter<T>(predicate: (value: T, index: number) => boolean, thisArg?: any): MonoTypeOperatorFunction<T>;
   export function map(project: (value: T, index: number) => R): OperatorFunction<T, R>;
   export function tap(observerOrNext?: Partial<TapObserver<T>> | ((value: T) => void)): MonoTypeOperatorFunction<T>;
+};
+
+declare module 'dplayer' {
+  export default class DPlayer{
+    constructor({
+      container: HTMLElement,
+      video: {
+        url: string
+      },
+    });
+  };
 };

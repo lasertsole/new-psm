@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
+import com.psm.infrastructure.SocketIO.SocketIOApi;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 public class BaseHandler {
     @Autowired
     private SocketIOServer socketIOServer;
+
+    @Autowired
+    private SocketIOApi socketIOApi;
 
     @PostConstruct
     private void startup() throws Exception {
@@ -35,11 +39,12 @@ public class BaseHandler {
     @OnConnect
     public void onConnect(SocketIOClient client) {
         log.info("客户端:" + client.getRemoteAddress() + "已连接");
-        String namespace = client.getNamespace().getName();
     }
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         log.info("客户端:" + client.getRemoteAddress() + "断开连接");
+        // 移除用户在线用户列表
+        socketIOApi.removeLocalUser(client.get("userId"));
     }
 }

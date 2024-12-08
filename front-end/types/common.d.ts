@@ -28,3 +28,20 @@ export type ESResult = {
     document: any&{ id: string };
     highlight: any;
 };
+
+export type Room = {
+    roomId: string;
+    roomOwnerId: string;
+    roomName: string;
+    roomType: string;
+    memberIdSet: Set<string>;
+}
+
+export type RoomInvitation = {
+    roomId: String;
+    roomOwnerId: String;
+    roomName: String;
+    roomType: String;
+    srcUserId: String;
+    tarUserId: String;
+}

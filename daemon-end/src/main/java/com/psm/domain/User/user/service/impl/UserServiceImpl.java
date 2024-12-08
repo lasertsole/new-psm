@@ -10,7 +10,7 @@ import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.UserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
-import com.psm.domain.User.user.Event.EventBus.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;

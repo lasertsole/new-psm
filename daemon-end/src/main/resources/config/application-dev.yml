@@ -115,8 +115,8 @@ spring:
 
 #mybaitis-plus配置
 mybatis-plus:
-  workerId: 1
-  datacenterId: 1
+  workerId: ${server.workerId}
+  datacenterId: ${server.datacenterId}
   global-config:
     db-config:
 #      table-prefix: tb_ #数据表前缀
@@ -156,7 +156,7 @@ aliyun:
 socketio:
   # 监听的ip和端口
   host: localhost
-  port: 8001
+  port: 9000
   # 设置最大每帧处理数据的长度，防止他人利用大数据来攻击服务器
   max-frame-payload-length: 1048576
   # 设置http交互最大内容长度
@@ -181,6 +181,8 @@ socketio:
 
 #服务器地址及端口
 server:
+  workerId: 1
+  datacenterId: 1
   # Undertow配置
   undertow:
     # io线程池数量

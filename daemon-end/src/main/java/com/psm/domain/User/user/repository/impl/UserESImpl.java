@@ -1,7 +1,6 @@
 package com.psm.domain.User.user.repository.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.repository.UserES;
 import jakarta.annotation.PostConstruct;

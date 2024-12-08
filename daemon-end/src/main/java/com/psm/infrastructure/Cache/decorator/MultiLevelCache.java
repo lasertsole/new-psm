@@ -2,7 +2,6 @@ package com.psm.infrastructure.Cache.decorator;
 
 import com.psm.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMapCache;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.RedissonCache;
@@ -11,7 +10,6 @@ import org.springframework.cache.support.SimpleValueWrapper;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Cache装饰器模式

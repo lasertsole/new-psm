@@ -2,17 +2,16 @@ package com.psm.trigger.socket;
 
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.psm.domain.Chat.adaptor.ChatAdaptor;
-import com.psm.domain.Chat.entity.ChatBO;
-import com.psm.domain.Chat.entity.ChatDTO;
+import com.psm.domain.Communication.Chat.adaptor.ChatAdaptor;
+import com.psm.domain.Communication.Chat.entity.ChatBO;
+import com.psm.domain.Communication.Chat.entity.ChatDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.infrastructure.SocketIO.SocketIOGlobalVariable;
+import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
@@ -35,6 +34,9 @@ public class DMController implements CommandLineRunner {
     @Autowired
     private SocketAppProperties socketAppProperties;
 
+    @Autowired
+    private SocketIOApi socketIOApi;
+
     @Override
     public void run(String... args) throws Exception {
         // 创建一个名字空间
@@ -56,7 +58,7 @@ public class DMController implements CommandLineRunner {
 
         // 添加连接监听器
         dm.addConnectListener(client -> {
-            SocketIOGlobalVariable.userIdMapClient.put(client.get("userId"), client);
+            socketIOApi.addLocalUser(client.get("userId"), client);
 
             // 向客户端发送配置信息
             Map<String, Object> map = new HashMap<>();
@@ -65,17 +67,7 @@ public class DMController implements CommandLineRunner {
             client.sendEvent("initDMConfig", map);
         });
 
-        // 添加断开连接监听器
-        dm.addDisconnectListener(client -> {
-            try {
-                SocketIOGlobalVariable.userIdMapClient.remove(client.get("userId"));
-            }
-            catch (Exception e) {
-                log.info("disconnect DM error");
-            }
-        });
-
-        // 添加私立聊监听器
+        // 添加私聊监听器
         dm.addEventListener("sendMessage", ChatDTO.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, ChatDTO chatDTO, AckRequest ackRequest) {

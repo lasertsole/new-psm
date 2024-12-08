@@ -41,9 +41,7 @@ export async function fetchApi({
   method = 'get',
   contentType = 'application/json',
   headeropts = {},
-}: Params): Promise<Response>
-{
-
+}: Params): Promise<Response> {
   // 设置请求头
   const headers:any = {};
 
@@ -176,8 +174,8 @@ export async function useFetchBaseApi({
       let token = localStorage.getItem('token');
       if(token){
           options.headers = {
-              ...options.headers,
-              token
+            ...options.headers,
+            token
           }
       }
     },

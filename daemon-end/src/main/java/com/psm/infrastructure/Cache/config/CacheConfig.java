@@ -89,6 +89,7 @@ public class CacheConfig {
 
         config.put("loginCache", new MultiLevelCacheConfig(60 * 60 * 1000,  60 * 60 * 1000, 1000));
         config.put("models_UserCache", new MultiLevelCacheConfig(60 * 60 * 1000,  60 * 60 * 1000, 500));
+        config.put("socketRoomCache", new MultiLevelCacheConfig(60 * 60 * 1000,  30 * 60 * 1000, 50));
 
         return new MultiLevelCacheManager(multiLevelChannel, config);
     }

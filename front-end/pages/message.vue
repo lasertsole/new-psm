@@ -61,7 +61,7 @@
 
                     <div class="sendBox">
                         <div class="toolBar" v-show="nowDMContactsIndex>=0">
-                            <i class="rtc" title="音视频通话" @click="rtcDialogVisible = true"></i>
+                            <i class="rtc" title="音视频通话" @click="sendRTCRequest"></i>
                         </div>
 
                         <el-input
@@ -141,6 +141,7 @@
                 </div>
             </template>
         </el-dialog>
+        <!-- <CommonRtc/> -->
     </div>
 </template>
 
@@ -195,6 +196,13 @@
         // 初始化私信
         DMServiceInstance.initDM();
     }, 1000));
+
+    let RTCServiceInstance: RTCService;
+    // 发起RTC请求
+    function sendRTCRequest() {
+        RTCServiceInstance = RTCService.getInstance();
+        // rtcDialogVisible.value = true;
+    }
 
     const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
     const deviceControl:Reactive<Devices> = reactive<Devices>({
