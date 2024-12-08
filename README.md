@@ -19,7 +19,7 @@
 ### DDD大充血模型的六边形架构
 ### springboot3.3
 ### springsecurity+OAuth2安全框架
-### mybatis-plus + mybatis-plus-join + mybatis-plus-ext 兼具JPA（Hibernate）特性的sql代码生成器
+### mybatis-plus + mybatis-plus-join + mybatis-plus-max + mybatis-plus-ext 兼具JPA（Hibernate）特性的sql代码生成器
 ### postgresql(podman)下一代单体关系型数据库
 ### redis + caffeine + springCache 分布式多级缓存
 ### mongodb(podman) bson型内存数据库
