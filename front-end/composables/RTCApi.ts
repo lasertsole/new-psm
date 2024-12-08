@@ -7,6 +7,8 @@ export class RTCService {// 单例模式
     private static instance: RTCService | null;
     private RTCSocket: Socket;
     private interval: NodeJS.Timeout|null = null;
+    private inviteJoinArr: RoomInvitation[] = [];// 短时间内的多条RTC邀请用列表缓存
+
     private constructor() {
         if(import.meta.server) throw new Error("RTCService can only be used in the browser.");
 
@@ -49,8 +51,34 @@ export class RTCService {// 单例模式
             };
         });
 
-        this.RTCSocket.on('receiveRoomInvitation', (roomInvitation: RoomInvitation) => {
-            console.error('roomInvitation', roomInvitation);
+        this.RTCSocket.on('inviteJoinRoom', (roomInvitation: RoomInvitation):void=> {
+            let userIds: string[] = contactsItems.length!=0?contactsItems.map(user => user.tgtUserId!):[];
+            if(!userIds.includes(roomInvitation.srcUserId)) {
+                // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
+                this.RTCSocket.emit("rejectJoinRoom", roomInvitation.roomId);
+            };
+            this.inviteJoinArr.push(roomInvitation);
+        });
+
+        this.RTCSocket.on("agreeJoinRoom", (roomId: string):void=> {
+            this.RTCSocket.emit("agreeJoinRoom", roomId, (err:any, timestamp:string)=> {// 加入房间，房间号为用户id
+                if(err) return;
+    
+                console.log("timestamp", timestamp);
+            });
+        });
+
+        this.RTCSocket.on("rejectJoinRoom", (roomId: string):void=> {
+            this.RTCSocket.emit("rejectJoinRoom", roomId);
+            this.inviteJoinArr=[];// 清空列表
+        });
+
+        this.RTCSocket.on("swapSDP", (): void=> {
+            this.RTCSocket.emit("swapSDP");
+        });
+
+        this.RTCSocket.on("swapCandidate", (): void=> {
+            this.RTCSocket.emit("swapCandidate");
         });
     };
 
@@ -60,7 +88,33 @@ export class RTCService {// 单例模式
 
             console.log("timestamp", timestamp);
         });
-    }
+    };
+
+    public agreeJoinRoom(roomId: string):void {
+        this.RTCSocket.emit("agreeJoinRoom", roomId, (err:any, timestamp:string)=> {// 加入房间，房间号为用户id
+            if(err) return;
+
+            console.log("timestamp", timestamp);
+        });
+        this.inviteJoinArr=[];// 清空列表
+    };
+
+    public rejectJoinRoom(roomId: string):void {
+        this.RTCSocket.emit("rejectJoinRoom", roomId);
+        this.inviteJoinArr=[];// 清空列表
+    };
+
+    public swapSDP(): void {
+        this.RTCSocket.emit("swapSDP");
+    };
+
+    public swapCandidate(): void {
+        this.RTCSocket.emit("swapCandidate");
+    };
+
+    public leaveRoom(): void {
+        this.RTCSocket.emit("leaveRoom");
+    };
 
     public static getInstance(): RTCService {
         if (!RTCService.instance) {

@@ -146,7 +146,9 @@ export class DMService { // 单例模式
             item.messageItems = item.messageItems.concat(contactsMap.get(item.tgtUserId)!.messageItems);
 
             //更新indexedDB里的联系人列表
-            db.ContactsDBItems.where('tgtUserId').equals(item.tgtUserId).modify({
+            db.ContactsDBItems.where('[srcUserId+tgtUserId]')
+            .equals([item.srcUserId, item.tgtUserId])
+            .modify({
               lastMessage: item.lastMessage,
               lastTime: item.lastTime
             });
@@ -243,9 +245,11 @@ export class DMService { // 单例模式
         contactsItems[index].messageItems!.push(messageItem);
         contactsItems[index].lastMessage = messageItem.content!;
         contactsItems[index].lastTime = messageItem.timestamp;
-        
+
         //更新indexedDB里的联系人列表
-        db.ContactsDBItems.where('tgtUserId').equals(messageItem.srcUserId!).modify({
+        db.ContactsDBItems.where('[srcUserId+tgtUserId]')
+        .equals([messageItem.tgtUserId!, messageItem.srcUserId!])
+        .modify({
           lastMessage: messageItem.content,
           lastTime: messageItem.timestamp
         });
@@ -315,7 +319,7 @@ export class DMService { // 单例模式
   /**
    * 跳转到私聊页面
    */
-  public async toDM(tgtUserId:string, name:string, avatar:string): Promise<void> {
+  public toDM = debounce(async(tgtUserId:string, name:string, avatar:string): Promise<void>=> {
     
     if(userInfo.id==tgtUserId) {
       import.meta.client && ElMessage.warning('不能私信自己');
@@ -360,10 +364,10 @@ export class DMService { // 单例模式
     };
     
     navigateTo("/message");
-  };
+  }, 1000);
 
   // 初始化(获取联系人列表和信息)
-  public async initDM(): Promise<void> {
+  public initDM = debounce(async(): Promise<void>=> {
     // 如果已初始化过，直接退出
     if(!userInfo.isLogin || isInitDM.value) return;
     
@@ -406,7 +410,7 @@ export class DMService { // 单例模式
     // 从服务器获取最新聊天信息
     let socket: Socket = DMService.getInstance().getSocket();
     socket.timeout(5000).emit('initMessage', maxLastTime);
-  };
+  }, 1000);
 
   // 发送信息逻辑
   public async sendMessage(message:string): Promise<void> {

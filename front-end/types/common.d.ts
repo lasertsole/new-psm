@@ -38,10 +38,10 @@ export type Room = {
 }
 
 export type RoomInvitation = {
-    roomId: String;
-    roomOwnerId: String;
-    roomName: String;
-    roomType: String;
-    srcUserId: String;
-    tarUserId: String;
+    roomId: string;
+    roomOwnerId: string;
+    roomName: string;
+    roomType: string;
+    srcUserId: string;
+    tarUserId: string;
 }

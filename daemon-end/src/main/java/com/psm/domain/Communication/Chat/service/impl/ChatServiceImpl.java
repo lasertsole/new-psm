@@ -36,7 +36,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
-    public void processMessageDM(ChatBO message) {
+    public void storageMessageDM(ChatBO message) {
         chatDB.insert(message.toDO());
     }
 

@@ -16,5 +16,5 @@ public interface RTCService {
      *
      * @param roomInvitation 房间邀请函
      */
-    void receiveRoomInvitation(RoomInvitation roomInvitation);
+    void forwardRoomInvitation(RoomInvitation roomInvitation);
 }

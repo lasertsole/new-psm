@@ -12,11 +12,10 @@ import org.apache.rocketmq.client.apis.ClientException;
 public interface ChatService {
     /**
      * description: 处理一对一消息
-     * author: moye
      *
      * @param message 消息体
      */
-    void processMessageDM(ChatBO message);
+    void storageMessageDM(ChatBO message);
 
     /**
      * 初始化聊天记录

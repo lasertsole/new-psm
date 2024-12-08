@@ -66,7 +66,7 @@ public class RTCController implements CommandLineRunner {
             public void onData(SocketIOClient srcClient, String roomId, AckRequest ackRequest) {
                 try {
                     // 创建房间，并获取房间创建结果
-                    Boolean isCreateSuccessful = socketIOApi.createSocketRoom(roomId, srcClient.get("userId"), "RTC", "RTC");
+                    Boolean isCreateSuccessful = socketIOApi.createSocketRoom(roomId, srcClient.get("userId"), "RTC", "DRTC");//DRTC为一对一RTC类型,可以后期更改为其他RTC类型
 
                     if(isCreateSuccessful) {
                         srcClient.set("rtcRoomId", roomId);
@@ -93,6 +93,41 @@ public class RTCController implements CommandLineRunner {
                 // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
                 ackRequest.sendAckData(TimestampUtils.generateUTCTimestamp(formatter));
+            }
+        });
+
+        RTCSignaling.addEventListener("agreeJoinRoom", String.class, new DataListener<>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, String tarUserId, AckRequest ackRequest) throws Exception {
+
+            }
+        });
+
+        RTCSignaling.addEventListener("rejectJoinRoom", String.class, new DataListener<>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, String tarUserId, AckRequest ackRequest) throws Exception {
+
+            }
+        });
+
+        RTCSignaling.addEventListener("swapSDP", Object.class, new DataListener<>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, Object o, AckRequest ackRequest) throws Exception {
+
+            }
+        });
+
+        RTCSignaling.addEventListener("swapCandidate", Object.class, new DataListener<>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, Object o, AckRequest ackRequest) throws Exception {
+
+            }
+        });
+
+        RTCSignaling.addEventListener("leaveRoom", String.class, new DataListener<>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, String s, AckRequest ackRequest) throws Exception {
+
             }
         });
     }

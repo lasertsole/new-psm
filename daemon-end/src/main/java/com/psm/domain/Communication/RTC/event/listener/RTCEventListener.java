@@ -67,7 +67,7 @@ public class RTCEventListener {
                     // 将字节数组转换为字符串
                     String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
                     RoomInvitation roomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
-                    rtcService.receiveRoomInvitation(roomInvitation);
+                    rtcService.forwardRoomInvitation(roomInvitation);
 
                     return ConsumeResult.SUCCESS;
                 })

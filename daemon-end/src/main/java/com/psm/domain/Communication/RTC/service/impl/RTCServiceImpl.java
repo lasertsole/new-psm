@@ -27,10 +27,10 @@ public class RTCServiceImpl implements RTCService {
     }
 
     @Override
-    public void receiveRoomInvitation(RoomInvitation roomInvitation) {
+    public void forwardRoomInvitation(RoomInvitation roomInvitation) {
         SocketIOClient tarClient = socketIOApi.getLocalUserSocket(roomInvitation.getTarUserId());
         if (Objects.isNull(tarClient)) return;
 
-        tarClient.sendEvent("receiveRoomInvitation", roomInvitation);
+        tarClient.sendEvent("inviteJoinRoom", roomInvitation);
     };
 }

@@ -72,8 +72,7 @@ public class ChatEventListener {
                     // 将字节数组转换为字符串
                     String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
                     ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
-                    chatService.processMessageDM(messageBody);
-
+                    chatService.storageMessageDM(messageBody);
                     return ConsumeResult.SUCCESS;
                 })
                 .build();
@@ -96,7 +95,6 @@ public class ChatEventListener {
                 String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
                 ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
                 chatService.receiveMessage(messageBody);
-
                 return ConsumeResult.SUCCESS;
             })
             .build();
