@@ -15,37 +15,27 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoomInvitation implements Serializable {
+public class RTCSwap implements Serializable {
     @NotNull
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     @Length(max = 10, min = 6, message = "The roomId must be less than or equal to 20 characters, and more than or equal to 6 characters")
-    String roomId;
+    private String RoomId;
 
     @NotNull
     @Min(value = 1, message = "The id must be greater than or equal to 1")
-    String roomOwnerId;
-
-    @NotNull
-    @Length(max = 10, min = 1, message = "The roomId must be less than or equal to 20 characters, and more than or equal to 1 characters")
-    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The content format is incorrect")
-    String roomName;
-
-    @NotNull
-    String roomType;
-
-    @NotNull
-    @Min(value = 1, message = "The id must be greater than or equal to 1")
-    String srcUserId;
+    private String srcUserId;
 
     @NotNull
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The username format is incorrect")
     String srcUserName;
 
-    @NotNull
     @Min(value = 1, message = "The id must be greater than or equal to 1")
-    String tarUserId;
+    private String tarUserId;
 
     @NotNull
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The username format is incorrect")
     String tarUserName;
+
+    @NotNull
+    private Object data;
 }

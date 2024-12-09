@@ -8,6 +8,7 @@ export class RTCService {// 单例模式
     private RTCSocket: Socket;
     private interval: NodeJS.Timeout|null = null;
     private inviteJoinArr: RoomInvitation[] = [];// 短时间内的多条RTC邀请用列表缓存
+    private hasOwnerRoom: boolean = false;
 
     private constructor() {
         if(import.meta.server) throw new Error("RTCService can only be used in the browser.");
@@ -19,10 +20,10 @@ export class RTCService {// 单例模式
         });
 
         this.RTCSocket.on('connect', () => {
-            this.RTCSocket.emit("createRoom", userInfo.id, (err:any, isCreateSuccessful:boolean)=> {// 加入房间，房间号为用户id
-                if(err) return;
+            this.RTCSocket.emit("createRoom", userInfo.id, (isCreateSuccessful:boolean)=> {// 加入房间，房间号为用户id
 
                 console.log("isCreateSuccessful", isCreateSuccessful);
+                this.hasOwnerRoom = isCreateSuccessful;
             });
         });
 
@@ -60,32 +61,29 @@ export class RTCService {// 单例模式
             this.inviteJoinArr.push(roomInvitation);
         });
 
-        this.RTCSocket.on("agreeJoinRoom", (roomId: string):void=> {
-            this.RTCSocket.emit("agreeJoinRoom", roomId, (err:any, timestamp:string)=> {// 加入房间，房间号为用户id
-                if(err) return;
-    
-                console.log("timestamp", timestamp);
-            });
+        this.RTCSocket.on("agreeJoinRoom", (timestamp: string):void=> {
+            console.log("timestamp", timestamp);
         });
 
-        this.RTCSocket.on("rejectJoinRoom", (roomId: string):void=> {
-            this.RTCSocket.emit("rejectJoinRoom", roomId);
-            this.inviteJoinArr=[];// 清空列表
+        this.RTCSocket.on("rejectJoinRoom", (timestamp: string):void=> {
+            console.log("timestamp", timestamp);
         });
 
-        this.RTCSocket.on("swapSDP", (): void=> {
-            this.RTCSocket.emit("swapSDP");
+        this.RTCSocket.on("swapSDP", (timestamp: string): void=> {
+            console.log("timestamp", timestamp);
         });
 
-        this.RTCSocket.on("swapCandidate", (): void=> {
-            this.RTCSocket.emit("swapCandidate");
+        this.RTCSocket.on("swapCandidate", (timestamp: string): void=> {
+            console.log("timestamp", timestamp);
+        });
+
+        this.RTCSocket.on("leaveRoom", (timestamp: string): void=> {
+            console.log("timestamp", timestamp);
         });
     };
 
     public inviteJoinRoom(tarUserId: string):void {
         this.RTCSocket.emit("inviteJoinRoom", tarUserId, (err:any, timestamp:string)=> {// 加入房间，房间号为用户id
-            if(err) return;
-
             console.log("timestamp", timestamp);
         });
     };

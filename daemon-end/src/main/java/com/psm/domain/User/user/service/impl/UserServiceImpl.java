@@ -11,6 +11,7 @@ import com.psm.domain.User.user.service.UserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
+import com.psm.infrastructure.Cache.RedisCache;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -55,6 +56,9 @@ public class UserServiceImpl implements UserService {
 
     @Value("${spring.security.jwt.expiration}")
     private Long expiration;//jwt有效期
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 登录多级缓存
@@ -225,12 +229,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserBO getUserByID(Long id) {
-        // 获取用户信息
-        UserDO userDO = userDB.getById(id);
+        UserDO userDO;
+        LoginUser loginUser = loginUserRedis.getLoginUser("login:" + String.valueOf(id));
+        if (Objects.nonNull(loginUser)) {
+            userDO = loginUser.getUserDO();
+        } else {
+            // 如果缓存未命中则从数据库获取用户信息
+            userDO = userDB.getById(id);
+        }
 
         // 判断用户是否存在
         if(Objects.isNull(userDO)){
-            return UserConvertor.INSTANCE.DO2BO(userDO);
+            return userDO.toBO();
         }
         else{// 用户不存在
             throw new RuntimeException("User not found");
@@ -264,7 +274,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserBO> getUserByIds(List<Long> ids) {
-        return userDB.selectUserByIds(ids).stream().map(UserConvertor.INSTANCE::DO2BO).collect(Collectors.toList());
+        // 将ids转化为redis中的key数组
+        List<String> loginIds = ids.stream().map(id -> "login:" + String.valueOf(id)).toList();
+
+        // 从redis中获取用户信息
+        List<LoginUser> loginUsers = redisCache.getCacheLists(loginIds);
+
+        // 找出不在缓存的ID放入数组
+        List<Long> notInCacheIds = new ArrayList<>();
+        for(int i = 0; i < loginUsers.size(); i++) {
+            if (Objects.isNull(loginUsers.get(i))){
+                notInCacheIds.add(ids.get(i));
+            }
+        }
+
+        // 如果内存中能找全所有的用户信息，则立刻返回
+        if (notInCacheIds.isEmpty()) return loginUsers.stream().map(LoginUser::getUserDO).map(UserDO::toBO).toList();
+
+        // 从数据库中找出剩下的用户信息
+        Deque<UserBO> DBUserBODeque = new LinkedList<>(userDB.selectUserByIds(notInCacheIds).stream().map(UserDO::toBO).toList());
+
+        List<UserBO> resultUserBOS = new ArrayList<>();
+        // 将从缓存找到的数据和从数据库找到的数据整合
+        for(int i = 0; i < loginUsers.size(); i++) {
+            LoginUser loginUser = loginUsers.get(i);
+            if (Objects.isNull(loginUser)){
+                resultUserBOS.add(loginUser.getUserDO().toBO());
+            } else {
+                resultUserBOS.add(DBUserBODeque.pollFirst());
+            };
+        }
+
+        // 返回结果
+        return resultUserBOS;
     }
 
     @Override

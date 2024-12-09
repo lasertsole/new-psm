@@ -6,6 +6,7 @@ import com.psm.domain.Communication.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
 import com.psm.domain.Communication.Chat.entity.ChatDTO;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
+import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +47,8 @@ public class DMController implements CommandLineRunner {
         dm.addAuthTokenListener((authToken, client)->{
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
-                String userId = userAdaptor.authUserToken((String) map.get("token"));
-                client.set("userId", userId);
+                UserBO userBO = userAdaptor.authUserToken((String) map.get("token"));
+                client.set("userInfo", userBO);
 
                 return AuthTokenResult.AuthTokenResultSuccess;
             }
@@ -58,12 +59,14 @@ public class DMController implements CommandLineRunner {
 
         // 添加连接监听器
         dm.addConnectListener(client -> {
-            socketIOApi.addLocalUser(client.get("userId"), client);
+            // 添加本地用户
+            socketIOApi.addLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
 
             // 向客户端发送配置信息
             Map<String, Object> map = new HashMap<>();
             map.put("DMExpireDay", socketAppProperties.getDMExpireDay());
 
+            // 发送配置信息
             client.sendEvent("initDMConfig", map);
         });
 

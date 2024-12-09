@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
@@ -291,6 +292,16 @@ public class RedisCache {
      */
     public Collection<String> keys(final String pattern){
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 批量获取缓存的 list 对象
+     *
+     * @param keys 缓存的键值集合
+     * @return 缓存键值对应的数据
+     */
+    public <T> List<T> getCacheLists(List<String> keys) {
+        return (List<T>) keys.stream().map(this::getCacheObject).toList();
     }
 
     /**

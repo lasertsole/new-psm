@@ -1,6 +1,7 @@
 package com.psm.domain.User.user.service.impl;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
+import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.AuthUserService;
@@ -63,7 +64,7 @@ public class UserDetailsServiceImpl implements AuthUserService {
     }
 
     @Override
-    public String authUserToken(String token) {
+    public UserBO authUserToken(String token) {
         if (!StringUtils.hasText(token)) {
             throw new RuntimeException("Invalid token");
         }
@@ -85,6 +86,6 @@ public class UserDetailsServiceImpl implements AuthUserService {
             throw new RuntimeException("User not logged in");
         }
 
-        return userid;
+        return loginUser.getUserDO().toBO();
     }
 }

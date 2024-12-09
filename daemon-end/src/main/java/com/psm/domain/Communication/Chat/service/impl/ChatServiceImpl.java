@@ -8,6 +8,7 @@ import com.psm.domain.Communication.Chat.entity.ChatDTO;
 import com.psm.domain.Communication.Chat.repository.ChatDB;
 import com.psm.domain.Communication.Chat.service.ChatService;
 import com.psm.domain.Communication.Chat.types.convertor.ChatConvertor;
+import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
@@ -59,7 +60,7 @@ public class ChatServiceImpl implements ChatService {
         srcClient.set("DMLastTime", chatBO.getTimestamp());
 
         // 获取来源用户id
-        String srcUserId = srcClient.get("userId");
+        String srcUserId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
 
         // 将消息发送到MQ
         mqPublisher.publish(chatBO, "DMForward", "CHAT", srcUserId);
@@ -69,6 +70,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void receiveMessage(ChatBO chatBO) {
         // 如果本服务器存在目标用户socket，则把信息交付给目标用户
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(String.valueOf(chatBO.getTgtUserId()));

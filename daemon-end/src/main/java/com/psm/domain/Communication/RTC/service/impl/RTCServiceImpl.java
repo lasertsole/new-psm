@@ -2,14 +2,20 @@ package com.psm.domain.Communication.RTC.service.impl;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Communication.RTC.service.RTCService;
+import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
+import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
+import com.psm.infrastructure.SocketIO.POJOs.Room;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
+import com.psm.utils.Timestamp.TimestampUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Slf4j
@@ -22,15 +28,203 @@ public class RTCServiceImpl implements RTCService {
     private SocketIOApi socketIOApi;
 
     @Override
-    public void inviteJoinRoom(RoomInvitation roomInvitation) throws ClientException {
-        mqPublisher.publish(roomInvitation, "inviteJoinRoom", "RTC", roomInvitation.getRoomType());
+    public boolean createRoom(SocketIOClient srcClient, String roomId) {
+        String userId = (String) srcClient.get("userId");
+        // 判断用户之前有没有加入其他rtc房间
+        String oldRoomId = (String) srcClient.get("rtcRoomId");
+        if (Objects.nonNull(oldRoomId)) { // 如果有，则将用户从原来的房间移除
+            socketIOApi.removeUserFromSocketRoom(oldRoomId, userId);
+            srcClient.del("rtcRoomId");// 清空房间号属性
+        }
+
+        boolean result = false;
+        // 创建房间，并获取房间创建结果,如果为true，则创建房间成功，为false，则说明已有相同的房间号被使用，创建失败
+        if(socketIOApi.createSocketRoom(roomId, userId, "RTC", "DRTC")) {// 创建成功时设置用户的房间号属性
+            srcClient.set("rtcRoomId", roomId);
+        } else {// 创建失败时，则判断已有房间号的主人是否是当前用户，如果是，则用户可以直接使用该房间
+            Room room = socketIOApi.getSocketRoom(roomId);
+            if(userId.equals(room.getRoomOwnerId())) result = true;
+        }
+
+        return result;
     }
 
     @Override
-    public void forwardRoomInvitation(RoomInvitation roomInvitation) {
+    public String inviteJoinRoom(SocketIOClient srcClient, String tarUserId) throws ClientException {
+        String rtcRoomId = (String) srcClient.get("rtcRoomId");
+        if (Objects.isNull(rtcRoomId)) throw new ClientException("当前用户没有加入任何房间");
+
+        // 制作邀请函,邀请函TarUserName由TarUser填写,减少不必要的查询操作
+        Room room = socketIOApi.getSocketRoom(rtcRoomId);
+        RoomInvitation roomInvitation = new RoomInvitation();
+        roomInvitation.setRoomId(rtcRoomId);
+        roomInvitation.setRoomOwnerId(room.getRoomOwnerId());
+        roomInvitation.setRoomName(room.getRoomName());
+        roomInvitation.setRoomType(room.getRoomType());
+        roomInvitation.setSrcUserId(String.valueOf(((UserBO) srcClient.get("userInfo")).getId()));
+        roomInvitation.setSrcUserName(String.valueOf(((UserBO) srcClient.get("userInfo")).getName()));
+        roomInvitation.setTarUserId(tarUserId);
+
+        // 将邀请函通过mq发送给目标用户
+        mqPublisher.publish(roomInvitation, "inviteJoinRoom", "RTC", roomInvitation.getRoomType());
+
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+
+        return TimestampUtils.generateUTCTimestamp(formatter);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardInviteJoinRoom(RoomInvitation roomInvitation) {
         SocketIOClient tarClient = socketIOApi.getLocalUserSocket(roomInvitation.getTarUserId());
         if (Objects.isNull(tarClient)) return;
 
         tarClient.sendEvent("inviteJoinRoom", roomInvitation);
-    };
+    }
+
+    @Override
+    public String agreeJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
+        String roomId = roomInvitation.getRoomId();
+        String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
+        Room socketRoom = socketIOApi.getSocketRoom(roomId);
+        // 判断要加入的房间是否还存在,如果不存在，则抛出异常
+        if (Objects.isNull(socketIOApi.getSocketRoom(roomId))) throw new ClientException("房间不存在");
+
+        // 如果房间是DRTC(一对一)类型,且房间人数大于等于2人，则说明房间已满，抛出异常
+        if (socketRoom.getMemberIdSet().size()>=2) throw new ClientException("房间已满");
+
+        // 如果当前用户已加入其他rtc房间,则退出该房间
+        if (Objects.nonNull(srcClient.get("rtcRoomId"))) {
+            socketIOApi.removeUserFromSocketRoom((String) srcClient.get("rtcRoomId"), userId);
+            srcClient.del("rtcRoomId");
+        };
+
+        // 当前用户加入目标房间
+        socketIOApi.addUserToSocketRoom(roomId, userId);
+        srcClient.set("rtcRoomId", roomId);
+
+        // 将加入房间的信息，通知该房间的其他用户
+        mqPublisher.publish(roomInvitation, "agreeJoinRoom", "RTC", roomId);
+
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        return TimestampUtils.generateUTCTimestamp(formatter);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardAgreeJoinRoom(RoomInvitation roomInvitation) {
+        // 从Cache中获取出房间的所有用户
+        Room socketRoom = socketIOApi.getSocketRoom(roomInvitation.getRoomId());
+
+        // 找出本服务器上在房间内的用户并进行通知
+        socketRoom.getMemberIdSet().forEach(userId -> {
+            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
+            if (Objects.isNull(socketIOClient)) return;
+            socketIOClient.sendEvent("agreeJoinRoom", roomInvitation);
+        });
+    }
+
+    @Override
+    public String rejectJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
+        //获取房间类型,从Cache拿房间类型而不是从roomInvitation变量拿,防止被邀请方伪造房间类型
+        String roomId = roomInvitation.getRoomId();
+        Room socketRoom = socketIOApi.getSocketRoom(roomInvitation.getRoomId());
+        String roomType = socketRoom.getRoomType();
+
+        // 如果房间是DRTC(一对一)类型,则直接删除该房间
+        if ("DRTC".equals(roomType)) {
+            socketIOApi.destroySocketRoom(roomInvitation.getRoomId());
+        };
+
+        // 将拒绝邀请的信息转发给邀请人
+        mqPublisher.publish(roomInvitation, "rejectJoinRoom", "RTC", roomId);
+
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        return TimestampUtils.generateUTCTimestamp(formatter);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardRejectJoinRoom(RoomInvitation roomInvitation) {
+        // 找出本服务器上在邀请的用户并进行通知
+        SocketIOClient localUserSocket = socketIOApi.getLocalUserSocket(roomInvitation.getSrcUserId());
+        if (Objects.nonNull(localUserSocket)) {
+            localUserSocket.sendEvent("rejectJoinRoom", roomInvitation);
+        }
+    }
+
+    @Override
+    public String swapSDP(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
+        // 将交换swap的信息转发给房间成员
+        mqPublisher.publish(rtcSwap, "swapSDP", "RTC", rtcSwap.getRoomId());
+
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        return TimestampUtils.generateUTCTimestamp(formatter);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardSwapSDP(RTCSwap rtcSwap) {
+        // 从Cache中获取出房间的所有用户
+        Room socketRoom = socketIOApi.getSocketRoom(rtcSwap.getRoomId());
+
+        // 找出本服务器上在房间内的用户并进行通知
+        socketRoom.getMemberIdSet().forEach(userId -> {
+            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
+            if (Objects.isNull(socketIOClient)) return;
+            socketIOClient.sendEvent("swapSDP", rtcSwap);
+        });
+    }
+
+    @Override
+    public String swapCandidate(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
+        // 将交换swap的信息转发给房间成员
+        mqPublisher.publish(rtcSwap, "swapCandidate", "RTC", rtcSwap.getRoomId());
+
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        return TimestampUtils.generateUTCTimestamp(formatter);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardSwapCandidate(RTCSwap rtcSwap) {
+        // 从Cache中获取出房间的所有用户
+        Room socketRoom = socketIOApi.getSocketRoom(rtcSwap.getRoomId());
+
+        // 找出本服务器上在房间内的用户并进行通知
+        socketRoom.getMemberIdSet().forEach(userId -> {
+            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
+            if (Objects.isNull(socketIOClient)) return;
+            socketIOClient.sendEvent("swapCandidate", rtcSwap);
+        });
+    }
+
+    @Override
+    public String leaveRoom(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
+        // 将交换swap的信息转发给邀请人
+        mqPublisher.publish(rtcSwap, "leaveRoom", "RTC", rtcSwap.getSrcUserId());
+
+        // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        return TimestampUtils.generateUTCTimestamp(formatter);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardLeaveRoom(RTCSwap rtcSwap) {
+        // 从Cache中获取出房间的所有用户
+        Room socketRoom = socketIOApi.getSocketRoom(rtcSwap.getRoomId());
+
+        // 找出本服务器上在房间内的用户并进行通知
+        socketRoom.getMemberIdSet().forEach(userId -> {
+            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
+            if (Objects.isNull(socketIOClient)) return;
+            socketIOClient.sendEvent("leaveRoom", rtcSwap);
+        });
+    }
 }

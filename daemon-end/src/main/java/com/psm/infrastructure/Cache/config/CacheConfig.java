@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.psm.infrastructure.Cache.decorator.MultiLevelCacheConfig;
 import com.psm.infrastructure.Cache.decorator.MultiLevelCacheManager;
 import com.psm.infrastructure.Cache.decorator.MultiLevelChannel;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -20,6 +21,7 @@ import com.psm.infrastructure.Cache.utils.FastJson2RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -92,5 +94,12 @@ public class CacheConfig {
         config.put("socketRoomCache", new MultiLevelCacheConfig(60 * 60 * 1000,  30 * 60 * 1000, 50));
 
         return new MultiLevelCacheManager(multiLevelChannel, config);
+    }
+
+    @PreDestroy
+    public void destroy() throws IOException
+    {// Caffeine不需要显式销毁
+    	log.info("关闭Redission连接池");
+    	redissonClient().shutdown();
     }
 }

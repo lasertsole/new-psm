@@ -1,8 +1,8 @@
 package com.psm.domain.Communication.RTC.event.listener;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.domain.Communication.Chat.entity.ChatBO;
 import com.psm.domain.Communication.RTC.service.RTCService;
+import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -44,13 +44,22 @@ public class RTCEventListener {
     // 指定需要订阅哪个目标Topic，Topic需要提前创建。
     private final String topic = "RTC";
 
-    // PushConsumer对象，其作用为以push方式消费消息,设置为群组模式。
-    private PushConsumer pushClusterConsumer;
+    private PushConsumer inviteJoinRoomConsumer;
+
+    private PushConsumer agreeJoinRoomConsumer;
+
+    private PushConsumer rejectJoinRoomConsumer;
+
+    private PushConsumer swapSDPConsumer;
+
+    private PushConsumer swapCandidateConsumer;
+
+    private PushConsumer leaveRoomConsumer;
 
     @PostConstruct
     public void init() throws ClientException {
         // 初始化PushConsumer，需要绑定消费者分组ConsumerGroup、通信参数以及订阅关系。
-        pushClusterConsumer = provider.newPushConsumerBuilder()
+        inviteJoinRoomConsumer = provider.newPushConsumerBuilder()
                 .setClientConfiguration(clientConfiguration)
                 // 设置消费者分组(广播模式每个服务器主题不同)。
                 .setConsumerGroup(workerId+datacenterId)
@@ -67,7 +76,122 @@ public class RTCEventListener {
                     // 将字节数组转换为字符串
                     String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
                     RoomInvitation roomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
-                    rtcService.forwardRoomInvitation(roomInvitation);
+                    rtcService.forwardInviteJoinRoom(roomInvitation);
+
+                    return ConsumeResult.SUCCESS;
+                })
+                .build();
+
+        agreeJoinRoomConsumer = provider.newPushConsumerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                // 设置消费者分组(广播模式每个服务器主题不同)。
+                .setConsumerGroup(workerId+datacenterId)
+                // 设置预绑定的订阅关系。
+                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("agreeJoinRoom", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
+                // 设置消费监听器。
+                .setMessageListener(messageView -> {
+                    // 获取消息体
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    RoomInvitation roomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
+                    rtcService.forwardAgreeJoinRoom(roomInvitation);
+
+                    return ConsumeResult.SUCCESS;
+                })
+                .build();
+
+        rejectJoinRoomConsumer = provider.newPushConsumerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                // 设置消费者分组(广播模式每个服务器主题不同)。
+                .setConsumerGroup(workerId+datacenterId)
+                // 设置预绑定的订阅关系。
+                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("rejectJoinRoom", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
+                // 设置消费监听器。
+                .setMessageListener(messageView -> {
+                    // 获取消息体
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    RoomInvitation roomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
+                    rtcService.forwardRejectJoinRoom(roomInvitation);
+
+                    return ConsumeResult.SUCCESS;
+                })
+                .build();
+
+        swapSDPConsumer = provider.newPushConsumerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                // 设置消费者分组(广播模式每个服务器主题不同)。
+                .setConsumerGroup(workerId+datacenterId)
+                // 设置预绑定的订阅关系。
+                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("swapSDP", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
+                // 设置消费监听器。
+                .setMessageListener(messageView -> {
+                    // 获取消息体
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    RTCSwap rtcSwap = JSON.parseObject(jsonString, RTCSwap.class);
+                    rtcService.forwardSwapSDP(rtcSwap);
+
+                    return ConsumeResult.SUCCESS;
+                })
+                .build();
+
+        swapCandidateConsumer = provider.newPushConsumerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                // 设置消费者分组(广播模式每个服务器主题不同)。
+                .setConsumerGroup(workerId+datacenterId)
+                // 设置预绑定的订阅关系。
+                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("swapCandidate", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
+                // 设置消费监听器。
+                .setMessageListener(messageView -> {
+                    // 获取消息体
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    RTCSwap rtcSwap = JSON.parseObject(jsonString, RTCSwap.class);
+                    rtcService.forwardSwapCandidate(rtcSwap);
+
+                    return ConsumeResult.SUCCESS;
+                })
+                .build();
+
+        leaveRoomConsumer = provider.newPushConsumerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                // 设置消费者分组(广播模式每个服务器主题不同)。
+                .setConsumerGroup(workerId+datacenterId)
+                // 设置预绑定的订阅关系。
+                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("leaveRoom", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
+                // 设置消费监听器。
+                .setMessageListener(messageView -> {
+                    // 获取消息体
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    RTCSwap rtcSwap = JSON.parseObject(jsonString, RTCSwap.class);
+                    rtcService.forwardSwapCandidate(rtcSwap);
 
                     return ConsumeResult.SUCCESS;
                 })
@@ -76,6 +200,11 @@ public class RTCEventListener {
 
     @PreDestroy
     public void destroy() throws IOException {
-        pushClusterConsumer.close();
+        inviteJoinRoomConsumer.close();
+        agreeJoinRoomConsumer.close();
+        rejectJoinRoomConsumer.close();
+        swapSDPConsumer.close();
+        swapCandidateConsumer.close();
+        leaveRoomConsumer.close();
     }
 }

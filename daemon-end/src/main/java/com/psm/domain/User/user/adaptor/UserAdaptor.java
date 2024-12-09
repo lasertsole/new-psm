@@ -15,9 +15,9 @@ public interface UserAdaptor {
      * 验证用户token
      *
      * @param token 用户token
-     * @return 用户id
+     * @return 用户BO实体
      */
-    String authUserToken(String token);
+    UserBO authUserToken(String token);
 
     /**
      * 获取当前登录用户信息
@@ -37,7 +37,7 @@ public interface UserAdaptor {
      * 登录
      *
      * @param userBO 用户BO实体
-     * @return 用户BO实体，其中token为令牌，user为用户信息
+     * @return 用户BO实体
      */
     UserBO login(UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException, InstantiationException, IllegalAccessException;
 

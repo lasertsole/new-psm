@@ -4,17 +4,16 @@ import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.psm.domain.Communication.RTC.adaptor.RTCAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.infrastructure.SocketIO.POJOs.Room;
+import com.psm.domain.User.user.entity.User.UserBO;
+import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
-import com.psm.utils.Timestamp.TimestampUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Controller;
 
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,8 +44,8 @@ public class RTCController implements CommandLineRunner {
         RTCSignaling.addAuthTokenListener((authToken, client)->{
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
-                String userId = userAdaptor.authUserToken((String) map.get("token"));
-                client.set("userId", userId);
+                UserBO userBO = userAdaptor.authUserToken((String) map.get("token"));
+                client.set("userInfo", userBO);
 
                 return AuthTokenResult.AuthTokenResultSuccess;
             }
@@ -57,7 +56,8 @@ public class RTCController implements CommandLineRunner {
 
         // 添加连接监听器
         RTCSignaling.addConnectListener(client -> {
-            socketIOApi.addLocalUser(client.get("userId"), client);
+            // 添加本地用户
+            socketIOApi.addLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
         });
 
         // 添加创建房间监听器
@@ -65,18 +65,12 @@ public class RTCController implements CommandLineRunner {
             @Override
             public void onData(SocketIOClient srcClient, String roomId, AckRequest ackRequest) {
                 try {
-                    // 创建房间，并获取房间创建结果
-                    Boolean isCreateSuccessful = socketIOApi.createSocketRoom(roomId, srcClient.get("userId"), "RTC", "DRTC");//DRTC为一对一RTC类型,可以后期更改为其他RTC类型
+                    boolean result = rtcAdaptor.createRoom(srcClient, roomId);
 
-                    if(isCreateSuccessful) {
-                        srcClient.set("rtcRoomId", roomId);
-                    }
-
-                    // 返回ack和消息接收时间戳
-                    ackRequest.sendAckData(isCreateSuccessful);
-                }
-                catch (Exception e) {
-                    ackRequest.sendAckData("server error");
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(result);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
                 }
             }
         });
@@ -84,50 +78,91 @@ public class RTCController implements CommandLineRunner {
         // 添加邀请加入房间监听器
         RTCSignaling.addEventListener("inviteJoinRoom", String.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, String tarUserId, AckRequest ackRequest) throws Exception {
-                String rtcRoomId = (String) socketIOClient.get("rtcRoomId");
-                Room room = socketIOApi.getSocketRoom(rtcRoomId);
-                RoomInvitation roomInvitation = new RoomInvitation(rtcRoomId, room.getRoomOwnerId(), room.getRoomName(), room.getRoomType(), socketIOClient.get("userId"), tarUserId);
-                rtcAdaptor.inviteJoinRoom(roomInvitation);
+            public void onData(SocketIOClient srcClient, String tarUserId, AckRequest ackRequest) throws Exception {
+                try {
+                    String timestamp =  rtcAdaptor.inviteJoinRoom(srcClient, tarUserId);
 
-                // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-                ackRequest.sendAckData(TimestampUtils.generateUTCTimestamp(formatter));
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(timestamp);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
+                }
             }
         });
 
-        RTCSignaling.addEventListener("agreeJoinRoom", String.class, new DataListener<>() {
+        RTCSignaling.addEventListener("agreeJoinRoom", RoomInvitation.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, String tarUserId, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
+                try {
+                    // 将用户名字填写到tarUserName
+                    roomInvitation.setTarUserName(((UserBO) srcClient.get("userInfo")).getName());
 
+                    String timestamp =  rtcAdaptor.agreeJoinRoom(srcClient, roomInvitation);
+
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(timestamp);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
+                }
             }
         });
 
-        RTCSignaling.addEventListener("rejectJoinRoom", String.class, new DataListener<>() {
+        RTCSignaling.addEventListener("rejectJoinRoom", RoomInvitation.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, String tarUserId, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
+                try {
+                    // 将用户名字填写到tarUserName
+                    roomInvitation.setTarUserName(((UserBO) srcClient.get("userInfo")).getName());
 
+                    String timestamp =  rtcAdaptor.rejectJoinRoom(srcClient, roomInvitation);
+
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(timestamp);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
+                }
             }
         });
 
-        RTCSignaling.addEventListener("swapSDP", Object.class, new DataListener<>() {
+        RTCSignaling.addEventListener("swapSDP", RTCSwap.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, Object o, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient srcClient, RTCSwap rtcSwap, AckRequest ackRequest) throws Exception {
+                try {
+                    String timestamp =  rtcAdaptor.swapSDP(srcClient, rtcSwap);
 
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(timestamp);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
+                }
             }
         });
 
-        RTCSignaling.addEventListener("swapCandidate", Object.class, new DataListener<>() {
+        RTCSignaling.addEventListener("swapCandidate", RTCSwap.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, Object o, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient srcClient, RTCSwap rtcSwap, AckRequest ackRequest) throws Exception {
+                try {
+                    String timestamp =  rtcAdaptor.swapCandidate(srcClient, rtcSwap);
 
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(timestamp);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
+                }
             }
         });
 
-        RTCSignaling.addEventListener("leaveRoom", String.class, new DataListener<>() {
+        RTCSignaling.addEventListener("leaveRoom", RTCSwap.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, String s, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient srcClient, RTCSwap rtcSwap, AckRequest ackRequest) throws Exception {
+                try {
+                    String timestamp =  rtcAdaptor.swapCandidate(srcClient, rtcSwap);
 
+                    // 返回创建房间的结果
+                    ackRequest.sendAckData(timestamp);
+                } catch (Exception e) {
+                    ackRequest.sendAckData("server error" + e.getCause());
+                }
             }
         });
     }

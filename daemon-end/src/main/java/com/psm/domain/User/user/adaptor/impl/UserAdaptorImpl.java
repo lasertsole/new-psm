@@ -38,7 +38,7 @@ public class UserAdaptorImpl implements UserAdaptor {
     AuthUserService authUserService;
 
     @Override
-    public String authUserToken(String token) {
+    public UserBO authUserToken(String token) {
         return authUserService.authUserToken(token);
     }
 

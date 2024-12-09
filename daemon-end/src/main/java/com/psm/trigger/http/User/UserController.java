@@ -56,20 +56,15 @@ public class UserController {
             response.setHeader("token", userBO.getToken());
 
             return new ResponseDTO(HttpStatus.OK, "Login successful", userBO.toCurrentDTO());
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (LockedException e){
+        } catch (LockedException e){
             return new ResponseDTO(HttpStatus.TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS");
-        }
-        catch (BadCredentialsException e){
+        } catch (BadCredentialsException e){
             return new ResponseDTO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
-        }
-        catch (DisabledException e){
+        } catch (DisabledException e){
             return new ResponseDTO(HttpStatus.FORBIDDEN, "SERVER FORBIDDEN");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -85,8 +80,7 @@ public class UserController {
             UserBO userBO = userAdaptor.getAuthorizedUser();
 
             return ResponseDTO.ok("FastLogin successful", userBO.toCurrentDTO());
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -107,14 +101,11 @@ public class UserController {
             response.setHeader("token", userBO.getToken());
 
             return new ResponseDTO(HttpStatus.OK, "register successful", userBO.toCurrentDTO());
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (DuplicateKeyException e){
+        } catch (DuplicateKeyException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "DuplicateKey");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -129,8 +120,7 @@ public class UserController {
         try {
             userAdaptor.logout();
             return ResponseDTO.ok("Logout successful");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -145,8 +135,7 @@ public class UserController {
         try {
             userAdaptor.deleteUser();
             return ResponseDTO.ok("Delete user successful");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -163,11 +152,9 @@ public class UserController {
             UserBO userBO = UserBO.fromDTO(userDTO);
             String avatarUrl = userAdaptor.updateAvatar(userBO);
             return ResponseDTO.ok("Update avatar successful", avatarUrl);
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -184,11 +171,9 @@ public class UserController {
             UserBO userBO = UserBO.fromDTO(userDTO);
             userAdaptor.updateInfo(userBO);
             return ResponseDTO.ok("Update user successful");
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -205,11 +190,9 @@ public class UserController {
             UserBO userBO = UserBO.fromDTO(userDTO);
             userAdaptor.updatePassword(userBO);
             return ResponseDTO.ok("Update password successful");
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }
@@ -231,11 +214,9 @@ public class UserController {
             userBO = userAdaptor.getUserById(userBO);
 
             return new ResponseDTO(HttpStatus.OK, "Get user successful", userBO);
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST, "InvalidParameter");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR:" + e.getCause());
         }
     }

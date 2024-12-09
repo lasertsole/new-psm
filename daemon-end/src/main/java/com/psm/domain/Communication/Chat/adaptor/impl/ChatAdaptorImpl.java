@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Communication.Chat.adaptor.ChatAdaptor;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
+import com.psm.domain.User.user.entity.User.UserBO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
@@ -18,7 +19,7 @@ public class ChatAdaptorImpl implements ChatAdaptor {
     private ChatService chatService;
     @Override
     public void patchInitMessage(SocketIOClient srcClient, String timestamp) {
-        chatService.patchInitMessage(srcClient, Long.parseLong(srcClient.get("userId")), timestamp);
+        chatService.patchInitMessage(srcClient, ((UserBO) srcClient.get("userInfo")).getId(), timestamp);
     };
 
     @Override
