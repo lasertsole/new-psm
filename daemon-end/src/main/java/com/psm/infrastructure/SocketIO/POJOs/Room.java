@@ -1,6 +1,7 @@
 package com.psm.infrastructure.SocketIO.POJOs;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.psm.app.annotation.validation.MustNull;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -34,5 +35,6 @@ public class Room implements Serializable {
     @NotNull
     private String roomType;
 
+    @MustNull
     private Set<String> memberIdSet;
 }

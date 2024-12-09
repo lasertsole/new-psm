@@ -10,3 +10,10 @@ export type VideoOption = {
 export type AudioOption = {
     name: string, active: string | undefined
 };
+
+export type RTCSwap = {
+    roomId:string;
+    srcUserId:string;
+    srcUserName:string;
+    data:string;
+};

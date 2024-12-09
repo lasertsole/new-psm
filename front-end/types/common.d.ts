@@ -34,7 +34,7 @@ export type Room = {
     roomOwnerId: string;
     roomName: string;
     roomType: string;
-    memberIdSet: Set<string>;
+    memberIdSet?: Set<string>;
 }
 
 export type RoomInvitation = {
@@ -43,5 +43,7 @@ export type RoomInvitation = {
     roomName: string;
     roomType: string;
     srcUserId: string;
+    srcUserName: string;
     tarUserId: string;
+    tarUserName: string;
 }

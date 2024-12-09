@@ -2,6 +2,7 @@ package com.psm.domain.Communication.RTC.adaptor;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
+import com.psm.infrastructure.SocketIO.POJOs.Room;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import org.apache.rocketmq.client.apis.ClientException;
 
@@ -10,18 +11,18 @@ public interface RTCAdaptor {
      * 创建房间
      *
      * @param srcClient 创建房间的用户客户端
-     * @param roomId 房间id
+     * @param room 房间
      */
 
-    boolean createRoom(SocketIOClient srcClient, String roomId);
+    boolean createRoom(SocketIOClient srcClient, Room room);
 
     /**
      * 邀请用户加入房间
      *
      * @param srcClient 主动邀请的用户id客户端
-     * @param tarUserId 被动邀请的用户id
+     * @param roomInvitation 邀请函
      */
-    String inviteJoinRoom(SocketIOClient srcClient, String tarUserId) throws ClientException;
+    String inviteJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException;
 
     /**
      * 用户同意加入房间

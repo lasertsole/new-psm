@@ -19,7 +19,7 @@ public class RTCSwap implements Serializable {
     @NotNull
     @Min(value = 1, message = "The id must be greater than or equal to 1")
     @Length(max = 10, min = 6, message = "The roomId must be less than or equal to 20 characters, and more than or equal to 6 characters")
-    private String RoomId;
+    private String roomId;
 
     @NotNull
     @Min(value = 1, message = "The id must be greater than or equal to 1")
@@ -29,13 +29,6 @@ public class RTCSwap implements Serializable {
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The username format is incorrect")
     String srcUserName;
 
-    @Min(value = 1, message = "The id must be greater than or equal to 1")
-    private String tarUserId;
-
     @NotNull
-    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The username format is incorrect")
-    String tarUserName;
-
-    @NotNull
-    private Object data;
+    private String data;//序列化的待转发数据
 }

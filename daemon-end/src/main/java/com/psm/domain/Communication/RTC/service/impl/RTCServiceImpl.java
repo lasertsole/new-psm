@@ -28,8 +28,8 @@ public class RTCServiceImpl implements RTCService {
     private SocketIOApi socketIOApi;
 
     @Override
-    public boolean createRoom(SocketIOClient srcClient, String roomId) {
-        String userId = (String) srcClient.get("userId");
+    public boolean createRoom(SocketIOClient srcClient, Room room) {
+        String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
         // 判断用户之前有没有加入其他rtc房间
         String oldRoomId = (String) srcClient.get("rtcRoomId");
         if (Objects.nonNull(oldRoomId)) { // 如果有，则将用户从原来的房间移除
@@ -38,32 +38,22 @@ public class RTCServiceImpl implements RTCService {
         }
 
         boolean result = false;
+        String newRoomId = room.getRoomId();
         // 创建房间，并获取房间创建结果,如果为true，则创建房间成功，为false，则说明已有相同的房间号被使用，创建失败
-        if(socketIOApi.createSocketRoom(roomId, userId, "RTC", "DRTC")) {// 创建成功时设置用户的房间号属性
-            srcClient.set("rtcRoomId", roomId);
+        if(socketIOApi.createSocketRoom(room)) {// 创建成功时设置用户的房间号属性
+            srcClient.set("rtcRoomId", newRoomId);
         } else {// 创建失败时，则判断已有房间号的主人是否是当前用户，如果是，则用户可以直接使用该房间
-            Room room = socketIOApi.getSocketRoom(roomId);
-            if(userId.equals(room.getRoomOwnerId())) result = true;
+            Room room1 = socketIOApi.getSocketRoom(newRoomId);
+            if(userId.equals(room1.getRoomOwnerId())) result = true;
         }
 
         return result;
     }
 
     @Override
-    public String inviteJoinRoom(SocketIOClient srcClient, String tarUserId) throws ClientException {
+    public String inviteJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
         String rtcRoomId = (String) srcClient.get("rtcRoomId");
         if (Objects.isNull(rtcRoomId)) throw new ClientException("当前用户没有加入任何房间");
-
-        // 制作邀请函,邀请函TarUserName由TarUser填写,减少不必要的查询操作
-        Room room = socketIOApi.getSocketRoom(rtcRoomId);
-        RoomInvitation roomInvitation = new RoomInvitation();
-        roomInvitation.setRoomId(rtcRoomId);
-        roomInvitation.setRoomOwnerId(room.getRoomOwnerId());
-        roomInvitation.setRoomName(room.getRoomName());
-        roomInvitation.setRoomType(room.getRoomType());
-        roomInvitation.setSrcUserId(String.valueOf(((UserBO) srcClient.get("userInfo")).getId()));
-        roomInvitation.setSrcUserName(String.valueOf(((UserBO) srcClient.get("userInfo")).getName()));
-        roomInvitation.setTarUserId(tarUserId);
 
         // 将邀请函通过mq发送给目标用户
         mqPublisher.publish(roomInvitation, "inviteJoinRoom", "RTC", roomInvitation.getRoomType());
@@ -128,15 +118,7 @@ public class RTCServiceImpl implements RTCService {
 
     @Override
     public String rejectJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
-        //获取房间类型,从Cache拿房间类型而不是从roomInvitation变量拿,防止被邀请方伪造房间类型
         String roomId = roomInvitation.getRoomId();
-        Room socketRoom = socketIOApi.getSocketRoom(roomInvitation.getRoomId());
-        String roomType = socketRoom.getRoomType();
-
-        // 如果房间是DRTC(一对一)类型,则直接删除该房间
-        if ("DRTC".equals(roomType)) {
-            socketIOApi.destroySocketRoom(roomInvitation.getRoomId());
-        };
 
         // 将拒绝邀请的信息转发给邀请人
         mqPublisher.publish(roomInvitation, "rejectJoinRoom", "RTC", roomId);
@@ -151,9 +133,19 @@ public class RTCServiceImpl implements RTCService {
     public void forwardRejectJoinRoom(RoomInvitation roomInvitation) {
         // 找出本服务器上在邀请的用户并进行通知
         SocketIOClient localUserSocket = socketIOApi.getLocalUserSocket(roomInvitation.getSrcUserId());
-        if (Objects.nonNull(localUserSocket)) {
-            localUserSocket.sendEvent("rejectJoinRoom", roomInvitation);
-        }
+
+        // 如果用户不在本服务器上，则直接返回
+        if (Objects.isNull(localUserSocket)) return;
+
+        // 将被邀请者拒绝邀请的信息通知邀请者
+        localUserSocket.sendEvent("rejectJoinRoom", roomInvitation);
+
+        // 如果房间是DRTC(一对一)类型,则直接删除该房间
+        Room socketRoom = socketIOApi.getSocketRoom(roomInvitation.getRoomId());//获取房间类型,从Cache拿房间类型而不是从roomInvitation变量拿,防止被邀请方伪造房间类型
+        String roomType = socketRoom.getRoomType();
+        if ("DRTC".equals(roomType)) {
+            socketIOApi.destroySocketRoom(roomInvitation.getRoomId());
+        };
     }
 
     @Override
@@ -205,7 +197,10 @@ public class RTCServiceImpl implements RTCService {
     }
 
     @Override
-    public String leaveRoom(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
+    public String leaveRoom(SocketIOClient srcClient, RTCSwap rtcSwap) throws ClientException {
+        // 删除用户的房间标识符
+        srcClient.del("rtcRoomId");
+
         // 将交换swap的信息转发给邀请人
         mqPublisher.publish(rtcSwap, "leaveRoom", "RTC", rtcSwap.getSrcUserId());
 
@@ -222,9 +217,9 @@ public class RTCServiceImpl implements RTCService {
 
         // 找出本服务器上在房间内的用户并进行通知
         socketRoom.getMemberIdSet().forEach(userId -> {
-            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
-            if (Objects.isNull(socketIOClient)) return;
-            socketIOClient.sendEvent("leaveRoom", rtcSwap);
+            SocketIOClient tarClient = socketIOApi.getLocalUserSocket(userId);
+            if (Objects.isNull(tarClient)) return;
+            tarClient.sendEvent("leaveRoom", rtcSwap);
         });
     }
 }

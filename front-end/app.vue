@@ -30,6 +30,14 @@
     DMServiceInstance = DMService.getInstance();
   });
 
+  on("offline", ()=>{
+    // 销毁实例
+    DMService.destroy();
+    
+    // 断开所有连接
+    wsManager.close();
+  });
+
   // 组件销毁时移除监听
   onBeforeUnmount(() => {
   });

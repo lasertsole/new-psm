@@ -6,6 +6,7 @@ import com.psm.domain.Communication.RTC.adaptor.RTCAdaptor;
 import com.psm.domain.Communication.RTC.service.RTCService;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
+import com.psm.infrastructure.SocketIO.POJOs.Room;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import com.psm.utils.Long.LongUtils;
 import jakarta.validation.Valid;
@@ -22,20 +23,13 @@ public class RTCAdaptorImpl implements RTCAdaptor {
     private RTCService rtcService;
 
     @Override
-    public boolean createRoom(SocketIOClient srcClient, String roomId) {
-        if(
-            !LongUtils.stringCanBeConvertedToLong(roomId)
-            || roomId.length() > 10
-            || roomId.length() < 6
-        )
-            throw new InvalidParameterException("Invalid parameter");
-
-        return rtcService.createRoom(srcClient, roomId);
+    public boolean createRoom(SocketIOClient srcClient, @Valid Room room) {
+        return rtcService.createRoom(srcClient, room);
     }
 
     @Override
-    public String inviteJoinRoom(SocketIOClient srcClient, String targetUserId) throws ClientException {
-        return rtcService.inviteJoinRoom(srcClient, targetUserId);
+    public String inviteJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
+        return rtcService.inviteJoinRoom(srcClient, roomInvitation);
     }
 
     @Override

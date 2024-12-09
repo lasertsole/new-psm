@@ -36,13 +36,13 @@ public class SocketIOApi {
 
     private final Cache roomCache;
 
-    public Boolean createSocketRoom(String roomId, String ownerId, String roomName, String roomType) {
-        String key = "socketRoom:"+roomId;
+    public Boolean createSocketRoom(Room room) {
+        String key = "socketRoom:"+room.getRoomId();
         if (Objects.nonNull(roomCache.get(key))) return false;
 
         Set<String> userIdSet = new HashSet<String>();
-        userIdSet.add(ownerId);
-        Room room = new Room(roomId, ownerId, roomName, roomType, userIdSet);
+        userIdSet.add(room.getRoomOwnerId());
+        room.setMemberIdSet(userIdSet);
         roomCache.put(key, room);
 
         return true;

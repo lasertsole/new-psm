@@ -6,6 +6,7 @@ import com.psm.domain.Communication.RTC.adaptor.RTCAdaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
+import com.psm.infrastructure.SocketIO.POJOs.Room;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
@@ -61,11 +62,11 @@ public class RTCController implements CommandLineRunner {
         });
 
         // 添加创建房间监听器
-        RTCSignaling.addEventListener("createRoom", String.class, new DataListener<>() {
+        RTCSignaling.addEventListener("createRoom", Room.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient srcClient, String roomId, AckRequest ackRequest) {
+            public void onData(SocketIOClient srcClient, Room room, AckRequest ackRequest) {
                 try {
-                    boolean result = rtcAdaptor.createRoom(srcClient, roomId);
+                    boolean result = rtcAdaptor.createRoom(srcClient, room);
 
                     // 返回创建房间的结果
                     ackRequest.sendAckData(result);
@@ -76,11 +77,11 @@ public class RTCController implements CommandLineRunner {
         });
 
         // 添加邀请加入房间监听器
-        RTCSignaling.addEventListener("inviteJoinRoom", String.class, new DataListener<>() {
+        RTCSignaling.addEventListener("inviteJoinRoom", RoomInvitation.class, new DataListener<>() {
             @Override
-            public void onData(SocketIOClient srcClient, String tarUserId, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
                 try {
-                    String timestamp =  rtcAdaptor.inviteJoinRoom(srcClient, tarUserId);
+                    String timestamp =  rtcAdaptor.inviteJoinRoom(srcClient, roomInvitation);
 
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);

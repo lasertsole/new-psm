@@ -16,7 +16,7 @@ type DMConfig = {
 }
 
 export class DMService { // 单例模式
-  private static instance: DMService;
+  private static instance: DMService | null;
   private DMSocket: Socket;
   private interval:NodeJS.Timeout|null = null;
   private config: DMConfig = { // 配置项
@@ -133,7 +133,7 @@ export class DMService { // 单例模式
             type: 'text',
             maxUserId: max( messageObj.srcUserId!, messageObj.tgtUserId! ), 
             minUserId: min( messageObj.srcUserId!, messageObj.tgtUserId! ),
-          } as MessageDBItem);
+          });
         });
 
         // 筛选出新的联系人
@@ -286,7 +286,7 @@ export class DMService { // 单例模式
           contactsItems.unshift(reactive({
             ...newContactItem,
             messageItems: [reactive(messageItem)]
-          }) as Reactive<ContactsItem>);
+          }));
 
           //将新用户信息插入到indexedDB
           db.ContactsDBItems.add(newContactItem);
@@ -310,6 +310,11 @@ export class DMService { // 单例模式
     };
 
     return DMService.instance;
+  };
+
+  public static destroyInstance() { // 销毁实例
+    this.instance?.disconnect();
+    DMService.instance = null;
   };
 
   public getSocket(): Socket {
@@ -388,7 +393,7 @@ export class DMService { // 单例模式
       // 返回 ContactsItem类型数据
       contactsItems.push({
         ...contactDBItem,
-        messageItems: [] as MessageItem[] // 消息列表
+        messageItems: [] // 消息列表
       });
     });
 
@@ -404,7 +409,7 @@ export class DMService { // 单例模式
         return messageItem;
       });
       
-      item.messageItems = messageDBItems as Reactive<MessageItem>[];
+      item.messageItems = messageDBItems;
     });
     
     // 从服务器获取最新聊天信息
@@ -459,9 +464,9 @@ export class DMService { // 单例模式
       contactsDBItem.lastMessage = message;
       contactsDBItem = {
         ...contactsDBItem,
-        tgtUserId: messageObj.tgtUserId,
-        srcUserId: messageObj.srcUserId,
-      } as ContactsDBItem;
+        tgtUserId: messageObj.tgtUserId!,
+        srcUserId: messageObj.srcUserId!,
+      };
       db.ContactsDBItems.put(contactsDBItem);
       
       // 将消息对象添加到indexedDB数据库
