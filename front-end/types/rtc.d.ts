@@ -12,8 +12,10 @@ export type AudioOption = {
 };
 
 export type RTCSwap = {
-    roomId:string;
-    srcUserId:string;
-    srcUserName:string;
-    data:string;
+    roomId: string;
+    srcUserId: string;
+    srcUserName: string | null;
+    srcUserAvatar: string| null;
+    tgtUserId: string;
+    data: string;
 };

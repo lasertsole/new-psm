@@ -67,7 +67,7 @@ public class RTCServiceImpl implements RTCService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardInviteJoinRoom(RoomInvitation roomInvitation) {
-        SocketIOClient tarClient = socketIOApi.getLocalUserSocket(roomInvitation.getTarUserId());
+        SocketIOClient tarClient = socketIOApi.getLocalUserSocket(roomInvitation.getTgtUserId());
         if (Objects.isNull(tarClient)) return;
 
         tarClient.sendEvent("inviteJoinRoom", roomInvitation);
@@ -161,15 +161,11 @@ public class RTCServiceImpl implements RTCService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardSwapSDP(RTCSwap rtcSwap) {
-        // 从Cache中获取出房间的所有用户
-        Room socketRoom = socketIOApi.getSocketRoom(rtcSwap.getRoomId());
+        // 如果本服务器有目标对象，则把信息交付给目标用户
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(rtcSwap.getTgtUserId());
+        if (Objects.isNull(tgtClient)) return;
 
-        // 找出本服务器上在房间内的用户并进行通知
-        socketRoom.getMemberIdSet().forEach(userId -> {
-            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
-            if (Objects.isNull(socketIOClient)) return;
-            socketIOClient.sendEvent("swapSDP", rtcSwap);
-        });
+        tgtClient.sendEvent("swapSDP", rtcSwap);
     }
 
     @Override
@@ -185,15 +181,11 @@ public class RTCServiceImpl implements RTCService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardSwapCandidate(RTCSwap rtcSwap) {
-        // 从Cache中获取出房间的所有用户
-        Room socketRoom = socketIOApi.getSocketRoom(rtcSwap.getRoomId());
+        // 如果本服务器有目标对象，则把信息交付给目标用户
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(rtcSwap.getTgtUserId());
+        if (Objects.isNull(tgtClient)) return;
 
-        // 找出本服务器上在房间内的用户并进行通知
-        socketRoom.getMemberIdSet().forEach(userId -> {
-            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
-            if (Objects.isNull(socketIOClient)) return;
-            socketIOClient.sendEvent("swapCandidate", rtcSwap);
-        });
+        tgtClient.sendEvent("swapSDP", rtcSwap);
     }
 
     @Override

@@ -95,9 +95,6 @@ public class RTCController implements CommandLineRunner {
             @Override
             public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
                 try {
-                    // 将用户名字填写到tarUserName
-                    roomInvitation.setTarUserName(((UserBO) srcClient.get("userInfo")).getName());
-
                     String timestamp =  rtcAdaptor.agreeJoinRoom(srcClient, roomInvitation);
 
                     // 返回创建房间的结果
@@ -112,9 +109,6 @@ public class RTCController implements CommandLineRunner {
             @Override
             public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
                 try {
-                    // 将用户名字填写到tarUserName
-                    roomInvitation.setTarUserName(((UserBO) srcClient.get("userInfo")).getName());
-
                     String timestamp =  rtcAdaptor.rejectJoinRoom(srcClient, roomInvitation);
 
                     // 返回创建房间的结果

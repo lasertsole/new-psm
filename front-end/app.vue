@@ -26,13 +26,16 @@
   });
   
   let DMServiceInstance; // 一对一聊天服务
+  let RTCService; // RTC服务
   on("online", ()=>{
     DMServiceInstance = DMService.getInstance();
+    RTCService = RTCService.getInstance();
   });
 
   on("offline", ()=>{
     // 销毁实例
     DMService.destroy();
+    RTCService.destroy();
     
     // 断开所有连接
     wsManager.close();

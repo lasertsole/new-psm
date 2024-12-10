@@ -43,9 +43,9 @@ public class RoomInvitation implements Serializable {
 
     @NotNull
     @Min(value = 1, message = "The id must be greater than or equal to 1")
-    String tarUserId;
+    String tgtUserId;
 
     @NotNull
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The username format is incorrect")
-    String tarUserName;
+    String tgtUserName;
 }

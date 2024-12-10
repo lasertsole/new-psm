@@ -15,6 +15,7 @@ import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.InvalidParameterException;
+import java.util.Objects;
 
 @Slf4j
 @Adaptor
@@ -36,7 +37,7 @@ public class RTCAdaptorImpl implements RTCAdaptor {
     public String agreeJoinRoom(SocketIOClient srcClient, @Valid RoomInvitation roomInvitation) throws ClientException {
         String roomId = roomInvitation.getRoomId();
         String srcUserId = roomInvitation.getSrcUserId();
-        String tarUserId = roomInvitation.getTarUserId();
+        String tarUserId = roomInvitation.getTgtUserId();
         if(
                 !LongUtils.stringCanBeConvertedToLong(roomId)
                 || !LongUtils.stringCanBeConvertedToLong(tarUserId)
@@ -52,7 +53,7 @@ public class RTCAdaptorImpl implements RTCAdaptor {
     public String rejectJoinRoom(SocketIOClient srcClient, @Valid RoomInvitation roomInvitation) throws ClientException {
         String roomId = roomInvitation.getRoomId();
         String srcUserId = roomInvitation.getSrcUserId();
-        String tarUserId = roomInvitation.getTarUserId();
+        String tarUserId = roomInvitation.getTgtUserId();
         if(
                 !LongUtils.stringCanBeConvertedToLong(roomId)
                 || !LongUtils.stringCanBeConvertedToLong(tarUserId)
@@ -69,6 +70,8 @@ public class RTCAdaptorImpl implements RTCAdaptor {
         if(
                 !LongUtils.stringCanBeConvertedToLong(rtcSwap.getRoomId())
                 || !LongUtils.stringCanBeConvertedToLong(rtcSwap.getSrcUserId())
+                || !LongUtils.stringCanBeConvertedToLong(rtcSwap.getTgtUserId())
+                || Objects.isNull(rtcSwap.getSrcUserName())
         )
             throw new InvalidParameterException("Invalid parameter");
 
@@ -78,8 +81,10 @@ public class RTCAdaptorImpl implements RTCAdaptor {
     @Override
     public String swapCandidate(SocketIOClient srcClient, @Valid RTCSwap rtcSwap) throws ClientException {
         if(
-            !LongUtils.stringCanBeConvertedToLong(rtcSwap.getRoomId())
-            || !LongUtils.stringCanBeConvertedToLong(rtcSwap.getSrcUserId())
+                !LongUtils.stringCanBeConvertedToLong(rtcSwap.getRoomId())
+                || !LongUtils.stringCanBeConvertedToLong(rtcSwap.getSrcUserId())
+                || !LongUtils.stringCanBeConvertedToLong(rtcSwap.getTgtUserId())
+                || Objects.isNull(rtcSwap.getSrcUserName())
         )
             throw new InvalidParameterException("Invalid parameter");
 

@@ -29,12 +29,18 @@ export type ESResult = {
     highlight: any;
 };
 
+export type PeerOne = {
+    name: string | null;
+    avatar: string | null;
+    rtcPeerConnection: RTCPeerConnection;
+}
+
 export type Room = {
     roomId: string;
     roomOwnerId: string;
     roomName: string;
     roomType: string;
-    memberIdSet?: Set<string>;
+    peerMap?: Map<string, PeerOne>;
 }
 
 export type RoomInvitation = {
@@ -43,7 +49,7 @@ export type RoomInvitation = {
     roomName: string;
     roomType: string;
     srcUserId: string;
-    srcUserName: string;
-    tarUserId: string;
-    tarUserName: string;
+    srcUserName: string | null;
+    tgtUserId: string;
+    tgtUserName: string;
 }
