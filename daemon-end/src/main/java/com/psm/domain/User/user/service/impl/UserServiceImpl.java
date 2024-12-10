@@ -11,7 +11,6 @@ import com.psm.domain.User.user.service.UserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
-import com.psm.infrastructure.Cache.RedisCache;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -57,18 +56,6 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.security.jwt.expiration}")
     private Long expiration;//jwt有效期
 
-    @Autowired
-    private RedisCache redisCache;
-
-    /**
-     * 登录多级缓存
-     */
-    private final Cache loginCache;
-
-    public UserServiceImpl(CacheManager cacheManager) {
-        this.loginCache = cacheManager.getCache("loginCache");
-    }
-
     @Override
     public UserBO getAuthorizedUser(){
         // 获取SecurityContextHolder中的用户id
@@ -76,7 +63,7 @@ public class UserServiceImpl implements UserService {
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
-        return UserConvertor.INSTANCE.DO2BO(loginUser.getUserDO());
+        return loginUser.getUserDO().toBO();
     }
 
     @Override
@@ -99,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
 
         // 把完整信息存入redis，id作为key(如果原先有则覆盖)
-        loginCache.put("login:"+id, loginUser);
+        loginUserRedis.addLoginUser(id, loginUser);
 
         UserBO userBO = new UserBO();
         BeanUtils.copyProperties(loginUserInfo, userBO);
@@ -114,7 +101,7 @@ public class UserServiceImpl implements UserService {
         Long id = getAuthorizedUserId();
 
         // 根据用户id删除redis中的用户信息
-        loginCache.evict("login:"+id);
+        loginUserRedis.removeLoginUser(String.valueOf(id));
     }
 
     @Override
@@ -185,7 +172,6 @@ public class UserServiceImpl implements UserService {
         if(Objects.nonNull(email)) userDO.setEmail(email);
         if(Objects.nonNull(profile)) userDO.setProfile(profile);
         userDO.setId(id);
-
         // 更新用户信息
         userDB.updateInfo(userDO);
 
@@ -275,10 +261,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserBO> getUserByIds(List<Long> ids) {
         // 将ids转化为redis中的key数组
-        List<String> loginIds = ids.stream().map(id -> "login:" + String.valueOf(id)).toList();
-
-        // 从redis中获取用户信息
-        List<LoginUser> loginUsers = redisCache.getCacheLists(loginIds);
+        List<LoginUser> loginUsers = ids.stream().map(String::valueOf).map(key -> loginUserRedis.getLoginUser(key)).toList();
 
         // 找出不在缓存的ID放入数组
         List<Long> notInCacheIds = new ArrayList<>();
@@ -298,7 +281,7 @@ public class UserServiceImpl implements UserService {
         // 将从缓存找到的数据和从数据库找到的数据整合
         for(int i = 0; i < loginUsers.size(); i++) {
             LoginUser loginUser = loginUsers.get(i);
-            if (Objects.isNull(loginUser)){
+            if (Objects.nonNull(loginUser)){
                 resultUserBOS.add(loginUser.getUserDO().toBO());
             } else {
                 resultUserBOS.add(DBUserBODeque.pollFirst());

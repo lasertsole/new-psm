@@ -113,4 +113,17 @@ export function getUTCTimeNow(): string {
     const milliseconds = now.getUTCMilliseconds();
     const microseconds = (milliseconds * 1000 + Math.floor((now.getTime() % 1) * 1000000)) % 1000000;
     return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + '.' + microseconds.toString().padStart(6, '0') + 'Z';
-}
+};
+
+// 判断string是否是时间戳
+export function isTimestamp(str: string): boolean {
+    try {
+        const date = new Date(str);
+        if (!isNaN(date.getTime())) {
+            return true;
+        };
+        return false;
+    } catch (error) {
+        return false;
+    };
+};

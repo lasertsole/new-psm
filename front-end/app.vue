@@ -25,20 +25,20 @@
     };
   });
   
-  let DMServiceInstance; // 一对一聊天服务
-  let RTCService; // RTC服务
+  let DMServiceInstance: DMService; // 一对一聊天服务
+  let RTCServiceInstance: RTCService;
   on("online", ()=>{
     DMServiceInstance = DMService.getInstance();
-    RTCService = RTCService.getInstance();
+    RTCServiceInstance = RTCService.getInstance();
   });
 
   on("offline", ()=>{
     // 销毁实例
-    DMService.destroy();
-    RTCService.destroy();
+    DMService.destroyInstance();
+    RTCService.destroyInstance();
     
     // 断开所有连接
-    wsManager.close();
+    wsManager._close();
   });
 
   // 组件销毁时移除监听

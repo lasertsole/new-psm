@@ -1,6 +1,7 @@
 package com.psm.infrastructure.Cache;
 
 import com.psm.infrastructure.Cache.properties.RedisCacheProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 public class RedisCache {

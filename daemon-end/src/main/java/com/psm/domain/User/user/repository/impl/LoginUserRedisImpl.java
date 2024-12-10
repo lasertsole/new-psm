@@ -4,36 +4,36 @@ import com.psm.domain.User.user.entity.User.UserDO;
 import com.psm.domain.User.user.repository.LoginUserRedis;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.infrastructure.Cache.RedisCache;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Repository
 public class LoginUserRedisImpl implements LoginUserRedis {
-    @Value("${spring.security.jwt.expiration}")
-    public Long expiration;//jwt有效期
 
-    @Autowired
-    private RedisCache redisCache;
+    private final Cache loginCache;
+
+    public LoginUserRedisImpl(CacheManager cacheManager) {
+        this.loginCache = cacheManager.getCache("loginCache");
+    }
 
     @Override
     public void addLoginUser(String id, LoginUser loginUser){
-        redisCache.setCacheObject("login:"+id,loginUser,Math.toIntExact(expiration / 1000 / 3600), TimeUnit.HOURS);
+        loginCache.put("login:"+id, loginUser);
     }
 
     @Override
     public LoginUser getLoginUser(String id){
-        return redisCache.getCacheObject("login:"+id);
+        return loginCache.get("login:"+id, LoginUser.class);
     }
 
     @Override
     public void removeLoginUser(String id){
-        redisCache.deleteObject("login:"+id);
+        loginCache.evict("login:"+id);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class LoginUserRedisImpl implements LoginUserRedis {
     @Override
     public void updateLoginUser(UserDO userDO) {
         String id = String.valueOf(userDO.getId());
-        LoginUser loginUser = (LoginUser) redisCache.getCacheObject("login:" + id);
+        LoginUser loginUser = loginCache.get("login:"+id, LoginUser.class);
 
         UserDO userDORefer = loginUser.getUserDO();//获取loginUser内的UserDO引用
         if (!Objects.isNull(userDO.getAvatar())) userDORefer.setAvatar(userDO.getAvatar());

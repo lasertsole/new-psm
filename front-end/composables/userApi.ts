@@ -311,7 +311,7 @@ export async function logout():Promise<boolean>{
         logoutApi();
     
         import.meta.client&&ElMessage.success('登出成功');
-    
+        emit("offline");
         return true;
     }
     catch (error) {

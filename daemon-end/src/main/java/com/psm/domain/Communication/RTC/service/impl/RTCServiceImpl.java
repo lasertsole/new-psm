@@ -30,8 +30,10 @@ public class RTCServiceImpl implements RTCService {
     @Override
     public boolean createRoom(SocketIOClient srcClient, Room room) {
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
+
         // 判断用户之前有没有加入其他rtc房间
         String oldRoomId = (String) srcClient.get("rtcRoomId");
+
         if (Objects.nonNull(oldRoomId)) { // 如果有，则将用户从原来的房间移除
             socketIOApi.removeUserFromSocketRoom(oldRoomId, userId);
             srcClient.del("rtcRoomId");// 清空房间号属性
@@ -44,15 +46,14 @@ public class RTCServiceImpl implements RTCService {
             srcClient.set("rtcRoomId", newRoomId);
         } else {// 创建失败时，则判断已有房间号的主人是否是当前用户，如果是，则用户可以直接使用该房间
             Room room1 = socketIOApi.getSocketRoom(newRoomId);
-            if(userId.equals(room1.getRoomOwnerId())) result = true;
+            if(userId.equals(room1.getRoomOwnerId()) && room1.getRoomType().equals("DRTC")) result = true;
         }
-
         return result;
     }
 
     @Override
     public String inviteJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
-        String rtcRoomId = (String) srcClient.get("rtcRoomId");
+        String rtcRoomId = srcClient.get("rtcRoomId");
         if (Objects.isNull(rtcRoomId)) throw new ClientException("当前用户没有加入任何房间");
 
         // 将邀请函通过mq发送给目标用户

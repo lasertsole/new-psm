@@ -100,8 +100,8 @@
 
 <script lang="ts" setup>
     import gsap from "gsap";
-    import type { DrawerProps } from 'element-plus';
     import type { Router } from '@/types/router';
+    import type { DrawerProps } from 'element-plus';
 
     const drawer = ref(false);
     const direction = ref<DrawerProps['direction']>('ttb');
@@ -172,7 +172,7 @@
     }
 
     async function clickLogout():Promise<void> { //点击下线事件
-        await logout()&&emit("offline");
+        await logout();
     }
 </script>
 

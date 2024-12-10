@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class SocketIOApi {
+    private final Cache roomCache;
     public SocketIOApi(CacheManager cacheManager) {
         this.roomCache = cacheManager.getCache("socketRoomCache");
     }
@@ -34,8 +35,6 @@ public class SocketIOApi {
         localUserIdMapClient.remove(userId); //尝试从 Map 中移除一个不存在的键（key），操作是安全的，不会抛出异常
     }
 
-    private final Cache roomCache;
-
     public Boolean createSocketRoom(Room room) {
         String key = "socketRoom:"+room.getRoomId();
         if (Objects.nonNull(roomCache.get(key))) return false;
@@ -49,7 +48,7 @@ public class SocketIOApi {
     }
 
     public Room getSocketRoom(String roomId) {
-        return (Room) Optional.ofNullable(roomCache.get("socketRoom:"+roomId)).orElse(null);
+        return roomCache.get("socketRoom:"+roomId, Room.class);
     }
 
     public void addUserToSocketRoom(String roomId, String userId) {

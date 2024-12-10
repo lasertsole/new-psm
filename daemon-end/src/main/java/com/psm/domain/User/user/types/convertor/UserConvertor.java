@@ -70,6 +70,7 @@ public abstract class UserConvertor {
     @Mappings({
             @Mapping(source = "sex.value", target = "sex"),
             @Mapping(target = "hasPass", ignore = true),
+            @Mapping(target = "password", ignore = true),
             @Mapping(target = "id", qualifiedByName = "longToString"),
             @Mapping(target = "phone", ignore = true),
             @Mapping(target = "email", ignore = true),

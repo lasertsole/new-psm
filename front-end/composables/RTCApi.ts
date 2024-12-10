@@ -1,5 +1,5 @@
 import type { Reactive } from 'vue';
-import { RTCEnum } from '@/enums/rtc';
+import { RTCEnum } from '@/enums/rtc.d';
 import { Socket } from 'socket.io-client';
 import type { RTCSwap } from "@/types/rtc";
 import { wsManager } from '@/composables/wsManager';
@@ -116,7 +116,7 @@ export class RTCService {// 单例模式
 
         // 监听邀请加入房间事件
         this.RTCSocket.on('inviteJoinRoom', (roomInvitation: RoomInvitation):void=> {
-            let userIds: string[] = contactsItems.length!=0?contactsItems.map(user => user.tgtUserId!):[];
+            let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
             if(!userIds.includes(roomInvitation.srcUserId)) {
                 // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
                 this.RTCSocket.emit("rejectJoinRoom", roomInvitation.roomId);
@@ -251,7 +251,7 @@ export class RTCService {// 单例模式
     };
 
     // 创建房间
-    public createRoom():void {
+    public createRoom(resolve?: Function, reject?: Function):void {
         const room: Room = {
             roomId: userInfo.id!,
             roomOwnerId: userInfo.id!,
@@ -261,17 +261,19 @@ export class RTCService {// 单例模式
 
         this.RTCSocket.emit("createRoom", room, (isSuccussful:boolean):void=> {// 加入房间，房间号为用户id
             if(!isSuccussful) {
-                ElMessage.warning("创建房间失败");
+                reject&&reject();// 调用失败回调函数
                 return;
             };
 
             room.peerMap = new Map<string, PeerOne>();
             this.ownRoom.value = room;
+
+            resolve&&resolve();// 调用成功回调函数
         });
     };
 
     // 邀请加入房间
-    public inviteJoinRoom(tgtUserId: string, tgtUserName: string):void {
+    public inviteJoinRoom(tgtUserId: string, tgtUserName: string, resolve?: Function, reject?: Function):void {
         if(!this.ownRoom.value) {
             ElMessage.warning("请先创建房间");
             return;
@@ -289,14 +291,24 @@ export class RTCService {// 单例模式
         };
 
         this.RTCSocket.emit("inviteJoinRoom", roomInvitation, (timestamp:string):void=> {// 加入房间，房间号为用户id
-            console.log("timestamp", timestamp);
+            if(!isTimestamp(timestamp)){
+                reject&&reject(timestamp);// 调用失败回调函数
+                return;
+            };
+
+            resolve&&resolve(timestamp);
         });
     };
 
     // 同意加入房间
-    public async agreeJoinRoom(roomInvitation: RoomInvitation):Promise<void> {
+    public async agreeJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):Promise<void> {
         this.RTCSocket.emit("agreeJoinRoom", roomInvitation, (timestamp:string)=> {// 加入房间，房间号为用户id
-            console.log("timestamp", timestamp);
+            if(!isTimestamp(timestamp)){
+                reject&&reject(timestamp);// 调用失败回调函数
+                return;
+            };
+
+            resolve&&resolve(timestamp);
         });
         
         this.inviteJoinArr=[];// 清空列表
@@ -312,8 +324,15 @@ export class RTCService {// 单例模式
     };
 
     // 拒绝加入房间
-    public rejectJoinRoom(roomInvitation: RoomInvitation):void {
-        this.RTCSocket.emit("rejectJoinRoom", roomInvitation);
+    public rejectJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):void {
+        this.RTCSocket.emit("rejectJoinRoom", roomInvitation, (timestamp:string):void=> {// 加入房间，房间号为用户id
+            if(!isTimestamp(timestamp)){
+                reject&&reject(timestamp);// 调用失败回调函数
+                return;
+            };
+
+            resolve&&resolve(timestamp);
+        });
 
         // 将该邀请从邀请列表中删除
         let index:number = this.inviteJoinArr.map(item => item.roomId).indexOf(roomInvitation.roomId);
@@ -321,9 +340,16 @@ export class RTCService {// 单例模式
     };
 
     // 离开房间
-    public leaveRoom(): void {
+    public leaveRoom(resolve?: Function, reject?: Function): void {
         this.ownRoom.value = null;
-        this.RTCSocket.emit("leaveRoom");
+        this.RTCSocket.emit("leaveRoom", (timestamp:string):void=> {// 加入房间，房间号为用户id
+            if(!isTimestamp(timestamp)){
+                reject&&reject(timestamp);// 调用失败回调函数
+                return;
+            };
+
+            resolve&&resolve(timestamp);
+        });
     };
 
     // 获取RTC服务单例

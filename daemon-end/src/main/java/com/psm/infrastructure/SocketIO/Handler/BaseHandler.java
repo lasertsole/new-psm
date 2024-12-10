@@ -38,13 +38,9 @@ public class BaseHandler {
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
-        log.info("客户端:" + client.getRemoteAddress() + "已连接");
     }
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
-        log.info("客户端:" + client.getRemoteAddress() + "断开连接");
-        // 移除用户在线用户列表
-        socketIOApi.removeLocalUser(client.get("userId"));
     }
 }

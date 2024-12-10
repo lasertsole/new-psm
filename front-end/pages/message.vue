@@ -11,7 +11,7 @@
                 <div class="left">
                     <div class="title">近期消息</div>
                     <div class="contactList">
-                        <template v-for="(item, index) in contactsItems" :key="item.id">
+                        <template v-for="(item, index) in DMContactsItems" :key="item.id">
                             <MessageContactsBox
                                 :tgtUserId="item.tgtUserId!"
                                 :avatar="item.avatar!"
@@ -34,16 +34,16 @@
                 <div class="right">
                     <div class="title">
                         <span v-show="nowDMContactsIndex>=0">
-                            {{ contactsItems[nowDMContactsIndex]?.name }}
+                            {{ DMContactsItems[nowDMContactsIndex]?.name }}
                         </span>
                     </div>
                     <div class="messageList" ref="messageList">
                         <div class="containerBox" v-show="nowDMContactsIndex>=0">
                             <div class="topGap"></div>
-                            <template v-for="(item, index) in contactsItems[nowDMContactsIndex]?.messageItems" :key="index">
+                            <template v-for="(item, index) in DMContactsItems[nowDMContactsIndex]?.messageItems" :key="index">
                                 <messageBox
-                                    :avatar="contactsItems[nowDMContactsIndex].avatar!"
-                                    :name="contactsItems[nowDMContactsIndex].name!"
+                                    :avatar="DMContactsItems[nowDMContactsIndex].avatar!"
+                                    :name="DMContactsItems[nowDMContactsIndex].name!"
                                     :type="item.type!"
                                     :srcUserId="item.srcUserId!"
                                     :tgtUserId="item.tgtUserId!"
@@ -122,7 +122,7 @@
                         <template v-for="(item, index) in deviceControl.audio">
                             <div :active="item.active?item.active:'undefined'" @click="item.active?(item.active=='true'?item.active='false':item.active='true'):item.active='true'">
                                 <div class="icon">
-                                    <d></d>
+                                    <div></div>
                                     <svg t="1733564168472" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3711">
                                         <path d="M512 128c35.2 0 64 28.8 64 64v320c0 35.2-28.8 64-64 64s-64-28.8-64-64V192c0-35.2 28.8-64 64-64m0-64c-70.4 0-128 57.6-128 128v320c0 70.4 57.6 128 128 128s128-57.6 128-128V192c0-70.4-57.6-128-128-128z m320 448h-64c0 140.8-115.2 256-256 256S256 652.8 256 512h-64c0 165.6 126.4 302.4 288 318.4V960h64v-129.6c161.6-16 288-152.8 288-318.4z" p-id="3712"></path>
                                     </svg>
@@ -141,13 +141,13 @@
                 </div>
             </template>
         </el-dialog>
-        <!-- <CommonRtc/> -->
     </div>
 </template>
 
 <script lang="ts" setup>
     import type { Reactive } from 'vue';
     import type { Devices } from "@/types/rtc";
+    import type { ContactsItem } from '@/types/chat';
 
     const message:Ref<string> = ref<string>("");
 
@@ -197,10 +197,40 @@
         DMServiceInstance.initDM();
     }, 1000));
 
+    const mask:Ref<boolean> = ref<boolean>(false);
     let RTCServiceInstance: RTCService;
-    // 发起RTC请求
+
+    // 发起DRTC请求
     function sendRTCRequest() {
-        RTCServiceInstance = RTCService.getInstance();
+        mask.value=true;
+
+        new Promise((resolve: Resolve, reject:Reject)=>{
+            RTCServiceInstance = RTCService.getInstance();
+            RTCServiceInstance.createRoom(
+                ()=>{
+                    resolve();
+                },
+                ()=>{
+                    reject("创建房间失败");
+                }
+            );
+        }).then(()=>{
+            const DMContactsItems:ContactsItem = DMContactsItems[nowDMContactsIndex.value];
+            RTCServiceInstance.inviteJoinRoom(
+                DMContactsItems.tgtUserId,
+                DMContactsItems.name,
+                ()=>{
+                    resolve();
+                },
+                ()=>{
+                    reject("邀请对方时遇到了问题");
+                }
+            );
+        }).catch((e)=>{
+            ElMessage.warning(e);
+        }).finally(()=>{
+            mask.value=false;
+        });
         // rtcDialogVisible.value = true;
     }
 
@@ -486,10 +516,10 @@
                             &[active="false"]{
                                 .icon{
                                     background-color: red;
-                                    d{
+                                    div {
                                         @include fixedHeight(95%);
                                     }
-                                    svg{
+                                    svg {
                                         path{
                                             fill: white;
                                         }

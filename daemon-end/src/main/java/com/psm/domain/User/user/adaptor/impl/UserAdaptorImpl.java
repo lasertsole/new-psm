@@ -64,7 +64,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("name", name), UserBO.class);
+        validUtil.validate(Map.of("name", name, "password", password), UserBO.class);
 
         // 登录
         userBO = userService.login(name, password);
@@ -96,7 +96,7 @@ public class UserAdaptorImpl implements UserAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("name", name, "email", email), UserBO.class);
+        validUtil.validate(Map.of("name", name, "email", email, "password", password), UserBO.class);
 
         // 注册
         userBO = userService.register(name, password, email);
@@ -129,7 +129,7 @@ public class UserAdaptorImpl implements UserAdaptor {
     };
 
     @Override
-    public void updateInfo(UserBO userBO) throws InvalidParameterException, InstantiationException, IllegalAccessException {
+    public void updateInfo(@Valid UserBO userBO) throws InvalidParameterException, InstantiationException, IllegalAccessException {
         String name = StringEscapeUtils.escapeHtml4(userBO.getName());
         Boolean sex = Optional.ofNullable(userBO.getSex()).map(SexEnum::getValue).orElse(null);
         String phone = userBO.getPhone();
@@ -145,8 +145,6 @@ public class UserAdaptorImpl implements UserAdaptor {
                 &&StringUtils.isBlank(profile)
         )
             throw new InvalidParameterException("Invalid parameter");
-
-        validUtil.validate(Map.of("name", name, "phone", phone, "email", email, "profile", profile), UserBO.class);
 
         // 修改用户
         userService.updateInfo(name, sex, phone, email, profile);

@@ -15,7 +15,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
 
@@ -34,11 +33,11 @@ public class UserController {
     @Value("${server.front-end-url.login-page}")
     private String loginPage;
 
-    // 返回前端登录视图
-    @GetMapping("/login")
-    public void login(HttpServletResponse response) throws IOException {
-        response.sendRedirect(frontEndBaseUrl+loginPage);
-    };
+//    // 返回前端登录视图
+//    @GetMapping("/login")
+//    public void login(HttpServletResponse response) throws IOException {
+//        response.sendRedirect(frontEndBaseUrl+loginPage);
+//    };
 
     /**
      * 用户登录

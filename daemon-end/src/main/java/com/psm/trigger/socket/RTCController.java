@@ -61,6 +61,11 @@ public class RTCController implements CommandLineRunner {
             socketIOApi.addLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
         });
 
+        RTCSignaling.addDisconnectListener(client -> {
+            // 移除用户在线用户列表
+            socketIOApi.removeLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()));
+        });
+
         // 添加创建房间监听器
         RTCSignaling.addEventListener("createRoom", Room.class, new DataListener<>() {
             @Override

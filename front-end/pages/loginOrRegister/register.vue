@@ -161,7 +161,6 @@
                     loading.value = true;
                     register(userInfo.name, userInfo.password, userInfo.email).then(isSuccuss => {
                         if(isSuccuss){
-                            $emit("online");
                             router.push("/");
                         }
                     }).finally(() => loading.value = false);

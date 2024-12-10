@@ -70,6 +70,11 @@ public class DMController implements CommandLineRunner {
             client.sendEvent("initDMConfig", map);
         });
 
+        dm.addDisconnectListener(client -> {
+            // 移除用户在线用户列表
+            socketIOApi.removeLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()));
+        });
+
         // 添加私聊监听器
         dm.addEventListener("sendMessage", ChatDTO.class, new DataListener<>() {
             @Override

@@ -7,7 +7,7 @@ import { fromEvent, concatAll, concatMap, scan, map, filter, tap } from "rxjs";
 import type { ContactsItem, MessageItem, MessageDBItem, ContactsDBItem } from '@/types/chat';
 
 /*************************************以下为DM命名空间逻辑****************************************/
-export const contactsItems: Reactive<ContactsItem>[] = reactive([] as ContactsItem[]);// 联系人列表
+export const DMContactsItems: Reactive<ContactsItem>[] = reactive([]);// 联系人列表
 export const nowDMContactsIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
 export const isInitDM:Ref<boolean> = ref<boolean>(false);// 是否已初始化
 
@@ -137,7 +137,7 @@ export class DMService { // 单例模式
         });
 
         // 筛选出新的联系人
-        contactsItems.forEach((item)=>{
+        DMContactsItems.forEach((item)=>{
           // 如果有，则先更新联系人列表聊天记录和indexedDB，再把联系人从contactsMap中删除
           if(contactsMap.has(item.tgtUserId)) {
             //更新页面左侧显示的联系人列表
@@ -167,7 +167,7 @@ export class DMService { // 单例模式
         // 将新的联系人插入联系人列表里和indexedDB里
         userInfos.forEach((user)=> {
           let contactsItem = contactsMap.get(user.id!);
-          contactsItems.push({
+          DMContactsItems.push({
             tgtUserId:contactsItem!.tgtUserId!,
             srcUserId:contactsItem!.srcUserId!,
             name: user.name,
@@ -196,7 +196,7 @@ export class DMService { // 单例模式
       })
     ).subscribe((page:Page<MessageItem> | undefined)=>{
       if(page == undefined || page.current! >= page.pages!) {// 如果当前页是最后一页，则说明所有消息都接收完毕，初始化状态置为true
-        if(contactsItems.length==0) { // 如果没有联系人，则说明所有消息都接收完毕，初始化状态置为true
+        if(DMContactsItems.length==0) { // 如果没有联系人，则说明所有消息都接收完毕，初始化状态置为true
           // DM初始化状态置为true
           isInitDM.value = true;
           return;
@@ -209,7 +209,7 @@ export class DMService { // 单例模式
           startIndex=1;
         }
         // 将所有联系人列表复制一份用于排序
-        sortArr=contactsItems.slice(startIndex);
+        sortArr=DMContactsItems.slice(startIndex);
 
         // 排序,按时间降序
         sortArr.sort((a,b)=>{
@@ -217,7 +217,7 @@ export class DMService { // 单例模式
         });
 
         // 将排序后的数组赋值给contactsItems
-        contactsItems.concat(sortArr);
+        DMContactsItems.concat(sortArr);
 
         // DM初始化状态置为true
         isInitDM.value = true;
@@ -229,7 +229,7 @@ export class DMService { // 单例模式
       // 通过自旋堵塞确保本函数是在初始化完成后才执行，否则会导致消息丢失
       while(!isInitDM.value) {await new Promise(resolve => setTimeout(resolve, 500));};
 
-      let userIds: string[] = contactsItems.length!=0?contactsItems.map(user => user.tgtUserId!):[];
+      let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
       let index = userIds.indexOf(messageItem.srcUserId!);
 
       if(index!== -1) {// 如果用户存在于联系人列表中，则更新该用户的信息
@@ -242,9 +242,9 @@ export class DMService { // 单例模式
         }).first();
         if(existMessageItem) return;
 
-        contactsItems[index].messageItems!.push(messageItem);
-        contactsItems[index].lastMessage = messageItem.content!;
-        contactsItems[index].lastTime = messageItem.timestamp;
+        DMContactsItems[index].messageItems!.push(messageItem);
+        DMContactsItems[index].lastMessage = messageItem.content!;
+        DMContactsItems[index].lastTime = messageItem.timestamp;
 
         //更新indexedDB里的联系人列表
         db.ContactsDBItems.where('[srcUserId+tgtUserId]')
@@ -283,7 +283,7 @@ export class DMService { // 单例模式
           };
 
           // 将新用户信息插入到contactsItems
-          contactsItems.unshift(reactive({
+          DMContactsItems.unshift(reactive({
             ...newContactItem,
             messageItems: [reactive(messageItem)]
           }));
@@ -313,7 +313,7 @@ export class DMService { // 单例模式
   };
 
   public static destroyInstance() { // 销毁实例
-    this.instance?.disconnect();
+    DMService.instance!.disconnect();
     DMService.instance = null;
   };
 
@@ -341,16 +341,15 @@ export class DMService { // 单例模式
     // 通过自旋堵塞确保本函数是在初始化完成后才执行，否则会导致消息丢失
     while(!isInitDM.value) {await new Promise(resolve => setTimeout(resolve, 500));};
 
-    let tgtUserIds: string[] = contactsItems.length!=0?contactsItems.map(user => user.tgtUserId!):[];
+    let tgtUserIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
     let index = tgtUserIds.indexOf(tgtUserId);
     
     if(index!== -1) { // 如果用户存在于联系人列表中
       // 将用户从原位置移除
-      const [movedElement] = contactsItems.splice(index, 1);
+      const [movedElement] = DMContactsItems.splice(index, 1);
       // 将用户插入到列表头部
-      contactsItems.unshift(movedElement);
-    }
-    else {// 如果用户不存在于联系人列表中
+      DMContactsItems.unshift(movedElement);
+    } else {// 如果用户不存在于联系人列表中
       // 将用户插入到列表头部
       let newContactItem: Reactive<ContactsItem> = reactive<ContactsItem>({
         tgtUserId,
@@ -365,7 +364,7 @@ export class DMService { // 单例模式
         messageItems: []
       });
 
-      contactsItems.unshift(newContactItem);
+      DMContactsItems.unshift(newContactItem);
     };
     
     navigateTo("/message");
@@ -391,14 +390,14 @@ export class DMService { // 单例模式
       maxLastTime = maxDate(maxLastTime, new Date(contactDBItem.lastTime!+"z"));// 一定要加z，告诉JS，这个时间戳是UTC国际时间戳
 
       // 返回 ContactsItem类型数据
-      contactsItems.push({
+      DMContactsItems.push({
         ...contactDBItem,
         messageItems: [] // 消息列表
       });
     });
 
     // 从本地indexedDB拿取最新聊天信息
-    contactsItems.forEach(async item => {
+    DMContactsItems.forEach(async item => {
       let messageDBItems: MessageDBItem[] = await db.MessageDBItems
       .where('[maxUserId+minUserId]')
       .equals([max(item.tgtUserId, item.srcUserId), min(item.tgtUserId, item.srcUserId)])
@@ -420,7 +419,7 @@ export class DMService { // 单例模式
   // 发送信息逻辑
   public async sendMessage(message:string): Promise<void> {
     // 创建一个联系人对象
-    let constactsObj:ContactsItem = contactsItems[nowDMContactsIndex.value];
+    let constactsObj:ContactsItem = DMContactsItems[nowDMContactsIndex.value];
     
     // 创建一个消息对象
     let messageObj:MessageItem = {
@@ -487,7 +486,7 @@ export class DMService { // 单例模式
     this.DMSocket.connect();
   };
 
-  public disconnect() {
+  private disconnect() {
     this.DMSocket.disconnect();
   };
 };
