@@ -2,7 +2,7 @@ import { resolve } from 'pathe';
 
 export default defineNuxtConfig({
   plugins: [
-    { src: '~/plugins/wujie.ts', mode: 'client' }
+    { src: '@/plugins/wujie.ts', mode: 'client' }
   ],
   compatibilityDate: '2024-04-03',
   // 不使用开发工具
@@ -84,6 +84,17 @@ export default defineNuxtConfig({
     //   navigateFallbackAllowlist: [/^\/$/],
     //   type: 'module',
     // },
+  },
+
+  // Defaults options
+  tailwindcss: {
+    cssPath: ['@/tailwind.scss', { injectPosition: "first" }],
+    configPath: '@/tailwind.config',
+    exposeConfig: {
+      level: 2
+    },
+    config: {},
+    viewer: true,
   },
 
   //项目信息

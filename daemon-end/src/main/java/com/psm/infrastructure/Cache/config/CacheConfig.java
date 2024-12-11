@@ -11,9 +11,11 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.redisson.config.TransportMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.context.annotation.Configuration;
@@ -53,10 +55,10 @@ public class CacheConfig {
     @Bean
     public Caffeine<Object, Object> caffeine() {
     	return Caffeine.newBuilder()
-                .expireAfterWrite(10, TimeUnit.MINUTES)
-                .initialCapacity(100)
-                .maximumSize(1000)
-                .weakKeys().recordStats();
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .initialCapacity(100)
+            .maximumSize(1000)
+            .weakKeys().recordStats();
     }
 
     @Value("${spring.data.redis.host}")
@@ -96,10 +98,16 @@ public class CacheConfig {
         return new MultiLevelCacheManager(multiLevelChannel, config);
     }
 
+    @Autowired
+    private ApplicationContext applicationContext;
     @PreDestroy
-    public void destroy() throws IOException
-    {// Caffeine不需要显式销毁
-    	log.info("关闭Redission连接池");
-    	redissonClient().shutdown();
+    public void destroy() throws IOException {
+        // Caffeine不需要显式销毁
+
+        Map<String, RedissonClient> redissonClients = applicationContext.getBeansOfType(RedissonClient.class);
+        for (Map.Entry<String, RedissonClient> entry : redissonClients.entrySet()) {
+            log.info("关闭Redisson客户端: {}", entry.getKey());
+            entry.getValue().shutdown();
+        }
     }
 }

@@ -44,9 +44,13 @@ public class RTCServiceImpl implements RTCService {
         // 创建房间，并获取房间创建结果,如果为true，则创建房间成功，为false，则说明已有相同的房间号被使用，创建失败
         if(socketIOApi.createSocketRoom(room)) {// 创建成功时设置用户的房间号属性
             srcClient.set("rtcRoomId", newRoomId);
+            result = true;
         } else {// 创建失败时，则判断已有房间号的主人是否是当前用户，如果是，则用户可以直接使用该房间
             Room room1 = socketIOApi.getSocketRoom(newRoomId);
-            if(userId.equals(room1.getRoomOwnerId()) && room1.getRoomType().equals("DRTC")) result = true;
+            if(userId.equals(room1.getRoomOwnerId()) && room1.getRoomType().equals("DRTC")) {
+                srcClient.set("rtcRoomId", newRoomId);
+                result = true;
+            };
         }
         return result;
     }
@@ -68,10 +72,10 @@ public class RTCServiceImpl implements RTCService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardInviteJoinRoom(RoomInvitation roomInvitation) {
-        SocketIOClient tarClient = socketIOApi.getLocalUserSocket(roomInvitation.getTgtUserId());
-        if (Objects.isNull(tarClient)) return;
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(roomInvitation.getTgtUserId());
+        if (Objects.isNull(tgtClient)) return;
 
-        tarClient.sendEvent("inviteJoinRoom", roomInvitation);
+        tgtClient.sendEvent("inviteJoinRoom", roomInvitation);
     }
 
     @Override

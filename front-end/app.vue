@@ -2,6 +2,7 @@
   <NuxtPwaManifest />
   <div>
     <NuxtLayout>
+      <RtcInvitationArr></RtcInvitationArr>
       <NuxtPage keepalive/>
     </NuxtLayout>
   </div>

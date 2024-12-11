@@ -173,9 +173,8 @@
     let DMServiceInstance: DMService;
     // 发送信息
     const send = debounce(():void=>{
-        if(!validateMessage(message.value))
-            return;
-
+        if(!validateMessage(message.value)) { return; };
+           
             DMServiceInstance.sendMessage(message.value).then(()=>{
                 scrollToBottom();// 发送完消息后滑动到底部
             });
@@ -187,7 +186,7 @@
             nextTick(()=>{// 这时需要把聊天记录列表滑动到底部
                 scrollToBottom();
             });
-        }
+        };
     });
 
     onActivated(debounce(()=>{
@@ -201,29 +200,29 @@
     let RTCServiceInstance: RTCService;
 
     // 发起DRTC请求
-    function sendRTCRequest() {
+    const sendRTCRequest = debounce(()=>{
         mask.value=true;
 
-        new Promise((resolve: Resolve, reject:Reject)=>{
+        new Promise((resolve)=>{
             RTCServiceInstance = RTCService.getInstance();
             RTCServiceInstance.createRoom(
                 ()=>{
-                    resolve();
+                    resolve(true);
                 },
                 ()=>{
-                    reject("创建房间失败");
+                    throw new Error("crash when create Room");
                 }
             );
-        }).then(()=>{
-            const DMContactsItems:ContactsItem = DMContactsItems[nowDMContactsIndex.value];
+        }).then((res)=>{
+            const contactsItem:ContactsItem = DMContactsItems[nowDMContactsIndex.value];
             RTCServiceInstance.inviteJoinRoom(
-                DMContactsItems.tgtUserId,
-                DMContactsItems.name,
+                contactsItem.tgtUserId,
+                contactsItem.name!,
                 ()=>{
-                    resolve();
+                    return res;
                 },
                 ()=>{
-                    reject("邀请对方时遇到了问题");
+                    throw new Error("crash when invite peer");
                 }
             );
         }).catch((e)=>{
@@ -232,7 +231,7 @@
             mask.value=false;
         });
         // rtcDialogVisible.value = true;
-    }
+    }, 1000);
 
     const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
     const deviceControl:Reactive<Devices> = reactive<Devices>({

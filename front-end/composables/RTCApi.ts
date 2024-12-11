@@ -21,6 +21,43 @@ export class RTCService {// 单例模式
       video: true,
       audio: false // 通常不包括音频
     });
+    // 监听事件的钩子函数
+    private inviteJoinRoomHooks: Array<Function> = [];
+    private agreeJoinRoomHooks: Array<Function> = [];
+    private rejectJoinRoomHooks: Array<Function> = [];
+    private swapSDPHooks: Array<Function> = [];
+    private swapCandidateHooks: Array<Function> = [];
+    private leaveRoomHooks: Array<Function> = [];
+
+    // 添加监听邀请事件
+    public onInviteJoinRoom(hook: Function) {
+        this.inviteJoinRoomHooks.push(hook);
+    };
+
+    // 添加监听同意加入房间事件
+    public onAgreeJoinRoom(hook: Function) {
+        this.agreeJoinRoomHooks.push(hook);
+    };
+
+    // 添加监听拒绝加入房间事件
+    public onRejectJoinRoom(hook: Function) {
+        this.rejectJoinRoomHooks.push(hook);
+    };
+
+    // 添加监听交换SDP事件
+    public onSwapSDP(hook: Function) {
+        this.swapSDPHooks.push(hook);
+    };
+
+    // 添加监听交换候选事件
+    public onSwapCandidate(hook: Function) {
+        this.swapCandidateHooks.push(hook);
+    };
+
+    // 监听离开房间事件
+    public onLeaveRoom(hook: Function) {
+        this.leaveRoomHooks.push(hook);
+    };
 
     // 获取本地音视频流
     private async getLocalStream():Promise<{userMediaStream:MediaStream, displayMediaStream:MediaStream}> {
@@ -120,12 +157,16 @@ export class RTCService {// 单例模式
             if(!userIds.includes(roomInvitation.srcUserId)) {
                 // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
                 this.RTCSocket.emit("rejectJoinRoom", roomInvitation.roomId);
+                return;
             };
 
             // 如果该邀请不存在邀请列表中，则将邀请放入邀请列表
             if(!this.inviteJoinArr.map(item => item.roomId).includes(roomInvitation.roomId)){
                 this.inviteJoinArr.push(roomInvitation);
             };
+
+            // 触发邀请加入房间成功钩子函数
+            this.inviteJoinRoomHooks.forEach(hook => hook(roomInvitation));
         });
 
         // 监听同意加入房间事件
@@ -140,6 +181,7 @@ export class RTCService {// 单例模式
             } else if(!room.peerMap!.get(roomInvitation.tgtUserId)) { // peer不存在时，创建并初始化peer
                 await this.initPeer(roomInvitation.tgtUserId);
             };
+
             peerOne = room.peerMap!.get(roomInvitation.tgtUserId)!;
             peerOne.name = roomInvitation.tgtUserName;
             let rtcPeerConnection:RTCPeerConnection = peerOne!.rtcPeerConnection;
@@ -162,12 +204,15 @@ export class RTCService {// 单例模式
                 data: JSON.stringify(localOffer)
             };
 
+            // 触发同意加入房间成功钩子函数
+            this.agreeJoinRoomHooks.forEach(hook => hook(roomInvitation));
+
             this.RTCSocket.emit('swapSDP', offerSDP);
         });
 
         // 监听拒绝加入房间事件
         this.RTCSocket.on("rejectJoinRoom", (roomInvitation: RoomInvitation):void=> {
-            ElMessage.warning(`${roomInvitation.srcUserName} rejected your invitation to join the room.`);
+            this.rejectJoinRoomHooks.forEach(hook => hook(roomInvitation));
         });
 
 
@@ -184,7 +229,7 @@ export class RTCService {// 单例模式
             } else if(remoteSDP.roomId!=this.ownRoom.value!.roomId// 如果房间ID不匹配，则忽略
                 || remoteSDP.srcUserId==userInfo.id// 如果发送该SDP信息的就是本人，则忽略
                 || remoteSDP.tgtUserId!=userInfo.id// 如果该SDP的接收对象不是本人，则忽略
-            ){
+            ) {
                 return;
             } else if(!room.peerMap!.get(remoteSDP.srcUserId)){ // peer连接不存在时，创建并初始化peer连接
                 await this.initPeer(remoteSDP.srcUserId);
@@ -198,6 +243,9 @@ export class RTCService {// 单例模式
 
             // 设置远程描述
             await rtcPeerConnection.setRemoteDescription(JSON.parse(remoteSDP.data));
+
+            // 执行swapSDP钩子函数
+            this.swapSDPHooks.forEach(hook => hook(remoteSDP));
 
             if(rtcPeerConnection.localDescription) {// 如果没有发过SDP，则发送Answer
                 // 生成 Answer
@@ -242,11 +290,14 @@ export class RTCService {// 单例模式
             let rtcPeerConnection:RTCPeerConnection = peerOne!.rtcPeerConnection;
 
             rtcPeerConnection.addIceCandidate(JSON.parse(remoteSDP.data));
+
+            // 执行swapCandidate钩子函数
+            this.swapCandidateHooks.forEach(hook => hook(remoteSDP));
         });
 
         // 监听离开房间事件
-        this.RTCSocket.on("leaveRoom", (timestamp: string): void=> {
-            console.log("timestamp", timestamp);
+        this.RTCSocket.on("leaveRoom", (remoteSDP: RTCSwap): void=> {
+            this.leaveRoomHooks.forEach(hook => hook(remoteSDP));
         });
     };
 
@@ -255,7 +306,7 @@ export class RTCService {// 单例模式
         const room: Room = {
             roomId: userInfo.id!,
             roomOwnerId: userInfo.id!,
-            roomName: userInfo.name!,
+            roomName: userInfo.name!+"'s room",
             roomType: RTCEnum.DRTC,
         };
 
@@ -275,7 +326,7 @@ export class RTCService {// 单例模式
     // 邀请加入房间
     public inviteJoinRoom(tgtUserId: string, tgtUserName: string, resolve?: Function, reject?: Function):void {
         if(!this.ownRoom.value) {
-            ElMessage.warning("请先创建房间");
+            ElMessage.warning("please create room first.");
             return;
         };
 

@@ -11,7 +11,7 @@
                 <HeaderUserState></HeaderUserState>
             </div>
         </header>
-        <main>
+        <main class="relative">
             <slot></slot>
         </main>
     </div>
