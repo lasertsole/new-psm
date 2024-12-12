@@ -1,6 +1,6 @@
 package com.psm.infrastructure.Cache;
 
-import com.psm.infrastructure.Cache.properties.RedisCacheProperties;
+import com.psm.infrastructure.Cache.properties.CacheProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisCache {
     // 导入redis缓存配置
     @Autowired
-    private RedisCacheProperties redisCacheProperties;
+    private CacheProperties redisCacheProperties;
 
     @Autowired
     private RedisTemplate redisTemplate;

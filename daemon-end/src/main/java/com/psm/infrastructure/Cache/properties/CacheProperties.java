@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "jwt")//配置和jwt一样的过期时间
-public class RedisCacheProperties {
+public class CacheProperties {
     /**
      * 默认有效期为
      */
-    public Long expiration;//配置和jwt一样的过期时间,单位为毫秒
+    private Long expiration;//配置和jwt一样的过期时间,单位为毫秒
 }

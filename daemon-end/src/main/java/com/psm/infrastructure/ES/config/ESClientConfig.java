@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.psm.infrastructure.ES.properties.ESProperties;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
@@ -18,13 +19,16 @@ import org.elasticsearch.client.RestClientBuilder;
 public class ESClientConfig {
     private ElasticsearchClient elasticsearchClient;
 
+    @Autowired
+    private ESProperties esProperties;
+
     @Bean
     public ElasticsearchClient elasticsearchClient() {
-        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+        RestClientBuilder builder = RestClient.builder(new HttpHost(esProperties.getHost(), esProperties.getPort(), esProperties.getScheme()));
         builder.setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
-            .setSocketTimeout(60000) // 设置套接字超时时间为60秒
-            .setConnectTimeout(60000) // 设置连接超时时间为60秒
-            .setConnectionRequestTimeout(60000) // 设置连接请求超时时间为60秒
+            .setSocketTimeout(esProperties.getSocketTimeout())
+            .setConnectTimeout(esProperties.getConnectTimeout())
+            .setConnectionRequestTimeout(esProperties.getConnectionRequestTimeout())
         );
         RestClient restClient = builder.build();
         ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());

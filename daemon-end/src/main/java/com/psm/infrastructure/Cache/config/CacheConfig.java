@@ -4,7 +4,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.psm.infrastructure.Cache.decorator.MultiLevelCacheConfig;
 import com.psm.infrastructure.Cache.decorator.MultiLevelCacheManager;
 import com.psm.infrastructure.Cache.decorator.MultiLevelChannel;
+import com.psm.infrastructure.Cache.properties.CaffeineProperties;
+import com.psm.infrastructure.Cache.properties.RedisProperties;
+import com.psm.infrastructure.Cache.properties.RedissionProperties;
 import jakarta.annotation.PreDestroy;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -12,7 +16,6 @@ import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.redisson.config.TransportMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
@@ -29,10 +32,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@Setter
 @Configuration
 @EnableCaching
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
 public class CacheConfig {
+    @Autowired
+    private RedisProperties redisProperties;
+
+    @Autowired
+    private RedissionProperties redissionProperties;
+
+    @Autowired
+    private CaffeineProperties caffeineProperties;
+
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
@@ -55,31 +68,23 @@ public class CacheConfig {
     @Bean
     public Caffeine<Object, Object> caffeine() {
     	return Caffeine.newBuilder()
-            .expireAfterWrite(10, TimeUnit.MINUTES)
-            .initialCapacity(100)
-            .maximumSize(1000)
+            .expireAfterWrite(caffeineProperties.getExpireAfterWrite(), TimeUnit.MINUTES)
+            .initialCapacity(caffeineProperties.getInitialCapacity())
+            .maximumSize(caffeineProperties.getMaximumSize())
             .weakKeys().recordStats();
     }
-
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
-
-    @Value("${spring.data.redis.port}")
-    private String redisPort;
-
-    @Value("${spring.data.redis.password}")
-    private String redisPassword;
 
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.setTransportMode(TransportMode.NIO);
         SingleServerConfig singleServerConfig = config.useSingleServer();
-        singleServerConfig.setAddress("redis://"+redisHost+":"+redisPort);
-        singleServerConfig.setPassword(redisPassword);
-        RedissonClient redisson = Redisson.create(config);
-
-        return redisson;
+        singleServerConfig.setAddress("redis://"+redisProperties.getHost()+":"+redisProperties.getPort());
+        singleServerConfig.setPassword(redisProperties.getPassword());
+        singleServerConfig.setConnectionPoolSize(redissionProperties.getConnectionPoolSize()); // 每个节点的连接池大小
+        singleServerConfig.setConnectionMinimumIdleSize(redissionProperties.getConnectionMinimumIdleSize()); // 可选：设置最小空闲连接数
+        config.setThreads(redissionProperties.getThreads()); // Redisson 内部线程数
+        return Redisson.create(config);
     }
 
     /**

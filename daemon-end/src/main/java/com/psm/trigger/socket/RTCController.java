@@ -39,7 +39,8 @@ public class RTCController implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 创建一个名字空间
-        SocketIONamespace RTCSignaling = socketIOServer.addNamespace("/RTC");
+        String namespace = "/RTC";
+        SocketIONamespace RTCSignaling = socketIOServer.addNamespace(namespace);
 
         // 添加校验token监听器
         RTCSignaling.addAuthTokenListener((authToken, client)->{
@@ -58,12 +59,12 @@ public class RTCController implements CommandLineRunner {
         // 添加连接监听器
         RTCSignaling.addConnectListener(client -> {
             // 添加本地用户
-            socketIOApi.addLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
+            socketIOApi.addLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
         });
 
         RTCSignaling.addDisconnectListener(client -> {
             // 移除用户在线用户列表
-            socketIOApi.removeLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()));
+            socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
         });
 
         // 添加创建房间监听器

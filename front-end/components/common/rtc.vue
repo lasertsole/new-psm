@@ -8,7 +8,7 @@
     import DPlayer from 'dplayer';
 
     const dplayerDom:Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>();
-    let dp:DPlayer;
+    let dp:DPlayer | null = null;
     onMounted(()=>{
         dp = new DPlayer({
             container: dplayerDom.value,
@@ -16,6 +16,10 @@
                 url: 'demo.mp4',
             },
         });
+    });
+
+    defineExpose({
+        dp
     });
 </script>
 

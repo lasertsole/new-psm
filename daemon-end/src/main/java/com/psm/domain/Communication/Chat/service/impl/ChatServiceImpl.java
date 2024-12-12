@@ -7,7 +7,6 @@ import com.psm.domain.Communication.Chat.entity.ChatDO;
 import com.psm.domain.Communication.Chat.entity.ChatDTO;
 import com.psm.domain.Communication.Chat.repository.ChatDB;
 import com.psm.domain.Communication.Chat.service.ChatService;
-import com.psm.domain.Communication.Chat.types.convertor.ChatConvertor;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
@@ -34,6 +33,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Autowired
     private SocketIOApi socketIOApi;
+
+    private final String namespace = "/DM";
 
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
@@ -73,7 +74,7 @@ public class ChatServiceImpl implements ChatService {
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void receiveMessage(ChatBO chatBO) {
         // 如果本服务器存在目标用户socket，则把信息交付给目标用户
-        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(String.valueOf(chatBO.getTgtUserId()));
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, String.valueOf(chatBO.getTgtUserId()));
         if (Objects.nonNull(tgtClient)){
             tgtClient.sendEvent("receiveMessage", ChatDTO.fromBO(chatBO));
         };

@@ -98,7 +98,6 @@ public class MultiLevelCache implements Cache {
     @Override
     public void put(Object key, Object value) {
         this.topic.publish(List.of(key, value));//广播要存入的信息
-        localCache.put(key, value);
         redissonCache.put(key, value);
     }
 

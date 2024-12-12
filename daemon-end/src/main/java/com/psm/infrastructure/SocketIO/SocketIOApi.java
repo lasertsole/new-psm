@@ -23,20 +23,20 @@ public class SocketIOApi {
     // 存储用户id和对应的socket的映射（因为websocket连接在本地主机，所以不需要考虑多节点问题）
     private final Map<String, SocketIOClient> localUserIdMapClient = new ConcurrentHashMap<>();
 
-    public void addLocalUser(String userId, SocketIOClient client) {
-        localUserIdMapClient.put(userId, client);
+    public void addLocalUser(String namespace, String key, SocketIOClient client) {
+        localUserIdMapClient.put(namespace + key, client);
     }
 
-    public SocketIOClient getLocalUserSocket(String userId) {
-        return localUserIdMapClient.get(userId);
+    public SocketIOClient getLocalUserSocket(String namespace, String key) {
+        return localUserIdMapClient.get(namespace + key);
     }
 
-    public void removeLocalUser(String userId) {
-        localUserIdMapClient.remove(userId); //尝试从 Map 中移除一个不存在的键（key），操作是安全的，不会抛出异常
+    public void removeLocalUser(String namespace, String userId) {
+        localUserIdMapClient.remove(namespace + userId); //尝试从 Map 中移除一个不存在的键（key），操作是安全的，不会抛出异常
     }
 
-    public Boolean createSocketRoom(Room room) {
-        String key = "socketRoom:"+room.getRoomId();
+    public Boolean createSocketRoom(String namespace, Room room) {
+        String key = namespace + room.getRoomId();
         if (Objects.nonNull(roomCache.get(key))) return false;
 
         Set<String> userIdSet = new HashSet<String>();
@@ -47,28 +47,28 @@ public class SocketIOApi {
         return true;
     }
 
-    public Room getSocketRoom(String roomId) {
-        return roomCache.get("socketRoom:"+roomId, Room.class);
+    public Room getSocketRoom(String namespace, String roomId) {
+        return roomCache.get(namespace + roomId, Room.class);
     }
 
-    public void addUserToSocketRoom(String roomId, String userId) {
-        Room room = getSocketRoom(roomId);
+    public void addUserToSocketRoom(String namespace, String roomId, String userId) {
+        Room room = getSocketRoom(namespace, roomId);
         room.getMemberIdSet().add(userId);
-        roomCache.put("socketRoom:"+roomId, room);
+        roomCache.put(namespace + roomId, room);
     }
 
-    public void removeUserFromSocketRoom(String roomId, String userId) {
-        Room room = getSocketRoom(roomId);
+    public void removeUserFromSocketRoom(String namespace, String roomId, String userId) {
+        Room room = getSocketRoom(namespace, roomId);
         Set<String> memberIdSet = room.getMemberIdSet();
         memberIdSet.remove(userId);
         if (memberIdSet.isEmpty()) {
-            roomCache.evict("socketRoom:"+roomId);
+            roomCache.evict(namespace + roomId);
         } else {
-            roomCache.put("socketRoom:"+roomId, room);
+            roomCache.put(namespace + roomId, room);
         }
     }
 
-    public void destroySocketRoom(String roomId) {
-        roomCache.evict("socketRoom:"+roomId);
+    public void destroySocketRoom(String namespace, String roomId) {
+        roomCache.evict(namespace + roomId);
     }
 }

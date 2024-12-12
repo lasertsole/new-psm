@@ -27,6 +27,8 @@ public class RTCServiceImpl implements RTCService {
     @Autowired
     private SocketIOApi socketIOApi;
 
+    private final String namespace = "/RTC";
+
     @Override
     public boolean createRoom(SocketIOClient srcClient, Room room) {
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
@@ -35,18 +37,18 @@ public class RTCServiceImpl implements RTCService {
         String oldRoomId = (String) srcClient.get("rtcRoomId");
 
         if (Objects.nonNull(oldRoomId)) { // 如果有，则将用户从原来的房间移除
-            socketIOApi.removeUserFromSocketRoom(oldRoomId, userId);
+            socketIOApi.removeUserFromSocketRoom(namespace, oldRoomId, userId);
             srcClient.del("rtcRoomId");// 清空房间号属性
         }
 
         boolean result = false;
         String newRoomId = room.getRoomId();
         // 创建房间，并获取房间创建结果,如果为true，则创建房间成功，为false，则说明已有相同的房间号被使用，创建失败
-        if(socketIOApi.createSocketRoom(room)) {// 创建成功时设置用户的房间号属性
+        if(socketIOApi.createSocketRoom(namespace, room)) {// 创建成功时设置用户的房间号属性
             srcClient.set("rtcRoomId", newRoomId);
             result = true;
         } else {// 创建失败时，则判断已有房间号的主人是否是当前用户，如果是，则用户可以直接使用该房间
-            Room room1 = socketIOApi.getSocketRoom(newRoomId);
+            Room room1 = socketIOApi.getSocketRoom(namespace, newRoomId);
             if(userId.equals(room1.getRoomOwnerId()) && room1.getRoomType().equals("DRTC")) {
                 srcClient.set("rtcRoomId", newRoomId);
                 result = true;
@@ -72,7 +74,7 @@ public class RTCServiceImpl implements RTCService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardInviteJoinRoom(RoomInvitation roomInvitation) {
-        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(roomInvitation.getTgtUserId());
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, roomInvitation.getTgtUserId());
         if (Objects.isNull(tgtClient)) return;
 
         tgtClient.sendEvent("inviteJoinRoom", roomInvitation);
@@ -82,21 +84,21 @@ public class RTCServiceImpl implements RTCService {
     public String agreeJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
         String roomId = roomInvitation.getRoomId();
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
-        Room socketRoom = socketIOApi.getSocketRoom(roomId);
+        Room socketRoom = socketIOApi.getSocketRoom(namespace, roomId);
         // 判断要加入的房间是否还存在,如果不存在，则抛出异常
-        if (Objects.isNull(socketIOApi.getSocketRoom(roomId))) throw new ClientException("房间不存在");
+        if (Objects.isNull(socketIOApi.getSocketRoom(namespace, roomId))) throw new ClientException("房间不存在");
 
         // 如果房间是DRTC(一对一)类型,且房间人数大于等于2人，则说明房间已满，抛出异常
         if (socketRoom.getMemberIdSet().size()>=2) throw new ClientException("房间已满");
 
         // 如果当前用户已加入其他rtc房间,则退出该房间
         if (Objects.nonNull(srcClient.get("rtcRoomId"))) {
-            socketIOApi.removeUserFromSocketRoom((String) srcClient.get("rtcRoomId"), userId);
+            socketIOApi.removeUserFromSocketRoom(namespace, (String) srcClient.get("rtcRoomId"), userId);
             srcClient.del("rtcRoomId");
         };
 
         // 当前用户加入目标房间
-        socketIOApi.addUserToSocketRoom(roomId, userId);
+        socketIOApi.addUserToSocketRoom(namespace, roomId, userId);
         srcClient.set("rtcRoomId", roomId);
 
         // 将加入房间的信息，通知该房间的其他用户
@@ -111,11 +113,11 @@ public class RTCServiceImpl implements RTCService {
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardAgreeJoinRoom(RoomInvitation roomInvitation) {
         // 从Cache中获取出房间的所有用户
-        Room socketRoom = socketIOApi.getSocketRoom(roomInvitation.getRoomId());
+        Room socketRoom = socketIOApi.getSocketRoom(namespace, roomInvitation.getRoomId());
 
         // 找出本服务器上在房间内的用户并进行通知
         socketRoom.getMemberIdSet().forEach(userId -> {
-            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(userId);
+            SocketIOClient socketIOClient = socketIOApi.getLocalUserSocket(namespace, userId);
             if (Objects.isNull(socketIOClient)) return;
             socketIOClient.sendEvent("agreeJoinRoom", roomInvitation);
         });
@@ -137,7 +139,7 @@ public class RTCServiceImpl implements RTCService {
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardRejectJoinRoom(RoomInvitation roomInvitation) {
         // 找出本服务器上在邀请的用户并进行通知
-        SocketIOClient localUserSocket = socketIOApi.getLocalUserSocket(roomInvitation.getSrcUserId());
+        SocketIOClient localUserSocket = socketIOApi.getLocalUserSocket(namespace, roomInvitation.getSrcUserId());
 
         // 如果用户不在本服务器上，则直接返回
         if (Objects.isNull(localUserSocket)) return;
@@ -146,10 +148,10 @@ public class RTCServiceImpl implements RTCService {
         localUserSocket.sendEvent("rejectJoinRoom", roomInvitation);
 
         // 如果房间是DRTC(一对一)类型,则直接删除该房间
-        Room socketRoom = socketIOApi.getSocketRoom(roomInvitation.getRoomId());//获取房间类型,从Cache拿房间类型而不是从roomInvitation变量拿,防止被邀请方伪造房间类型
+        Room socketRoom = socketIOApi.getSocketRoom(namespace, roomInvitation.getRoomId());//获取房间类型,从Cache拿房间类型而不是从roomInvitation变量拿,防止被邀请方伪造房间类型
         String roomType = socketRoom.getRoomType();
         if ("DRTC".equals(roomType)) {
-            socketIOApi.destroySocketRoom(roomInvitation.getRoomId());
+            socketIOApi.destroySocketRoom(namespace, roomInvitation.getRoomId());
         };
     }
 
@@ -167,7 +169,7 @@ public class RTCServiceImpl implements RTCService {
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardSwapSDP(RTCSwap rtcSwap) {
         // 如果本服务器有目标对象，则把信息交付给目标用户
-        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(rtcSwap.getTgtUserId());
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, rtcSwap.getTgtUserId());
         if (Objects.isNull(tgtClient)) return;
 
         tgtClient.sendEvent("swapSDP", rtcSwap);
@@ -187,7 +189,7 @@ public class RTCServiceImpl implements RTCService {
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardSwapCandidate(RTCSwap rtcSwap) {
         // 如果本服务器有目标对象，则把信息交付给目标用户
-        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(rtcSwap.getTgtUserId());
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, rtcSwap.getTgtUserId());
         if (Objects.isNull(tgtClient)) return;
 
         tgtClient.sendEvent("swapSDP", rtcSwap);
@@ -210,11 +212,11 @@ public class RTCServiceImpl implements RTCService {
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void forwardLeaveRoom(RTCSwap rtcSwap) {
         // 从Cache中获取出房间的所有用户
-        Room socketRoom = socketIOApi.getSocketRoom(rtcSwap.getRoomId());
+        Room socketRoom = socketIOApi.getSocketRoom(namespace, rtcSwap.getRoomId());
 
         // 找出本服务器上在房间内的用户并进行通知
         socketRoom.getMemberIdSet().forEach(userId -> {
-            SocketIOClient tarClient = socketIOApi.getLocalUserSocket(userId);
+            SocketIOClient tarClient = socketIOApi.getLocalUserSocket(namespace, userId);
             if (Objects.isNull(tarClient)) return;
             tarClient.sendEvent("leaveRoom", rtcSwap);
         });

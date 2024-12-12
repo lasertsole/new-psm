@@ -60,7 +60,7 @@ public class ChatEventListener {
                 // 设置消费者分组。
                 .setConsumerGroup(consumerGroup)
                 // 设置预绑定的订阅关系。
-                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("DMForward", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
+                .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("*", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
                 // 设置消费监听器。
                 .setMessageListener(messageView -> {
                     // 获取消息体
@@ -71,8 +71,20 @@ public class ChatEventListener {
 
                     // 将字节数组转换为字符串
                     String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
-                    ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
-                    chatService.storageMessageDM(messageBody);
+
+                    // 获取消息的标签
+                    String tag = messageView.getTag().orElse("");
+
+                    switch (tag) {
+                        case "DMForward":
+                            ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
+                            chatService.storageMessageDM(messageBody);
+                            break;
+                        default:
+                            log.warn("Unknown tag: {}", tag);
+                            break;
+                    }
+
                     return ConsumeResult.SUCCESS;
                 })
                 .build();
@@ -82,7 +94,7 @@ public class ChatEventListener {
             // 设置消费者分组(广播模式每个服务器主题不同)。
             .setConsumerGroup(workerId+datacenterId)
             // 设置预绑定的订阅关系。
-            .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("DMForward", FilterExpressionType.TAG)))
+            .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("*", FilterExpressionType.TAG)))
             // 设置消费监听器。
             .setMessageListener(messageView -> {
                 // 获取消息体
@@ -93,8 +105,20 @@ public class ChatEventListener {
 
                 // 将字节数组转换为字符串
                 String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
-                ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
-                chatService.receiveMessage(messageBody);
+
+                // 获取消息的标签
+                String tag = messageView.getTag().orElse("");
+
+                switch (tag) {
+                    case "DMForward":
+                        ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
+                        chatService.receiveMessage(messageBody);
+                        break;
+                    default:
+                        log.warn("Unknown tag: {}", tag);
+                        break;
+                }
+
                 return ConsumeResult.SUCCESS;
             })
             .build();

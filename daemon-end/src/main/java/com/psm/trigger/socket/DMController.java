@@ -38,10 +38,12 @@ public class DMController implements CommandLineRunner {
     @Autowired
     private SocketIOApi socketIOApi;
 
+    private final String namespace = "/DM";
+
     @Override
     public void run(String... args) throws Exception {
         // 创建一个名字空间
-        SocketIONamespace dm = socketIOServer.addNamespace("/DM");
+        SocketIONamespace dm = socketIOServer.addNamespace(namespace);
 
         // 添加校验token监听器
         dm.addAuthTokenListener((authToken, client)->{
@@ -60,7 +62,7 @@ public class DMController implements CommandLineRunner {
         // 添加连接监听器
         dm.addConnectListener(client -> {
             // 添加本地用户
-            socketIOApi.addLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
+            socketIOApi.addLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
 
             // 向客户端发送配置信息
             Map<String, Object> map = new HashMap<>();
@@ -72,7 +74,7 @@ public class DMController implements CommandLineRunner {
 
         dm.addDisconnectListener(client -> {
             // 移除用户在线用户列表
-            socketIOApi.removeLocalUser(String.valueOf(((UserBO) client.get("userInfo")).getId()));
+            socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
         });
 
         // 添加私聊监听器

@@ -11,13 +11,14 @@ export class RTCService {// 单例模式
     private RTCSocket: Socket;
     private interval: NodeJS.Timeout|null = null;
 
-    private inviteJoinArr: RoomInvitation[] = [];// 短时间内的多条RTC邀请用列表缓存
+    private videoDom: HTMLVideoElement | null = null;
+    public inviteJoinArr: Reactive<RoomInvitation[]> = reactive<RoomInvitation[]>([]);// 短时间内的多条RTC邀请用列表缓存
     private ownRoom: Ref<Room | null> = ref<Room | null>(null);// 当前用户房间信息
-    private userMediaConstraints: Reactive<MediaStreamConstraints> = reactive({ // 当前音视频媒体配置
+    private userMediaConstraints: Reactive<MediaStreamConstraints> = reactive<MediaStreamConstraints>({ // 当前音视频媒体配置
         audio: true,
         video: true
     });
-    private displayMediaConstraints: Reactive<DisplayMediaStreamOptions> = reactive({ // 当前投屏媒体配置
+    private displayMediaConstraints: Reactive<DisplayMediaStreamOptions> = reactive<DisplayMediaStreamOptions>({ // 当前投屏媒体配置
       video: true,
       audio: false // 通常不包括音频
     });
@@ -28,6 +29,7 @@ export class RTCService {// 单例模式
     private swapSDPHooks: Array<Function> = [];
     private swapCandidateHooks: Array<Function> = [];
     private leaveRoomHooks: Array<Function> = [];
+    private trackBulidHooks: Array<Function> = [];
 
     // 添加监听邀请事件
     public onInviteJoinRoom(hook: Function) {
@@ -57,6 +59,11 @@ export class RTCService {// 单例模式
     // 监听离开房间事件
     public onLeaveRoom(hook: Function) {
         this.leaveRoomHooks.push(hook);
+    };
+
+    // 监听轨道事件
+    public onTrackBulid(hook: Function) {
+        this.trackBulidHooks.push(hook);
     };
 
     // 获取本地音视频流
@@ -108,8 +115,15 @@ export class RTCService {// 单例模式
                     data: JSON.stringify(event.candidate)
                 };
 
-                this.RTCSocket.emit('swapCandidate', candidateSwap);
+                this.RTCSocket.timeout(5000).emit('swapCandidate', candidateSwap);
             };
+        };
+
+        // 监听双方相互建立音频轨道事件
+        peer.rtcPeerConnection.ontrack = (event: RTCTrackEvent) => {
+            this.videoDom!.srcObject = event.streams[0];
+            this.videoDom!.play();
+            this.trackBulidHooks.forEach(hook => hook(event));
         };
 
         this.ownRoom.value.peerMap!.set(userId, peer);
@@ -156,7 +170,7 @@ export class RTCService {// 单例模式
             let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
             if(!userIds.includes(roomInvitation.srcUserId)) {
                 // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
-                this.RTCSocket.emit("rejectJoinRoom", roomInvitation.roomId);
+                this.RTCSocket.timeout(5000).emit("rejectJoinRoom", roomInvitation.roomId);
                 return;
             };
 
@@ -207,7 +221,7 @@ export class RTCService {// 单例模式
             // 触发同意加入房间成功钩子函数
             this.agreeJoinRoomHooks.forEach(hook => hook(roomInvitation));
 
-            this.RTCSocket.emit('swapSDP', offerSDP);
+            this.RTCSocket.timeout(5000).emit('swapSDP', offerSDP);
         });
 
         // 监听拒绝加入房间事件
@@ -262,7 +276,7 @@ export class RTCService {// 单例模式
                     data: JSON.stringify(answer)
                 };
 
-                this.RTCSocket.emit('swapSDP', answerSDP);
+                this.RTCSocket.timeout(5000).emit('swapSDP', answerSDP);
             };
         });
 
@@ -302,7 +316,7 @@ export class RTCService {// 单例模式
     };
 
     // 创建房间
-    public createRoom(resolve?: Function, reject?: Function):void {
+    public createRoom(RTCWindowDom: HTMLVideoElement, resolve?: Function, reject?: Function):void {
         const room: Room = {
             roomId: userInfo.id!,
             roomOwnerId: userInfo.id!,
@@ -310,7 +324,7 @@ export class RTCService {// 单例模式
             roomType: RTCEnum.DRTC,
         };
 
-        this.RTCSocket.emit("createRoom", room, (isSuccussful:boolean):void=> {// 加入房间，房间号为用户id
+        this.RTCSocket.timeout(5000).emit("createRoom", room, (err:any, isSuccussful:boolean):void=> { // 加入房间，房间号为用户id
             if(!isSuccussful) {
                 reject&&reject();// 调用失败回调函数
                 return;
@@ -341,7 +355,7 @@ export class RTCService {// 单例模式
             tgtUserName
         };
 
-        this.RTCSocket.emit("inviteJoinRoom", roomInvitation, (timestamp:string):void=> {// 加入房间，房间号为用户id
+        this.RTCSocket.timeout(5000).emit("inviteJoinRoom", roomInvitation, (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
             if(!isTimestamp(timestamp)){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
@@ -353,7 +367,7 @@ export class RTCService {// 单例模式
 
     // 同意加入房间
     public async agreeJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):Promise<void> {
-        this.RTCSocket.emit("agreeJoinRoom", roomInvitation, (timestamp:string)=> {// 加入房间，房间号为用户id
+        this.RTCSocket.timeout(5000).emit("agreeJoinRoom", roomInvitation, (err:any, timestamp:string)=> {// 加入房间，房间号为用户id
             if(!isTimestamp(timestamp)){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
@@ -376,7 +390,7 @@ export class RTCService {// 单例模式
 
     // 拒绝加入房间
     public rejectJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):void {
-        this.RTCSocket.emit("rejectJoinRoom", roomInvitation, (timestamp:string):void=> {// 加入房间，房间号为用户id
+        this.RTCSocket.timeout(5000).emit("rejectJoinRoom", roomInvitation, (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
             if(!isTimestamp(timestamp)){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
@@ -393,7 +407,7 @@ export class RTCService {// 单例模式
     // 离开房间
     public leaveRoom(resolve?: Function, reject?: Function): void {
         this.ownRoom.value = null;
-        this.RTCSocket.emit("leaveRoom", (timestamp:string):void=> {// 加入房间，房间号为用户id
+        this.RTCSocket.timeout(5000).emit("leaveRoom", (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
             if(!isTimestamp(timestamp)){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;

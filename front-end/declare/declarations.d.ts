@@ -25,6 +25,7 @@ declare module 'rxjs' {
 
 declare module 'dplayer' {
   export default class DPlayer{
+    video:  HTMLVideoElement;
     constructor({
       container: HTMLElement,
       video: {

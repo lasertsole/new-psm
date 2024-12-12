@@ -34,7 +34,7 @@ spring:
       lettuce:
         pool:
           #最大连接数
-          max-active: 32
+          max-active: 16
           #最大阻塞等待时间数（负数表示没有限制）
           max-wait: -1
           #最大空闲
@@ -43,6 +43,27 @@ spring:
           min-idle: 0
         #连接超时时间
         timeout: 2000
+
+#redisson配置
+    redission:
+      threads: 8
+      connection-pool-size: 8
+      connection-minimum-idle-size: 4
+
+# caffeine配置
+    caffeine:
+      expire-after-write: 10 # 单位分钟
+      initial-capacity: 100
+      maximum-size: 1000
+
+# es配置
+    elastic-search:
+      host: 127.0.0.1
+      scheme: http
+      port: 9200
+      socket-timeout: 60000 # 设置套接字超时时间为60秒
+      connect-timeout: 60000 # 设置连接超时时间为60秒
+      connection-request-timeout: 60000 # 设置连接请求超时时间为60秒
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -56,6 +77,9 @@ spring:
       username: admin
       password: 123456
       driver-class-name: org.postgresql.Driver
+      initial-size: 3 # 初始连接数
+      min-idle: 2 # 最小空闲连接数
+      max-active: 5 # 最大活跃连接数
 
   security:
     #jwt配置
@@ -164,7 +188,7 @@ socketio:
   # boss线程组大小
   boss-count: 1
   # 工作线程组大小
-  work-count: 100
+  work-count: 10
   # 是否允许自定义请求，默认false
   allow-custom-requests: true
   # 协议升级超时时间（毫秒），默认10秒。HTTP握手升级为ws协议超时时间
@@ -188,7 +212,7 @@ server:
     # io线程池数量
     io-threads: 8
     # 工作线程池数量
-    worker-threads: 200
+    worker-threads: 20
     # 缓冲池大小
     buffer-pool: 16M
   protocol: http

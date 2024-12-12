@@ -7,7 +7,7 @@ import { fromEvent, concatAll, concatMap, scan, map, filter, tap } from "rxjs";
 import type { ContactsItem, MessageItem, MessageDBItem, ContactsDBItem } from '@/types/chat';
 
 /*************************************以下为DM命名空间逻辑****************************************/
-export const DMContactsItems: Reactive<ContactsItem>[] = reactive([]);// 联系人列表
+export const DMContactsItems: Reactive<ContactsItem[]> = reactive<ContactsItem[]>([]);// 联系人列表
 export const nowDMContactsIndex: Ref<number> = ref(-1);// 当前聊天窗口在联系人列表中的索引
 export const isInitDM:Ref<boolean> = ref<boolean>(false);// 是否已初始化
 
@@ -228,7 +228,6 @@ export class DMService { // 单例模式
     fromEvent(this.DMSocket, "receiveMessage").pipe(concatMap(async (messageItem:MessageItem):Promise<void> =>{
       // 通过自旋堵塞确保本函数是在初始化完成后才执行，否则会导致消息丢失
       while(!isInitDM.value) {await new Promise(resolve => setTimeout(resolve, 500));};
-
       let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
       let index = userIds.indexOf(messageItem.srcUserId!);
 

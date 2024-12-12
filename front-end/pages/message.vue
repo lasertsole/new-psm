@@ -101,7 +101,7 @@
                         <template v-for="(item, index) in deviceControl.video">
                             <div :active="item.active?item.active:'undefined'" @click="item.active?(item.active=='true'?item.active='false':item.active='true'):item.active='true'">
                                 <div class="icon">
-                                    <d></d>
+                                    <div></div>
                                     <svg t="1733552418073" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1485" v-if="item.type=='screen'">
                                         <path d="M972.8 768H537.6v128h256v51.2H230.4v-51.2h256v-128H51.2a51.2 51.2 0 0 1-51.2-51.2V128a51.2 51.2 0 0 1 51.2-51.2h921.6a51.2 51.2 0 0 1 51.2 51.2v588.8a51.2 51.2 0 0 1-51.2 51.2z m0-614.4a25.6 25.6 0 0 0-25.6-25.6H76.8a25.6 25.6 0 0 0-25.6 25.6v537.6a25.6 25.6 0 0 0 25.6 25.6h870.4a25.6 25.6 0 0 0 25.6-25.6V153.6z" fill="#1296db" p-id="1486"></path>
                                     </svg>
@@ -136,18 +136,24 @@
 
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button @click="rtcDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="rtcDialogVisible = false">确认</el-button>
+                    <el-button @click="rtcDialogVisible=false">取消</el-button>
+                    <el-button type="primary" @click="openRTCWindow">确认</el-button>
                 </div>
             </template>
         </el-dialog>
+        <video class="absolute" ref="rtcWindowDom"></video>
+        <template v-show="showRTCWindow">
+            <!-- <CommonRtc ref="rtcWindowDom"></CommonRtc> -->
+        </template>
     </div>
 </template>
 
 <script lang="ts" setup>
+    import DPlayer from 'dplayer';
     import type { Reactive } from 'vue';
-    import type { Devices } from "@/types/rtc";
     import type { ContactsItem } from '@/types/chat';
+    import type { Devices, RTCSwap } from "@/types/rtc";
+    import CommonRtc from '@/components/common/rtc.vue';
 
     const message:Ref<string> = ref<string>("");
 
@@ -161,16 +167,18 @@
             return false;
         }
         return true;
-    }
+    };
 
     // 获取聊天记录栏对象
     const messageList:Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>();
     // 聊天记录列表滚动到底部
     function scrollToBottom():void {
         messageList.value!.scrollTop=messageList.value!.scrollHeight;
-    }
+    };
         
-    let DMServiceInstance: DMService;
+    let DMServiceInstance: DMService;//DM服务实例
+    let RTCServiceInstance: RTCService;//RTC服务实例
+
     // 发送信息
     const send = debounce(():void=>{
         if(!validateMessage(message.value)) { return; };
@@ -194,18 +202,27 @@
         DMServiceInstance=DMService.getInstance();
         // 初始化私信
         DMServiceInstance.initDM();
+
+        // 如果RTCServiceInstance不存在，则获取实例，以及添加链接建立事件的回调
+        if(!RTCServiceInstance){
+            RTCServiceInstance = RTCService.getInstance();// 获取实例
+            RTCServiceInstance.onSwapCandidate((remoteSDP: RTCSwap)=>{// 添加链接建立事件的回调
+                rtcDialogVisible.value = true;
+            });
+        };
     }, 1000));
 
-    const mask:Ref<boolean> = ref<boolean>(false);
-    let RTCServiceInstance: RTCService;
-
-    // 发起DRTC请求
-    const sendRTCRequest = debounce(()=>{
-        mask.value=true;
-
+    const rtcWindowDom:Ref<HTMLVideoElement | undefined> = ref<HTMLVideoElement | undefined>();    const mask:Ref<boolean> = ref<boolean>(false);// 控制显示遮罩
+    const showRTCWindow:Ref<boolean> = ref<boolean>(false); // 控制显示RTC播放器窗口
+    const sendRTCRequest = debounce(()=> {
+        if(!rtcWindowDom.value) {
+            ElMessage.warning("音频播放器未准备完成。");
+            return;
+        };
+        
         new Promise((resolve)=>{
-            RTCServiceInstance = RTCService.getInstance();
             RTCServiceInstance.createRoom(
+                rtcWindowDom.value!,
                 ()=>{
                     resolve(true);
                 },
@@ -230,7 +247,11 @@
         }).finally(()=>{
             mask.value=false;
         });
-        // rtcDialogVisible.value = true;
+    }, 1000);
+
+    const openRTCWindow = debounce(()=>{
+        showRTCWindow.value=true;
+        rtcDialogVisible.value = false;
     }, 1000);
 
     const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
