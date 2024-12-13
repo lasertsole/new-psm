@@ -48,7 +48,7 @@ public class ChatBO implements Serializable, BO<ChatDTO, ChatDO> {
         return chatBOPage;
     }
 
-    public String generateTimestamp() {
+    public String generateServerTimestamp() {
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
         String timestamp = TimestampUtils.generateUTCTimestamp(formatter);

@@ -200,8 +200,6 @@
     onActivated(debounce(()=>{
         if(!userInfo.isLogin) return;
         DMServiceInstance=DMService.getInstance();
-        // 初始化私信
-        DMServiceInstance.initDM();
 
         // 如果RTCServiceInstance不存在，则获取实例，以及添加链接建立事件的回调
         if(!RTCServiceInstance){

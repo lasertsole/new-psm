@@ -30,6 +30,9 @@
   let RTCServiceInstance: RTCService;
   on("online", ()=>{
     DMServiceInstance = DMService.getInstance();
+    // 初始化私信
+    DMServiceInstance.initDM();
+    
     RTCServiceInstance = RTCService.getInstance();
   });
 

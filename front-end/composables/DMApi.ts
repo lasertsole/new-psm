@@ -266,8 +266,7 @@ export class DMService { // 单例模式
         let srcUserInfo: UserInfo | null = await getUserById(messageItem.srcUserId!);
         if(!srcUserInfo){ // 如果是虚假用户，则直接返回
           return;
-        }
-        else{
+        } else{
           // 构建联系人对象
           let newContactItem: ContactsDBItem = {
             tgtUserId: messageItem.srcUserId!,
@@ -287,6 +286,14 @@ export class DMService { // 单例模式
             messageItems: [reactive(messageItem)]
           }));
 
+          // 若当前联系人索引大于0，则因为头部插入新联系人，所以索引值加1
+          if(nowDMContactsIndex.value>=0) {
+            nowDMContactsIndex.value = nowDMContactsIndex.value+1; 
+          };
+
+          // 等待下一帧再继续执行，确保DOM更新
+          await nextTick();
+
           //将新用户信息插入到indexedDB
           db.ContactsDBItems.add(newContactItem);
 
@@ -298,6 +305,7 @@ export class DMService { // 单例模式
             maxUserId: max( messageItem.srcUserId!, messageItem.tgtUserId! ), 
             minUserId: min( messageItem.srcUserId!, messageItem.tgtUserId! ),
           });
+
         };
       }
     })).subscribe((x:any)=>{});
@@ -420,25 +428,21 @@ export class DMService { // 单例模式
     // 创建一个联系人对象
     let constactsObj:ContactsItem = DMContactsItems[nowDMContactsIndex.value];
     
-    // 创建一个消息对象
-    let messageObj:MessageItem = {
+    // 创建一个响应式消息对象
+    const messageItem: Reactive<MessageItem> = reactive<MessageItem>({
       type: 'text',
       content: message,
       srcUserId: userInfo.id,
       tgtUserId: constactsObj.tgtUserId,
       isDeleted: false,
       status: 'pending'
-    };
-    
-    // 根据消息对象，创建一个响应式消息对象
-    const messageItem: Reactive<MessageItem> = reactive<MessageItem>(messageObj);
+    });
     
     // 将消息对象添加到消息列表
     constactsObj.messageItems!.push(messageItem);
     
     // 生成发送信息时客户端的时间戳（UTC国际通用）,精确到微秒级别
     const formattedTimestamp = getUTCTimeNow();
-
     messageItem.timestamp = formattedTimestamp;
     
     // 发送消息
@@ -462,16 +466,16 @@ export class DMService { // 单例模式
       contactsDBItem.lastMessage = message;
       contactsDBItem = {
         ...contactsDBItem,
-        tgtUserId: messageObj.tgtUserId!,
-        srcUserId: messageObj.srcUserId!,
+        tgtUserId: messageItem.tgtUserId!,
+        srcUserId: messageItem.srcUserId!,
       };
       db.ContactsDBItems.put(contactsDBItem);
       
       // 将消息对象添加到indexedDB数据库
       let messageDBItem: MessageDBItem = {
-        ...messageObj,
-        maxUserId: max( messageObj.srcUserId!, messageObj.tgtUserId! ), 
-        minUserId: min( messageObj.srcUserId!, messageObj.tgtUserId! ),
+        ...messageItem,
+        maxUserId: max( messageItem.srcUserId!, messageItem.tgtUserId! ), 
+        minUserId: min( messageItem.srcUserId!, messageItem.tgtUserId! ),
       };
       db.MessageDBItems.add(messageDBItem);
 
@@ -479,6 +483,12 @@ export class DMService { // 单例模式
       constactsObj.lastTime = timestamp;
       constactsObj.lastMessage = message;
     });
+  };
+
+  // 点开联系人时改变索引事件
+  public async changeIndex(changeIndex: number) {
+    nowDMContactsIndex.value = changeIndex;
+    await nextTick();
   };
 
   private connect() {

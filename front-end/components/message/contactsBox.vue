@@ -30,12 +30,16 @@
         callBack: {type:Function, required: true},
     });
     
-    function clickEvent():void {
-        nowDMContactsIndex.value = props.index;
-        nextTick(()=>{
-            props.callBack();
-        });
+    async function clickEvent():void {
+        await DMServiceInstance.changeIndex(props.index);
+        props.callBack();
     };
+
+    let DMServiceInstance: DMService;//DM服务实例
+    onMounted(()=>{
+        if(!userInfo.isLogin) return;
+        DMServiceInstance=DMService.getInstance();
+    });
 </script>
 
 <style scoped lang="scss">

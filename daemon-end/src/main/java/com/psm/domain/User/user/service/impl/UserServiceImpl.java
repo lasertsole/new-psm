@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserBO getUserByID(Long id) {
         UserDO userDO;
-        LoginUser loginUser = loginUserRedis.getLoginUser("login:" + String.valueOf(id));
+        LoginUser loginUser = loginUserRedis.getLoginUser(String.valueOf(id));
         if (Objects.nonNull(loginUser)) {
             userDO = loginUser.getUserDO();
         } else {
@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断用户是否存在
-        if(Objects.isNull(userDO)){
+        if(Objects.nonNull(userDO)){
             return userDO.toBO();
         }
         else{// 用户不存在

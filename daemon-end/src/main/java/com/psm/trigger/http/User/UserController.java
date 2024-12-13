@@ -204,11 +204,9 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseDTO getUserByID(@PathVariable String id) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(id);
-
         try {
-            UserBO userBO = UserBO.fromDTO(userDTO);
+            UserBO userBO = new UserBO();
+            userBO.setId(Long.valueOf(id));
             // 获取用户信息
             userBO = userAdaptor.getUserById(userBO);
 

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -43,7 +44,7 @@ public class RTCController implements CommandLineRunner {
         SocketIONamespace RTCSignaling = socketIOServer.addNamespace(namespace);
 
         // 添加校验token监听器
-        RTCSignaling.addAuthTokenListener((authToken, client)->{
+        RTCSignaling.addAuthTokenListener((authToken, client)-> {
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
                 UserBO userBO = userAdaptor.authUserToken((String) map.get("token"));
@@ -65,6 +66,11 @@ public class RTCController implements CommandLineRunner {
         RTCSignaling.addDisconnectListener(client -> {
             // 移除用户在线用户列表
             socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
+
+            String roomId = (String) client.get("rtcRoomId");
+            if(Objects.nonNull(roomId)) {
+                socketIOApi.removeUserFromSocketRoom(namespace, roomId, String.valueOf(((UserBO) client.get("userInfo")).getId()));
+            }
         });
 
         // 添加创建房间监听器

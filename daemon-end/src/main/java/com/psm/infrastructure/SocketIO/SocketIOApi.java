@@ -59,10 +59,16 @@ public class SocketIOApi {
 
     public void removeUserFromSocketRoom(String namespace, String roomId, String userId) {
         Room room = getSocketRoom(namespace, roomId);
+
+        if (Objects.isNull(room)) throw new RuntimeException("room is not exist"); // 如果房间不存在，则抛出异常
+
         Set<String> memberIdSet = room.getMemberIdSet();
         memberIdSet.remove(userId);
-        if (memberIdSet.isEmpty()) {
-            roomCache.evict(namespace + roomId);
+
+        // 如果房间是DRTC(一对一)类型,则直接删除该房间
+        String roomType = room.getRoomType();
+        if (memberIdSet.isEmpty() || "DRTC".equals(roomType)) {
+            destroySocketRoom(namespace, roomId);
         } else {
             roomCache.put(namespace + roomId, room);
         }

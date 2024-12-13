@@ -172,6 +172,8 @@ export class RTCService {// 单例模式
                 // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
                 this.RTCSocket.timeout(5000).emit("rejectJoinRoom", roomInvitation.roomId);
                 return;
+            } else if( this.ownRoom.value && this.ownRoom.value.roomId == roomInvitation.roomId ) {// 如果已经进入邀请函所指房间，说明是重复信息，则直接忽略
+                return;
             };
 
             // 如果该邀请不存在邀请列表中，则将邀请放入邀请列表
@@ -185,18 +187,23 @@ export class RTCService {// 单例模式
 
         // 监听同意加入房间事件
         this.RTCSocket.on("agreeJoinRoom", async (roomInvitation: RoomInvitation):Promise<void>=> {
-            let room: Room | null = this.ownRoom.value;
-            let peerOne: PeerOne | null = null;
             // 如果房间不存在，抛出错误
-            if(!room){
-                throw new Error("room is not exist");
-            } else if(roomInvitation.tgtUserName == userInfo.name){ // 如果是加入房间的是当前用户,则跳过处理
+            if(roomInvitation.tgtUserName == userInfo.name){ // 如果是加入房间的是当前用户,则跳过处理
                 return;
-            } else if(!room.peerMap!.get(roomInvitation.tgtUserId)) { // peer不存在时，创建并初始化peer
-                await this.initPeer(roomInvitation.tgtUserId);
             };
 
-            peerOne = room.peerMap!.get(roomInvitation.tgtUserId)!;
+            const room:Room = {
+                roomId: roomInvitation.roomId!,
+                roomOwnerId: roomInvitation.roomOwnerId!,
+                roomName: roomInvitation.roomName,
+                roomType: roomInvitation.roomType,
+                peerMap: new Map<string, PeerOne>()
+            };
+            this.ownRoom.value = room;
+
+            await this.initPeer(roomInvitation.tgtUserId);
+
+            let peerOne: PeerOne = room.peerMap!.get(roomInvitation.tgtUserId)!;
             peerOne.name = roomInvitation.tgtUserName;
             let rtcPeerConnection:RTCPeerConnection = peerOne!.rtcPeerConnection;
 
@@ -325,7 +332,7 @@ export class RTCService {// 单例模式
         };
 
         this.RTCSocket.timeout(5000).emit("createRoom", room, (err:any, isSuccussful:boolean):void=> { // 加入房间，房间号为用户id
-            if(!isSuccussful) {
+            if(err) {
                 reject&&reject();// 调用失败回调函数
                 return;
             };
@@ -355,8 +362,8 @@ export class RTCService {// 单例模式
             tgtUserName
         };
 
-        this.RTCSocket.timeout(5000).emit("inviteJoinRoom", roomInvitation, (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
-            if(!isTimestamp(timestamp)){
+        this.RTCSocket.timeout(5000).emit("inviteJoinRoom", roomInvitation, (err:any, timestamp:string):void=> { // 加入房间，房间号为用户id
+            if(err){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
             };
@@ -366,32 +373,36 @@ export class RTCService {// 单例模式
     };
 
     // 同意加入房间
-    public async agreeJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):Promise<void> {
-        this.RTCSocket.timeout(5000).emit("agreeJoinRoom", roomInvitation, (err:any, timestamp:string)=> {// 加入房间，房间号为用户id
-            if(!isTimestamp(timestamp)){
+    public agreeJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):void {
+        console.log(resolve);
+        console.log(reject);
+        this.RTCSocket.timeout(5000).emit("agreeJoinRoom", roomInvitation, (err:any, timestamp:string):void=> { // 加入房间，房间号为用户id
+            console.log(err);
+            if(err){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
             };
 
+            this.inviteJoinArr.splice(0, this.inviteJoinArr.length);// 清空列表
+            console.log(this.inviteJoinArr);
+
+            // 更新房间信息
+            this.ownRoom.value = {
+                roomId: roomInvitation.roomId,
+                roomOwnerId: roomInvitation.roomOwnerId,
+                roomName: roomInvitation.roomName,
+                roomType: roomInvitation.roomType,
+                peerMap: new Map<string, PeerOne>(),
+            };
+
             resolve&&resolve(timestamp);
         });
-        
-        this.inviteJoinArr=[];// 清空列表
-
-        // 更新房间信息
-        this.ownRoom.value = {
-            roomId: roomInvitation.roomId,
-            roomOwnerId: roomInvitation.roomOwnerId,
-            roomName: roomInvitation.roomName,
-            roomType: roomInvitation.roomType,
-            peerMap: new Map<string, PeerOne>(),
-        };
     };
 
     // 拒绝加入房间
     public rejectJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):void {
         this.RTCSocket.timeout(5000).emit("rejectJoinRoom", roomInvitation, (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
-            if(!isTimestamp(timestamp)){
+            if(err){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
             };
@@ -408,7 +419,7 @@ export class RTCService {// 单例模式
     public leaveRoom(resolve?: Function, reject?: Function): void {
         this.ownRoom.value = null;
         this.RTCSocket.timeout(5000).emit("leaveRoom", (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
-            if(!isTimestamp(timestamp)){
+            if(err){
                 reject&&reject(timestamp);// 调用失败回调函数
                 return;
             };

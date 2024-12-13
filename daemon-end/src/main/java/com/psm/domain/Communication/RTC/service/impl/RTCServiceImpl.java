@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -86,15 +87,16 @@ public class RTCServiceImpl implements RTCService {
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
         Room socketRoom = socketIOApi.getSocketRoom(namespace, roomId);
         // 判断要加入的房间是否还存在,如果不存在，则抛出异常
-        if (Objects.isNull(socketIOApi.getSocketRoom(namespace, roomId))) throw new ClientException("房间不存在");
+        if (Objects.isNull(socketRoom)) throw new ClientException("房间不存在");
 
-        // 如果房间是DRTC(一对一)类型,且房间人数大于等于2人，则说明房间已满，抛出异常
-        if (socketRoom.getMemberIdSet().size()>=2) throw new ClientException("房间已满");
+        // 如果房间是DRTC(一对一)类型,且房间人数大于等于2人，且成员不包含自己，则说明房间已满，抛出异常(也用于保证操作的幂等性)
+        Set<String> memberIdSet = socketRoom.getMemberIdSet();
+        if (socketRoom.getRoomType().equals("DRTC") && memberIdSet.size()>=2 && !memberIdSet.contains(userId) ) throw new ClientException("房间已满");
 
-        // 如果当前用户已加入其他rtc房间,则退出该房间
-        if (Objects.nonNull(srcClient.get("rtcRoomId"))) {
-            socketIOApi.removeUserFromSocketRoom(namespace, (String) srcClient.get("rtcRoomId"), userId);
-            srcClient.del("rtcRoomId");
+        // 如果当前用户已加入rtc房间，并且房间号和邀请函的房间号不同,则退出已加入的房间
+        String joinedRoomId = (String) srcClient.get("rtcRoomId");
+        if (Objects.nonNull(joinedRoomId) && joinedRoomId.equals(roomId)) {
+            socketIOApi.removeUserFromSocketRoom(namespace, joinedRoomId, userId);
         };
 
         // 当前用户加入目标房间

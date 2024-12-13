@@ -58,16 +58,20 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public String sendMessage(SocketIOClient srcClient, ChatBO chatBO) throws ClientException {
+        // 设置用户最后发送时间
         srcClient.set("DMLastTime", chatBO.getTimestamp());
 
         // 获取来源用户id
         String srcUserId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
 
-        // 将消息发送到MQ
+        // 刷新chatBO内的时间戳为到达服务器时间(UTC国际化时间戳)，并将时间戳返回给客户端
+        String serverTimestamp = chatBO.generateServerTimestamp();
+
+        // 将消息发送到MQ，这里的chatBO时间戳已为到达服务器的时间戳.
         mqPublisher.publish(chatBO, "DMForward", "CHAT", srcUserId);
 
-        //生成返回时间戳(UTC国际化时间戳)
-        return chatBO.generateTimestamp();
+        //将时间戳返回给客户端
+        return serverTimestamp;
     }
 
     @Override

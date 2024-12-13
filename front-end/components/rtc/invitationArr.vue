@@ -18,7 +18,7 @@
             append-to-body
         >
             <div class="dialog-body">
-                <template v-for="(item, index) in RTCServiceInstance.inviteJoinArr">
+                <template v-for="(item, index) in RTCServiceInstance!.inviteJoinArr">
                 <div class="flex flex-col bg-white hover:bg-blue-100 transition-colors duration-300 ease-in-out rounded p-3">
                     <div class="font-bold">来自{{item.srcUserName}}的房间邀请</div>
                         <div class="flex justify-between">
@@ -35,10 +35,10 @@
 
                             <div class="flex justify-center">
                                 <div class="button bg-blue-500 mr-3"
-                                    @click="RTCServiceInstance.agreeJoinRoom(item)"
+                                    @click="agreeJoinRoom(item)"
                                 >同意</div>
                                 <div class="button bg-red-500"
-                                    @click="RTCServiceInstance.rejectJoinRoom(item)"
+                                    @click="rejectJoinRoom(item)"
                                 >拒绝</div>
                             </div>
                         </div>
@@ -51,12 +51,31 @@
 </template>
 
 <script lang="ts" setup>
+    import type { RoomInvitation } from "@/types/common";
     const dialogVisible:Ref<boolean> = ref<boolean>(false);
     let RTCServiceInstance: Ref<RTCService | undefined> = ref<RTCService | undefined>();
 
     on("online", ()=>{
         RTCServiceInstance.value = RTCService.getInstance();
     });
+
+    function agreeJoinRoom(item: RoomInvitation) {
+        RTCServiceInstance.value!.agreeJoinRoom(
+            item,
+            ()=>{
+                dialogVisible.value = false;
+                return;
+            },
+            ()=>{
+                throw new Error("crash when invite agreeJoinRoom");
+            }
+        );
+    };
+
+    async function rejectJoinRoom(item: RoomInvitation) {
+        await RTCServiceInstance.value!.rejectJoinRoom(item);
+        dialogVisible.value = false;
+    };
 </script>
 
 <style lang="scss" scoped>
