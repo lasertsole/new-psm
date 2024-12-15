@@ -447,41 +447,45 @@ export class DMService { // 单例模式
     
     // 发送消息
     let socket: Socket = DMService.getInstance().getSocket();
-    socket.timeout(5000).emit('sendMessage', messageItem, (err:any, timestamp:string)=> {
-      // 如果有错误，则显示错误信息状态
-      if (err) {
-        messageItem.status = 'error';
-        return;
-      };
+    await new Promise((resolve, reject)=>{
+      socket.timeout(5000).emit('sendMessage', messageItem, (err:any, timestamp:string)=> {
+        // 如果有错误，则显示错误信息状态
+        if (err) {
+          messageItem.status = 'error';
+          reject();
+          return;
+        };
 
-      // 更新消息状态
-      messageItem.status = 'sent';
+        // 更新消息状态
+        messageItem.status = 'sent';
 
-      // 根据服务器返回的时间戳,更新消息时间
-      messageItem.timestamp = timestamp;
+        // 根据服务器返回的时间戳,更新消息时间
+        messageItem.timestamp = timestamp;
 
-      // 若该联系人在indexedDB数据库的联系人列表，则更新该联系人的最近联系时间，否则插入该联系人的记录
-      let {messageItems, ...contactsDBItem} = constactsObj;
-      contactsDBItem.lastTime = timestamp;
-      contactsDBItem.lastMessage = message;
-      contactsDBItem = {
-        ...contactsDBItem,
-        tgtUserId: messageItem.tgtUserId!,
-        srcUserId: messageItem.srcUserId!,
-      };
-      db.ContactsDBItems.put(contactsDBItem);
-      
-      // 将消息对象添加到indexedDB数据库
-      let messageDBItem: MessageDBItem = {
-        ...messageItem,
-        maxUserId: max( messageItem.srcUserId!, messageItem.tgtUserId! ), 
-        minUserId: min( messageItem.srcUserId!, messageItem.tgtUserId! ),
-      };
-      db.MessageDBItems.add(messageDBItem);
+        // 若该联系人在indexedDB数据库的联系人列表，则更新该联系人的最近联系时间，否则插入该联系人的记录
+        let {messageItems, ...contactsDBItem} = constactsObj;
+        contactsDBItem.lastTime = timestamp;
+        contactsDBItem.lastMessage = message;
+        contactsDBItem = {
+          ...contactsDBItem,
+          tgtUserId: messageItem.tgtUserId!,
+          srcUserId: messageItem.srcUserId!,
+        };
+        db.ContactsDBItems.put(contactsDBItem);
+        
+        // 将消息对象添加到indexedDB数据库
+        let messageDBItem: MessageDBItem = {
+          ...messageItem,
+          maxUserId: max( messageItem.srcUserId!, messageItem.tgtUserId! ), 
+          minUserId: min( messageItem.srcUserId!, messageItem.tgtUserId! ),
+        };
+        db.MessageDBItems.add(messageDBItem);
 
-      // 更新左侧联系人列表
-      constactsObj.lastTime = timestamp;
-      constactsObj.lastMessage = message;
+        // 更新左侧联系人列表
+        constactsObj.lastTime = timestamp;
+        constactsObj.lastMessage = message;
+        resolve(true);
+      });
     });
   };
 

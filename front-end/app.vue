@@ -1,10 +1,10 @@
 <template>
   <NuxtPwaManifest />
-  <div>
+  <div class="relative">
     <NuxtLayout>
-      <RtcInvitationArr></RtcInvitationArr>
       <NuxtPage keepalive/>
     </NuxtLayout>
+    <RtcInvitationArr></RtcInvitationArr>
   </div>
 </template>
 

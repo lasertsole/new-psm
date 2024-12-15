@@ -11,6 +11,7 @@ import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Controller;
@@ -53,7 +54,7 @@ public class RTCController implements CommandLineRunner {
                 return AuthTokenResult.AuthTokenResultSuccess;
             }
             catch (Exception e){
-                return new AuthTokenResult(false, "token无效:"+e.getCause());
+                return new AuthTokenResult(false, "token无效: "+e.getCause());
             }
         });
 
@@ -67,9 +68,20 @@ public class RTCController implements CommandLineRunner {
             // 移除用户在线用户列表
             socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
 
+            // 如果用户有房间号，则 调用离开房间函数
             String roomId = (String) client.get("rtcRoomId");
             if(Objects.nonNull(roomId)) {
-                socketIOApi.removeUserFromSocketRoom(namespace, roomId, String.valueOf(((UserBO) client.get("userInfo")).getId()));
+                UserBO userBO = (UserBO) client.get("userInfo");
+                RTCSwap rtcSwap = new RTCSwap();
+                rtcSwap.setRoomId(roomId);
+                rtcSwap.setSrcUserId(String.valueOf(userBO.getId()));
+                rtcSwap.setSrcUserName(String.valueOf(userBO.getName()));
+
+                try {
+                    rtcAdaptor.leaveRoom(client, rtcSwap);
+                } catch (ClientException e) {
+                    return;
+                }
             }
         });
 
@@ -83,7 +95,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(result);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });
@@ -98,7 +110,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });
@@ -112,7 +124,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });
@@ -126,7 +138,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });
@@ -140,7 +152,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });
@@ -154,7 +166,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });
@@ -168,7 +180,7 @@ public class RTCController implements CommandLineRunner {
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
                 } catch (Exception e) {
-                    ackRequest.sendAckData("server error" + e.getCause());
+                    ackRequest.sendAckData("server error " + e.getCause());
                 }
             }
         });

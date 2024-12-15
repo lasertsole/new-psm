@@ -142,18 +142,13 @@
             </template>
         </el-dialog>
         <video class="absolute" ref="rtcWindowDom"></video>
-        <template v-show="showRTCWindow">
-            <!-- <CommonRtc ref="rtcWindowDom"></CommonRtc> -->
-        </template>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import DPlayer from 'dplayer';
     import type { Reactive } from 'vue';
     import type { ContactsItem } from '@/types/chat';
     import type { Devices, RTCSwap } from "@/types/rtc";
-    import CommonRtc from '@/components/common/rtc.vue';
 
     const message:Ref<string> = ref<string>("");
 
@@ -176,14 +171,14 @@
         messageList.value!.scrollTop=messageList.value!.scrollHeight;
     };
         
-    let DMServiceInstance: DMService;//DM服务实例
-    let RTCServiceInstance: RTCService;//RTC服务实例
+    let DMServiceInstance: DMService | null = null;//DM服务实例
+    let RTCServiceInstance: RTCService | null = null;//RTC服务实例
 
     // 发送信息
     const send = debounce(():void=>{
         if(!validateMessage(message.value)) { return; };
            
-            DMServiceInstance.sendMessage(message.value).then(()=>{
+            DMServiceInstance!.sendMessage(message.value).then(()=>{
                 scrollToBottom();// 发送完消息后滑动到底部
             });
         message.value="";
@@ -198,7 +193,11 @@
     });
 
     onActivated(debounce(()=>{
-        if(!userInfo.isLogin) return;
+        if(!userInfo.isLogin) {
+            DMServiceInstance = null;
+            RTCServiceInstance = null;
+            return;
+        };
         DMServiceInstance=DMService.getInstance();
 
         // 如果RTCServiceInstance不存在，则获取实例，以及添加链接建立事件的回调
@@ -210,16 +209,17 @@
         };
     }, 1000));
 
-    const rtcWindowDom:Ref<HTMLVideoElement | undefined> = ref<HTMLVideoElement | undefined>();    const mask:Ref<boolean> = ref<boolean>(false);// 控制显示遮罩
+    const rtcWindowDom:Ref<HTMLVideoElement | undefined> = ref<HTMLVideoElement | undefined>();
+    const mask:Ref<boolean> = ref<boolean>(false);// 控制显示遮罩
     const showRTCWindow:Ref<boolean> = ref<boolean>(false); // 控制显示RTC播放器窗口
-    const sendRTCRequest = debounce(()=> {
+    const sendRTCRequest = debounce(async ():Promise<void>=> {
         if(!rtcWindowDom.value) {
             ElMessage.warning("音频播放器未准备完成。");
             return;
         };
         
-        new Promise((resolve)=>{
-            RTCServiceInstance.createRoom(
+        await new Promise((resolve)=>{
+            RTCServiceInstance!.createRoom(
                 rtcWindowDom.value!,
                 ()=>{
                     resolve(true);
@@ -230,7 +230,7 @@
             );
         }).then((res)=>{
             const contactsItem:ContactsItem = DMContactsItems[nowDMContactsIndex.value];
-            RTCServiceInstance.inviteJoinRoom(
+            RTCServiceInstance!.inviteJoinRoom(
                 contactsItem.tgtUserId,
                 contactsItem.name!,
                 ()=>{

@@ -60,7 +60,7 @@ public class SocketIOApi {
     public void removeUserFromSocketRoom(String namespace, String roomId, String userId) {
         Room room = getSocketRoom(namespace, roomId);
 
-        if (Objects.isNull(room)) throw new RuntimeException("room is not exist"); // 如果房间不存在，则抛出异常
+        if (Objects.isNull(room)) return; // 如果房间已不存在，则返回
 
         Set<String> memberIdSet = room.getMemberIdSet();
         memberIdSet.remove(userId);

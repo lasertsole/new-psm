@@ -85,8 +85,9 @@ public class RTCServiceImpl implements RTCService {
     public String agreeJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
         String roomId = roomInvitation.getRoomId();
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
-        Room socketRoom = socketIOApi.getSocketRoom(namespace, roomId);
+
         // 判断要加入的房间是否还存在,如果不存在，则抛出异常
+        Room socketRoom = socketIOApi.getSocketRoom(namespace, roomId);
         if (Objects.isNull(socketRoom)) throw new ClientException("房间不存在");
 
         // 如果房间是DRTC(一对一)类型,且房间人数大于等于2人，且成员不包含自己，则说明房间已满，抛出异常(也用于保证操作的幂等性)
@@ -95,13 +96,11 @@ public class RTCServiceImpl implements RTCService {
 
         // 如果当前用户已加入rtc房间，并且房间号和邀请函的房间号不同,则退出已加入的房间
         String joinedRoomId = (String) srcClient.get("rtcRoomId");
-        if (Objects.nonNull(joinedRoomId) && joinedRoomId.equals(roomId)) {
-            socketIOApi.removeUserFromSocketRoom(namespace, joinedRoomId, userId);
+        if (Objects.nonNull(joinedRoomId) && !joinedRoomId.equals(roomId)) {
+            socketIOApi.removeUserFromSocketRoom(namespace, joinedRoomId, userId);// 退出已加入的房间
+            socketIOApi.addUserToSocketRoom(namespace, roomId, userId);// 当前用户加入目标房间
+            srcClient.set("rtcRoomId", roomId);// 重置用户的房间号属性
         };
-
-        // 当前用户加入目标房间
-        socketIOApi.addUserToSocketRoom(namespace, roomId, userId);
-        srcClient.set("rtcRoomId", roomId);
 
         // 将加入房间的信息，通知该房间的其他用户
         mqPublisher.publish(roomInvitation, "agreeJoinRoom", "RTC", roomId);
@@ -199,11 +198,17 @@ public class RTCServiceImpl implements RTCService {
 
     @Override
     public String leaveRoom(SocketIOClient srcClient, RTCSwap rtcSwap) throws ClientException {
+        // 从srcClient中获取用户id
+        String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
+
+        // 将本用户从房间中移除
+        socketIOApi.removeUserFromSocketRoom(namespace, srcClient.get("rtcRoomId"), userId);
+
         // 删除用户的房间标识符
         srcClient.del("rtcRoomId");
 
         // 将交换swap的信息转发给邀请人
-        mqPublisher.publish(rtcSwap, "leaveRoom", "RTC", rtcSwap.getSrcUserId());
+        mqPublisher.publish(rtcSwap, "leaveRoom", "RTC", userId);
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
