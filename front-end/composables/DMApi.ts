@@ -102,6 +102,8 @@ export class DMService { // 单例模式
         // 找出服务器返回的信息中的所有联系人并绑定相关聊天记录，放在Map(key为userId,value为ContactsItem)里,每个联系人只放一次
         const contactsMap:Map<string, Reactive<ContactsItem>> = new Map();
         messageObjs.forEach((messageObj)=>{
+          // 清空信息的id，方便indexedDB操作
+          messageObj.id = undefined;
           
           let contactItem:Reactive<ContactsItem> = reactive<ContactsItem>({
             tgtUserId: "", // tgtUserId暂时不确定
@@ -228,8 +230,12 @@ export class DMService { // 单例模式
     fromEvent(this.DMSocket, "receiveMessage").pipe(concatMap(async (messageItem:MessageItem):Promise<void> =>{
       // 通过自旋堵塞确保本函数是在初始化完成后才执行，否则会导致消息丢失
       while(!isInitDM.value) {await new Promise(resolve => setTimeout(resolve, 500));};
+      
       let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
       let index = userIds.indexOf(messageItem.srcUserId!);
+      
+      // 清空信息的id，方便indexedDB操作
+      messageItem.id = undefined;
 
       if(index!== -1) {// 如果用户存在于联系人列表中，则更新该用户的信息
 

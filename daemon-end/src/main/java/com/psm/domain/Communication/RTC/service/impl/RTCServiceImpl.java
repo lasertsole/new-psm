@@ -193,7 +193,7 @@ public class RTCServiceImpl implements RTCService {
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, rtcSwap.getTgtUserId());
         if (Objects.isNull(tgtClient)) return;
 
-        tgtClient.sendEvent("swapSDP", rtcSwap);
+        tgtClient.sendEvent("swapCandidate", rtcSwap);
     }
 
     @Override

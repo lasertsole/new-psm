@@ -87,61 +87,6 @@
                 
             </div>
         </el-main>
-
-        <el-dialog
-            v-model="rtcDialogVisible"
-            align-center
-            title="请选择音频输入"
-            width="500"
-        >
-            <div class="dialog-body">
-                <div>
-                    <div class="leftBox">视频</div>
-                    <div class="rightBox">
-                        <template v-for="(item, index) in deviceControl.video">
-                            <div :active="item.active?item.active:'undefined'" @click="item.active?(item.active=='true'?item.active='false':item.active='true'):item.active='true'">
-                                <div class="icon">
-                                    <div></div>
-                                    <svg t="1733552418073" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1485" v-if="item.type=='screen'">
-                                        <path d="M972.8 768H537.6v128h256v51.2H230.4v-51.2h256v-128H51.2a51.2 51.2 0 0 1-51.2-51.2V128a51.2 51.2 0 0 1 51.2-51.2h921.6a51.2 51.2 0 0 1 51.2 51.2v588.8a51.2 51.2 0 0 1-51.2 51.2z m0-614.4a25.6 25.6 0 0 0-25.6-25.6H76.8a25.6 25.6 0 0 0-25.6 25.6v537.6a25.6 25.6 0 0 0 25.6 25.6h870.4a25.6 25.6 0 0 0 25.6-25.6V153.6z" fill="#1296db" p-id="1486"></path>
-                                    </svg>
-                                    <svg t="1733562224173" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2565" v-else-if="item.type=='webcam'">
-                                        <path d="M907.712 642.592l-2.624-302.592-204.256 145.056 206.88 157.536z m-39.68-354.784a64 64 0 0 1 101.056 51.648l2.624 302.592a64 64 0 0 1-102.752 51.456l-206.912-157.536a64 64 0 0 1 1.728-103.104l204.256-145.056z" fill="#1296db" p-id="2566"></path>
-                                        <path d="M144 256a32 32 0 0 0-32 32v417.376a32 32 0 0 0 32 32h456.32a32 32 0 0 0 32-32V288a32 32 0 0 0-32-32H144z m0-64h456.32a96 96 0 0 1 96 96v417.376a96 96 0 0 1-96 96H144a96 96 0 0 1-96-96V288a96 96 0 0 1 96-96z" fill="#1296db" p-id="2567"></path>
-                                    </svg>
-                                </div>
-                                <div class="name">{{ item.name }}</div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-                
-                <div>
-                    <div class="leftBox">音频</div>
-                    <div class="rightBox">
-                        <template v-for="(item, index) in deviceControl.audio">
-                            <div :active="item.active?item.active:'undefined'" @click="item.active?(item.active=='true'?item.active='false':item.active='true'):item.active='true'">
-                                <div class="icon">
-                                    <div></div>
-                                    <svg t="1733564168472" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3711">
-                                        <path d="M512 128c35.2 0 64 28.8 64 64v320c0 35.2-28.8 64-64 64s-64-28.8-64-64V192c0-35.2 28.8-64 64-64m0-64c-70.4 0-128 57.6-128 128v320c0 70.4 57.6 128 128 128s128-57.6 128-128V192c0-70.4-57.6-128-128-128z m320 448h-64c0 140.8-115.2 256-256 256S256 652.8 256 512h-64c0 165.6 126.4 302.4 288 318.4V960h64v-129.6c161.6-16 288-152.8 288-318.4z" p-id="3712"></path>
-                                    </svg>
-                                </div>
-                                <div class="name">{{ item.name }}</div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
-
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="rtcDialogVisible=false">取消</el-button>
-                    <el-button type="primary" @click="openRTCWindow">确认</el-button>
-                </div>
-            </template>
-        </el-dialog>
-        <video class="absolute" ref="rtcWindowDom"></video>
     </div>
 </template>
 
@@ -203,24 +148,14 @@
         // 如果RTCServiceInstance不存在，则获取实例，以及添加链接建立事件的回调
         if(!RTCServiceInstance){
             RTCServiceInstance = RTCService.getInstance();// 获取实例
-            RTCServiceInstance.onSwapCandidate((remoteSDP: RTCSwap)=>{// 添加链接建立事件的回调
-                rtcDialogVisible.value = true;
-            });
         };
     }, 1000));
 
-    const rtcWindowDom:Ref<HTMLVideoElement | undefined> = ref<HTMLVideoElement | undefined>();
     const mask:Ref<boolean> = ref<boolean>(false);// 控制显示遮罩
     const showRTCWindow:Ref<boolean> = ref<boolean>(false); // 控制显示RTC播放器窗口
     const sendRTCRequest = debounce(async ():Promise<void>=> {
-        if(!rtcWindowDom.value) {
-            ElMessage.warning("音频播放器未准备完成。");
-            return;
-        };
-        
         await new Promise((resolve)=>{
             RTCServiceInstance!.createRoom(
-                rtcWindowDom.value!,
                 ()=>{
                     resolve(true);
                 },
@@ -251,12 +186,6 @@
         showRTCWindow.value=true;
         rtcDialogVisible.value = false;
     }, 1000);
-
-    const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
-    const deviceControl:Reactive<Devices> = reactive<Devices>({
-        video: [{ name: '摄像头', active: undefined, type: 'webcam' }, { name: '投屏', active: undefined, type: 'screen' }],
-        audio: [{ name: '麦克风', active: undefined }],
-    });
 
     definePageMeta({
         name: 'message'
@@ -436,118 +365,6 @@
                             position: absolute;
                             right: $padding;
                             bottom: $padding;
-                        }
-                    }
-                }
-            }
-        }
-
-        :deep(.el-dialog){
-            font-weight: bold;
-            header{
-                padding-left: 32px;
-                padding-bottom: 6px;
-                text-align: center;
-            }
-
-            .dialog-body{
-                >div{
-                    @include fixedHeight(100px);
-                    display: flex;
-                    align-items: center;
-                    margin-top: 10px;
-
-                    >div{
-                        @include fullHeight;
-                        display: flex;
-                        align-items: center;
-                        &.leftBox{
-                            margin-right: 20px;
-                        }
-
-                        &.rightBox{
-                            flex-grow: 1;
-                        }
-
-                        >div{
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            font-size: 12px;
-                            color: black;
-                            .icon{
-                                @include fixedCircle(80px);
-                                @include flexCenter;
-                                background-color: white;
-                                transition: all 0.3s ease;
-                                position: relative;
-
-                                d{
-                                    position: absolute;
-                                    @include fixedWidth(3px);
-                                    @include fixedHeight(0%);
-                                    transform: rotate(45deg);
-                                    background-color: white;
-                                    transition: height 0.6s ease;
-                                    z-index: 2;
-                                }
-
-                                svg{
-                                    position: relative;
-                                    @include fixedSquare(60px);
-                                    cursor: pointer;
-                                    z-index: 1;
-                                }
-                            }
-
-                            &[active="undefined"]{
-                                .icon{
-                                    svg{
-                                        path{
-                                            fill: #1296db;
-                                            transition: all 0.3s ease;
-                                        }
-                                    }
-
-                                    &:hover{
-                                        background-color: #1296db;
-                                        svg{
-                                            path{
-                                                fill: white;
-                                            }
-                                        }
-                                    }
-                                }  
-                            }
-
-                            &[active="true"]{
-                                .icon{
-                                    background-color: #1296db;
-                                    svg{
-                                        path{
-                                            fill: white;
-                                        }
-                                    }
-                                }
-                            }
-
-                            &[active="false"]{
-                                .icon{
-                                    background-color: red;
-                                    div {
-                                        @include fixedHeight(95%);
-                                    }
-                                    svg {
-                                        path{
-                                            fill: white;
-                                        }
-                                    }
-                                }
-                            }
-
-                            &:not(:first-of-type){
-                                margin-left: 20px;
-                            }
                         }
                     }
                 }

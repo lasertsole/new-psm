@@ -33,6 +33,10 @@ export type PeerOne = {
     name: string | null;
     avatar: string | null;
     rtcPeerConnection: RTCPeerConnection;
+    hasRemoteSDP: boolean;
+    hasLocalSDP: boolean;
+    hasRemoteCandidate: boolean;
+    hasLocalCandidate: boolean;
 }
 
 export type Room = {
