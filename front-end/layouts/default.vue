@@ -106,6 +106,7 @@
             z-index: 1;
             flex-grow: 1;
             $nowMainHeight: v-bind(nowMainHeight);
+            overflow: hidden;
             @include fixedHeight($nowMainHeight);
         }
     }

@@ -37,7 +37,7 @@ export type PeerOne = {
     hasLocalSDP: boolean;
     hasRemoteCandidate: boolean;
     hasLocalCandidate: boolean;
-}
+};
 
 export type Room = {
     roomId: string;
@@ -45,7 +45,7 @@ export type Room = {
     roomName: string;
     roomType: string;
     peerMap?: Map<string, PeerOne>;
-}
+};
 
 export type RoomInvitation = {
     roomId: string;
@@ -56,4 +56,9 @@ export type RoomInvitation = {
     srcUserName: string | null;
     tgtUserId: string;
     tgtUserName: string;
-}
+};
+
+export type ContextMenuOptions = {
+    text: String,
+    callback: ()=>void
+};

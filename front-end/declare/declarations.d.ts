@@ -26,11 +26,17 @@ declare module 'rxjs' {
 declare module 'dplayer' {
   export default class DPlayer{
     video:  HTMLVideoElement;
+    fullScreen: {
+      request: (type:'web' | 'browser')=>void;
+    };
+    on: (event: string, callback: ()=>void)=>void;
     constructor({
       container: HTMLElement,
       video: {
-        url: string
+        url: string,
+        type: string,
       },
+      preload: string
     });
   };
 };

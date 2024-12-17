@@ -25,12 +25,12 @@ export class RTCService {// 单例模式
     });
     // 监听事件的钩子函数
     private inviteJoinRoomHooks: Array<Function> = [];
-    private agreeJoinRoomHooks: Array<Function> = [];
-    private rejectJoinRoomHooks: Array<Function> = [];
-    private swapSDPHooks: Array<Function> = [];
-    private swapCandidateHooks: Array<Function> = [];
-    private leaveRoomHooks: Array<Function> = [];
-    private trackBulidHooks: Array<Function> = [];
+    private agreeJoinRoomHooks: Array<(roomInvitation:RoomInvitation)=>void> = [];
+    private rejectJoinRoomHooks: Array<(roomInvitation: RoomInvitation)=>void> = [];
+    private swapSDPHooks: Array<(remoteSDP: RTCSwap)=>void> = [];
+    private swapCandidateHooks: Array<(remoteSDP: RTCSwap)=>void> = [];
+    private leaveRoomHooks: Array<(remoteSDP: RTCSwap)=>void> = [];
+    private trackBulidHooks: Array<(event: RTCTrackEvent)=>void> = [];
 
     // 添加监听邀请事件
     public onInviteJoinRoom(hook: Function) {
@@ -38,32 +38,32 @@ export class RTCService {// 单例模式
     };
 
     // 添加监听同意加入房间事件
-    public onAgreeJoinRoom(hook: Function) {
+    public onAgreeJoinRoom(hook: (roomInvitation:RoomInvitation)=>void) {
         this.agreeJoinRoomHooks.push(hook);
     };
 
     // 添加监听拒绝加入房间事件
-    public onRejectJoinRoom(hook: Function) {
+    public onRejectJoinRoom(hook: (roomInvitation: RoomInvitation)=>void) {
         this.rejectJoinRoomHooks.push(hook);
     };
 
     // 添加监听交换SDP事件
-    public onSwapSDP(hook: Function) {
+    public onSwapSDP(hook: (remoteSDP: RTCSwap)=>void) {
         this.swapSDPHooks.push(hook);
     };
 
     // 添加监听交换候选事件
-    public onSwapCandidate(hook: Function) {
+    public onSwapCandidate(hook: (remoteSDP: RTCSwap)=>void) {
         this.swapCandidateHooks.push(hook);
     };
 
     // 监听离开房间事件
-    public onLeaveRoom(hook: Function) {
+    public onLeaveRoom(hook: (remoteSDP: RTCSwap)=>void) {
         this.leaveRoomHooks.push(hook);
     };
 
     // 监听轨道事件
-    public onTrackBulid(hook: Function) {
+    public onTrackBulid(hook: (event: RTCTrackEvent)=>void) {
         this.trackBulidHooks.push(hook);
     };
 

@@ -5,6 +5,10 @@
     object-fit: contain;
 }
 
+html{
+    overflow: hidden;
+}
+
 a{
     text-decoration: none;
     color: inherit;

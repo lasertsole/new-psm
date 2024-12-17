@@ -104,30 +104,47 @@
             </template>
         </el-dialog>
         
-        <commonDplayer ref="dplayerRef"></commonDplayer>
+        <commonDplayer ref="dplayerRef"
+            :hideController="true"
+            :PIPController="true"
+            :hasMinVideo="true"
+            :banController="true"
+        >
+        </commonDplayer>
     </div>
 </template>
 
 <script lang="ts" setup>
+    import type { Reactive } from 'vue';
+    import type { Devices, RTCSwap } from "@/types/rtc";
     import type { RoomInvitation } from "@/types/common";
     import dplayer from "@/components/common/dplayer.vue";
 
+    // 模态窗口可见性
     const dialogVisible:Ref<boolean> = ref<boolean>(false);
+
+    // RTC窗口可见性
+    const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
+
     let RTCServiceInstance: RTCService | null = null;//RTC服务实例
 
     const deviceControl:Reactive<Devices> = reactive<Devices>({
         video: [{ name: '摄像头', active: undefined, type: 'webcam' }, { name: '投屏', active: undefined, type: 'screen' }],
         audio: [{ name: '麦克风', active: undefined }],
     });
-    const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
-    const dplayerRef:Ref<InstanceType<typeof dplayer> | null> = ref<InstanceType<typeof DPlayer> | null>(null);
-    let dp:DPlayer | null = null;
+
+    const dplayerRef:Ref<InstanceType<typeof dplayer> | null> = ref<InstanceType<typeof dplayer> | null>(null);
+
+    // 打开邀请窗口
+    function openRTCWindow():void{
+        dialogVisible.value = false;
+        rtcDialogVisible.value = true;
+    };
 
     on("online", ()=>{
-        dp = dplayerRef.value.dp;
         RTCServiceInstance = RTCService.getInstance();
-        RTCServiceInstance.initVideoDom(dp.video);// 初始化videoDom
-        RTCServiceInstance.onSwapCandidate((remoteSDP: RTCSwap)=>{// 添加链接建立事件的回调
+        RTCServiceInstance.initVideoDom(dplayerRef.value!.dpDomRef!);// 初始化videoDom
+        RTCServiceInstance.onSwapCandidate((remoteSDP: RTCSwap):void=>{// 添加链接建立事件的回调
             rtcDialogVisible.value = true;
         });
     });
@@ -137,6 +154,7 @@
         RTCServiceInstance = null;
     });
 
+    // 邀请加入房间
     const agreeJoinRoom = debounce(async (item: RoomInvitation):Promise<void>=> {
         await new Promise((resolve)=>{
             RTCServiceInstance!.agreeJoinRoom(
@@ -155,10 +173,11 @@
         });
     }, 1000);
 
-    async function rejectJoinRoom(item: RoomInvitation) {
+    // 拒绝加入房间
+    const rejectJoinRoom = debounce(async (item: RoomInvitation):Promise<void>=>{
         await RTCServiceInstance!.rejectJoinRoom(item);
         dialogVisible.value = false;
-    };
+    }, 1000);
 </script>
 
 <style lang="scss" scoped>
