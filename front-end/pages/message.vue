@@ -91,9 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-    import type { Reactive } from 'vue';
     import type { ContactsItem } from '@/types/chat';
-    import type { Devices, RTCSwap } from "@/types/rtc";
 
     const message:Ref<string> = ref<string>("");
 
@@ -184,7 +182,6 @@
 
     const openRTCWindow = debounce(()=>{
         showRTCWindow.value=true;
-        rtcDialogVisible.value = false;
     }, 1000);
 
     definePageMeta({

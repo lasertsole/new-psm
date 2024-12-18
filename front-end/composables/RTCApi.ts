@@ -12,7 +12,8 @@ export class RTCService {// 单例模式
     private RTCSocket: Socket;
     private interval: NodeJS.Timeout|null = null;
 
-    private videoDom: HTMLVideoElement | null = null;
+    private mainVideoDom: HTMLVideoElement | null = null;
+    private subVideoDom: HTMLVideoElement | null = null;
     public inviteJoinArr: Reactive<RoomInvitation[]> = reactive<RoomInvitation[]>([]);// 短时间内的多条RTC邀请用列表缓存
     private ownRoom: Ref<Room | null> = ref<Room | null>(null);// 当前用户房间信息
     private userMediaConstraints: Reactive<MediaStreamConstraints> = reactive<MediaStreamConstraints>({ // 当前音视频媒体配置
@@ -23,6 +24,9 @@ export class RTCService {// 单例模式
       video: true,
       audio: false // 通常不包括音频
     });
+    private userMediaStream: MediaStream | null = null;// 本地音视频流
+    private displayMediaStream: MediaStream | null = null;// 当前投屏媒体流
+
     // 监听事件的钩子函数
     private inviteJoinRoomHooks: Array<Function> = [];
     private agreeJoinRoomHooks: Array<(roomInvitation:RoomInvitation)=>void> = [];
@@ -68,22 +72,23 @@ export class RTCService {// 单例模式
     };
 
     // 初始化视频dom元素
-    public initVideoDom(videoDom: HTMLVideoElement) {
-        this.videoDom = videoDom;
-    }
+    public initVideoDom(mainVideoDom: HTMLVideoElement, subVideoDom: HTMLVideoElement) {
+        this.mainVideoDom = mainVideoDom;
+        this.subVideoDom = subVideoDom;
+    };
 
     // 获取本地音视频流
-    private async getLocalStream():Promise<{userMediaStream:MediaStream, displayMediaStream:MediaStream}> {
-        const userMediaStream:MediaStream = await navigator.mediaDevices.getUserMedia(this.userMediaConstraints);
-        const displayMediaStream:MediaStream = await navigator.mediaDevices.getDisplayMedia(this.displayMediaConstraints);
+    public async getLocalStream():Promise<{userMediaStream:MediaStream, displayMediaStream:MediaStream}> {
+        if(!this.userMediaStream) {this.userMediaStream = await navigator.mediaDevices.getUserMedia(this.userMediaConstraints);};
+        if(!this.displayMediaStream) {this.displayMediaStream = await navigator.mediaDevices.getDisplayMedia(this.displayMediaConstraints);};
 
-        return { userMediaStream, displayMediaStream };
+        return { userMediaStream: this.userMediaStream, displayMediaStream:this.displayMediaStream };
     };
 
     private async initPeer(userId: string):Promise<void> {
         if(!this.ownRoom.value) {
             throw new Error("当前房间不存在");
-        } else if(!this.videoDom) {
+        } else if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         } else if(this.ownRoom.value.peerMap!.has(userId)) return; // 如果已经存在，则不重复创建
 
@@ -104,6 +109,10 @@ export class RTCService {// 单例模式
 
         // peer加载本地媒体流
         const { userMediaStream, displayMediaStream } = await this.getLocalStream();
+
+        // 将用户媒体流绑定到次要视频元素上
+        this.subVideoDom!.srcObject = displayMediaStream;
+        this.subVideoDom!.play();
 
         // 添加用户媒体的轨道
         userMediaStream.getTracks().forEach(track => {
@@ -147,10 +156,10 @@ export class RTCService {// 单例模式
 
         // 监听双方相互建立音频轨道事件
         peer.rtcPeerConnection.ontrack = (event: RTCTrackEvent) => {
-            if(this.videoDom!.srcObject) return; // 如果视频dom元素已经绑定了流，则不重复绑定
+            if(this.mainVideoDom!.srcObject) return; // 如果视频dom元素已经绑定了流，则不重复绑定
 
-            this.videoDom!.srcObject = event.streams[0];
-            this.videoDom!.play();
+            this.mainVideoDom!.srcObject = event.streams[0];// 将对方轨道绑定到主要视频dom元素
+            this.mainVideoDom!.play();
             this.trackBulidHooks.forEach(hook => hook(event));
         };
 
@@ -196,7 +205,7 @@ export class RTCService {// 单例模式
         // 监听邀请加入房间事件
         fromEvent(this.RTCSocket, 'inviteJoinRoom').pipe(concatMap((roomInvitation: RoomInvitation):void=> {
             let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
-            if(!this.videoDom) {
+            if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } else if(!userIds.includes(roomInvitation.srcUserId)) {
                 // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
@@ -217,7 +226,7 @@ export class RTCService {// 单例模式
 
         // 监听同意加入房间事件
         fromEvent(this.RTCSocket, "agreeJoinRoom").pipe(concatMap(async (roomInvitation: RoomInvitation):Promise<void>=> {
-            if(!this.videoDom) {
+            if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } //如果还没有房间,或者房间号与已加入的房间号不同，则创建房间对象
             else if(!this.ownRoom.value || this.ownRoom.value.roomId != roomInvitation.roomId){
@@ -271,7 +280,7 @@ export class RTCService {// 单例模式
         fromEvent(this.RTCSocket, "swapSDP").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<void>=> {
             let room: Room | null = this.ownRoom.value;
             let peerOne: PeerOne | null = null;
-            if(!this.videoDom) {
+            if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } else if(!remoteSDP || !remoteSDP.data) {
                 ElMessage.warning("Received invalid SDP.");
@@ -328,7 +337,7 @@ export class RTCService {// 单例模式
         fromEvent(this.RTCSocket, "swapCandidate").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<void>=> {
             let room: Room | null = this.ownRoom.value;
             let peerOne: PeerOne | null = null;
-            if(!this.videoDom) {
+            if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } else if(!remoteSDP || !remoteSDP.data) {
                 ElMessage.warning("Received invalid SDP.");
@@ -370,7 +379,7 @@ export class RTCService {// 单例模式
 
     // 创建房间
     public async createRoom(outResolve?: Function, outReject?: Function):Promise<void> {
-        if(!this.videoDom) {
+        if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         };
 
@@ -400,7 +409,7 @@ export class RTCService {// 单例模式
 
     // 邀请加入房间
     public async inviteJoinRoom(tgtUserId: string, tgtUserName: string, outResolve?: Function, outReject?: Function):Promise<void> {
-        if(!this.videoDom) {
+        if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         };
         
@@ -436,7 +445,7 @@ export class RTCService {// 单例模式
 
     // 同意加入房间
     public async agreeJoinRoom(roomInvitation: RoomInvitation, outResolve?: Function, outReject?: Function):Promise<void> {
-        if(!this.videoDom) {
+        if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         };
         

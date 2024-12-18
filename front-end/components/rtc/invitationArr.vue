@@ -4,7 +4,7 @@
             v-if="userInfo.isLogin&&RTCServiceInstance&&RTCServiceInstance!.inviteJoinArr.length>0"
         >
             <div class="mt-2 mb-2 ml-2 mr-4 w-14 h-14 bg-[url('/icons/phone.svg')] bg-cover bg-center"
-                @click="dialogVisible = true">
+                @click="invitationArrVisible = true">
                 <div class="w-5 h-5 leading-5 rounded-full bg-red-500 top-2 right-4 font-bold text-white flex items-center justify-center" style="position: absolute;">
                     {{RTCServiceInstance!.inviteJoinArr.length}}
                 </div>
@@ -13,7 +13,7 @@
 
         <el-dialog
             class="dialog"
-            v-model="dialogVisible"
+            v-model="invitationArrVisible"
             align-center
             title="请选择要加入的房间"
             width="500"
@@ -51,7 +51,7 @@
         </el-dialog>
 
         <el-dialog
-            v-model="rtcDialogVisible"
+            v-model="trackSwitchVisible"
             align-center
             title="请选择音频输入"
             width="500"
@@ -98,17 +98,16 @@
 
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button @click="rtcDialogVisible=false">取消</el-button>
-                    <el-button type="primary" @click="openRTCWindow">确认</el-button>
+                    <el-button type="primary" @click="trackSwitchComplete">确认</el-button>
                 </div>
             </template>
         </el-dialog>
         
         <commonDplayer ref="dplayerRef"
+            :show="videoVisible"
             :hideController="true"
             :PIPController="true"
             :hasMinVideo="true"
-            :banController="true"
         >
         </commonDplayer>
     </div>
@@ -121,10 +120,13 @@
     import dplayer from "@/components/common/dplayer.vue";
 
     // 模态窗口可见性
-    const dialogVisible:Ref<boolean> = ref<boolean>(false);
+    const invitationArrVisible:Ref<boolean> = ref<boolean>(false);
 
     // RTC窗口可见性
-    const rtcDialogVisible:Ref<boolean> = ref<boolean>(false);
+    const trackSwitchVisible:Ref<boolean> = ref<boolean>(false);
+
+    // 视频窗口可见性
+    const videoVisible:Ref<boolean> = ref<boolean>(false);
 
     let RTCServiceInstance: RTCService | null = null;//RTC服务实例
 
@@ -136,21 +138,30 @@
     const dplayerRef:Ref<InstanceType<typeof dplayer> | null> = ref<InstanceType<typeof dplayer> | null>(null);
 
     // 打开邀请窗口
-    function openRTCWindow():void{
-        dialogVisible.value = false;
-        rtcDialogVisible.value = true;
+    function trackSwitchComplete():void{
+        invitationArrVisible.value = false;
+        trackSwitchVisible.value = false;
+        videoVisible.value = true;
     };
 
-    on("online", ()=>{
+    let thisUserMediaStream: MediaStream | null = null;// 本地音视频流
+    let thisDisplayMediaStream: MediaStream | null = null;// 当前投屏媒体流
+    on("online", async()=>{
         RTCServiceInstance = RTCService.getInstance();
-        RTCServiceInstance.initVideoDom(dplayerRef.value!.dpDomRef!);// 初始化videoDom
+        RTCServiceInstance.initVideoDom(dplayerRef.value!.dpDomRef!, dplayerRef.value!.minDpDomRef!);// 初始化videoDom
         RTCServiceInstance.onSwapCandidate((remoteSDP: RTCSwap):void=>{// 添加链接建立事件的回调
-            rtcDialogVisible.value = true;
+            trackSwitchVisible.value = true;
         });
+
+        // 获取本地媒体流
+        const { userMediaStream, displayMediaStream } = await RTCServiceInstance.getLocalStream();
+        thisUserMediaStream=userMediaStream;
+        thisDisplayMediaStream=displayMediaStream;
     });
 
     on("offline", ()=>{
         // 销毁实例
+        RTCService.destroyInstance();
         RTCServiceInstance = null;
     });
 
@@ -160,14 +171,14 @@
             RTCServiceInstance!.agreeJoinRoom(
                 item,
                 ()=>{
-                    dialogVisible.value = false;
+                    invitationArrVisible.value = false;
                     resolve(true);
                     return;
                 },
                 ()=>{
                     throw new Error("crash when invite agreeJoinRoom");
                 }
-            )
+            );
         }).catch((e)=>{
             ElMessage.warning(e);
         });
@@ -176,7 +187,7 @@
     // 拒绝加入房间
     const rejectJoinRoom = debounce(async (item: RoomInvitation):Promise<void>=>{
         await RTCServiceInstance!.rejectJoinRoom(item);
-        dialogVisible.value = false;
+        invitationArrVisible.value = false;
     }, 1000);
 </script>
 

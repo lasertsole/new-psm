@@ -1,12 +1,24 @@
 <template>
     <div class="rtc absolute"
-        v-show="show" ref="rtcBoxDom"
+        :class="{minilize}"
+        v-show="true" ref="rtcBoxDom"
         @mousedown="PIPDrag"
-        @contextmenu.prevent="contextmenu"
+        @contextmenu.prevent="contextmenuEvent"
     >
         <div v-show="PIPController" class="overlay w-full h-full" @dblclick="fullScreen"></div>
         <div ref="dplayerDom"></div>
     </div>
+
+    <CommonContextmenu
+        v-click-outside="contextmenuOutsideEvent"
+        :UlClass="`bg-gray-800 shadow-md w-[150px]`"
+        :liClass="`text-white text-center w-full transition-all duration-300 hover:text-cyan-500`"
+        :isVisible="contextMenuVisible" 
+        :top="contextMenuTop" 
+        :left="contextMenuLeft" 
+        :contextMenuOptions="contextMenuOptions"
+    >
+    </CommonContextmenu>
 
     <template ref="minVideoTemplate">
         <div v-if="hasMinVideo" class="minVideo bg-white absolute bottom-0 right-0" :class="{changeBigger: isFullScreen}">
@@ -16,7 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import type DPlayer from 'dplayer';
+    import type { Reactive} from 'vue';
+    import type DPlayer from 'dplayer';
+    import type { ContextMenuOptions } from "@/types/common";
 
     const props = defineProps({
         show: {type:Boolean, required: false, default: true},
@@ -25,7 +39,8 @@ import type DPlayer from 'dplayer';
         hasMinVideo: {type:Boolean, required: false, default: false},
     });
 
-    const isFullScreen: Ref<boolean> = ref<boolean>(false);// 是否全屏  
+    const isFullScreen: Ref<boolean> = ref<boolean>(false);// 是否全屏
+    const minilize: Ref<boolean> = ref<boolean>(false);// 是否最小化
 
     const isHideController = computed(()=>{
         return props.hideController ? "none" : 'block';
@@ -67,15 +82,10 @@ import type DPlayer from 'dplayer';
         });
     });
 
-    const contextmenu = debounce(()=>{
-
-    }, 500);
-
     const fullScreen = debounce(()=>{
         dp.fullScreen.request("browser");
         isFullScreen.value = true;
-
-        // dpParentDom.appendChild(minVideoTemplate.value!.innerHTML)
+        contextMenuVisible.value = false;// 隐藏右键菜单
     }, 500);
 
     /**以下是画中画拖拽部分**/
@@ -103,13 +113,13 @@ import type DPlayer from 'dplayer';
                 biasLeft = event.clientX - al;
                 biasTop = event.clientY - at ;
 
+                if(biasLeft<0) biasLeft=0; //避免超出窗口左边缘
                 boxRightDight = windowWidth - biasLeft - parseInt(getComputedStyle(rtcBoxDom.value!).width);
                 if(boxRightDight<0) boxRightDight=0; //避免超出窗口右边缘
-                if(biasLeft<0) boxRightDight=windowWidth-boxWidth; //避免超出窗口左边缘
 
+                if(biasTop<0) biasTop=0;// 避免超出窗口上边缘
                 boxBottomDight = windowHeight - biasTop - parseInt(getComputedStyle(rtcBoxDom.value!).height);
                 if(boxBottomDight<0) boxBottomDight=0;// 避免超出窗口下边缘
-                if(biasTop<0) boxBottomDight=windowHeight-boxHeight;// 避免超出窗口上边缘
                 
                 boxRight.value = boxRightDight + "px";
                 boxBottom.value = boxBottomDight + "px";
@@ -122,6 +132,36 @@ import type DPlayer from 'dplayer';
         }
     }
     /**以上是画中画拖拽部分**/
+
+    /**以下是自定义右键菜单部分**/
+    const contextMenuVisible:Ref<boolean> = ref<boolean>(false);
+    const contextMenuTop:Ref<number> = ref<number>(0);
+    const contextMenuLeft:Ref<number> = ref<number>(0);
+
+    function minilizeChange():void{// 最小化按钮触发
+        minilize.value = !minilize.value;
+        contextMenuVisible.value = false;
+    };
+
+    const computedMinilizeText: Ref<string> = computed(()=>{// 最小化按钮文字
+        return minilize.value ? "窗口化" : "最小化";
+    });
+    const contextMenuOptions:Reactive<ContextMenuOptions[]> = reactive<ContextMenuOptions[]>(
+        [
+            {text: "全屏", callback: fullScreen},
+            {text: computedMinilizeText, callback: minilizeChange}
+        ]
+    );
+    const contextmenuEvent = debounce((event:MouseEvent)=>{
+        contextMenuVisible.value = true;
+        contextMenuTop.value = event.clientY;
+        contextMenuLeft.value = event.clientX;
+    }, 100);
+
+    const contextmenuOutsideEvent = debounce(()=>{
+        contextMenuVisible.value = false;
+    }, 100);
+    /**以上是自定义右键菜单部分**/
 
     defineExpose({
         dpDomRef,
@@ -163,5 +203,16 @@ import type DPlayer from 'dplayer';
                 }
             }
         }
+
+        &.minilize{
+            @include fixedCircle(40px);
+            .overlay{
+                background-color: rgb(31 41 55);
+                background-image: url(/icons/rtc.svg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+        };
     }
 </style>

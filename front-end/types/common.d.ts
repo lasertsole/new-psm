@@ -59,6 +59,6 @@ export type RoomInvitation = {
 };
 
 export type ContextMenuOptions = {
-    text: String,
+    text: String | Ref<string>,
     callback: ()=>void
 };

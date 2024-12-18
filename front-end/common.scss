@@ -184,6 +184,7 @@
 /* 固定圆形 */
 @mixin fixedCircle($size){
 	@include fixedRoundedRectangle($size,$size,50%);
+	overflow: hidden;
 }
 
 /* 限定最小充满父容器 */
