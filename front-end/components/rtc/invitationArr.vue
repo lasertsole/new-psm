@@ -153,10 +153,12 @@
             trackSwitchVisible.value = true;
         });
 
-        // 获取本地媒体流
-        const { userMediaStream, displayMediaStream } = await RTCServiceInstance.getLocalStream();
-        thisUserMediaStream=userMediaStream;
-        thisDisplayMediaStream=displayMediaStream;
+        // 在建立连接后,获取本地媒体流
+        RTCServiceInstance.onTrackBulid(async (event)=>{
+            const { userMediaStream, displayMediaStream } = await RTCServiceInstance!.getLocalStream();
+            thisUserMediaStream=userMediaStream;
+            thisDisplayMediaStream=displayMediaStream;
+        });
     });
 
     on("offline", ()=>{

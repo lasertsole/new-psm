@@ -1,0 +1,1 @@
+package rule;// 同一个包下的drl文件可以相互访问

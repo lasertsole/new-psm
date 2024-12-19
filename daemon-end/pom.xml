@@ -13,7 +13,7 @@
 	<version>1.1.1</version>
 <!--	<packaging>pom</packaging> &lt;!&ndash; 聚合項目打包方式 &ndash;&gt;-->
 	<name>daemon-end</name>
-	<description>Demo project for Spring Boot</description>
+	<description>psm-daemon-end</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -52,6 +52,7 @@
 		<socketio.version>2.0.12</socketio.version>
 		<tus.version>1.0.0-3.0</tus.version>
 		<rocketmqClientJava.version>5.0.7</rocketmqClientJava.version>
+		<drools.version>7.74.1.Final</drools.version>
 	</properties>
 
 	<dependencies>
@@ -334,6 +335,39 @@
 			<artifactId>rocketmq-client-java</artifactId>
 			<version>${rocketmqClientJava.version}</version>
 		</dependency>
+
+		<!--以下是drools规则引擎-->
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-core</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-compiler</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-templates</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-api</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-spring</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+		<!--以上是drools规则引擎-->
+
 	</dependencies>
 
 	<build>

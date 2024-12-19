@@ -1,7 +1,7 @@
 <template>
     <div class="rtc absolute"
         :class="{minilize}"
-        v-show="true" ref="rtcBoxDom"
+        v-show="show" ref="rtcBoxDom"
         @mousedown="PIPDrag"
         @contextmenu.prevent="contextmenuEvent"
     >
@@ -33,7 +33,7 @@
     import type { ContextMenuOptions } from "@/types/common";
 
     const props = defineProps({
-        show: {type:Boolean, required: false, default: true},
+        show: {type:Boolean, required: false, default: false},
         hideController: {type:Boolean, required: false, default: false},
         PIPController: {type:Boolean, required: false, default: false},
         hasMinVideo: {type:Boolean, required: false, default: false},
