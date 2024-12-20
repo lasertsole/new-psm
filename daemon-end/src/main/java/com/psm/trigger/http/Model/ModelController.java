@@ -161,10 +161,10 @@ public class ModelController {
     @GetMapping("/detailSearch")
     public ResponseDTO getDetailSearchModel3d(
             @RequestParam String keyword,
-            @RequestParam Integer current,
+            @RequestParam String afterKeyId,
             @RequestParam Integer size) {
         try {
-            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, current, size));
+            return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, afterKeyId, size));
         }
         catch (InvalidParameterException e) {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");

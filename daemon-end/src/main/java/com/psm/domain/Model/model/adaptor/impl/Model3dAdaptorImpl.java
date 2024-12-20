@@ -6,6 +6,7 @@ import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.infrastructure.Tus.Tus;
 import com.psm.types.enums.VisibleEnum;
+import com.psm.utils.Long.LongUtils;
 import com.psm.utils.Valid.ValidUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -110,16 +111,14 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
     }
 
     @Override
-    public Map<String, Object> getDetailSearchModel3d(String keyword, Integer current, Integer size) throws IOException {
+    public Map<String, Object> getDetailSearchModel3d(String keyword, String afterKeyId, Integer size) throws IOException {
         keyword = StringEscapeUtils.escapeHtml4(keyword);
         if (
-            StringUtils.isBlank(keyword)
-            && Objects.isNull(current)
-            && current <= 0
-            && Objects.isNull(size)
-            && (size < 10 || size > 50)
+                StringUtils.isBlank(keyword)
+                && Objects.isNull(size)
+                && (size < 10 || size > 50)
         ) throw new InvalidParameterException("Invalid parameter");
 
-        return modelService.getDetailSearchModel3d(keyword, current, size);
+        return modelService.getDetailSearchModel3d(keyword, LongUtils.stringConvertedToLong(afterKeyId), size);
     }
 }

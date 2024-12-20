@@ -194,14 +194,14 @@ export async function blurSearchModel3d(keyword:string):Promise<ESResult[]> {
     };
 };
 
-export async function detailSearchModel3d(keyword:string, current: number, size: number):Promise<Page<ESResult>> {
+export async function detailSearchModel3d(keyword:string, afterKeyId: string | null, size: number):Promise<Page<ESResult>> {
     try {
         const res:Response = await fetchApi({
             url: `/models/detailSearch`,
             method: 'get',
             opts:{
                 keyword,
-                current,
+                afterKeyId,
                 size
             }
         });
@@ -213,9 +213,8 @@ export async function detailSearchModel3d(keyword:string, current: number, size:
         return {
             total: 0,
             records: [] as ESResult[],
-            current: 1,
             size: 10,
-            pages: 0
+            nextAfterKeys: []
         } as Page<ESResult>; 
     };
 };

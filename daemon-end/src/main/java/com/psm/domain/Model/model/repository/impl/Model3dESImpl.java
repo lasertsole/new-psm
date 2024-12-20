@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -88,7 +89,7 @@ public class Model3dESImpl implements Model3dES {
     }
 
     @Override
-    public Map<String, Object> selectDetailSearchModel3d(String keyword, Integer from, Integer size) throws IOException {
+    public Map<String, Object> selectDetailSearchModel3d(String keyword, Long afterKeyId, Integer size) throws IOException {
         Map<String, Object> params = new HashMap<>();
         if (canConvertToLong(keyword)) {
             params.put("id", Long.parseLong(keyword));
@@ -97,7 +98,10 @@ public class Model3dESImpl implements Model3dES {
         params.put("title", keyword);
         params.put("content", keyword);
 
-        Map<String, Object> map = esApi.searchESHighLightData("tb_3d_models", params, from, size);
+        List<String> orderKeys = List.of("id");
+        List<Object> afterKeys = Optional.ofNullable(afterKeyId).map(id -> List.of((Object) id)).orElse(null);
+
+        Map<String, Object> map = esApi.searchESHighLightData("tb_3d_models", params, orderKeys, afterKeys, size);
         List<Map<String, Object>> records = (List<Map<String, Object>>) map.get("records");
         List<Map<String, Object>> transformList = records.stream().map(m -> {
             JSONObject document = (JSONObject) m.get("document");
@@ -105,6 +109,12 @@ public class Model3dESImpl implements Model3dES {
             return Map.of("document", model3dDTO, "highlight", m.get("highlight"));
         }).toList();
         map.put("records", transformList);
+
+        // 将nextAfterKeys内数值类型元素转换成字符串类型元素
+        map.put("nextAfterKeys",
+                Optional.ofNullable(map.get("nextAfterKeys"))
+                        .map(nextAfterKeys -> ((List<Object>) nextAfterKeys).stream().map(String::valueOf).toList()).orElse(null)
+        );
 
         return map;
     }

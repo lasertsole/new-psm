@@ -4,6 +4,7 @@ export type Page<T> = {
     total?: number;
     records?: T[];
     pages?: number;
+    nextAfterKeys?: string[]
 };
 
 export type TagBarItem = {

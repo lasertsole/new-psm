@@ -9,4 +9,12 @@ public class LongUtils {
             return false;
         }
     }
+
+    public static Long stringConvertedToLong(String str) {
+        try {
+            return Long.parseLong(str);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

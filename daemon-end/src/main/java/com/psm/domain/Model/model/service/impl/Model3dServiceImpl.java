@@ -166,15 +166,7 @@ public class Model3dServiceImpl implements Model3dService {
     }
 
     @Override
-    public Map<String, Object> getDetailSearchModel3d(String keyword, Integer current, Integer size) throws IOException {
-        Integer from = (current - 1) * size;
-        Map<String, Object> map = modelES.selectDetailSearchModel3d(keyword, from, size);
-        // 计算查询到的总页数
-        long total = (long) map.get("total");
-        Integer pages = (int) Math.ceil(total / (double) size);
-
-        map.put("pages", pages);
-        map.put("current", current);
-        return map;
+    public Map<String, Object> getDetailSearchModel3d(String keyword, Long afterKeyId, Integer size) throws IOException {
+        return modelES.selectDetailSearchModel3d(keyword, afterKeyId, size);
     }
 }
