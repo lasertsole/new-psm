@@ -5,13 +5,12 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
 import com.psm.domain.Communication.Chat.entity.ChatDO;
 import com.psm.domain.Communication.Chat.entity.ChatDTO;
-import com.psm.domain.Communication.Chat.event.valueObject.DMForwardEvent;
 import com.psm.domain.Communication.Chat.repository.ChatDB;
 import com.psm.domain.Communication.Chat.service.ChatService;
-import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
+import com.psm.types.common.Event.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,6 @@ public class ChatServiceImpl implements ChatService {
 
         // 刷新chatBO内的时间戳为到达服务器时间(UTC国际化时间戳)，并将时间戳返回给客户端
         String serverTimestamp = chatBO.generateServerTimestamp();
-        DMForwardEvent dmForwardEvent = new DMForwardEvent(chatBO);
 
         // 如果本服务器存在目标用户socket，则把信息交付给目标用户
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, String.valueOf(chatBO.getTgtUserId()));
@@ -73,7 +71,8 @@ public class ChatServiceImpl implements ChatService {
             storageMessageDM(chatBO);
         } else {// 如果本服务器不存在目标用户socket，则把信息广播到MQ
             // 将消息发送到MQ，这里的chatBO时间戳已为到达服务器的时间戳.
-            mqPublisher.publish(dmForwardEvent, "DMForward", "CHAT");
+            Event<ChatBO> event = new Event<>(chatBO);
+            mqPublisher.publish(event, "DMForward", "CHAT");
         };
 
         //将时间戳返回给客户端

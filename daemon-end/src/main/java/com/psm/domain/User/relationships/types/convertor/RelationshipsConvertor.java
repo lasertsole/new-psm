@@ -16,6 +16,9 @@ public abstract class RelationshipsConvertor {
 
     public abstract RelationshipsDO BO2DO(RelationshipsBO followerBO);
 
+    @Mappings({
+            @Mapping(target = "createTime", ignore = true),
+    })
     public abstract RelationshipsBO DTO2BO(RelationshipsDTO followerDTO);
 
     public abstract RelationshipsBO DO2BO(RelationshipsDO followerDO);

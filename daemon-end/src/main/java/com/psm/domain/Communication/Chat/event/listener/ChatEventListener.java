@@ -2,8 +2,8 @@ package com.psm.domain.Communication.Chat.event.listener;
 
 import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
-import com.psm.domain.Communication.Chat.event.valueObject.DMForwardEvent;
 import com.psm.domain.Communication.Chat.service.ChatService;
+import com.psm.types.common.Event.Event;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +77,7 @@ public class ChatEventListener {
 
                     // 获取消息的标签
                     String tag = messageView.getTag().orElse("");
-
+                    log.info("jsonString: {}", jsonString);
                     switch (tag) {
                         case "DMForward":
                             ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
@@ -100,34 +100,37 @@ public class ChatEventListener {
             .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("*", FilterExpressionType.TAG)))
             // 设置消费监听器。
             .setMessageListener(messageView -> {
-                // 获取消息体
-                ByteBuffer buffer = messageView.getBody();
-                // 将 ByteBuffer 转换为字节数组
-                byte[] bodyBytes = new byte[buffer.remaining()];
-                buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+                try{
+                    // 获取消息体
+                    ByteBuffer buffer = messageView.getBody();
+                    // 将 ByteBuffer 转换为字节数组
+                    byte[] bodyBytes = new byte[buffer.remaining()];
+                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
 
-                // 将字节数组转换为字符串
-                String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                    // 将字节数组转换为字符串
+                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
 
-                // 获取消息的标签
-                String tag = messageView.getTag().orElse("");
+                    // 获取消息的标签
+                    String tag = messageView.getTag().orElse("");
 
-                // 获取消息的keys
-                Set<String> keys =  new HashSet<>(messageView.getKeys());
+                    // 获取消息的keys
+                    Set<String> keys =  new HashSet<>(messageView.getKeys());
+                    switch (tag) {
+                        case "DMForward":
+                            if(keys.contains(workerId+datacenterId)) break;// 如果消息来自本服务器，则跳过
 
-                switch (tag) {
-                    case "DMForward":
-                        if(keys.contains(workerId+datacenterId)) break;// 如果消息来自本服务器，则跳过
+                            Event<ChatBO> event = JSON.parseObject(jsonString, Event.class);
+                            chatService.receiveMessage(event.getContent());
+                            break;
+                        default:
+                            break;
+                    }
 
-                        DMForwardEvent dmForwardEvent = JSON.parseObject(jsonString, DMForwardEvent.class);
-                        chatService.receiveMessage(dmForwardEvent.getChatBO());
-                        break;
-                    default:
-                        log.warn("Unknown tag: {}", tag);
-                        break;
+                    return ConsumeResult.SUCCESS;
+                } catch(Exception e) {
+                    log.info("error is "+ e);
+                    return ConsumeResult.FAILURE;
                 }
-
-                return ConsumeResult.SUCCESS;
             })
             .build();
     }

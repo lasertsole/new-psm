@@ -3,7 +3,7 @@ package com.psm.domain.User.user.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.corundumstudio.socketio.AckCallback;
 import com.corundumstudio.socketio.SocketIOClient;
-import com.psm.domain.User.user.Event.valueObject.SocketLoginEvent;
+import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDO;
@@ -13,9 +13,10 @@ import com.psm.domain.User.user.repository.UserDB;
 import com.psm.domain.User.user.service.UserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
-import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.event.bus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
+import com.psm.types.common.Event.Event;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
@@ -126,8 +127,11 @@ public class UserServiceImpl implements UserService {
 
             tgtClient.sendEvent("otherLogin", ackCallback, ip);
         } else{ // 否则可能同一用户的其他socket在其他服务器上，则用MQ广播通知退出
-            SocketLoginEvent socketLoginEvent = new SocketLoginEvent(userId, ip);
-            mqPublisher.publish(socketLoginEvent, "socketLogin", "USER");
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(userId);
+            userDTO.setIp(ip);
+            Event<UserDTO> otherLoginEvent = new Event<>(userDTO);
+            mqPublisher.publish(otherLoginEvent, "socketLogin", "USER");
         };
 
         // 添加本地用户

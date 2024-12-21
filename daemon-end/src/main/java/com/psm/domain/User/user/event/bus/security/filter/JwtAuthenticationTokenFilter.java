@@ -1,7 +1,7 @@
-package com.psm.domain.User.user.Event.bus.security.filter;
+package com.psm.domain.User.user.event.bus.security.filter;
 
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
-import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.event.bus.security.utils.JWT.JWTUtil;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

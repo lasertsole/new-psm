@@ -51,7 +51,7 @@ public class Model3dBO implements Serializable, BO<Model3dDTO, Model3dDO> {
     private VisibleEnum visible;
 
     @Min(value = 1, message = "The id must be greater than or equal to 1")
-    private Long storage;
+    private Long storage;// 模型大小
 
     @Size(max = 15, message = "The category length must not exceed 15 characters")
     private String style;//模型风格

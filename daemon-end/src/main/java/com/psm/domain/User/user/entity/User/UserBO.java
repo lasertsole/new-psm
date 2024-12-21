@@ -64,6 +64,9 @@ public class UserBO implements Serializable, BO<UserDTO, UserDO> {
     @Size(max = 255, message = "The profile length must not exceed 255 characters")
     private String profile;
 
+    @ValidIpAddress
+    private String ip;
+
     @Min(value = 0, message = "The publicModelNum must be greater than or equal to 0")
     private Short publicModelNum;
 

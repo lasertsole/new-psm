@@ -1,8 +1,10 @@
 package com.psm.domain.Communication.RTC.event.listener;
 
 import com.alibaba.fastjson2.JSON;
-import com.psm.domain.Communication.RTC.event.valueObject.*;
 import com.psm.domain.Communication.RTC.service.RTCService;
+import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
+import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
+import com.psm.types.common.Event.Event;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -56,49 +58,54 @@ public class RTCEventListener {
                 .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("*", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
                 // 设置消费监听器。
                 .setMessageListener(messageView -> {
-                    // 获取消息体
-                    ByteBuffer buffer = messageView.getBody();
-                    // 将 ByteBuffer 转换为字节数组
-                    byte[] bodyBytes = new byte[buffer.remaining()];
-                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+                    try{
+                        // 获取消息体
+                        ByteBuffer buffer = messageView.getBody();
+                        // 将 ByteBuffer 转换为字节数组
+                        byte[] bodyBytes = new byte[buffer.remaining()];
+                        buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
 
-                    // 将字节数组转换为字符串
-                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                        // 将字节数组转换为字符串
+                        String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
 
-                    // 获取消息的标签
-                    String tag = messageView.getTag().orElse("");
+                        // 获取消息的标签
+                        String tag = messageView.getTag().orElse("");
+                        log.info("tag:{}, jsonString: {}", tag, jsonString);
+                        switch (tag) {
+                            case "inviteJoinRoom":
+                                Event<RoomInvitation> inviteJoinRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                rtcService.forwardInviteJoinRoom(inviteJoinRoomEvent.getContent());
+                                log.info("{}", 123);
+                                break;
+                            case "agreeJoinRoom":
+                                Event<RoomInvitation> agreeJoinRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                rtcService.forwardAgreeJoinRoom(agreeJoinRoomEvent.getContent());
+                                break;
+                            case "rejectJoinRoom":
+                                Event<RoomInvitation> rejectJoinRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                rtcService.forwardRejectJoinRoom(rejectJoinRoomEvent.getContent());
+                                break;
+                            case "swapSDP":
+                                Event<RTCSwap> swapSDPEvent = JSON.parseObject(jsonString, Event.class);
+                                rtcService.forwardSwapSDP(swapSDPEvent.getContent());
+                                break;
+                            case "swapCandidate":
+                                Event<RTCSwap> swapCandidateEvent = JSON.parseObject(jsonString, Event.class);
+                                rtcService.forwardSwapCandidate(swapCandidateEvent.getContent());
+                                break;
+                            case "leaveRoom":
+                                Event<RTCSwap> leaveRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                rtcService.forwardLeaveRoom(leaveRoomEvent.getContent()); // 注意这里可能是 forwardLeaveRoom
+                                break;
+                            default:
+                                break;
+                        };
 
-                    switch (tag) {
-                        case "inviteJoinRoom":
-                            InviteJoinRoomEvent inviteJoinRoomEvent = JSON.parseObject(jsonString, InviteJoinRoomEvent.class);
-                            rtcService.forwardInviteJoinRoom(inviteJoinRoomEvent.getRoomInvitation());
-                            break;
-                        case "agreeJoinRoom":
-                            AgreeJoinRoomEvent agreeJoinRoomEvent = JSON.parseObject(jsonString, AgreeJoinRoomEvent.class);
-                            rtcService.forwardAgreeJoinRoom(agreeJoinRoomEvent.getRoomInvitation());
-                            break;
-                        case "rejectJoinRoom":
-                            RejectJoinRoomEvent rejectJoinRoomEvent = JSON.parseObject(jsonString, RejectJoinRoomEvent.class);
-                            rtcService.forwardRejectJoinRoom(rejectJoinRoomEvent.getRoomInvitation());
-                            break;
-                        case "swapSDP":
-                            SwapSDPEvent swapSDPEvent = JSON.parseObject(jsonString, SwapSDPEvent.class);
-                            rtcService.forwardSwapSDP(swapSDPEvent.getRtcSwap());
-                            break;
-                        case "swapCandidate":
-                            SwapCandidateEvent swapCandidateEvent = JSON.parseObject(jsonString, SwapCandidateEvent.class);
-                            rtcService.forwardSwapCandidate(swapCandidateEvent.getRtcSwap());
-                            break;
-                        case "leaveRoom":
-                            LeaveRoomEvent leaveRoomEvent = JSON.parseObject(jsonString, LeaveRoomEvent.class);
-                            rtcService.forwardSwapCandidate(leaveRoomEvent.getRtcSwap()); // 注意这里可能是 forwardLeaveRoom
-                            break;
-                        default:
-                            log.warn("Unknown tag: {}", tag);
-                            break;
-                    };
-
-                    return ConsumeResult.SUCCESS;
+                        return ConsumeResult.SUCCESS;
+                    } catch (Exception e) {
+                        log.info("error is "+ e);
+                        return ConsumeResult.FAILURE;
+                    }
                 })
                 .build();
     }

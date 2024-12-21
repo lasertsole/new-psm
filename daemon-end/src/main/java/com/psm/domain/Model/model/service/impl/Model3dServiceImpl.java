@@ -8,8 +8,8 @@ import com.psm.domain.Model.model.repository.Model3dDB;
 import com.psm.domain.Model.model.repository.Model3dOSS;
 import com.psm.domain.Model.model.service.Model3dService;
 import com.psm.domain.Model.model.types.convertor.Model3dConvertor;
-import com.psm.event.valueObject.UploadModel3DEvent;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
+import com.psm.types.common.Event.Event;
 import com.psm.types.enums.VisibleEnum;
 import com.psm.infrastructure.Tus.Tus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -139,7 +139,11 @@ public class Model3dServiceImpl implements Model3dService {
             throw new RuntimeException("删除云文件失败");
         }
 
-        UploadModel3DEvent uploadModel3DEvent = new UploadModel3DEvent(userId, fileSize, visible);
+        Model3dBO model3dBO = new Model3dBO();
+        model3dBO.setId(modelId);
+        model3dBO.setStorage(fileSize);
+        model3dBO.setVisible(visible);
+        Event<Model3dBO> uploadModel3DEvent = new Event<>(model3dBO);
 
         // 将消息发送到MQ
         mqPublisher.publish(uploadModel3DEvent, "uploadModel3D", "USER");

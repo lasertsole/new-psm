@@ -12,4 +12,8 @@ public class TimestampUtils {
 
         return timestamp;
     }
+
+    public static String generateUTCTimestamp() {
+        return TimestampUtils.generateUTCTimestamp(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+    }
 }

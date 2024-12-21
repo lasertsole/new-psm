@@ -1,7 +1,7 @@
-package com.psm.domain.User.user.Event.bus.security.handler;
+package com.psm.domain.User.user.event.bus.security.handler;
 
-import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
-import com.psm.domain.User.user.Event.bus.security.utils.Oauth2UserIdContextHolder;
+import com.psm.domain.User.user.event.bus.security.utils.JWT.JWTUtil;
+import com.psm.domain.User.user.event.bus.security.utils.Oauth2UserIdContextHolder;
 import com.psm.infrastructure.Cache.RedisCache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

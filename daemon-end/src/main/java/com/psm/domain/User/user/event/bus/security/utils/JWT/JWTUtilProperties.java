@@ -1,4 +1,4 @@
-package com.psm.domain.User.user.Event.bus.security.utils.JWT;
+package com.psm.domain.User.user.event.bus.security.utils.JWT;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

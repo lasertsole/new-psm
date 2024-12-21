@@ -23,13 +23,13 @@ public class AppConfig {
     public ThreadPoolTaskExecutor asyncThreadPoolExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         // 核心线程数
-        threadPoolTaskExecutor.setCorePoolSize(33);
+        threadPoolTaskExecutor.setCorePoolSize(10);
 
         // 最大线程数
-        threadPoolTaskExecutor.setMaxPoolSize(66);
+        threadPoolTaskExecutor.setMaxPoolSize(20);
 
         // 队列容量
-        threadPoolTaskExecutor.setQueueCapacity(120);
+        threadPoolTaskExecutor.setQueueCapacity(50);
 
         // 线程活跃时间（秒）
         threadPoolTaskExecutor.setKeepAliveSeconds(30);

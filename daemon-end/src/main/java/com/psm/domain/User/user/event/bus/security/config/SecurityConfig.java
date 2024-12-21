@@ -1,6 +1,6 @@
-package com.psm.domain.User.user.Event.bus.security.config;
+package com.psm.domain.User.user.event.bus.security.config;
 
-import com.psm.domain.User.user.Event.bus.security.filter.JwtAuthenticationTokenFilter;
+import com.psm.domain.User.user.event.bus.security.filter.JwtAuthenticationTokenFilter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
