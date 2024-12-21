@@ -1,6 +1,7 @@
 package com.psm.domain.Communication.RTC.service.impl;
 
 import com.corundumstudio.socketio.SocketIOClient;
+import com.psm.domain.Communication.RTC.event.valueObject.*;
 import com.psm.domain.Communication.RTC.service.RTCService;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
@@ -63,8 +64,12 @@ public class RTCServiceImpl implements RTCService {
         String rtcRoomId = srcClient.get("rtcRoomId");
         if (Objects.isNull(rtcRoomId)) throw new ClientException("当前用户没有加入任何房间");
 
+        // 获取当前用户id
+        String srcUserId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
+
         // 将邀请函通过mq发送给目标用户
-        mqPublisher.publish(roomInvitation, "inviteJoinRoom", "RTC", roomInvitation.getRoomType());
+        InviteJoinRoomEvent inviteJoinRoomEvent = new InviteJoinRoomEvent(roomInvitation);
+        mqPublisher.publish(inviteJoinRoomEvent, "inviteJoinRoom", "RTC", srcUserId);
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
@@ -103,7 +108,8 @@ public class RTCServiceImpl implements RTCService {
         };
 
         // 将加入房间的信息，通知该房间的其他用户
-        mqPublisher.publish(roomInvitation, "agreeJoinRoom", "RTC", roomId);
+        AgreeJoinRoomEvent agreeJoinRoomEvent = new AgreeJoinRoomEvent(roomInvitation);
+        mqPublisher.publish(agreeJoinRoomEvent, "agreeJoinRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
@@ -126,10 +132,9 @@ public class RTCServiceImpl implements RTCService {
 
     @Override
     public String rejectJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
-        String roomId = roomInvitation.getRoomId();
-
         // 将拒绝邀请的信息转发给邀请人
-        mqPublisher.publish(roomInvitation, "rejectJoinRoom", "RTC", roomId);
+        RejectJoinRoomEvent rejectJoinRoomEvent = new RejectJoinRoomEvent(roomInvitation);
+        mqPublisher.publish(rejectJoinRoomEvent, "rejectJoinRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
@@ -159,7 +164,8 @@ public class RTCServiceImpl implements RTCService {
     @Override
     public String swapSDP(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
         // 将交换swap的信息转发给房间成员
-        mqPublisher.publish(rtcSwap, "swapSDP", "RTC", rtcSwap.getRoomId());
+        SwapSDPEvent swapSDPEvent = new SwapSDPEvent(rtcSwap);
+        mqPublisher.publish(swapSDPEvent, "swapSDP", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
@@ -179,7 +185,8 @@ public class RTCServiceImpl implements RTCService {
     @Override
     public String swapCandidate(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
         // 将交换swap的信息转发给房间成员
-        mqPublisher.publish(rtcSwap, "swapCandidate", "RTC", rtcSwap.getRoomId());
+        SwapCandidateEvent swapCandidateEvent = new SwapCandidateEvent(rtcSwap);
+        mqPublisher.publish(swapCandidateEvent, "swapCandidate", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
@@ -208,7 +215,8 @@ public class RTCServiceImpl implements RTCService {
         srcClient.del("rtcRoomId");
 
         // 将交换swap的信息转发给邀请人
-        mqPublisher.publish(rtcSwap, "leaveRoom", "RTC", userId);
+        LeaveRoomEvent leaveRoomEvent = new LeaveRoomEvent(rtcSwap);
+        mqPublisher.publish(leaveRoomEvent, "leaveRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");

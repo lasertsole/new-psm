@@ -78,6 +78,7 @@
         size: 10,
         nextAfterKeys: []
     });
+
     const detaliSearchEvent = debounce(():void => {
         if(searchKeyword.value=="") { ElMessage.warning('请输入搜索内容'); return }; 
         pageCount.value=1;//重置页码
@@ -88,7 +89,6 @@
     const isFinalPage: Ref<boolean> = ref<boolean>(false);
     async function detaliSearch(keyword:string, current: number, size: number):Promise<void> {
         if(keyword=="") { ElMessage.warning('请输入搜索内容'); return }; 
-        if(isFinalPage.value) return;// 如果是末页，则不进行加载
         loading.value = true;
 
         let afterKey:string|null = detailSearchResults.value.nextAfterKeys!.length!=0?detailSearchResults.value.nextAfterKeys![0]:null;// 获取下一页的key
@@ -97,7 +97,7 @@
         resultPage!.records!.forEach(item=>{
             detailSearchResults.value.records!.push(item);
         });
-        let nextAfterKeys: string[] = resultPage.nextAfterKeys!;
+        let nextAfterKeys: string[] = resultPage.nextAfterKeys?resultPage.nextAfterKeys:[];
         detailSearchResults.value.nextAfterKeys = nextAfterKeys;
         if(nextAfterKeys.length==0) isFinalPage.value=true;// 如果没有下一页，则设置为true
 
@@ -105,10 +105,10 @@
     };
 
     async function load():Promise<void> {
-        console.log("加载更多");
         pageCount.value+=1;
+        if(isFinalPage.value) return;// 如果是末页，则不进行加载
         detaliSearch(searchKeyword.value, pageCount.value, 10);
-    }
+    };
     /******以上是搜索框部分******/
 
     // 转换为对象
@@ -178,9 +178,9 @@
 
         .detailSearchResult{
             @include scrollBar(8px);
+            align-items: center;
             padding: 0px 40px 20px 40px;
             flex-grow: 1;
-
             .list{
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); // 自动适应列数，每列最小宽度为 100px

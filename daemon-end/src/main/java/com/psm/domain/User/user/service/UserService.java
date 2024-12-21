@@ -1,7 +1,9 @@
 package com.psm.domain.User.user.service;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.types.enums.VisibleEnum;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -40,6 +42,20 @@ public interface UserService {
      */
     UserBO login(String name, String password) throws LockedException, BadCredentialsException, DisabledException;
 
+    /**
+     * 登录socket
+     *
+     * @param srcClient 登录用户客户端
+     */
+    void socketLogin(SocketIOClient srcClient) throws ClientException, InstantiationException, IllegalAccessException;
+
+    /**
+     * 广播登录socket
+     *
+     * @param userId 用户ID
+     * @param ip 用户ip地址
+     */
+    void forwardSocketLogin(String userId, String ip);
 
     /**
      * 退出登录

@@ -31,7 +31,7 @@ export class DMService { // 单例模式
     
     this.DMSocket.on('connect', () => {});
 
-    this.DMSocket.on('connect_error', (error) => {
+    this.DMSocket.on('connect_error', (error: any) => {
       console.error('Manager Connection error:', error);
       // 可以在这里处理重连逻辑
       if(this.interval) return;
@@ -42,11 +42,11 @@ export class DMService { // 单例模式
       }, 5000); // 5秒后重试
     });
 
-    this.DMSocket.on('reconnect_error', (error) => {
+    this.DMSocket.on('reconnect_error', (error: any) => {
       console.error('Manager Reconnection error:', error);
     });
 
-    this.DMSocket.on('disconnect', (reason) => {
+    this.DMSocket.on('disconnect', (reason: Socket.DisconnectReason) => {
       console.log('Manager Disconnected:', reason);
       if (reason === 'io server disconnect') {
         // 服务器主动断开连接，可以尝试重新连接
@@ -485,7 +485,10 @@ export class DMService { // 单例模式
           maxUserId: max( messageItem.srcUserId!, messageItem.tgtUserId! ), 
           minUserId: min( messageItem.srcUserId!, messageItem.tgtUserId! ),
         };
-        db.MessageDBItems.add(messageDBItem);
+
+        if(messageDBItem.timestamp !== undefined) {// 确保存入indexedDB数据库的消息时间戳存在
+          db.MessageDBItems.add(messageDBItem);
+        };
 
         // 更新左侧联系人列表
         constactsObj.lastTime = timestamp;

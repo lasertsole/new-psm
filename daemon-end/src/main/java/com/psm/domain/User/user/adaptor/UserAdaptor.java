@@ -1,7 +1,9 @@
 package com.psm.domain.User.user.adaptor;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.utils.page.PageBO;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -40,6 +42,13 @@ public interface UserAdaptor {
      * @return 用户BO实体
      */
     UserBO login(UserBO userBO) throws LockedException, BadCredentialsException, DisabledException, InvalidParameterException, InstantiationException, IllegalAccessException;
+
+    /**
+     * 登录socket
+     *
+     * @param srcClient 登录用户客户端
+     */
+    void socketLogin(SocketIOClient srcClient) throws ClientException, InstantiationException, IllegalAccessException;
 
     /**
      * 退出登录

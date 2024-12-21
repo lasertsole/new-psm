@@ -1,5 +1,6 @@
 package com.psm.domain.User.user.adaptor.impl;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.User.user.adaptor.UserAdaptor;
@@ -12,6 +13,7 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -75,6 +77,11 @@ public class UserAdaptorImpl implements UserAdaptor {
         }
 
         return userBO;
+    }
+
+    @Override
+    public void socketLogin(SocketIOClient srcClient) throws ClientException, InstantiationException, IllegalAccessException {
+        userService.socketLogin(srcClient);
     }
 
     @Override

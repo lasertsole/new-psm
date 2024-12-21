@@ -4,6 +4,7 @@ import { Socket } from 'socket.io-client';
 import type { RTCSwap } from "@/types/rtc";
 import { fromEvent, concatMap } from "rxjs"; 
 import { wsManager } from '@/composables/wsManager';
+import { DMContactsItems } from "@/composables/DMSocket"
 import type { Room, RoomInvitation, PeerOne } from "@/types/common";
 
 /*************************************以下为RTC命名空间逻辑****************************************/
@@ -22,7 +23,7 @@ export class RTCService {// 单例模式
     });
     private displayMediaConstraints: Reactive<DisplayMediaStreamOptions> = reactive<DisplayMediaStreamOptions>({ // 当前投屏媒体配置
       video: true,
-      audio: false // 通常不包括音频
+      audio: true
     });
     private userMediaStream: MediaStream | null = null;// 本地音视频流
     private displayMediaStream: MediaStream | null = null;// 当前投屏媒体流
@@ -177,7 +178,7 @@ export class RTCService {// 单例模式
 
         this.RTCSocket.on('connect', () => {});
 
-        this.RTCSocket.on('connect_error', (error) => {
+        this.RTCSocket.on('connect_error', (error: any) => {
             console.error('Manager Connection error:', error);
             // 可以在这里处理重连逻辑
             if(this.interval) return;
@@ -188,11 +189,11 @@ export class RTCService {// 单例模式
             }, 5000); // 5秒后重试
         });
 
-        this.RTCSocket.on('reconnect_error', (error) => {
+        this.RTCSocket.on('reconnect_error', (error: any) => {
             console.error('Manager Reconnection error:', error);
         });
     
-        this.RTCSocket.on('disconnect', (reason) => {
+        this.RTCSocket.on('disconnect', (reason: Socket.DisconnectReason) => {
             console.log('Manager Disconnected:', reason);
             if (reason === 'io server disconnect') {
                 // 服务器主动断开连接，可以尝试重新连接

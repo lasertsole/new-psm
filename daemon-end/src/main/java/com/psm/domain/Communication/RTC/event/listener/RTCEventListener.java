@@ -1,9 +1,8 @@
 package com.psm.domain.Communication.RTC.event.listener;
 
 import com.alibaba.fastjson2.JSON;
+import com.psm.domain.Communication.RTC.event.valueObject.*;
 import com.psm.domain.Communication.RTC.service.RTCService;
-import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
-import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -71,28 +70,28 @@ public class RTCEventListener {
 
                     switch (tag) {
                         case "inviteJoinRoom":
-                            RoomInvitation roomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
-                            rtcService.forwardInviteJoinRoom(roomInvitation);
+                            InviteJoinRoomEvent inviteJoinRoomEvent = JSON.parseObject(jsonString, InviteJoinRoomEvent.class);
+                            rtcService.forwardInviteJoinRoom(inviteJoinRoomEvent.getRoomInvitation());
                             break;
                         case "agreeJoinRoom":
-                            RoomInvitation agreeRoomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
-                            rtcService.forwardAgreeJoinRoom(agreeRoomInvitation);
+                            AgreeJoinRoomEvent agreeJoinRoomEvent = JSON.parseObject(jsonString, AgreeJoinRoomEvent.class);
+                            rtcService.forwardAgreeJoinRoom(agreeJoinRoomEvent.getRoomInvitation());
                             break;
                         case "rejectJoinRoom":
-                            RoomInvitation rejectRoomInvitation = JSON.parseObject(jsonString, RoomInvitation.class);
-                            rtcService.forwardRejectJoinRoom(rejectRoomInvitation);
+                            RejectJoinRoomEvent rejectJoinRoomEvent = JSON.parseObject(jsonString, RejectJoinRoomEvent.class);
+                            rtcService.forwardRejectJoinRoom(rejectJoinRoomEvent.getRoomInvitation());
                             break;
                         case "swapSDP":
-                            RTCSwap rtcSwapSDP = JSON.parseObject(jsonString, RTCSwap.class);
-                            rtcService.forwardSwapSDP(rtcSwapSDP);
+                            SwapSDPEvent swapSDPEvent = JSON.parseObject(jsonString, SwapSDPEvent.class);
+                            rtcService.forwardSwapSDP(swapSDPEvent.getRtcSwap());
                             break;
                         case "swapCandidate":
-                            RTCSwap rtcSwapCandidate = JSON.parseObject(jsonString, RTCSwap.class);
-                            rtcService.forwardSwapCandidate(rtcSwapCandidate);
+                            SwapCandidateEvent swapCandidateEvent = JSON.parseObject(jsonString, SwapCandidateEvent.class);
+                            rtcService.forwardSwapCandidate(swapCandidateEvent.getRtcSwap());
                             break;
                         case "leaveRoom":
-                            RTCSwap rtcSwapLeave = JSON.parseObject(jsonString, RTCSwap.class);
-                            rtcService.forwardSwapCandidate(rtcSwapLeave); // 注意这里可能是 forwardLeaveRoom
+                            LeaveRoomEvent leaveRoomEvent = JSON.parseObject(jsonString, LeaveRoomEvent.class);
+                            rtcService.forwardSwapCandidate(leaveRoomEvent.getRtcSwap()); // 注意这里可能是 forwardLeaveRoom
                             break;
                         default:
                             log.warn("Unknown tag: {}", tag);

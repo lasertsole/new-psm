@@ -1,4 +1,4 @@
-import type { ContactsDBItem, MessageDBItem } from '~/types/chat';
+import type { ContactsDBItem, MessageDBItem } from '@/types/chat';
 import Dexie, { type EntityTable } from 'dexie';
 
 const db = new Dexie('psmDB') as Dexie & {

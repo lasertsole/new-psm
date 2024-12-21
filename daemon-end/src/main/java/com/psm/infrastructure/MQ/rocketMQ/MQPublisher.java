@@ -11,6 +11,7 @@ import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +27,12 @@ public class MQPublisher {
     @Autowired
     private ClientServiceProvider provider;
 
+    @Value("${server.workerId}")
+    private String workerId;
+
+    @Value("${server.datacenterId}")
+    private String datacenterId;
+
     private Producer producer;
     @PostConstruct
     private void init() throws ClientException {
@@ -33,6 +40,30 @@ public class MQPublisher {
         producer = provider.newProducerBuilder()
                 .setClientConfiguration(clientConfiguration)
                 .build();
+    }
+
+    public void publish(Object body, String tag, String topic, String... keys) throws ClientException {
+        if (!(body instanceof Serializable)) {
+            throw new IllegalArgumentException("The object must implement Serializable interface.");
+        }
+
+        // 普通消息发送。
+        Message message = provider.newMessageBuilder()
+                // 消息体。
+                .setBody(JSON.toJSONString(body).getBytes(StandardCharsets.UTF_8))
+                // 设置消息Tag，用于消费端根据指定Tag过滤消息。
+                .setTag(tag)
+                // 设置主题
+                .setTopic(topic)
+                // 设置消息索引键，可根据关键字精确查找某条消息，也可以用于去重。
+                .setKeys(keys)
+                .build();
+        try {
+            // 发送消息，需要关注发送结果，并捕获失败等异常。
+            SendReceipt sendReceipt = producer.send(message);
+        } catch (ClientException e) {
+            log.error("Failed to send message", e);
+        }
     }
 
     public void publish(Object body, String tag, String topic, String key) throws ClientException {
@@ -48,8 +79,32 @@ public class MQPublisher {
                 .setTag(tag)
                 // 设置主题
                 .setTopic(topic)
-                // 设置消息索引键，可根据关键字精确查找某条消息。
+                // 设置消息索引键，可根据关键字精确查找某条消息，也可以用于去重。
                 .setKeys(key)
+                .build();
+        try {
+            // 发送消息，需要关注发送结果，并捕获失败等异常。
+            SendReceipt sendReceipt = producer.send(message);
+        } catch (ClientException e) {
+            log.error("Failed to send message", e);
+        }
+    }
+
+    public void publish(Object body, String tag, String topic) throws ClientException {
+        if (!(body instanceof Serializable)) {
+            throw new IllegalArgumentException("The object must implement Serializable interface.");
+        }
+
+        // 普通消息发送。
+        Message message = provider.newMessageBuilder()
+                // 消息体。
+                .setBody(JSON.toJSONString(body).getBytes(StandardCharsets.UTF_8))
+                // 设置消息Tag，用于消费端根据指定Tag过滤消息。
+                .setTag(tag)
+                // 设置主题
+                .setTopic(topic)
+                // 设置消息索引键，可根据关键字精确查找某条消息，也可以用于去重。
+                .setKeys(workerId+datacenterId)
                 .build();
         try {
             // 发送消息，需要关注发送结果，并捕获失败等异常。

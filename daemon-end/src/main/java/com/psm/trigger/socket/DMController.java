@@ -72,6 +72,7 @@ public class DMController implements CommandLineRunner {
             client.sendEvent("initDMConfig", map);
         });
 
+        // 添加断开连接监听器
         dm.addDisconnectListener(client -> {
             // 移除用户在线用户列表
             socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
@@ -100,6 +101,7 @@ public class DMController implements CommandLineRunner {
             }
         });
 
+        // 添加初始化信息监听器
         dm.addEventListener("initMessage", String.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, String timestamp, AckRequest ackRequest) {

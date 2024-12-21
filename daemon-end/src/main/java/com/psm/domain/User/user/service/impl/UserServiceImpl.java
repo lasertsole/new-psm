@@ -1,6 +1,9 @@
 package com.psm.domain.User.user.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.corundumstudio.socketio.AckCallback;
+import com.corundumstudio.socketio.SocketIOClient;
+import com.psm.domain.User.user.Event.valueObject.SocketLoginEvent;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
 import com.psm.domain.User.user.entity.User.UserBO;
 import com.psm.domain.User.user.entity.User.UserDO;
@@ -11,10 +14,11 @@ import com.psm.domain.User.user.service.UserService;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.domain.User.user.Event.bus.security.utils.JWT.JWTUtil;
+import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
+import com.psm.infrastructure.SocketIO.SocketIOApi;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +44,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserOSS userOSS;
+    @Autowired
+    private MQPublisher mqPublisher;
+
+    @Autowired
+    private SocketIOApi socketIOApi;
 
     @Autowired
     private LoginUserRedis loginUserRedis;
@@ -84,15 +93,62 @@ public class UserServiceImpl implements UserService {
         String id = loginUserInfo.getId().toString();
         String jwt = jwtUtil.createJWT(id);
 
-
         // 把完整信息存入redis，id作为key(如果原先有则覆盖)
         loginUserRedis.addLoginUser(id, loginUser);
 
+        // 返回用户信息
         UserBO userBO = new UserBO();
         BeanUtils.copyProperties(loginUserInfo, userBO);
         userBO.setToken(jwt);
-
         return userBO;
+    }
+
+    @Override
+    public void socketLogin(SocketIOClient srcClient) throws ClientException {
+        // 将用户id转成字符串类型
+        String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
+        String ip = srcClient.get("ip");
+
+        // 如果本服务器存在同一用户的其他socket，则通知该socket退出
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);
+        if (Objects.nonNull(tgtClient) && !ip.equals(tgtClient.get("ip"))) {// 如果目标用户socket存在且ip不同，则通知目标用户
+            // 通知目标用户
+            AckCallback<Boolean> ackCallback = new AckCallback<>(Boolean.class ,5000) {
+                @Override
+                public void onSuccess(Boolean o) {
+                    // 获取全局client
+                    SocketIOClient globalClient = socketIOApi.getLocalUserSocket("/", tgtClient.getSessionId().toString());
+
+                    // 利用全局client断开全局连接
+                    globalClient.disconnect();
+                }
+            };
+
+            tgtClient.sendEvent("otherLogin", ackCallback, ip);
+        } else{ // 否则可能同一用户的其他socket在其他服务器上，则用MQ广播通知退出
+            SocketLoginEvent socketLoginEvent = new SocketLoginEvent(userId, ip);
+            mqPublisher.publish(socketLoginEvent, "socketLogin", "USER");
+        };
+
+        // 添加本地用户
+        socketIOApi.addLocalUser("/security", userId, srcClient);
+    }
+
+    @Override
+    @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
+    public void forwardSocketLogin(String userId, String ip) {
+        // 如果本服务器存在目标用户socket，则把信息交付给目标用户
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);
+        if (Objects.nonNull(tgtClient) && !ip.equals(tgtClient.get("ip"))) {// 如果目标用户socket存在且ip不同，则通知目标用户
+            // 通知目标用户
+            tgtClient.sendEvent("otherLogin", ip);
+
+            // 获取全局client
+            SocketIOClient globalClient = socketIOApi.getLocalUserSocket("/", tgtClient.getSessionId().toString());
+
+            // 利用全局client断开全局连接
+            globalClient.disconnect();
+        };
     }
 
     @Override
@@ -354,12 +410,12 @@ public class UserServiceImpl implements UserService {
 
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void processUploadModel3D(Long userId, Long modelSize, VisibleEnum visible) {
-            // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
-            if (Objects.equals(visible, VisibleEnum.PUBLIC)) {
-                addOnePublicModelNumById(userId);
-            }
+        // 如果模型设置为公开，更新数据库中用户上传公开模型数量+1
+        if (Objects.equals(visible, VisibleEnum.PUBLIC)) {
+            addOnePublicModelNumById(userId);
+        }
 
-            // 增加用户已用的存储空间为当前文件大小
-            addOnePublicModelStorageById(userId, modelSize);
+        // 增加用户已用的存储空间为当前文件大小
+        addOnePublicModelStorageById(userId, modelSize);
     }
 }

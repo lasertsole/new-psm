@@ -20,6 +20,8 @@ public class BaseHandler {
     @Autowired
     private SocketIOApi socketIOApi;
 
+    private final String namespace = "/";
+
     @PostConstruct
     private void startup() throws Exception {
         log.info("SocketIOServer启动成功");
@@ -38,9 +40,13 @@ public class BaseHandler {
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
+        // 将全局客户端加入本地缓存
+        socketIOApi.addLocalUser(namespace, client.getSessionId().toString(), client);
     }
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
+        // 将全局客户端移除本地缓存
+        socketIOApi.removeLocalUser(namespace, client.getSessionId().toString());
     }
 }

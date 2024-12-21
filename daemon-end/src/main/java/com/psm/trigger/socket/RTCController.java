@@ -42,10 +42,10 @@ public class RTCController implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // 创建一个名字空间
         String namespace = "/RTC";
-        SocketIONamespace RTCSignaling = socketIOServer.addNamespace(namespace);
+        SocketIONamespace rtc = socketIOServer.addNamespace(namespace);
 
         // 添加校验token监听器
-        RTCSignaling.addAuthTokenListener((authToken, client)-> {
+        rtc.addAuthTokenListener((authToken, client)-> {
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
                 UserBO userBO = userAdaptor.authUserToken((String) map.get("token"));
@@ -59,12 +59,12 @@ public class RTCController implements CommandLineRunner {
         });
 
         // 添加连接监听器
-        RTCSignaling.addConnectListener(client -> {
+        rtc.addConnectListener(client -> {
             // 添加本地用户
             socketIOApi.addLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
         });
 
-        RTCSignaling.addDisconnectListener(client -> {
+        rtc.addDisconnectListener(client -> {
             // 移除用户在线用户列表
             socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
 
@@ -86,7 +86,7 @@ public class RTCController implements CommandLineRunner {
         });
 
         // 添加创建房间监听器
-        RTCSignaling.addEventListener("createRoom", Room.class, new DataListener<>() {
+        rtc.addEventListener("createRoom", Room.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, Room room, AckRequest ackRequest) {
                 try {
@@ -101,7 +101,7 @@ public class RTCController implements CommandLineRunner {
         });
 
         // 添加邀请加入房间监听器
-        RTCSignaling.addEventListener("inviteJoinRoom", RoomInvitation.class, new DataListener<>() {
+        rtc.addEventListener("inviteJoinRoom", RoomInvitation.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
                 try {
@@ -115,7 +115,8 @@ public class RTCController implements CommandLineRunner {
             }
         });
 
-        RTCSignaling.addEventListener("agreeJoinRoom", RoomInvitation.class, new DataListener<>() {
+        // 添加同意加入房间监听器
+        rtc.addEventListener("agreeJoinRoom", RoomInvitation.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
                 try {
@@ -129,7 +130,8 @@ public class RTCController implements CommandLineRunner {
             }
         });
 
-        RTCSignaling.addEventListener("rejectJoinRoom", RoomInvitation.class, new DataListener<>() {
+        // 添加拒绝加入房间监听器
+        rtc.addEventListener("rejectJoinRoom", RoomInvitation.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, RoomInvitation roomInvitation, AckRequest ackRequest) throws Exception {
                 try {
@@ -143,7 +145,8 @@ public class RTCController implements CommandLineRunner {
             }
         });
 
-        RTCSignaling.addEventListener("swapSDP", RTCSwap.class, new DataListener<>() {
+        // 添加交换SDP监听器
+        rtc.addEventListener("swapSDP", RTCSwap.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, RTCSwap rtcSwap, AckRequest ackRequest) throws Exception {
                 try {
@@ -157,7 +160,8 @@ public class RTCController implements CommandLineRunner {
             }
         });
 
-        RTCSignaling.addEventListener("swapCandidate", RTCSwap.class, new DataListener<>() {
+        // 添加交换Candidate监听器
+        rtc.addEventListener("swapCandidate", RTCSwap.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, RTCSwap rtcSwap, AckRequest ackRequest) throws Exception {
                 try {
@@ -171,7 +175,8 @@ public class RTCController implements CommandLineRunner {
             }
         });
 
-        RTCSignaling.addEventListener("leaveRoom", RTCSwap.class, new DataListener<>() {
+        // 添加离开房间监听器
+        rtc.addEventListener("leaveRoom", RTCSwap.class, new DataListener<>() {
             @Override
             public void onData(SocketIOClient srcClient, RTCSwap rtcSwap, AckRequest ackRequest) throws Exception {
                 try {

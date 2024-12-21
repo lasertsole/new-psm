@@ -1,4 +1,4 @@
-package com.psm.event;
+package com.psm.event.valueObject;
 
 import com.psm.types.enums.VisibleEnum;
 import lombok.Value;

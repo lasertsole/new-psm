@@ -3,6 +3,7 @@ package com.psm.domain.User.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
+import com.psm.app.annotation.validation.ValidIpAddress;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.types.common.BO.BO;

@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
 import com.psm.domain.Communication.Chat.entity.ChatDO;
 import com.psm.domain.Communication.Chat.entity.ChatDTO;
+import com.psm.domain.Communication.Chat.event.valueObject.DMForwardEvent;
 import com.psm.domain.Communication.Chat.repository.ChatDB;
 import com.psm.domain.Communication.Chat.service.ChatService;
 import com.psm.domain.User.user.entity.User.UserBO;
@@ -61,14 +62,19 @@ public class ChatServiceImpl implements ChatService {
         // 设置用户最后发送时间
         srcClient.set("DMLastTime", chatBO.getTimestamp());
 
-        // 获取来源用户id
-        String srcUserId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
-
         // 刷新chatBO内的时间戳为到达服务器时间(UTC国际化时间戳)，并将时间戳返回给客户端
         String serverTimestamp = chatBO.generateServerTimestamp();
+        DMForwardEvent dmForwardEvent = new DMForwardEvent(chatBO);
 
-        // 将消息发送到MQ，这里的chatBO时间戳已为到达服务器的时间戳.
-        mqPublisher.publish(chatBO, "DMForward", "CHAT", srcUserId);
+        // 如果本服务器存在目标用户socket，则把信息交付给目标用户
+        SocketIOClient tgtClient = socketIOApi.getLocalUserSocket(namespace, String.valueOf(chatBO.getTgtUserId()));
+        if (Objects.nonNull(tgtClient)){
+            tgtClient.sendEvent("receiveMessage", ChatDTO.fromBO(chatBO));
+            storageMessageDM(chatBO);
+        } else {// 如果本服务器不存在目标用户socket，则把信息广播到MQ
+            // 将消息发送到MQ，这里的chatBO时间戳已为到达服务器的时间戳.
+            mqPublisher.publish(dmForwardEvent, "DMForward", "CHAT");
+        };
 
         //将时间戳返回给客户端
         return serverTimestamp;

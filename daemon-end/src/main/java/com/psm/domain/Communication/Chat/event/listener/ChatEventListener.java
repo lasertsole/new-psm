@@ -2,6 +2,7 @@ package com.psm.domain.Communication.Chat.event.listener;
 
 import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
+import com.psm.domain.Communication.Chat.event.valueObject.DMForwardEvent;
 import com.psm.domain.Communication.Chat.service.ChatService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -109,10 +112,15 @@ public class ChatEventListener {
                 // 获取消息的标签
                 String tag = messageView.getTag().orElse("");
 
+                // 获取消息的keys
+                Set<String> keys =  new HashSet<>(messageView.getKeys());
+
                 switch (tag) {
                     case "DMForward":
-                        ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
-                        chatService.receiveMessage(messageBody);
+                        if(keys.contains(workerId+datacenterId)) break;// 如果消息来自本服务器，则跳过
+
+                        DMForwardEvent dmForwardEvent = JSON.parseObject(jsonString, DMForwardEvent.class);
+                        chatService.receiveMessage(dmForwardEvent.getChatBO());
                         break;
                     default:
                         log.warn("Unknown tag: {}", tag);

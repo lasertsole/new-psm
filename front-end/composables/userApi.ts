@@ -300,12 +300,6 @@ export async function logout():Promise<boolean>{
             url: '/users/logout',
             method: 'delete',
         });
-        
-        if(res.code!=200){
-            ElMessage.error('登出失败:'+res.msg);
-    
-            return false;
-        }
     
         import.meta.client&&localStorage.removeItem('token');
         logoutApi();
@@ -318,6 +312,13 @@ export async function logout():Promise<boolean>{
         import.meta.client&&ElMessage.error('登出失败');
         return false;
     }
+};
+
+// 被动强制登出
+export function forcedLogout():void{
+    import.meta.client&&localStorage.removeItem('token');
+    logoutApi();
+    emit("offline");
 };
 
 export async function getUserById(userId:string):Promise<UserInfo|null>{
