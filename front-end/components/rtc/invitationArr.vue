@@ -147,9 +147,9 @@
         videoVisible.value = true;
     };
 
-    on("online", async()=>{
+    on("online", async():Promise<void>=>{
         await nextTick();// // 确保组件已挂载
-        RTCServiceInstance = RTCService.getInstance();
+        RTCServiceInstance = await RTCService.getInstance();
         RTCServiceInstance.initVideoDom(dplayerRef.value!.dpDomRef!, dplayerRef.value!.minDpDomRef!);// 初始化videoDom
         RTCServiceInstance.onSwapCandidate((remoteSDP: RTCSwap):void=>{// 添加链接建立事件的回调
             trackSwitchVisible.value = true;

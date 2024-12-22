@@ -510,7 +510,7 @@ export class RTCService {// 单例模式
     };
 
     // 获取RTC服务单例
-    public static getInstance(): RTCService {
+    public static async getInstance(): Promise<RTCService> {
         if (!RTCService.instance) {
             RTCService.instance = new RTCService();
         };

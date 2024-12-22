@@ -143,7 +143,7 @@ public class Model3dServiceImpl implements Model3dService {
         model3dBO.setId(modelId);
         model3dBO.setStorage(fileSize);
         model3dBO.setVisible(visible);
-        Event<Model3dBO> uploadModel3DEvent = new Event<>(model3dBO);
+        Event<Model3dBO> uploadModel3DEvent = new Event<>(model3dBO, Model3dBO.class);
 
         // 将消息发送到MQ
         mqPublisher.publish(uploadModel3DEvent, "uploadModel3D", "USER");

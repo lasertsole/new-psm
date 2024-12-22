@@ -21,6 +21,6 @@ public class Oauth2LoginErrorHander implements AuthenticationFailureHandler {
 
         // 返回错误
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("第三方登录失败: " + exception.getMessage());
+        response.getWriter().write("Third-party login failed: " + exception.getMessage());
     }
 }

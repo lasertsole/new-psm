@@ -65,7 +65,7 @@ public class RTCServiceImpl implements RTCService {
         if (Objects.isNull(rtcRoomId)) throw new ClientException("当前用户没有加入任何房间");
 
         // 将邀请函通过mq发送给目标用户
-        Event<RoomInvitation> inviteJoinRoomEvent = new Event<>(roomInvitation);
+        Event<RoomInvitation> inviteJoinRoomEvent = new Event<>(roomInvitation, RoomInvitation.class);
         mqPublisher.publish(inviteJoinRoomEvent, "inviteJoinRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
@@ -105,7 +105,7 @@ public class RTCServiceImpl implements RTCService {
         };
 
         // 将加入房间的信息，通知该房间的其他用户
-        Event<RoomInvitation> agreeJoinRoomEvent = new Event<>(roomInvitation);
+        Event<RoomInvitation> agreeJoinRoomEvent = new Event<>(roomInvitation, RoomInvitation.class);
         mqPublisher.publish(agreeJoinRoomEvent, "agreeJoinRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
@@ -130,7 +130,7 @@ public class RTCServiceImpl implements RTCService {
     @Override
     public String rejectJoinRoom(SocketIOClient srcClient, RoomInvitation roomInvitation) throws ClientException {
         // 将拒绝邀请的信息转发给邀请人
-        Event<RoomInvitation> rejectJoinRoomEvent = new Event<>(roomInvitation);
+        Event<RoomInvitation> rejectJoinRoomEvent = new Event<>(roomInvitation, RoomInvitation.class);
         mqPublisher.publish(rejectJoinRoomEvent, "rejectJoinRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
@@ -161,7 +161,7 @@ public class RTCServiceImpl implements RTCService {
     @Override
     public String swapSDP(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
         // 将交换swap的信息转发给房间成员
-        Event<RTCSwap> swapSDPEvent = new Event<>(rtcSwap);
+        Event<RTCSwap> swapSDPEvent = new Event<>(rtcSwap, RTCSwap.class);
         mqPublisher.publish(swapSDPEvent, "swapSDP", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
@@ -182,7 +182,7 @@ public class RTCServiceImpl implements RTCService {
     @Override
     public String swapCandidate(SocketIOClient socketIOClient, RTCSwap rtcSwap) throws ClientException {
         // 将交换swap的信息转发给房间成员
-        Event<RTCSwap> swapCandidateEvent = new Event<>(rtcSwap);
+        Event<RTCSwap> swapCandidateEvent = new Event<>(rtcSwap, RTCSwap.class);
         mqPublisher.publish(swapCandidateEvent, "swapCandidate", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串
@@ -212,7 +212,7 @@ public class RTCServiceImpl implements RTCService {
         srcClient.del("rtcRoomId");
 
         // 将交换swap的信息转发给邀请人
-        Event<RTCSwap> leaveRoomEvent = new Event<>(rtcSwap);
+        Event<RTCSwap> leaveRoomEvent = new Event<>(rtcSwap, RTCSwap.class);
         mqPublisher.publish(leaveRoomEvent, "leaveRoom", "RTC");
 
         // 生成当前 UTC 时间的时间戳(为了国际通用)并格式化为包含微秒的字符串

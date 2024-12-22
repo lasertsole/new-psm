@@ -64,8 +64,8 @@ public class UserBO implements Serializable, BO<UserDTO, UserDO> {
     @Size(max = 255, message = "The profile length must not exceed 255 characters")
     private String profile;
 
-    @ValidIpAddress
-    private String ip;
+    @Size(min = 32, max = 32, message = "The fingerprint length must be 32 characters")
+    private String fingerprint;
 
     @Min(value = 0, message = "The publicModelNum must be greater than or equal to 0")
     private Short publicModelNum;

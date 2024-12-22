@@ -1,16 +1,18 @@
 import { Socket } from 'socket.io-client';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 export class SecurityService {
     private static instance: SecurityService | null;
     private SecuritySocket: Socket;
     private interval: NodeJS.Timeout|null = null;
 
-    private constructor() {
+    private constructor(fingerprint:string) {
         if(import.meta.server) throw new Error("SecurityService can only be used in the browser.");
 
         this.SecuritySocket = wsManager.socket("/security", {
             auth: {
-                token: localStorage.getItem("token") || ""
+                token: localStorage.getItem("token") || "",
+                fingerprint,
             }, retries: 3 // 最大重试次数。超过限制，数据包将被丢弃。
         });
 
@@ -57,10 +59,19 @@ export class SecurityService {
         });
     };
 
+    // 获取指纹ID
+
+
     // 获取RTC服务单例
-    public static getInstance(): SecurityService {
+    public static async getInstance(): Promise<SecurityService> {
+        // 获取指纹ID
+        const fpPromise = FingerprintJS.load();
+        const fp = await fpPromise;
+        const result = await fp.get();
+        const fingerprint:string =  result.visitorId; // 使用指纹ID
+
         if (!SecurityService.instance) {
-            SecurityService.instance = new SecurityService();
+            SecurityService.instance = new SecurityService(fingerprint);
         };
 
         return SecurityService.instance;

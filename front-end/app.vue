@@ -26,16 +26,17 @@
     };
   });
   
+  let SecurityInstance: SecurityService;// 安全服务
   let DMServiceInstance: DMService; // 一对一聊天服务
   let RTCServiceInstance: RTCService; // RTC实时交互服务
-  let SecurityInstance: SecurityService;// 安全服务
-  on("online", ()=>{
-    DMServiceInstance = DMService.getInstance();
+  on("online", async ():Promise<void>=>{
+    SecurityInstance = await SecurityService.getInstance();
+
+    DMServiceInstance = await DMService.getInstance();
     // 初始化私信
     DMServiceInstance.initDM();
     
-    RTCServiceInstance = RTCService.getInstance();
-    SecurityInstance = SecurityService.getInstance();
+    RTCServiceInstance = await RTCService.getInstance();
   });
 
   on("offline", ()=>{

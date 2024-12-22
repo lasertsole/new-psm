@@ -71,7 +71,7 @@ public class ChatServiceImpl implements ChatService {
             storageMessageDM(chatBO);
         } else {// 如果本服务器不存在目标用户socket，则把信息广播到MQ
             // 将消息发送到MQ，这里的chatBO时间戳已为到达服务器的时间戳.
-            Event<ChatBO> event = new Event<>(chatBO);
+            Event<ChatBO> event = new Event<>(chatBO, ChatBO.class);
             mqPublisher.publish(event, "DMForward", "CHAT");
         };
 

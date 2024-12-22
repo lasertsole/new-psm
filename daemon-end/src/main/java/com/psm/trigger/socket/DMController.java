@@ -49,27 +49,34 @@ public class DMController implements CommandLineRunner {
         dm.addAuthTokenListener((authToken, client)->{
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
-                UserBO userBO = userAdaptor.authUserToken((String) map.get("token"));
+                String token = (String) map.get("token");
+                if (Objects.isNull(token))
+                    return new AuthTokenResult(false, "Invalid parameter");
+
+                UserBO userBO = userAdaptor.authUserToken(token);
                 client.set("userInfo", userBO);
 
                 return AuthTokenResult.AuthTokenResultSuccess;
-            }
-            catch (Exception e){
-                return new AuthTokenResult(false, "token无效:"+e.getCause());
+            } catch (Exception e) {
+                return new AuthTokenResult(false, "Invalid token:"+e.getCause());
             }
         });
 
         // 添加连接监听器
         dm.addConnectListener(client -> {
-            // 添加本地用户
-            socketIOApi.addLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
+            try {
+                // 添加本地用户
+                socketIOApi.addLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()), client);
 
-            // 向客户端发送配置信息
-            Map<String, Object> map = new HashMap<>();
-            map.put("DMExpireDay", socketAppProperties.getDMExpireDay());
+                // 向客户端发送配置信息
+                Map<String, Object> map = new HashMap<>();
+                map.put("DMExpireDay", socketAppProperties.getDMExpireDay());
 
-            // 发送配置信息
-            client.sendEvent("initDMConfig", map);
+                // 发送配置信息
+                client.sendEvent("initDMConfig", map);
+            } catch (Exception e) {
+                log.error("connection error: {}", e.getMessage());
+            }
         });
 
         // 添加断开连接监听器
@@ -93,10 +100,12 @@ public class DMController implements CommandLineRunner {
                     ackRequest.sendAckData(timestamp);
                 }
                 catch (ClientException e) {
+                    log.error("MQ error: {}", e.getMessage());
                     ackRequest.sendAckData("MQ error");
                 }
                 catch (Exception e) {
-                    ackRequest.sendAckData("server error");
+                    log.error("server error: {}", e.getMessage());
+                    ackRequest.sendAckData("server error: {}", e.getCause());
                 }
             }
         });
@@ -113,7 +122,8 @@ public class DMController implements CommandLineRunner {
                     ackRequest.sendAckData(timestamp);
                 }
                 catch (Exception e) {
-                    ackRequest.sendAckData("server error");
+                    log.error("initMessage error: {}", e.getMessage());
+                    ackRequest.sendAckData("server error: {}", e.getCause());
                 }
             }
         });

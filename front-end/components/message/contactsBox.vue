@@ -30,15 +30,15 @@
         callBack: {type:Function, required: true},
     });
     
-    async function clickEvent():void {
+    async function clickEvent():Promise<void> {
         await DMServiceInstance.changeIndex(props.index);
         props.callBack();
     };
 
     let DMServiceInstance: DMService;//DM服务实例
-    onMounted(()=>{
+    onMounted(async ():Promise<void>=>{
         if(!userInfo.isLogin) return;
-        DMServiceInstance=DMService.getInstance();
+        DMServiceInstance=await DMService.getInstance();
     });
 </script>
 

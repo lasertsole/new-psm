@@ -135,17 +135,17 @@
         };
     });
 
-    onActivated(debounce(()=>{
+    onActivated(debounce(async ():Promise<void>=>{
         if(!userInfo.isLogin) {
             DMServiceInstance = null;
             RTCServiceInstance = null;
             return;
         };
-        DMServiceInstance=DMService.getInstance();
+        DMServiceInstance=await DMService.getInstance();
 
         // 如果RTCServiceInstance不存在，则获取实例，以及添加链接建立事件的回调
         if(!RTCServiceInstance){
-            RTCServiceInstance = RTCService.getInstance();// 获取实例
+            RTCServiceInstance = await RTCService.getInstance();// 获取实例
         };
     }, 1000));
 

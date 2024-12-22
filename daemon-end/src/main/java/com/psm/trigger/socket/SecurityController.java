@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -36,15 +37,19 @@ public class SecurityController  implements CommandLineRunner {
         security.addAuthTokenListener((authToken, client)->{
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
-                UserBO userBO = userAdaptor.authUserToken((String) map.get("token"));
+                String token = (String) map.get("token");
+                String fingerprint = (String) map.get("fingerprint");
+                if (Objects.isNull(token) || Objects.isNull(fingerprint))
+                    return new AuthTokenResult(false, "Invalid parameter");
+
+                UserBO userBO = userAdaptor.authUserToken(token);
                 client.set("userInfo", userBO);
-                client.set("ip", client.getHandshakeData().getAddress().getHostName());
-                log.info("用户登录成功, 用户ID: "+userBO.getId()+", IP: "+client.get("ip"));
+                client.set("fingerprint", fingerprint);
 
                 return AuthTokenResult.AuthTokenResultSuccess;
             }
             catch (Exception e){
-                return new AuthTokenResult(false, "token无效:"+e.getCause());
+                return new AuthTokenResult(false, "Invalid token:"+e.getCause());
             }
         });
 
@@ -53,14 +58,18 @@ public class SecurityController  implements CommandLineRunner {
             try {
                 userAdaptor.socketLogin(client);
             } catch (Exception e) {
-                return;
+                log.error("connection error: {}", e.getMessage());
             }
         });
 
         // 添加断开连接监听器
         security.addDisconnectListener(client -> {
-            // 移除用户在线用户列表
-            socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
+            try {
+                // 移除用户在线用户列表
+                socketIOApi.removeLocalUser(namespace, String.valueOf(((UserBO) client.get("userInfo")).getId()));
+            } catch (Exception e) {
+                log.error("disconnect error: {}", e.getMessage());
+            }
         });
     }
 }

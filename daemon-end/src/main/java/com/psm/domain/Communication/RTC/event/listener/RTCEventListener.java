@@ -1,6 +1,7 @@
 package com.psm.domain.Communication.RTC.event.listener;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
 import com.psm.domain.Communication.RTC.service.RTCService;
 import com.psm.infrastructure.SocketIO.POJOs.RTCSwap;
 import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
@@ -70,31 +71,30 @@ public class RTCEventListener {
 
                         // 获取消息的标签
                         String tag = messageView.getTag().orElse("");
-                        log.info("tag:{}, jsonString: {}", tag, jsonString);
+
                         switch (tag) {
                             case "inviteJoinRoom":
-                                Event<RoomInvitation> inviteJoinRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<RoomInvitation> inviteJoinRoomEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 rtcService.forwardInviteJoinRoom(inviteJoinRoomEvent.getContent());
-                                log.info("{}", 123);
                                 break;
                             case "agreeJoinRoom":
-                                Event<RoomInvitation> agreeJoinRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<RoomInvitation> agreeJoinRoomEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 rtcService.forwardAgreeJoinRoom(agreeJoinRoomEvent.getContent());
                                 break;
                             case "rejectJoinRoom":
-                                Event<RoomInvitation> rejectJoinRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<RoomInvitation> rejectJoinRoomEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 rtcService.forwardRejectJoinRoom(rejectJoinRoomEvent.getContent());
                                 break;
                             case "swapSDP":
-                                Event<RTCSwap> swapSDPEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<RTCSwap> swapSDPEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 rtcService.forwardSwapSDP(swapSDPEvent.getContent());
                                 break;
                             case "swapCandidate":
-                                Event<RTCSwap> swapCandidateEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<RTCSwap> swapCandidateEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 rtcService.forwardSwapCandidate(swapCandidateEvent.getContent());
                                 break;
                             case "leaveRoom":
-                                Event<RTCSwap> leaveRoomEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<RTCSwap> leaveRoomEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 rtcService.forwardLeaveRoom(leaveRoomEvent.getContent()); // 注意这里可能是 forwardLeaveRoom
                                 break;
                             default:
@@ -103,7 +103,7 @@ public class RTCEventListener {
 
                         return ConsumeResult.SUCCESS;
                     } catch (Exception e) {
-                        log.info("error is "+ e);
+                        log.error("error is "+ e);
                         return ConsumeResult.FAILURE;
                     }
                 })

@@ -1,9 +1,9 @@
 package com.psm.domain.User.user.event.listener;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
 import com.psm.domain.Model.model.entity.Model3dBO;
 import com.psm.domain.User.user.entity.User.UserDTO;
-import com.psm.infrastructure.SocketIO.POJOs.RoomInvitation;
 import com.psm.types.common.Event.Event;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -81,9 +81,10 @@ public class UserEventListener {
 
                         // 获取消息的标签
                         String tag = messageView.getTag().orElse("");
+
                         switch (tag) {
                             case "uploadModel3D":
-                                Event<Model3dBO> uploadModel3DEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<Model3dBO> uploadModel3DEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 Model3dBO model3dBO = uploadModel3DEvent.getContent();
                                 userService.processUploadModel3D(model3dBO.getUserId(), model3dBO.getStorage(), model3dBO.getVisible());
                                 break;
@@ -122,13 +123,14 @@ public class UserEventListener {
 
                         // 获取消息的keys
                         Set<String> keys =  new HashSet<>(messageView.getKeys());
+
                         switch (tag) {
                             case "socketLogin":
                                 if(keys.contains(workerId+datacenterId)) break;// 如果消息来自本服务器，则跳过
 
-                                Event<UserDTO> socketLoginEvent = JSON.parseObject(jsonString, Event.class);
+                                Event<UserDTO> socketLoginEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 UserDTO userDTO = socketLoginEvent.getContent();
-                                userService.forwardSocketLogin(userDTO.getId(), userDTO.getIp());
+                                userService.forwardSocketLogin(userDTO.getId(), userDTO.getFingerprint());
                                 break;
                             default:
                                 break;
@@ -136,7 +138,7 @@ public class UserEventListener {
 
                         return ConsumeResult.SUCCESS;
                     } catch (Exception e) {
-                        log.info("error is "+ e);
+                        log.error("error is "+ e);
                         return ConsumeResult.FAILURE;
                     }
                 })

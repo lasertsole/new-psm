@@ -317,7 +317,7 @@ export class DMService { // 单例模式
     })).subscribe((x:any)=>{});
   };
 
-  public static getInstance(): DMService {
+  public static async getInstance():Promise<DMService> {
     if (!DMService.instance) {
       DMService.instance = new DMService();
     };
@@ -425,7 +425,7 @@ export class DMService { // 单例模式
     });
     
     // 从服务器获取最新聊天信息
-    let socket: Socket = DMService.getInstance().getSocket();
+    let socket: Socket = (await DMService.getInstance()).getSocket();
     socket.timeout(5000).emit('initMessage', maxLastTime);
   }, 1000);
 
@@ -452,7 +452,7 @@ export class DMService { // 单例模式
     messageItem.timestamp = formattedTimestamp;
     
     // 发送消息
-    let socket: Socket = DMService.getInstance().getSocket();
+    let socket: Socket = (await DMService.getInstance()).getSocket();
     await new Promise((resolve, reject)=>{
       socket.timeout(5000).emit('sendMessage', messageItem, (err:any, timestamp:string)=> {
         // 如果有错误，则显示错误信息状态

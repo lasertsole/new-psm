@@ -1,6 +1,7 @@
 package com.psm.domain.Communication.Chat.event.listener;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
 import com.psm.domain.Communication.Chat.entity.ChatBO;
 import com.psm.domain.Communication.Chat.service.ChatService;
 import com.psm.types.common.Event.Event;
@@ -66,29 +67,34 @@ public class ChatEventListener {
                 .setSubscriptionExpressions(Collections.singletonMap(topic, new FilterExpression("*", FilterExpressionType.TAG)))    // 订阅消息的过滤规则，表示订阅所有Tag的消息。
                 // 设置消费监听器。
                 .setMessageListener(messageView -> {
-                    // 获取消息体
-                    ByteBuffer buffer = messageView.getBody();
-                    // 将 ByteBuffer 转换为字节数组
-                    byte[] bodyBytes = new byte[buffer.remaining()];
-                    buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
+                    try{
+                        // 获取消息体
+                        ByteBuffer buffer = messageView.getBody();
+                        // 将 ByteBuffer 转换为字节数组
+                        byte[] bodyBytes = new byte[buffer.remaining()];
+                        buffer.duplicate().get(bodyBytes);  // 使用 duplicate() 避免影响原缓冲区的位置
 
-                    // 将字节数组转换为字符串
-                    String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
+                        // 将字节数组转换为字符串
+                        String jsonString = new String(bodyBytes, StandardCharsets.UTF_8);
 
-                    // 获取消息的标签
-                    String tag = messageView.getTag().orElse("");
-                    log.info("jsonString: {}", jsonString);
-                    switch (tag) {
-                        case "DMForward":
-                            ChatBO messageBody = JSON.parseObject(jsonString, ChatBO.class);
-                            chatService.storageMessageDM(messageBody);
-                            break;
-                        default:
-                            log.warn("Unknown tag: {}", tag);
-                            break;
+                        // 获取消息的标签
+                        String tag = messageView.getTag().orElse("");
+
+                        switch (tag) {
+                            case "DMForward":
+                                Event<ChatBO> event = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
+                                chatService.storageMessageDM(event.getContent());
+                                break;
+                            default:
+                                log.warn("Unknown tag: {}", tag);
+                                break;
+                        };
+
+                        return ConsumeResult.SUCCESS;
+                    }  catch(Exception e) {
+                        log.error("error is "+ e);
+                        return ConsumeResult.FAILURE;
                     }
-
-                    return ConsumeResult.SUCCESS;
                 })
                 .build();
 
@@ -115,11 +121,12 @@ public class ChatEventListener {
 
                     // 获取消息的keys
                     Set<String> keys =  new HashSet<>(messageView.getKeys());
+
                     switch (tag) {
                         case "DMForward":
                             if(keys.contains(workerId+datacenterId)) break;// 如果消息来自本服务器，则跳过
 
-                            Event<ChatBO> event = JSON.parseObject(jsonString, Event.class);
+                            Event<ChatBO> event = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                             chatService.receiveMessage(event.getContent());
                             break;
                         default:
@@ -128,7 +135,7 @@ public class ChatEventListener {
 
                     return ConsumeResult.SUCCESS;
                 } catch(Exception e) {
-                    log.info("error is "+ e);
+                    log.error("error is "+ e);
                     return ConsumeResult.FAILURE;
                 }
             })

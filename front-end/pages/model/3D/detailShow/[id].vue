@@ -103,7 +103,7 @@
     }
   }, 1000);
 
-  const DMServiceInstance = DMService.getInstance(); // 获取DM服务实例
+  const DMServiceInstance = await DMService.getInstance(); // 获取DM服务实例
   const triggerDM = throttle(async ():Promise<void>=> { // 节流触发跳转，防止多次调用toDM函数使聊天列表显示异常
     DMServiceInstance.toDM(authorInfo.value!.id!, authorInfo.value!.name!, authorInfo.value!.avatar||useRuntimeConfig().public.defaultAvatar);
   }, 1000);

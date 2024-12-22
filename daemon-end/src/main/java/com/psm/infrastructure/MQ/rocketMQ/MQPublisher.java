@@ -45,7 +45,7 @@ public class MQPublisher {
     public void publish(Object body, String tag, String topic, String... keys) throws ClientException {
         if (!(body instanceof Serializable)) {
             throw new IllegalArgumentException("The object must implement Serializable interface.");
-        }
+        };
 
         // 普通消息发送。
         Message message = provider.newMessageBuilder()
@@ -63,13 +63,13 @@ public class MQPublisher {
             SendReceipt sendReceipt = producer.send(message);
         } catch (ClientException e) {
             log.error("Failed to send message", e);
-        }
+        };
     }
 
     public void publish(Object body, String tag, String topic, String key) throws ClientException {
         if (!(body instanceof Serializable)) {
             throw new IllegalArgumentException("The object must implement Serializable interface.");
-        }
+        };
 
         // 普通消息发送。
         Message message = provider.newMessageBuilder()
@@ -87,13 +87,13 @@ public class MQPublisher {
             SendReceipt sendReceipt = producer.send(message);
         } catch (ClientException e) {
             log.error("Failed to send message", e);
-        }
+        };
     }
 
     public void publish(Object body, String tag, String topic) throws ClientException {
         if (!(body instanceof Serializable)) {
             throw new IllegalArgumentException("The object must implement Serializable interface.");
-        }
+        };
 
         // 普通消息发送。
         Message message = provider.newMessageBuilder()

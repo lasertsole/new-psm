@@ -108,11 +108,11 @@ public class UserServiceImpl implements UserService {
     public void socketLogin(SocketIOClient srcClient) throws ClientException {
         // 将用户id转成字符串类型
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
-        String ip = srcClient.get("ip");
+        String fingerprint = srcClient.get("fingerprint");
 
         // 如果本服务器存在同一用户的其他socket，则通知该socket退出
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);
-        if (Objects.nonNull(tgtClient) && !ip.equals(tgtClient.get("ip"))) {// 如果目标用户socket存在且ip不同，则通知目标用户
+        if (Objects.nonNull(tgtClient) && !fingerprint.equals(tgtClient.get("fingerprint"))) {// 如果目标用户socket存在且ip不同，则通知目标用户
             // 通知目标用户
             AckCallback<Boolean> ackCallback = new AckCallback<>(Boolean.class ,5000) {
                 @Override
@@ -125,12 +125,12 @@ public class UserServiceImpl implements UserService {
                 }
             };
 
-            tgtClient.sendEvent("otherLogin", ackCallback, ip);
+            tgtClient.sendEvent("otherLogin", ackCallback, fingerprint);
         } else{ // 否则可能同一用户的其他socket在其他服务器上，则用MQ广播通知退出
             UserDTO userDTO = new UserDTO();
             userDTO.setId(userId);
-            userDTO.setIp(ip);
-            Event<UserDTO> otherLoginEvent = new Event<>(userDTO);
+            userDTO.setFingerprint(fingerprint);
+            Event<UserDTO> otherLoginEvent = new Event<>(userDTO, UserDTO.class);
             mqPublisher.publish(otherLoginEvent, "socketLogin", "USER");
         };
 
@@ -140,12 +140,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
-    public void forwardSocketLogin(String userId, String ip) {
+    public void forwardSocketLogin(String userId, String fingerprint) {
         // 如果本服务器存在目标用户socket，则把信息交付给目标用户
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);
-        if (Objects.nonNull(tgtClient) && !ip.equals(tgtClient.get("ip"))) {// 如果目标用户socket存在且ip不同，则通知目标用户
+        if (Objects.nonNull(tgtClient) && !fingerprint.equals(tgtClient.get("fingerprint"))) {// 如果目标用户socket存在且fingerprint不同，则通知目标用户
             // 通知目标用户
-            tgtClient.sendEvent("otherLogin", ip);
+            tgtClient.sendEvent("otherLogin");
 
             // 获取全局client
             SocketIOClient globalClient = socketIOApi.getLocalUserSocket("/", tgtClient.getSessionId().toString());
