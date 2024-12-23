@@ -53,9 +53,8 @@ public interface UserService {
      * 广播登录socket
      *
      * @param userId 用户ID
-     * @param ip 用户ip地址
      */
-    void forwardSocketLogin(String userId, String ip);
+    void forwardSocketLogin(String userId);
 
     /**
      * 退出登录
@@ -89,7 +88,7 @@ public interface UserService {
     /**
      * 更新用户信息(除了密码和头像)
      */
-    void updateInfo(String name, Boolean sex, String phone, String email, String profile);
+    void updateInfo(String name, Boolean sex, String phone, String email, String profile, Boolean isIdle, Boolean canUrgent);
 
     /**
      * 更新密码

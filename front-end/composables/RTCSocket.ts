@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 import type { RTCSwap } from "@/types/rtc";
 import { fromEvent, concatMap } from "rxjs"; 
 import { wsManager } from '@/composables/wsManager';
-import { DMContactsItems } from "@/composables/DMSocket"
+import { DMContactsItems } from "@/composables/DMSocket";
 import type { Room, RoomInvitation, PeerOne } from "@/types/common";
 
 /*************************************以下为RTC命名空间逻辑****************************************/
@@ -204,16 +204,16 @@ export class RTCService {// 单例模式
         });
 
         // 监听邀请加入房间事件
-        fromEvent(this.RTCSocket, 'inviteJoinRoom').pipe(concatMap((roomInvitation: RoomInvitation):void=> {
+        fromEvent(this.RTCSocket, 'inviteJoinRoom').pipe(concatMap(async (roomInvitation: RoomInvitation):Promise<boolean>=> {
             let userIds: string[] = DMContactsItems.length!=0?DMContactsItems.map(user => user.tgtUserId!):[];
             if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } else if(!userIds.includes(roomInvitation.srcUserId)) {
                 // 如果用户不存在于联系人列表中，则不是来着联系人的邀请,直接拒绝
                 this.RTCSocket.timeout(5000).emit("rejectJoinRoom", roomInvitation.roomId);
-                return;
+                return false;
             } else if( this.ownRoom.value && this.ownRoom.value.roomId == roomInvitation.roomId ) {// 如果已经进入邀请函所指房间，说明是重复信息，则直接忽略
-                return;
+                return false;
             };
 
             // 如果该邀请不存在邀请列表中，则将邀请放入邀请列表
@@ -223,10 +223,11 @@ export class RTCService {// 单例模式
 
             // 触发邀请加入房间成功钩子函数
             this.inviteJoinRoomHooks.forEach(hook => hook(roomInvitation));
-        })).subscribe(()=>{});
+            return true;
+        })).subscribe((res:boolean)=>{});
 
         // 监听同意加入房间事件
-        fromEvent(this.RTCSocket, "agreeJoinRoom").pipe(concatMap(async (roomInvitation: RoomInvitation):Promise<void>=> {
+        fromEvent(this.RTCSocket, "agreeJoinRoom").pipe(concatMap(async (roomInvitation: RoomInvitation):Promise<boolean>=> {
             if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } //如果还没有房间,或者房间号与已加入的房间号不同，则创建房间对象
@@ -270,37 +271,39 @@ export class RTCService {// 单例模式
             this.agreeJoinRoomHooks.forEach(hook => hook(roomInvitation));
 
             this.RTCSocket.timeout(5000).emit('swapSDP', offerSDP);
-        })).subscribe(()=>{});
+            return true;
+        })).subscribe((res:Promise<boolean>)=>{});
 
         // 监听拒绝加入房间事件
-        fromEvent(this.RTCSocket, "rejectJoinRoom").pipe(concatMap((roomInvitation: RoomInvitation):void=> {
+        fromEvent(this.RTCSocket, "rejectJoinRoom").pipe(concatMap(async (roomInvitation: RoomInvitation):Promise<boolean>=> {
             this.rejectJoinRoomHooks.forEach(hook => hook(roomInvitation));
-        })).subscribe(()=>{});
+            return true;
+        })).subscribe((res:boolean)=>{});
 
         // 监听交换SDP事件
-        fromEvent(this.RTCSocket, "swapSDP").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<void>=> {
+        fromEvent(this.RTCSocket, "swapSDP").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<boolean>=> {
             let room: Room | null = this.ownRoom.value;
             let peerOne: PeerOne | null = null;
             if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } else if(!remoteSDP || !remoteSDP.data) {
                 ElMessage.warning("Received invalid SDP.");
-                return;
+                return false;
             } else if(!room) {
                 ElMessage.warning("room is not exists.");
-                return;
+                return false;
             } else if(remoteSDP.roomId!=this.ownRoom.value!.roomId// 如果房间ID不匹配，则忽略
                 || remoteSDP.srcUserId==userInfo.id// 如果发送该SDP信息的就是本人，则忽略
                 || remoteSDP.tgtUserId!=userInfo.id// 如果该SDP的接收对象不是本人，则忽略
             ) {
-                return;
+                return false;
             } else if(!room.peerMap!.get(remoteSDP.srcUserId)){ // peer连接不存在时，创建并初始化peer连接
                 await this.initPeer(remoteSDP.srcUserId);
             };
 
             peerOne = room.peerMap!.get(remoteSDP.srcUserId)!;
 
-            if(peerOne.hasRemoteSDP) return;// 如果已经缓存了SDP，则忽略
+            if(peerOne.hasRemoteSDP) return true;// 如果已经缓存了SDP，则忽略
 
             peerOne.name = remoteSDP.srcUserName; // 设置对方用户名
             peerOne.avatar = remoteSDP.srcUserAvatar;// 设置对方用户头像
@@ -332,32 +335,33 @@ export class RTCService {// 单例模式
 
                 this.RTCSocket.timeout(5000).emit('swapSDP', answerSDP);
             };
-        })).subscribe(()=>{});
+            return true;
+        })).subscribe((res:Promise<boolean>)=>{});
 
         // 监听交换候选者事件
-        fromEvent(this.RTCSocket, "swapCandidate").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<void>=> {
+        fromEvent(this.RTCSocket, "swapCandidate").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<boolean>=> {
             let room: Room | null = this.ownRoom.value;
             let peerOne: PeerOne | null = null;
             if(!this.mainVideoDom) {
                 throw new Error("未赋值视频dom元素");
             } else if(!remoteSDP || !remoteSDP.data) {
                 ElMessage.warning("Received invalid SDP.");
-                return;
+                return false;
             } else if(!room) {
                 ElMessage.warning("room is not exists.");
-                return;
+                return false;
             } else if(remoteSDP.roomId!=this.ownRoom.value!.roomId// 如果房间ID不匹配，则忽略
                 || remoteSDP.srcUserId==userInfo.id// 如果发送该SDP信息的就是本人，则忽略
                 || remoteSDP.tgtUserId!=userInfo.id// 如果该SDP的接收对象不是本人，则忽略
             ) {
-                return;
+                return false;
             } else if(!room.peerMap!.get(remoteSDP.srcUserId)){ // peer连接不存在时，创建并初始化peer连接
                 await this.initPeer(remoteSDP.srcUserId);
             };
 
             peerOne = room.peerMap!.get(remoteSDP.srcUserId)!;
 
-            if(peerOne.hasRemoteCandidate) return;// 如果已经缓存了SDP，则忽略
+            if(peerOne.hasRemoteCandidate) return true;// 如果已经缓存了SDP，则忽略
 
             let rtcPeerConnection:RTCPeerConnection = peerOne!.rtcPeerConnection;
 
@@ -366,20 +370,22 @@ export class RTCService {// 单例模式
 
             // 执行swapCandidate钩子函数
             this.swapCandidateHooks.forEach(hook => hook(remoteSDP));
-        })).subscribe(()=>{});
+            return true;
+        })).subscribe((res:Promise<boolean>)=>{});
 
         // 监听离开房间事件
-        fromEvent(this.RTCSocket, "leaveRoom").pipe(concatMap((remoteSDP: RTCSwap): void=> {
+        fromEvent(this.RTCSocket, "leaveRoom").pipe(concatMap(async (remoteSDP: RTCSwap):Promise<boolean>=> {
             // 清空连接
             this.ownRoom.value!.peerMap!.delete(remoteSDP.srcUserId);
 
             // 执行离开房间钩子函数
             this.leaveRoomHooks.forEach(hook => hook(remoteSDP));
-        })).subscribe(()=>{});
+            return true;
+        })).subscribe((res:boolean)=>{});
     };
 
     // 创建房间
-    public async createRoom(outResolve?: Function, outReject?: Function):Promise<void> {
+    public async createRoom(outResolve?: (isSuccussful:boolean)=>void, outReject?: ()=>void):Promise<void> {
         if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         };
@@ -396,20 +402,19 @@ export class RTCService {// 单例模式
                 if(err) {
                     outReject&&outReject();// 调用失败回调函数
                     reject();
-                    return;
                 };
     
                 room.peerMap = new Map<string, PeerOne>();
                 this.ownRoom.value = room;
     
-                outResolve&&outResolve();// 调用成功回调函数
+                outResolve&&outResolve(isSuccussful);// 调用成功回调函数
                 resolve(true);
             });
         });
     };
 
     // 邀请加入房间
-    public async inviteJoinRoom(tgtUserId: string, tgtUserName: string, outResolve?: Function, outReject?: Function):Promise<void> {
+    public async inviteJoinRoom(tgtUserId: string, tgtUserName: string, outResolve?: (timestamp:string)=>void, outReject?: ()=>void):Promise<void> {
         if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         };
@@ -434,8 +439,8 @@ export class RTCService {// 单例模式
     
             this.RTCSocket.timeout(5000).emit("inviteJoinRoom", roomInvitation, (err:any, timestamp:string):void=> { // 加入房间，房间号为用户id
                 if(err){
-                    outReject&&outReject(timestamp);// 调用失败回调函数
-                    return;
+                    outReject&&outReject();// 调用失败回调函数
+                    reject();
                 };
     
                 outResolve&&outResolve(timestamp);
@@ -445,7 +450,7 @@ export class RTCService {// 单例模式
     };
 
     // 同意加入房间
-    public async agreeJoinRoom(roomInvitation: RoomInvitation, outResolve?: Function, outReject?: Function):Promise<void> {
+    public async agreeJoinRoom(roomInvitation: RoomInvitation, outResolve?: (timestamp:string)=>void, outReject?: ()=>void):Promise<void> {
         if(!this.mainVideoDom) {
             throw new Error("未赋值视频dom元素");
         };
@@ -453,7 +458,7 @@ export class RTCService {// 单例模式
         await new Promise((resolve, reject)=>{
             this.RTCSocket.timeout(5000).emit("agreeJoinRoom", roomInvitation, (err:any, timestamp:string):void=> { // 加入房间，房间号为用户id
                 if(err){
-                    outReject&&outReject(timestamp);// 调用失败回调函数
+                    outReject&&outReject();// 调用失败回调函数
                     reject();
                     return;
                 };
@@ -467,44 +472,44 @@ export class RTCService {// 单例模式
                     peerMap: new Map<string, PeerOne>(),
                 };
     
-                outResolve&&outResolve(timestamp); // 调用成功回调函数
-    
                 this.inviteJoinArr.splice(0, this.inviteJoinArr.length);// 清空列表
-
+                outResolve&&outResolve(timestamp); // 调用成功回调函数
                 resolve(true);
             });
         });
     };
 
     // 拒绝加入房间
-    public async rejectJoinRoom(roomInvitation: RoomInvitation, resolve?: Function, reject?: Function):Promise<void> {
-        await new Promise((resolve, reject)=>{
+    public async rejectJoinRoom(roomInvitation: RoomInvitation, outResolve?: (timestamp:string)=>void, outReject?: ()=>void):Promise<void> {
+        await new Promise((subResolve, subReject)=>{
             this.RTCSocket.timeout(5000).emit("rejectJoinRoom", roomInvitation, (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
                 if(err){
-                    reject&&reject(timestamp);// 调用失败回调函数
-                    return;
+                    outReject&&outReject();// 调用失败回调函数
+                    subReject();
                 };
 
-                resolve&&resolve(timestamp);
-            });
+                // 将该邀请从邀请列表中删除
+                let index:number = this.inviteJoinArr.map(item => item.roomId).indexOf(roomInvitation.roomId);
+                this.inviteJoinArr.splice(index, 1);
 
-            // 将该邀请从邀请列表中删除
-            let index:number = this.inviteJoinArr.map(item => item.roomId).indexOf(roomInvitation.roomId);
-            this.inviteJoinArr.splice(index, 1);
+                outResolve&&outResolve(timestamp);
+                subResolve(true);
+            });
         });
     };
 
     // 离开房间
-    public async leaveRoom(resolve?: Function, reject?: Function):Promise<void> {
+    public async leaveRoom(outResolve?: (timestamp:string)=>void, outReject?: ()=>void):Promise<void> {
         await new Promise((resolve, reject)=>{
             this.ownRoom.value = null;
             this.RTCSocket.timeout(5000).emit("leaveRoom", (err:any, timestamp:string):void=> {// 加入房间，房间号为用户id
                 if(err){
-                    reject&&reject(timestamp);// 调用失败回调函数
-                    return;
+                    outReject&&outReject();// 调用失败回调函数
+                    reject();
                 };
 
-                resolve&&resolve(timestamp);
+                outResolve&&outResolve(timestamp);
+                resolve(true);
             });
         });
     };

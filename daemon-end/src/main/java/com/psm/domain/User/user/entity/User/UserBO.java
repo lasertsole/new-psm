@@ -3,7 +3,6 @@ package com.psm.domain.User.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.app.annotation.validation.ValidFileSize;
 import com.psm.app.annotation.validation.ValidImage;
-import com.psm.app.annotation.validation.ValidIpAddress;
 import com.psm.domain.User.user.types.convertor.UserConvertor;
 import com.psm.domain.User.user.types.enums.SexEnum;
 import com.psm.types.common.BO.BO;
@@ -63,9 +62,6 @@ public class UserBO implements Serializable, BO<UserDTO, UserDO> {
     @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_]+$", message = "The profile format is incorrect")
     @Size(max = 255, message = "The profile length must not exceed 255 characters")
     private String profile;
-
-    @Size(min = 32, max = 32, message = "The fingerprint length must be 32 characters")
-    private String fingerprint;
 
     @Min(value = 0, message = "The publicModelNum must be greater than or equal to 0")
     private Short publicModelNum;

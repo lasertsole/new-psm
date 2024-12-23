@@ -226,6 +226,9 @@ public class RTCServiceImpl implements RTCService {
         // 从Cache中获取出房间的所有用户
         Room socketRoom = socketIOApi.getSocketRoom(namespace, rtcSwap.getRoomId());
 
+        // 如果房间已不存在，则返回
+        if(Objects.isNull(socketRoom)) return;
+
         // 找出本服务器上在房间内的用户并进行通知
         socketRoom.getMemberIdSet().forEach(userId -> {
             SocketIOClient tarClient = socketIOApi.getLocalUserSocket(namespace, userId);

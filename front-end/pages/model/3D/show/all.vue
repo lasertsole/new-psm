@@ -96,8 +96,6 @@
             ModelShowItems.value = res;
         }).finally(()=>{loading.value = false;});
     };
-    // 服务器渲染请求
-    fetchModelsShowBars({current:1, size:10, isIdle:true, canUrgent:true});
 
     const currentPage: Ref<number> = ref<number>(1);
     const pageSize: Ref<number> = ref<number>(10);
@@ -146,6 +144,7 @@
     }
 
     onMounted(async ()=>{
+        fetchModelsShowBars({current:1, size:10, isIdle:true, canUrgent:true});
     });
 
     definePageMeta({

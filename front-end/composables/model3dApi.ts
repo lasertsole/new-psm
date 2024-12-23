@@ -1,5 +1,5 @@
 import type { UserInfo } from "@/types/user";
-import type { Response } from "@/types/request";
+import type { Response } from "@/types/response";
 import type { Page, ESResult } from "@/types/common";
 import type { Model3DInfo, Model3DInfos, Model3DInfoDetail } from "@/types/model3d";
 

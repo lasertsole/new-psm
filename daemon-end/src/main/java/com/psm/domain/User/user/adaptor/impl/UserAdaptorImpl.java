@@ -144,19 +144,23 @@ public class UserAdaptorImpl implements UserAdaptor {
         String phone = userBO.getPhone();
         String email = StringEscapeUtils.escapeHtml4(userBO.getEmail());
         String profile = StringEscapeUtils.escapeHtml4(userBO.getProfile());
+        Boolean isIdle = userBO.getIsIdle();
+        Boolean canUrgent = userBO.getCanUrgent();
 
         // 参数判空
         if(
-                StringUtils.isBlank(name)
-                &&Objects.isNull(sex)
-                &&StringUtils.isBlank(phone)
-                &&StringUtils.isBlank(email)
-                &&StringUtils.isBlank(profile)
+            StringUtils.isBlank(name)
+            &&Objects.isNull(sex)
+            &&StringUtils.isBlank(phone)
+            &&StringUtils.isBlank(email)
+            &&StringUtils.isBlank(profile)
+            &&Objects.isNull(isIdle)
+            &&Objects.isNull(canUrgent)
         )
             throw new InvalidParameterException("Invalid parameter");
 
         // 修改用户
-        userService.updateInfo(name, sex, phone, email, profile);
+        userService.updateInfo(name, sex, phone, email, profile, isIdle, canUrgent);
     }
 
     @Override

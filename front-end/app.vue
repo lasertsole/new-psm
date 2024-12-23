@@ -21,7 +21,7 @@
       
       // 延时执行(加入事件循环中)
       setTimeout(async ()=>{
-        fastLogin();
+        fastLogin();// 快速登录，因为要使用localstorage，所以必须客户端渲染
       }, 0);
     };
   });
@@ -30,6 +30,7 @@
   let DMServiceInstance: DMService; // 一对一聊天服务
   let RTCServiceInstance: RTCService; // RTC实时交互服务
   on("online", async ():Promise<void>=>{
+    wsManager.open();
     SecurityInstance = await SecurityService.getInstance();
 
     DMServiceInstance = await DMService.getInstance();

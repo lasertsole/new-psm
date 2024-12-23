@@ -28,7 +28,6 @@ public class UserDTO implements Serializable, DTO {
     private String email;
     private Boolean sex;
     private String profile;
-    private String fingerprint;
     private Short publicModelNum;
     private String modelMaxStorage;
     private String modelCurStorage;

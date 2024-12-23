@@ -1,18 +1,16 @@
 import { Socket } from 'socket.io-client';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 export class SecurityService {
     private static instance: SecurityService | null;
     private SecuritySocket: Socket;
     private interval: NodeJS.Timeout|null = null;
 
-    private constructor(fingerprint:string) {
+    private constructor() {
         if(import.meta.server) throw new Error("SecurityService can only be used in the browser.");
 
         this.SecuritySocket = wsManager.socket("/security", {
             auth: {
                 token: localStorage.getItem("token") || "",
-                fingerprint,
             }, retries: 3 // 最大重试次数。超过限制，数据包将被丢弃。
         });
 
@@ -43,19 +41,16 @@ export class SecurityService {
             };
         });
 
-        this.SecuritySocket.on('otherLogin', (ip: string, callback) => {
-            console.log("ip", ip);
-            console.log("callback", callback);
-            // // 弹出警告
-            // ElNotification({
-            //     title: 'warning',
-            //     message: "Another device has logged into your account, and you have been forcibly logged out.",
-            //     type: 'warning',
-            // });
+        this.SecuritySocket.on('otherLogin', () => {
+            // 弹出警告
+            ElNotification({
+                title: 'warning',
+                message: "Another device has logged into your account, and you have been forcibly logged out.",
+                type: 'warning',
+            });
 
-            // // 登出
-            // forcedLogout();
-            // callback(true);
+            // 登出
+            forcedLogout();
         });
     };
 
@@ -64,14 +59,8 @@ export class SecurityService {
 
     // 获取RTC服务单例
     public static async getInstance(): Promise<SecurityService> {
-        // 获取指纹ID
-        const fpPromise = FingerprintJS.load();
-        const fp = await fpPromise;
-        const result = await fp.get();
-        const fingerprint:string =  result.visitorId; // 使用指纹ID
-
         if (!SecurityService.instance) {
-            SecurityService.instance = new SecurityService(fingerprint);
+            SecurityService.instance = new SecurityService();
         };
 
         return SecurityService.instance;

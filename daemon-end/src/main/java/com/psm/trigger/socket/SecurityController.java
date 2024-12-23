@@ -50,7 +50,7 @@ public class SecurityController  implements CommandLineRunner {
             }
             catch (Exception e){
                 return new AuthTokenResult(false, "Invalid token:"+e.getCause());
-            }
+             }
         });
 
         // 添加连接监听器

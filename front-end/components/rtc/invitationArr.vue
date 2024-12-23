@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="absolute top-1/2 right-0 transform -translate-y-1/2 z-10 bg-white rounded-tl-md rounded-bl-md bg-opacity-50 cursor-pointer"
-            v-if="userInfo.isLogin&&RTCServiceInstance&&RTCServiceInstance!.inviteJoinArr.length>0"
+            v-show="hasInvation"
         >
             <div class="mt-2 mb-2 ml-2 mr-4 w-14 h-14 bg-[url('/icons/phone.svg')] bg-cover bg-center"
                 @click="invitationArrVisible = true">
                 <div class="w-5 h-5 leading-5 rounded-full bg-red-500 top-2 right-4 font-bold text-white flex items-center justify-center" style="position: absolute;">
-                    {{RTCServiceInstance!.inviteJoinArr.length}}
+                    {{RTCServiceInstance&&RTCServiceInstance!.inviteJoinArr.length}}
                 </div>
             </div>
         </div>
@@ -88,8 +88,8 @@
                                     <svg t="1733564168472" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3711" v-if="item.type=='microphone'">
                                         <path d="M512 128c35.2 0 64 28.8 64 64v320c0 35.2-28.8 64-64 64s-64-28.8-64-64V192c0-35.2 28.8-64 64-64m0-64c-70.4 0-128 57.6-128 128v320c0 70.4 57.6 128 128 128s128-57.6 128-128V192c0-70.4-57.6-128-128-128z m320 448h-64c0 140.8-115.2 256-256 256S256 652.8 256 512h-64c0 165.6 126.4 302.4 288 318.4V960h64v-129.6c161.6-16 288-152.8 288-318.4z" p-id="3712"></path>
                                     </svg>
-                                    <svg t="1734755245136" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2424" v-else-if="item.type=='speaker'">
-                                        <path d="M830.450526 853.759999q-11.722105 8.791579-27.351579 8.791579-19.536842 0-33.701053-14.164211t-14.164211-33.701053q0-21.490526 16.606316-36.143158 0.976842-0.976842 1.953684-1.465263t1.953684-1.465263l0.976842-0.976842q27.351579-18.56 50.795789-43.957895t41.027368-55.191579 27.351579-63.494737 9.768421-69.84421q0-73.263158-37.12-133.827368t-92.8-99.637895q-20.513684-14.652632-20.513684-39.073684 0-19.536842 14.164211-33.701053t33.701053-14.164211q16.606316 0 29.305263 10.745263 36.143158 25.397895 67.402105 59.098947t53.726316 73.263158 35.166316 84.496842 12.698947 92.8q0 48.842105-12.698947 93.776842t-35.654737 84.985263-54.214737 73.751579-68.378947 59.098947zM775.747368 415.157894q20.513684 28.328421 32.72421 57.145263t12.210526 69.84421q0 39.073684-12.698947 70.332632t-32.235789 56.656842q-7.814737 10.745263-16.606316 19.048421t-22.467368 8.303158q-17.583158 0-29.793684-12.698947t-12.210526-30.282105q0-7.814737 2.930526-15.629474l-0.976842 0q4.884211-10.745263 11.722105-20.513684t13.187368-20.025263 10.745263-23.444211 4.395789-31.747368q0-17.583158-4.395789-30.770526t-10.745263-23.932632-13.187368-20.513684-10.745263-20.513684q-2.930526-6.837895-2.930526-15.629474 0-17.583158 12.210526-30.282105t29.793684-12.698947q13.675789 0 22.467368 8.303158t16.606316 19.048421zM460.227368 995.402104q-49.818947-44.934737-105.498947-93.776842t-103.545263-89.869474q-55.68-46.888421-111.36-92.8-10.745263 0.976842-21.490526 0.976842-8.791579 0.976842-18.56 0.976842l-16.606316 0q-26.374737 0-42.981053-16.117895t-16.606316-38.585263l0-246.16421 0.976842 0-0.976842-0.976842q0-27.351579 17.094737-44.934737t42.492632-17.583158l55.68 0q89.869474-76.193684 163.132631-136.757895 31.258947-26.374737 61.541053-51.28421t54.703158-45.423158 41.027368-34.189474 20.513684-16.606316q29.305263-21.490526 47.376842-19.536842t28.328421 17.583158 14.164211 38.096842 3.907368 41.027368l0 788.311578 0 2.930526q0 18.56-6.837895 39.562105t-21.002105 33.212632-35.654737 10.256842-49.818947-28.328421z" p-id="2425" fill="#1296db"></path>
+                                    <svg t="1734931183861" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1462" v-else-if="item.type=='speaker'">
+                                        <path d="M561.23 147.79c-14.17-9.62-32.23-11.53-48.02-4.94l-262.7 156.2H112.84c-28.34 0-51.41 23.31-51.41 51.94v329.87c0 28.62 23.07 51.94 51.41 51.94H250.5l261.33 155.43 1.5 0.63c6.27 2.53 12.78 3.79 19.43 3.79 10.03 0 20.06-3.03 28.58-8.86 14.2-9.63 22.71-25.79 22.69-43.07V190.86c-0.11-17.36-8.51-33.45-22.8-43.07z m-40.75 673.8L274.07 672.87l-1.37-0.63c-6.15-2.53-12.67-3.8-19.44-3.8H124.88v-305.3h128.38c6.65 0 13.17-1.27 19.44-3.8l247.79-149.36v611.61z m199.34-501.01a31.473 31.473 0 0 0-44.88 0c-12.41 12.54-12.41 32.81 0 45.35 79.24 80.05 79.24 210.53 0 290.59-12.41 12.54-12.41 32.81 0 45.36 6.15 6.2 14.29 9.36 22.44 9.36 8.15 0 16.3-3.16 22.44-9.36 103.94-105.15 103.94-276.16 0-381.3z m111.33-113.25a31.473 31.473 0 0 0-44.88 0c-12.42 12.54-12.42 32.8 0 45.34 141.04 142.51 141.04 374.47 0 517.11-12.42 12.54-12.42 32.81 0 45.35 6.14 6.2 14.29 9.36 22.44 9.36 8.16 0 16.3-3.16 22.44-9.36 165.87-167.59 165.87-440.2 0-607.8z" fill="#1296db" p-id="1463"></path>
                                     </svg>
                                 </div>
                                 <div class="name">{{ item.name }}</div>
@@ -163,6 +163,11 @@
             deviceControl.audio[0].bindStreams= displayMediaStream.getAudioTracks();
             deviceControl.audio[1].bindStreams= userMediaStream.getAudioTracks();
         });
+
+        // 收到邀请钩子函数
+        RTCServiceInstance.onInviteJoinRoom((invitation: RoomInvitation):void=>{
+            hasInvation.value = true;
+        });
     });
 
     on("offline", ()=>{
@@ -171,6 +176,9 @@
         RTCServiceInstance = null;
     });
 
+    // 是否被邀请
+    const hasInvation:Ref<boolean> = ref<boolean>(false);
+
     // 邀请加入房间
     const agreeJoinRoom = debounce(async (item: RoomInvitation):Promise<void>=> {
         await new Promise((resolve)=>{
@@ -178,8 +186,10 @@
                 item,
                 ()=>{
                     invitationArrVisible.value = false;
+                    if(RTCServiceInstance!.inviteJoinArr.length == 0) {
+                        hasInvation.value = false;
+                    };
                     resolve(true);
-                    return;
                 },
                 ()=>{
                     throw new Error("crash when invite agreeJoinRoom");
@@ -196,8 +206,12 @@
     }, 500);
 
     // 拒绝加入房间
-    const rejectJoinRoom = debounce(async (item: RoomInvitation):Promise<void>=>{
-        await RTCServiceInstance!.rejectJoinRoom(item);
+    const rejectJoinRoom = debounce(async (item: RoomInvitation, ):Promise<void>=>{
+        await RTCServiceInstance!.rejectJoinRoom(item, ()=>{
+            if(RTCServiceInstance!.inviteJoinArr.length == 0) {
+                hasInvation.value = false;
+            };
+        });
         invitationArrVisible.value = false;
     }, 1000);
 </script>

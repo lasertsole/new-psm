@@ -1,6 +1,6 @@
 import type { Reactive } from "vue";
 import type { UserInfo } from "@/types/user";
-import type { Response } from "@/types/request";
+import type { Response, UseFetchResponse } from "@/types/response";
 
 /**
  * 用户信息
@@ -20,8 +20,8 @@ export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
     createTime: '',
     isAdmin: false,
     isLogin: false,
-    // isIdle: true,
-    // canUrgent: false
+    isIdle: false,
+    canUrgent: false
 });
 
 /**
@@ -41,6 +41,8 @@ function updateUserInfo(data:UserInfo): void {
     data.profile && (userInfo.profile = data.profile);
     data.sex != undefined && (userInfo.sex = data.sex);
     data.createTime && (userInfo.createTime = data.createTime);
+    data.isIdle && (userInfo.isIdle = data.isIdle);
+    data.canUrgent && (userInfo.canUrgent = data.canUrgent);
 };
 
 function clearUserInfo(): void{
@@ -54,6 +56,8 @@ function clearUserInfo(): void{
     userInfo.sex = undefined;
     userInfo.createTime = '';
     userInfo.isAdmin = false;
+    userInfo.isIdle = false;
+    userInfo.canUrgent = false;
 };
 
 function loginApi(data:UserInfo): void{
@@ -86,12 +90,12 @@ export async function login(name:string | undefined, password:string | undefined
         if(res == null || res.code!=200){
             let msg = res?.msg;
             if(msg == null || msg == undefined) msg = '';
-            import.meta.client&&ElMessage.error('登录失败:'+ msg);
+            import.meta.client&&ElMessage.error('登录失败: '+ msg);
             import.meta.client&&localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
             userInfo.isLogin = false;
 
             return false;
-        }
+        };
 
         let data = res.data;
         loginApi(data);
@@ -99,11 +103,10 @@ export async function login(name:string | undefined, password:string | undefined
         import.meta.client&&ElMessage.success('登录成功');
 
         return true;
-    }
-    catch (error) {
-        import.meta.client&&ElMessage.error('登录失败');
+    } catch (error) {
+        import.meta.client&&ElMessage.error('登录失败: '+error);
         return false;
-    }
+    };
 };
 
 export async function fastLogin():Promise<boolean>{
@@ -133,13 +136,12 @@ export async function fastLogin():Promise<boolean>{
         import.meta.client&&ElMessage.success('登录成功');
         emit("online");
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('登录失败');
         import.meta.client&&localStorage.removeItem('token');//如果在客户端运行则删除localstorage中的token
         
         return false;
-    }
+    };
 };
 
 export async function thirdPartyLogin(path:string):Promise<void>{
@@ -147,10 +149,9 @@ export async function thirdPartyLogin(path:string):Promise<void>{
         let opts = useRuntimeConfig().public;
 
         import.meta.client&&(window.location.href = opts.baseURL + opts.oauth2AuthURL + "/gitee");
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('第三方登录失败');
-    }
+    };
 };
 
 export async function register(name:string, password:string, email:string):Promise<Boolean>{
@@ -181,11 +182,10 @@ export async function register(name:string, password:string, email:string):Promi
         import.meta.client&&ElMessage.success('注册成功');
     
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('注册失败');
         return false;
-    }
+    };
 };
 
 export async function updateAvatar(avatarFile:Blob):Promise<Boolean>{
@@ -208,7 +208,7 @@ export async function updateAvatar(avatarFile:Blob):Promise<Boolean>{
             import.meta.client&&ElMessage.error('更新头像失败:'+ msg);
     
             return false;
-        }
+        };
     
         let data = res.data;
         userInfo.avatar = data;
@@ -216,15 +216,14 @@ export async function updateAvatar(avatarFile:Blob):Promise<Boolean>{
         import.meta.client&&ElMessage.success('更新头像成功');
     
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('更新头像失败');
         
         return false;
-    }
+    };
 };
 
-export async function updateAccountInfo({name, sex, phone, email, profile}:UserInfo):Promise<Boolean>{
+export async function updateAccountInfo({name, sex, phone, email, profile, isIdle, canUrgent}:UserInfo):Promise<Boolean>{
     try{
         const res:Response = await fetchApi({
             url: '/users/updateInfo',
@@ -233,7 +232,9 @@ export async function updateAccountInfo({name, sex, phone, email, profile}:UserI
                 sex,
                 phone,
                 email,
-                profile
+                profile,
+                isIdle,
+                canUrgent
             },
             method: 'put',
             contentType: 'application/json',
@@ -253,12 +254,11 @@ export async function updateAccountInfo({name, sex, phone, email, profile}:UserI
         import.meta.client&&ElMessage.success('更新账户信息成功');
     
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('更新账户信息失败');
 
         return false;
-    }
+    };
 };
 
 export async function updatePassword(password : string, changePassword: string):Promise<Boolean>{
@@ -279,7 +279,7 @@ export async function updatePassword(password : string, changePassword: string):
             ElMessage.error('更新密码失败:'+ msg);
     
             return false;
-        }
+        };
     
         import.meta.client&&localStorage.removeItem('token');
         logoutApi();
@@ -287,11 +287,10 @@ export async function updatePassword(password : string, changePassword: string):
         import.meta.client&&ElMessage.success('更新密码成功');
         
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('更新密码失败');
         return false;
-    }
+    };
 };
 
 export async function logout():Promise<boolean>{
@@ -307,11 +306,10 @@ export async function logout():Promise<boolean>{
         import.meta.client&&ElMessage.success('登出成功');
         emit("offline");
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('登出失败');
         return false;
-    }
+    };
 };
 
 // 被动强制登出
@@ -332,15 +330,15 @@ export async function getUserById(userId:string):Promise<UserInfo|null>{
             ElMessage.error('获取用户信息失败:'+res.msg);
     
             return null;
-        }
+        };
     
         import.meta.client&&localStorage.removeItem('token');
     
         return res.data;
-    }catch (error) {
+    } catch (error) {
         ElMessage.error('获取用户信息失败:'+error);
         return null;
-    }
+    };
 };
 
 export async function getUserByIds(userIds:string[]):Promise<UserInfo[]>{
@@ -357,14 +355,13 @@ export async function getUserByIds(userIds:string[]):Promise<UserInfo[]>{
             ElMessage.error('获取用户信息失败:'+res.msg);
     
             return [];
-        }
+        };
     
         import.meta.client&&localStorage.removeItem('token');
     
         return res.data;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('获取用户信息失败');
         return [];
-    }
+    };
 };

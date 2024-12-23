@@ -118,6 +118,8 @@ public class RTCController implements CommandLineRunner {
 
                     // 返回创建房间的结果
                     ackRequest.sendAckData(timestamp);
+                } catch (ClientException e) {
+                    ackRequest.sendAckData("room is not exits");
                 } catch (Exception e) {
                     log.error("invite join room error: {}", e.getMessage());
                     ackRequest.sendAckData("server error " + e.getCause());

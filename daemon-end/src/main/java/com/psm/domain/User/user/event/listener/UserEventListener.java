@@ -130,7 +130,7 @@ public class UserEventListener {
 
                                 Event<UserDTO> socketLoginEvent = JSON.parseObject(jsonString, Event.class, JSONReader.Feature.SupportClassForName);
                                 UserDTO userDTO = socketLoginEvent.getContent();
-                                userService.forwardSocketLogin(userDTO.getId(), userDTO.getFingerprint());
+                                userService.forwardSocketLogin(userDTO.getId());
                                 break;
                             default:
                                 break;

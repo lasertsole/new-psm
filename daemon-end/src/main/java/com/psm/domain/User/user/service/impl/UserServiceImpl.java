@@ -112,24 +112,18 @@ public class UserServiceImpl implements UserService {
 
         // 如果本服务器存在同一用户的其他socket，则通知该socket退出
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);
-        if (Objects.nonNull(tgtClient) && !fingerprint.equals(tgtClient.get("fingerprint"))) {// 如果目标用户socket存在且ip不同，则通知目标用户
+        if (Objects.nonNull(tgtClient)) {// 如果登录用户socket存在，则说明用户重复登录,通知旧socket退出
             // 通知目标用户
-            AckCallback<Boolean> ackCallback = new AckCallback<>(Boolean.class ,5000) {
-                @Override
-                public void onSuccess(Boolean o) {
-                    // 获取全局client
-                    SocketIOClient globalClient = socketIOApi.getLocalUserSocket("/", tgtClient.getSessionId().toString());
+            tgtClient.sendEvent("otherLogin");
 
-                    // 利用全局client断开全局连接
-                    globalClient.disconnect();
-                }
-            };
+            // 获取全局client
+            SocketIOClient globalClient = socketIOApi.getLocalUserSocket("/", tgtClient.getSessionId().toString());
 
-            tgtClient.sendEvent("otherLogin", ackCallback, fingerprint);
+            // 利用全局client断开全局连接
+            globalClient.disconnect();
         } else{ // 否则可能同一用户的其他socket在其他服务器上，则用MQ广播通知退出
             UserDTO userDTO = new UserDTO();
             userDTO.setId(userId);
-            userDTO.setFingerprint(fingerprint);
             Event<UserDTO> otherLoginEvent = new Event<>(userDTO, UserDTO.class);
             mqPublisher.publish(otherLoginEvent, "socketLogin", "USER");
         };
@@ -140,10 +134,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
-    public void forwardSocketLogin(String userId, String fingerprint) {
+    public void forwardSocketLogin(String userId) {
         // 如果本服务器存在目标用户socket，则把信息交付给目标用户
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);
-        if (Objects.nonNull(tgtClient) && !fingerprint.equals(tgtClient.get("fingerprint"))) {// 如果目标用户socket存在且fingerprint不同，则通知目标用户
+        if (Objects.nonNull(tgtClient)) {// 如果登录用户socket存在，则说明用户重复登录,通知旧socket退出
             // 通知目标用户
             tgtClient.sendEvent("otherLogin");
 
@@ -218,7 +212,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateInfo(String name, Boolean sex, String phone, String email, String profile) {
+    public void updateInfo(String name, Boolean sex, String phone, String email, String profile, Boolean isIdle, Boolean canUrgent) {
         // 获取SecurityContextHolder中的用户id
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
@@ -231,6 +225,8 @@ public class UserServiceImpl implements UserService {
         if(Objects.nonNull(phone)) userDO.setPhone(phone);
         if(Objects.nonNull(email)) userDO.setEmail(email);
         if(Objects.nonNull(profile)) userDO.setProfile(profile);
+        if(Objects.nonNull(isIdle)) userDO.setIsIdle(isIdle);
+        if(Objects.nonNull(canUrgent)) userDO.setCanUrgent(canUrgent);
         userDO.setId(id);
         // 更新用户信息
         userDB.updateInfo(userDO);

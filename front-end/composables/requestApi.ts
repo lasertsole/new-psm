@@ -1,7 +1,8 @@
-import * as tus from 'tus-js-client' // 假设 tus-js-client 是你使用的库
+import * as tus from 'tus-js-client';
+import type { AsyncData } from "#app";
 import type { Upload } from 'tus-js-client';
-import type { Response } from "@/types/request";
 import type { NitroFetchRequest } from 'nitropack';
+import type { Response, UseFetchResponse } from "@/types/response";
 
 interface Params {
     url: NitroFetchRequest;
@@ -45,6 +46,9 @@ export async function fetchApi({
   // 设置请求头
   const headers:any = {};
 
+  // 响应长度
+  let responseContentLength:number=0;
+
   if(import.meta.client&&localStorage.getItem('token')){
     headers.token = localStorage.getItem('token');
   }
@@ -65,6 +69,7 @@ export async function fetchApi({
     method,
     baseURL: import.meta.env.VITE_API_BACK_URL,
     ...params,
+    
     onRequest({ options }:{ options:any }) {
       let token = import.meta.client&&localStorage.getItem('token');
       if(token){
@@ -76,6 +81,7 @@ export async function fetchApi({
       }
       return;
     },
+
     onResponse({ response }:{ response:any }) {
       if(import.meta.server) return response;
 
@@ -84,8 +90,7 @@ export async function fetchApi({
       let token : string | null = response.headers.get("token");
       if(token){
         localStorage.setItem('token', token);
-      }
-
+      };
       return response;
     },
   });
@@ -145,26 +150,26 @@ export async function tusUploadApi({
     // 开始新的上传操作
     upload.start();
   });
-}
+};
 
-export async function useFetchBaseApi({
+function useFetchBaseApi({
   url,
   opts = {},
   method = 'get',
   contentType = 'application/json',
   lazy = false,
-}: Params): Promise<Ref> {
+}: Params): AsyncData<Response, any> {
   const requestURL = replacePathVariables(url, opts);
-  const { data } = await useFetch(requestURL, {
+  return useFetch(requestURL, {
     method,
     // ofetch库会自动识别请求地址，对于url已包含域名的请求不会再拼接baseURL
-    baseURL: "/api",
+    baseURL: import.meta.env.VITE_API_BACK_URL,
     // 是否是懒加载请求
     lazy,
     // onRequest相当于请求拦截
     onRequest({ request, options }) {
       // 设置请求头
-      options.headers = { 'Content-Type': contentType };
+      options.headers.set('Content-Type', contentType);
       // 设置请求参数
       if (method === 'post') {
         options.body = { ...opts };
@@ -173,11 +178,11 @@ export async function useFetchBaseApi({
       }
       let token = localStorage.getItem('token');
       if(token){
-          options.headers = {
-            ...options.headers,
-            token
-          }
+        options.headers.set('token', token);
       }
+    },
+    onRequestError({ request, options, error }) {
+      // Handle the request errors
     },
     // onResponse相当于响应拦截
     onResponse({ response }) {
@@ -190,19 +195,19 @@ export async function useFetchBaseApi({
 
       return response;
     },
+    onResponseError({ request, response, options }) {
+      // Handle the response errors
+    }
   });
-  // 这里data本身是个ref对象，将其内部值抛出去方便调用时获得数据。
-  return data;
-}
+};
 
-export async function useFetchApi({
+export function useFetchApi({
   url,
   opts = {},
   method = 'get',
   contentType = 'application/json',
-}: Params): Promise<Ref>
-{
-  return await useFetchBaseApi({
+}: Params): AsyncData<Response, any> {
+  return useFetchBaseApi({
     url,
     opts,
     method,
@@ -210,13 +215,13 @@ export async function useFetchApi({
   });
 };
 
-export async function useLazyFetchApi<T>({
+export function useLazyFetchApi({
   url,
   opts = {},
   method = 'get',
   contentType = 'application/json',
-}: Params): Promise<Ref> { 
-  return await useFetchBaseApi({
+}: Params): AsyncData<Response, any> { 
+  return useFetchBaseApi({
     url,
     opts,
     method,
