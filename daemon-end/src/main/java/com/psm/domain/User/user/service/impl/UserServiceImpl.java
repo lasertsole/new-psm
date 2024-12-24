@@ -1,7 +1,6 @@
 package com.psm.domain.User.user.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.corundumstudio.socketio.AckCallback;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.User.user.entity.User.UserDTO;
 import com.psm.domain.User.user.entity.LoginUser.LoginUser;
@@ -108,7 +107,6 @@ public class UserServiceImpl implements UserService {
     public void socketLogin(SocketIOClient srcClient) throws ClientException {
         // 将用户id转成字符串类型
         String userId = String.valueOf(((UserBO) srcClient.get("userInfo")).getId());
-        String fingerprint = srcClient.get("fingerprint");
 
         // 如果本服务器存在同一用户的其他socket，则通知该socket退出
         SocketIOClient tgtClient = socketIOApi.getLocalUserSocket("/security", userId);

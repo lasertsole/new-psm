@@ -12,6 +12,27 @@
                     v-loading="loading"
                 >
                     <div class="recomment-name">{{userInfo.name}}</div>
+                    <div class="recomment-status">
+                        <el-switch
+                            v-model="isIdle"
+                            class="ml-2"
+                            inline-prompt
+                            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                            active-text="空闲"
+                            inactive-text="忙碌"
+                            :disabled="statusdisabled"
+                        />
+                        <el-switch
+                            v-model="canUrgent"
+                            class="ml-2"
+                            inline-prompt
+                            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                            active-text="可加急"
+                            inactive-text="不可加急"
+                            :disabled="statusdisabled"
+                        />
+                        <button @click="editstatusFunc">编辑信息</button>
+                    </div>
                     <div class="recomment-title">个人简介:</div>
                     <el-input
                         class="recomment-content"
@@ -53,44 +74,11 @@
                     </adaptContainer> -->
                 </div>
             </div>
-            <div class="planning">
-                <h2>
-                    <img class="icon" src="/icons/planning.png" alt="">
-                    <span>企划</span>
-                </h2>
-                <div class="more">
-                    <div class="moreButton">查看更多</div>
-                </div>
-                <div class="boxContainer">
-                    <!-- <adaptContainer
-                        :boxNum="planningBoxArr.length"
-                        :boxWidth="500"
-                        :boxHeight="180"
-                    >
-                        <template v-for="(item, index) in planningBoxArr" #[index+1]>
-                            <itemBox
-                                :title="item.title"
-                                :describe="item.describe"
-                                :imgSrc="item.imgSrc"
-                                :type="item.type"
-                                :calendar="item.calendar"
-                                :price="item.price"
-                            ></itemBox>
-                        </template>
-                    </adaptContainer> -->
-                </div>
-            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-    // import itemBox from "components/planning/itemBox.vue";
-    // import adaptContainer from "components/common/adaptContainer.vue"
-    // import showCaseBox from "components/personSpace/showCaseBox.vue"
-    // import { ref } from "vue"
-    // import { showCaseBoxInfo, planningBoxInfo} from "types/pageType/personSpace"
-
     const loading:Ref<boolean> = ref(false);
 
     const profileEditable = ref<boolean>(false);// 是否可以编辑个人简介
@@ -113,7 +101,24 @@
         let ok = await updateAccountInfo({profile : tempProfile.value}).then((res)=>{
             if(res){tempProfile.value=userInfo.profile||"";}
         }).finally(()=>{loading.value=false});
-    });
+    }, 1000);
+
+    const isIdle = ref<boolean>(userInfo.isIdle!);
+    const canUrgent = ref<boolean>(userInfo.canUrgent!);
+
+    const isIdleRecord = ref<boolean>(userInfo.isIdle!);
+    const canUrgentRecord = ref<boolean>(userInfo.canUrgent!);
+    const statusdisabled = ref<boolean>(true);
+
+    const editstatusFunc = debounce(async()=>{
+        statusdisabled.value = !statusdisabled.value;
+        if(statusdisabled.value&&(isIdle.value != isIdleRecord.value||canUrgent.value != canUrgentRecord.value)) {
+            await updateAccountInfo({isIdle:isIdle.value, canUrgent:canUrgent.value}).finally(()=>{
+                isIdleRecord.value = isIdle.value;
+                canUrgentRecord.value = canUrgent.value;
+            });
+        };
+    }, 1000);
     
     definePageMeta({
         name: 'home'
@@ -168,6 +173,37 @@
                     
                     >*{
                         margin-bottom: 5px;
+                    }
+
+                    &-status{
+                        color: #707070;
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+
+                        >*{
+                            &:not(:first-child){
+                                margin-left: 10px;
+                            };
+                        }
+
+                        :deep(.el-switch__core){
+                            width: 80px;
+                        }
+
+                        >button{
+                            font-size: 12px;
+                            font-weight: bold;
+                            background-color: #00a8e9;
+                            color: white;
+                            padding: 2px 5px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            transition: all .3s ease-in-out;
+                            &:hover{
+                                background-color: rgb(121.3,187.1,255);
+                            };
+                        }
                     }
 
                     &-name{
@@ -268,6 +304,10 @@
                     padding: 2px 5px;
                     border-radius: 5px;
                     cursor: pointer;
+                    transition: all .3s ease-in-out;
+                    &:hover{
+                        background-color: rgb(121.3,187.1,255);
+                    };
                 }
             }   
         }

@@ -73,7 +73,6 @@ export async function getModel3dsShowBars(
     Page<Model3DInfos>&UserInfo&Model3DInfo): Promise<Page<Model3DInfos>> {
 
     try{
-        
         let opts:Page<Model3DInfos>&UserInfo&Model3DInfo = {
             current,
             size,

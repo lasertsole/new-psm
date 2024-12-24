@@ -47,16 +47,16 @@ public class UserDBImpl extends BaseDBRepositoryImpl<UserMapper, UserDO> impleme
         LambdaUpdateWrapper<UserDO> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(UserDO::getId,userDAO.getId());
 
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getName()), UserDO::getName, userDAO.getName());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getProfile()), UserDO::getProfile, userDAO.getProfile());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPhone()), UserDO::getPhone, userDAO.getPhone());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getEmail()), UserDO::getEmail, userDAO.getEmail());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getSex()), UserDO::getSex, userDAO.getSex());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getPublicModelNum()), UserDO::getPublicModelNum, userDAO.getPublicModelNum());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelMaxStorage()), UserDO::getModelMaxStorage, userDAO.getModelMaxStorage());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getModelCurStorage()), UserDO::getModelCurStorage, userDAO.getModelCurStorage());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getIsIdle()), UserDO::getIsIdle, userDAO.getIsIdle());
-        wrapper.set(!ObjectUtil.isEmpty(userDAO.getCanUrgent()), UserDO::getCanUrgent, userDAO.getCanUrgent());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getName()), UserDO::getName, userDAO.getName());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getProfile()), UserDO::getProfile, userDAO.getProfile());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getPhone()), UserDO::getPhone, userDAO.getPhone());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getEmail()), UserDO::getEmail, userDAO.getEmail());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getSex()), UserDO::getSex, userDAO.getSex());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getPublicModelNum()), UserDO::getPublicModelNum, userDAO.getPublicModelNum());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getModelMaxStorage()), UserDO::getModelMaxStorage, userDAO.getModelMaxStorage());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getModelCurStorage()), UserDO::getModelCurStorage, userDAO.getModelCurStorage());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getIsIdle()), UserDO::getIsIdle, userDAO.getIsIdle());
+        wrapper.set(ObjectUtil.isNotEmpty(userDAO.getCanUrgent()), UserDO::getCanUrgent, userDAO.getCanUrgent());
 
         userMapper.update(null,wrapper);
     }

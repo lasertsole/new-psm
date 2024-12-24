@@ -81,8 +81,6 @@ public class UserAdaptorImpl implements UserAdaptor {
 
     @Override
     public void socketLogin(SocketIOClient srcClient) throws ClientException, InstantiationException, IllegalAccessException {
-        validUtil.validate(Map.of("fingerprint", srcClient.get("fingerprint")), UserBO.class);
-
         userService.socketLogin(srcClient);
     }
 

@@ -38,13 +38,11 @@ public class SecurityController  implements CommandLineRunner {
             try{
                 Map<String, Object> map = (LinkedHashMap) authToken;
                 String token = (String) map.get("token");
-                String fingerprint = (String) map.get("fingerprint");
-                if (Objects.isNull(token) || Objects.isNull(fingerprint))
+                if (Objects.isNull(token))
                     return new AuthTokenResult(false, "Invalid parameter");
 
                 UserBO userBO = userAdaptor.authUserToken(token);
                 client.set("userInfo", userBO);
-                client.set("fingerprint", fingerprint);
 
                 return AuthTokenResult.AuthTokenResultSuccess;
             }

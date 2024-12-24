@@ -87,6 +87,9 @@
     
     const ModelShowItems: Ref<Page<Model3DInfos>> = ref<Page<Model3DInfos>>({records:[]});
 
+    // SSR
+    fetchModelsShowBars({current:1, size:10, isIdle:true, canUrgent:true});
+
     // 分页请求数据函数
     function fetchModelsShowBars({current, size, style, type, isIdle, canUrgent}:
         {current: number, size: number, style?:string, type?:string, isIdle:boolean, canUrgent:boolean}):void
@@ -144,7 +147,7 @@
     }
 
     onMounted(async ()=>{
-        fetchModelsShowBars({current:1, size:10, isIdle:true, canUrgent:true});
+        
     });
 
     definePageMeta({

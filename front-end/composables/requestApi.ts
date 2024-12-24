@@ -1,8 +1,8 @@
 import * as tus from 'tus-js-client';
-import type { AsyncData } from "#app";
 import type { Upload } from 'tus-js-client';
 import type { NitroFetchRequest } from 'nitropack';
 import type { Response, UseFetchResponse } from "@/types/response";
+import type { FetchResponse } from 'ofetch';
 
 interface Params {
     url: NitroFetchRequest;
@@ -11,6 +11,10 @@ interface Params {
     contentType?: 'application/x-www-form-urlencoded' | 'application/json' | 'multipart/form-data';
     lazy?: boolean;
     headeropts?: { [key: string]: any };
+    onError?: () => void;
+    initialCache?: boolean;
+    server?: boolean;
+    watch?: [];
 }
 
 // 替换路径变量
@@ -35,76 +39,14 @@ const replacePathVariables = (url: NitroFetchRequest, params: any = {}) => {
   return formattedURL;
 };
 
-// 使用$fetch的api请求
-export async function fetchApi({
-  url,
-  opts = {},
-  method = 'get',
-  contentType = 'application/json',
-  headeropts = {},
-}: Params): Promise<Response> {
-  // 设置请求头
-  const headers:any = {};
-
-  // 响应长度
-  let responseContentLength:number=0;
-
-  if(import.meta.client&&localStorage.getItem('token')){
-    headers.token = localStorage.getItem('token');
-  }
-  // 设置请求参数
-  let params:any = {};
-  if(contentType=='application/json'){
-    opts = { ...opts };
-  }
-  
-  if (method == 'get') {
-    params.query = opts;
-  } else {
-    params.body = opts;
-  }
-
-  // 发出请求
-  let res:Response = await $fetch(url,{
-    method,
-    baseURL: import.meta.env.VITE_API_BACK_URL,
-    ...params,
-    
-    onRequest({ options }:{ options:any }) {
-      let token = import.meta.client&&localStorage.getItem('token');
-      if(token){
-          options.headers = {
-            ...options.headers,
-            ...headeropts,
-            token
-          }
-      }
-      return;
-    },
-
-    onResponse({ response }:{ response:any }) {
-      if(import.meta.server) return response;
-
-      // 处理响应数据
-      // 如果返回值有token，则更新本地token
-      let token : string | null = response.headers.get("token");
-      if(token){
-        localStorage.setItem('token', token);
-      };
-      return response;
-    },
-  });
-
-  return res;
-};
-
 interface UploadParams {
   url: string;
   file: File;
   progressCB?: Function;
   successCB?: Function;
   errorCB?: Function;
-}
+};
+
 export async function tusUploadApi({
   file, 
   url, 
@@ -152,80 +94,90 @@ export async function tusUploadApi({
   });
 };
 
-function useFetchBaseApi({
+async function useFetchBaseApi({
   url,
   opts = {},
   method = 'get',
   contentType = 'application/json',
-  lazy = false,
-}: Params): AsyncData<Response, any> {
+  headeropts = {},
+  server = true,
+  watch = [],
+}: Params):Promise<Response> {
   const requestURL = replacePathVariables(url, opts);
-  return useFetch(requestURL, {
+
+  // 设置请求参数
+  let params:any = {};
+  if(contentType=='application/json'){
+    opts = { ...opts };
+  };
+  
+  if (method == 'get') {
+    params.query = opts;
+  } else {
+    params.body = opts;
+  };
+  
+  const {data} = await useFetch(requestURL, {
     method,
     // ofetch库会自动识别请求地址，对于url已包含域名的请求不会再拼接baseURL
     baseURL: import.meta.env.VITE_API_BACK_URL,
-    // 是否是懒加载请求
-    lazy,
+    ...params,
+    server,
+    watch,
+    retry: 3,
+    retryDelay: 2000,
     // onRequest相当于请求拦截
     onRequest({ request, options }) {
       // 设置请求头
       options.headers.set('Content-Type', contentType);
-      // 设置请求参数
-      if (method === 'post') {
-        options.body = { ...opts };
-      } else {
-        options.query = { ...opts };
-      }
-      let token = localStorage.getItem('token');
-      if(token){
-        options.headers.set('token', token);
+      for (const [key, value] of Object.entries(headeropts)) {
+        options.headers.set(key, value);
+      };
+      
+      if(import.meta.client) {
+        let token = localStorage.getItem('token');
+        if(token){
+          options.headers.set('token', token);
+        };
       }
     },
+
     onRequestError({ request, options, error }) {
       // Handle the request errors
     },
+    
     // onResponse相当于响应拦截
     onResponse({ response }) {
       // 处理响应数据
-      // 如果返回值有token，则更新本地token
-      let token : string | null = response.headers.get("token");
-      if(token){
-        localStorage.setItem('token', token);
-      }
-
-      return response;
+      if(import.meta.client) {
+        // 如果返回值有token，则更新本地token
+        let token : string | null = response.headers.get("token");
+        if(token){
+          localStorage.setItem('token', token);
+        };
+  
+        return response;
+      };
     },
+
     onResponseError({ request, response, options }) {
       // Handle the response errors
     }
   });
+
+  return data.value as Response;
 };
 
-export function useFetchApi({
-  url,
+export async function fetchApi({url,
   opts = {},
   method = 'get',
   contentType = 'application/json',
-}: Params): AsyncData<Response, any> {
-  return useFetchBaseApi({
-    url,
+  headeropts = {},
+}: Params): Promise<Response> {
+  return useFetchBaseApi({url,
     opts,
     method,
     contentType,
-  });
-};
-
-export function useLazyFetchApi({
-  url,
-  opts = {},
-  method = 'get',
-  contentType = 'application/json',
-}: Params): AsyncData<Response, any> { 
-  return useFetchBaseApi({
-    url,
-    opts,
-    method,
-    contentType,
-    lazy:true,
+    headeropts,
   });
 };

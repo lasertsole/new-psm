@@ -243,7 +243,7 @@ export async function updateAccountInfo({name, sex, phone, email, profile, isIdl
         if(res.code!=200){
             let msg = res?.msg;
             if(msg == null || msg == undefined) msg = '';
-            import.meta.client&&ElMessage.error('更新账户信息失败:'+ msg);
+            import.meta.client&&ElMessage.error('更新信息失败:'+ msg);
     
             return false;
         }
@@ -251,11 +251,11 @@ export async function updateAccountInfo({name, sex, phone, email, profile, isIdl
         const data:UserInfo = {name, sex, phone, email, profile};
         updateUserInfo(data);
         
-        import.meta.client&&ElMessage.success('更新账户信息成功');
+        import.meta.client&&ElMessage.success('更新信息成功');
     
         return true;
     } catch (error) {
-        import.meta.client&&ElMessage.error('更新账户信息失败');
+        import.meta.client&&ElMessage.error('更新信息失败');
 
         return false;
     };

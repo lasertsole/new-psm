@@ -48,13 +48,15 @@ public class LoginUserRedisImpl implements LoginUserRedis {
         LoginUser loginUser = loginCache.get("login:"+id, LoginUser.class);
 
         UserDO userDORefer = loginUser.getUserDO();//获取loginUser内的UserDO引用
-        if (!Objects.isNull(userDO.getAvatar())) userDORefer.setAvatar(userDO.getAvatar());
-        if (!Objects.isNull(userDO.getName())) userDORefer.setName(userDO.getName());
-        if (!Objects.isNull(userDO.getProfile())) userDORefer.setProfile(userDO.getProfile());
-        if (!Objects.isNull(userDO.getPhone())) userDORefer.setPhone(userDO.getPhone());
-        if (!Objects.isNull(userDO.getEmail())) userDORefer.setEmail(userDO.getEmail());
-        if (!Objects.isNull(userDO.getSex())) userDORefer.setSex(userDO.getSex());
-        if (!Objects.isNull(userDO.getPassword())) userDORefer.setPassword(userDO.getPassword());
+        if (Objects.nonNull(userDO.getAvatar())) userDORefer.setAvatar(userDO.getAvatar());
+        if (Objects.nonNull(userDO.getName())) userDORefer.setName(userDO.getName());
+        if (Objects.nonNull(userDO.getProfile())) userDORefer.setProfile(userDO.getProfile());
+        if (Objects.nonNull(userDO.getPhone())) userDORefer.setPhone(userDO.getPhone());
+        if (Objects.nonNull(userDO.getEmail())) userDORefer.setEmail(userDO.getEmail());
+        if (Objects.nonNull(userDO.getSex())) userDORefer.setSex(userDO.getSex());
+        if (Objects.nonNull(userDO.getPassword())) userDORefer.setPassword(userDO.getPassword());
+        if (Objects.nonNull(userDO.getIsIdle())) userDORefer.setIsIdle(userDO.getIsIdle());
+        if (Objects.nonNull(userDO.getCanUrgent())) userDORefer.setCanUrgent(userDO.getCanUrgent());
 
         addLoginUser(id, loginUser);
     }
