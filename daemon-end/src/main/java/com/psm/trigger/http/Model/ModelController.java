@@ -1,14 +1,14 @@
 package com.psm.trigger.http.Model;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Model.model.adaptor.Model3dAdaptor;
-import com.psm.domain.Model.model.entity.Model3dBO;
-import com.psm.domain.Model.model.entity.Model3dDTO;
-import com.psm.domain.Model.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
-import com.psm.domain.Model.model_extendedUser.valueObject.Model_ExtendedUserBO;
-import com.psm.domain.Model.models_user.adaptor.Models_UserAdaptor;
-import com.psm.domain.Model.models_user.valueObject.Models_UserBO;
-import com.psm.domain.User.user.adaptor.UserAdaptor;
+import com.psm.domain.IndependentDomain.Model.model.adaptor.Model3dAdaptor;
+import com.psm.domain.IndependentDomain.Model.model.entity.Model3dBO;
+import com.psm.domain.IndependentDomain.Model.model.entity.Model3dDTO;
+import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
+import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.model_extendedUser.valueObject.Model_ExtendedUserBO;
+import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.models_user.adaptor.Models_UserAdaptor;
+import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.models_user.valueObject.Models_UserBO;
+import com.psm.domain.IndependentDomain.User.user.adaptor.UserAdaptor;
 import com.psm.types.common.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,8 +55,7 @@ public class ModelController {
             modelAdaptor.uploadModelEntity(servletRequest, servletResponse, String.valueOf(userId));
 
             return ResponseDTO.ok("upload model's Entity successful");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:"+e.getCause());
         }
     }
@@ -78,11 +77,9 @@ public class ModelController {
 
             // 模型信息上传
             modelAdaptor.uploadModelInfo(model3dBO);
-        }
-        catch (InvalidParameterException e){
+        } catch (InvalidParameterException e){
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
         }
 
@@ -112,11 +109,9 @@ public class ModelController {
             Page<Models_UserBO> modelsUserBOPage = models_UserAdaptor.getModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId);
 
             return ResponseDTO.ok(modelsUserBOPage);
-        }
-        catch (InvalidParameterException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
         }
     }
@@ -136,11 +131,9 @@ public class ModelController {
             Model_ExtendedUserBO model_ExtendedUserBO = modelExtendedUserBindAdaptor.getModelByModelId(id, userSelfId);
 
             return ResponseDTO.ok(model_ExtendedUserBO);
-        }
-        catch (InvalidParameterException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
         }
     }
@@ -149,11 +142,9 @@ public class ModelController {
     public ResponseDTO getBlurSearchModel3d(@RequestParam String keyword) {
         try {
             return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
-        }
-        catch (InvalidParameterException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e);
         }
     }
@@ -165,11 +156,9 @@ public class ModelController {
             @RequestParam Integer size) {
         try {
             return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, afterKeyId, size));
-        }
-        catch (InvalidParameterException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
         }
     }

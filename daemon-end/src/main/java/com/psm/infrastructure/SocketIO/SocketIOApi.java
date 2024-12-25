@@ -4,7 +4,8 @@ import com.corundumstudio.socketio.SocketIOClient;
 
 import java.util.*;
 
-import com.psm.infrastructure.SocketIO.POJOs.Room;
+import com.psm.infrastructure.SocketIO.pojo.Room;
+import com.psm.infrastructure.SocketIO.enums.RoomTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -66,8 +67,8 @@ public class SocketIOApi {
         memberIdSet.remove(userId);
 
         // 如果房间是DRTC(一对一)类型,则直接删除该房间
-        String roomType = room.getRoomType();
-        if (memberIdSet.isEmpty() || "DRTC".equals(roomType)) {
+        RoomTypeEnum roomType = room.getRoomType();
+        if (memberIdSet.isEmpty() || RoomTypeEnum.DRTC == roomType) {
             destroySocketRoom(namespace, roomId);
         } else {
             roomCache.put(namespace + roomId, room);

@@ -1,8 +1,8 @@
 package com.psm.trigger.http.User;
 
-import com.psm.domain.User.user.adaptor.UserAdaptor;
-import com.psm.domain.User.user.entity.User.UserBO;
-import com.psm.domain.User.user.entity.User.UserDTO;
+import com.psm.domain.IndependentDomain.User.user.adaptor.UserAdaptor;
+import com.psm.domain.IndependentDomain.User.user.entity.User.UserBO;
+import com.psm.domain.IndependentDomain.User.user.entity.User.UserDTO;
 import com.psm.types.common.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

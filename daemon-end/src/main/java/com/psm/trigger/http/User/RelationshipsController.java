@@ -1,7 +1,7 @@
 package com.psm.trigger.http.User;
 
-import com.psm.domain.User.relationships.adaptor.RelationshipsAdaptor;
-import com.psm.domain.User.user.adaptor.UserAdaptor;
+import com.psm.domain.IndependentDomain.User.relationships.adaptor.RelationshipsAdaptor;
+import com.psm.domain.IndependentDomain.User.user.adaptor.UserAdaptor;
 import com.psm.types.common.DTO.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
