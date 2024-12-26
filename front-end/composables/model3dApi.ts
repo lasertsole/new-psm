@@ -53,14 +53,13 @@ export async function uploadModel3dInfo({title, content, cover, style, type, vis
             import.meta.client&&ElMessage.error('上传模型信息失败:'+ msg);
     
             return false;
-        }
+        };
     
         import.meta.client&&ElMessage.success('上传模型信息成功');
         navigateTo('/');
         
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('上传模型信息失败');
 
         return false;
@@ -112,7 +111,7 @@ export async function getModel3dsShowBars(
             records:[],
             pages: 1
         } as Page<Model3DInfos>;
-    }
+    };
 };
 
 export async function getFollowingModel3dsShowBars(
@@ -158,7 +157,7 @@ export async function getFollowingModel3dsShowBars(
             records:[],
             pages: 1
         } as Page<Model3DInfos>;
-    }
+    };
 };
 
 export async function getModelByModel3dId({ modelId }:{modelId:string}):Promise<Model3DInfoDetail> {
@@ -169,12 +168,11 @@ export async function getModelByModel3dId({ modelId }:{modelId:string}):Promise<
         });
         
         return res.data;
-    }
-    catch (error) {
+    } catch (error) {
         import.meta.client&&ElMessage.error('获取模型失败');
         
         return {} as Model3DInfoDetail; 
-    }
+    };
 };
 
 export async function blurSearchModel3d(keyword:string):Promise<ESResult[]> {

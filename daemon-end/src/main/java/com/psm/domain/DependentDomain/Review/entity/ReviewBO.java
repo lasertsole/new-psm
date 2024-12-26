@@ -1,5 +1,6 @@
 package com.psm.domain.DependentDomain.Review.entity;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.psm.domain.DependentDomain.Review.types.convertor.ReviewConvertor;
 import com.psm.domain.DependentDomain.Review.types.enums.TargetTypeEnum;
@@ -7,6 +8,7 @@ import com.psm.types.common.BO.BO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -31,5 +33,12 @@ public class ReviewBO implements Serializable, BO<ReviewDTO, ReviewDO> {
     @Override
     public ReviewDO toDO() {
         return ReviewConvertor.INSTANCE.BO2DO(this);
+    }
+
+    public static Page<ReviewBO> fromDOPage(Page<ReviewDO> reviewDOPage) {
+        Page<ReviewBO> reviewBOPage = new Page<>();
+        BeanUtils.copyProperties(reviewDOPage, reviewBOPage);
+        reviewBOPage.setRecords(reviewDOPage.getRecords().stream().map(ReviewConvertor.INSTANCE::DO2BO).toList());
+        return reviewBOPage;
     }
 }

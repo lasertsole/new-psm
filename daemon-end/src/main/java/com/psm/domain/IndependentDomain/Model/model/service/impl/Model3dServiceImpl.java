@@ -92,8 +92,7 @@ public class Model3dServiceImpl implements Model3dService {
         Map<String, String> ossResultMap;
         try {
             ossResultMap = modelOSS.addAllModel(tus.getAbsoluteFilePathName(fullName), coverFile, _userId);
-        }
-        catch (Exception e){
+        } catch (Exception e){
             throw new RuntimeException("文件上传失败", e);
         }
 
@@ -115,8 +114,7 @@ public class Model3dServiceImpl implements Model3dService {
             // 将ModelDO存入数据库
             modelDB.insert(model3dDO);
             modelId = model3dDO.getId();
-        }
-        catch (Exception e){
+        } catch (Exception e){
             // 回滚OSS
             modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), _userId);
             // 删除redis缓存
@@ -132,8 +130,7 @@ public class Model3dServiceImpl implements Model3dService {
             //删除本地文件
             String folderName = tus.getFolderName(fullName);
             tusFileUploadService.deleteUpload(folderName);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // 回滚OSS
             modelOSS.deleteAllModel(ossResultMap.get("entityUrl"), ossResultMap.get("coverUrl"), _userId);
             throw new RuntimeException("删除云文件失败");
