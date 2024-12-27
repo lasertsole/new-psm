@@ -10,26 +10,27 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
     "@huggingface/transformers": "^3.1.1",
     "@types/socket.io-client": "^3.0.0",
     "@vite-pwa/nuxt": "^0.10.5",
     "dat.gui": "^0.7.9",
     "dexie": "^4.0.10",
     "dplayer": "^1.27.1",
+    "emoji-mart": "^5.6.0",
     "gsap": "^3.12.5",
     "localforage": "^1.10.0",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",
-    "nuxt": "^3.12.4",
+    "nuxt": "^3.15.0",
     "oh-my-live2d": "^0.19.3",
-    "pixi.js": "^8.4.1",
+    "pixi.js": "^8.6.6",
     "rxjs": "npm:@esm-bundle/rxjs@^7.8.1",
     "socket.io-client": "^4.7.5",
-    "swiper": "^8.4.7",
-    "three": "^0.169.0",
+    "swiper": "^11.1.15",
+    "three": "^0.171.0",
     "tus-js-client": "^4.1.0",
     "vue": "latest",
-    "vue-awesome-swiper": "^5.0.1",
     "wujie-polyfill": "^1.1.0",
     "wujie-vue3": "^1.0.23"
   },
@@ -39,7 +40,7 @@
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.9",
     "@nuxtjs/tailwindcss": "^6.12.2",
-    "@types/three": "^0.170.0",
+    "@types/three": "^0.171.0",
     "sass": "^1.77.8"
   }
 }

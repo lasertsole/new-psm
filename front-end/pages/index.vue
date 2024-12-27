@@ -6,10 +6,6 @@
            </div>
         </div>
         <div class="bottom">
-            <!-- <IndexPageCarousel
-                :carouselProcessArr="carouselProcessArr"
-             >
-            </IndexPageCarousel> -->
         </div>
    </div>
 </template>

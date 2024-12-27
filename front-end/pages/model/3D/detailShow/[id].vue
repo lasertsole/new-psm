@@ -60,6 +60,13 @@
         </div>
 
       </div>
+
+      <!-- <div class="comment">
+        <CommonCommentArr
+          :targetId="id"
+          :targetType="TargetTypeEnum.MODEL_3D"
+        ></components/common>
+      </div> -->
     </div>
   </div>
 </template>
