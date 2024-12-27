@@ -70,8 +70,13 @@
         dpParentDom.appendChild(minVideoTemplate.value!.firstChild!);
         boxWidth = rtcBoxDom.value!.getBoundingClientRect().width;
         boxHeight = rtcBoxDom.value!.getBoundingClientRect().height;
-        boxRight.value = `50% - ${boxWidth / 2}px`;
-        boxBottom.value = `50% - ${boxHeight / 2}px`;
+        initWindowSize();
+        oldBiasLeft= (windowWidth- boxWidth)/2;
+        oldBiasTop= (windowHeight - boxHeight)/2;
+        rtcBoxDom.value!.animate({transform: `translate(${oldBiasLeft}px, ${oldBiasTop}px)`},{
+            duration: 0,
+            fill: 'forwards',
+        });
 
         dp.on('fullscreen', ()=>{
             isFullScreen.value=true;
@@ -92,37 +97,62 @@
     const rtcBoxDom:Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>();
     let boxWidth:number;// 画中画宽度
     let boxHeight:number;// 画中画高度
-    const boxRight = ref<string>("");//画中画距离盒子右边距离
-    const boxBottom = ref<string>("");//画中画距离盒子底端距离
+    const boxLeft = ref<string>("");//画中画距离盒子右边距离
+    const boxTop = ref<string>("");//画中画距离盒子底端距离
     
+    let biasLeft:number; // 盒子到父容器的左边缘的距离
+    let biasTop:number; // 盒子到父容器的上边缘的距离
+    let oldBiasLeft:number;// 上一次盒子到父容器的左边缘的距离
+    let oldBiasTop:number;// 上一次盒子到父容器的上边缘的距离
+    let al:number; //鼠标到盒子左边缘的距离
+    let at:number; //鼠标到盒子上边缘的距离
+    let windowWidth:number;// 窗口宽度
+    let windowHeight:number;// 窗口高度
+
+    // 计算画中画位置
+    function computedPosition():void {
+        rtcBoxDom.value!.getAnimations().forEach(animation => {
+            animation.cancel();
+        });
+
+        if(biasLeft<0) biasLeft=0; //避免超出窗口左边缘
+        if(biasLeft+boxWidth>windowWidth) biasLeft = windowWidth - boxWidth;
+
+        if(biasTop<0) biasTop=0;// 避免超出窗口上边缘
+        if(biasTop+boxHeight>windowHeight) biasTop = windowHeight - boxHeight;
+
+        rtcBoxDom.value!.animate([
+            {transform: `translate(${oldBiasLeft}px, ${oldBiasTop}px)`},
+            {transform: `translate(${biasLeft}px, ${biasTop}px)`}
+        ], {
+            duration: 0,
+            fill: 'forwards',
+        });
+
+        // 刷新旧值
+        oldBiasLeft = biasLeft;
+        oldBiasTop = biasTop;
+    };
+
+    function initWindowSize():void {
+        windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+        windowHeight = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight);
+    };
+
     function PIPDrag(event:any):void{//拖拽视频盒子
         if(props.PIPController) {
             event = event || window.event;
-            let al:number = event.clientX - rtcBoxDom.value!.offsetLeft; //求出鼠标到盒子左边缘的距离
-            let at:number = event.clientY - rtcBoxDom.value!.offsetTop; //求出鼠标到盒子上边缘的距离
-            let biasLeft:number;
-            let biasTop:number;
-            let windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
-            let windowHeight = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight);
-            
-            let boxRightDight:number;
-            let boxBottomDight:number;
+
+            al = event.clientX - oldBiasLeft; //求出鼠标到盒子左边缘的距离
+            at = event.clientY - oldBiasTop; //求出鼠标到盒子上边缘的距离
+            initWindowSize();
 
             document.onmousemove = throttle((event):void=> {
                 event = event || window.event;
                 biasLeft = event.clientX - al;
                 biasTop = event.clientY - at ;
 
-                if(biasLeft<0) biasLeft=0; //避免超出窗口左边缘
-                boxRightDight = windowWidth - biasLeft - parseInt(getComputedStyle(rtcBoxDom.value!).width);
-                if(boxRightDight<0) boxRightDight=0; //避免超出窗口右边缘
-
-                if(biasTop<0) biasTop=0;// 避免超出窗口上边缘
-                boxBottomDight = windowHeight - biasTop - parseInt(getComputedStyle(rtcBoxDom.value!).height);
-                if(boxBottomDight<0) boxBottomDight=0;// 避免超出窗口下边缘
-                
-                boxRight.value = boxRightDight + "px";
-                boxBottom.value = boxBottomDight + "px";
+                computedPosition();
             }, 40);
 
             document.onmouseup = function() {
@@ -138,9 +168,13 @@
     const contextMenuTop:Ref<number> = ref<number>(0);
     const contextMenuLeft:Ref<number> = ref<number>(0);
 
-    function minilizeChange():void{// 最小化按钮触发
+    async function minilizeChange():Promise<void> {// 最小化按钮触发
         minilize.value = !minilize.value;
         contextMenuVisible.value = false;
+        await nextTick();
+        boxWidth = rtcBoxDom.value!.getBoundingClientRect().width;
+        boxHeight = rtcBoxDom.value!.getBoundingClientRect().height;
+        computedPosition();
     };
 
     const computedMinilizeText: Ref<string> = computed(()=>{// 最小化按钮文字
@@ -177,10 +211,8 @@
         @include fixedRetangle(250px, 150px);
         position: absolute;
         z-index: 2;
-        $boxRight: v-bind(boxRight);
-        $boxBottom: v-bind(boxBottom);
-        right: calc($boxRight);
-        bottom: calc($boxBottom);
+        left: 0px;
+        top: 0px;
 
         .overlay{
             position: absolute;
