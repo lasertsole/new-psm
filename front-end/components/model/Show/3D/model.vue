@@ -17,7 +17,7 @@
 
   const props = defineProps({
     entityUrl: {type: String, required: false},
-    isSnapshot: {type: Boolean, required: false }
+    isSnapshot: {type: Boolean, required: false}
   });
   
   const emits = defineEmits(['snapShotBlob']);
@@ -47,13 +47,13 @@
       renderer.domElement.requestFullscreen();
       if(props.isSnapshot){
         document.addEventListener('keydown', snapShotEvent);
-      }
+      };
     }
     else{
       document.exitFullscreen();
       if(props.isSnapshot){
         document.removeEventListener('keydown', snapShotEvent);
-      }
+      };
     }
   }
 

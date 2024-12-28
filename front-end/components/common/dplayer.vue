@@ -28,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-    import type { Reactive} from 'vue';
     import type DPlayer from 'dplayer';
+    import type { Reactive, PropType } from 'vue';
     import type { ContextMenuOptions } from "@/types/common";
 
     const props = defineProps({
@@ -37,6 +37,7 @@
         hideController: {type:Boolean, required: false, default: false},
         PIPController: {type:Boolean, required: false, default: false},
         hasMinVideo: {type:Boolean, required: false, default: false},
+        extraContextMenuOptions: {type:Array as PropType<ContextMenuOptions[]>, required: false, default: [] }
     });
 
     const isFullScreen: Ref<boolean> = ref<boolean>(false);// 是否全屏
@@ -50,7 +51,7 @@
     let dp:DPlayer;
     const dpDomRef:Ref<HTMLVideoElement | null> = ref<HTMLVideoElement | null>(null);
     let dpParentDom:HTMLElement; // 播放器的父元素
-    let minVideoTemplate:Ref<HTMLVideoElement | null> = ref<HTMLVideoElement | null>(null);
+    const minVideoTemplate:Ref<HTMLVideoElement | null> = ref<HTMLVideoElement | null>(null);
     const minDpDomRef:Ref<HTMLVideoElement | null> = ref<HTMLVideoElement | null>(null);// 右下角小video元素
 
     // 初始化DPlayer
@@ -180,12 +181,18 @@
     const computedMinilizeText: Ref<string> = computed(()=>{// 最小化按钮文字
         return minilize.value ? "窗口化" : "最小化";
     });
-    const contextMenuOptions:Reactive<ContextMenuOptions[]> = reactive<ContextMenuOptions[]>(
-        [
-            {text: "全屏", callback: fullScreen},
-            {text: computedMinilizeText, callback: minilizeChange}
-        ]
-    );
+
+    // 右键菜单
+    const contextMenuOptions:Reactive<ContextMenuOptions[]> = reactive<ContextMenuOptions[]>([
+        {text: "全屏", callback: fullScreen},
+        {text: computedMinilizeText, callback: minilizeChange}
+    ]);
+
+    // 添加自定义右键菜单
+    props.extraContextMenuOptions.forEach(option=>{
+        contextMenuOptions.push(option);
+    });
+
     const contextmenuEvent = debounce((event:MouseEvent)=>{
         contextMenuVisible.value = true;
         contextMenuTop.value = event.clientY;

@@ -35,11 +35,11 @@
                         v-if="entityLocalUrl"
                         title="双击全屏预览,进入预览后按回车截图"
                     >
-                        <ModelShowModel
+                        <ModelShow3DModel
                             :entityUrl="entityLocalUrl"
                             :isSnapshot="true"
                             @snapShotBlob="processSnapShot"
-                        ></ModelShowModel>
+                        ></ModelShow3DModel>
                     </div>
 
                     <div class="coverEntity">

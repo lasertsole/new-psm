@@ -111,6 +111,7 @@
             :hideController="true"
             :PIPController="true"
             :hasMinVideo="true"
+            :extraContextMenuOptions
         >
         </commonDplayer>
     </div>
@@ -119,8 +120,8 @@
 <script lang="ts" setup>
     import type { Reactive } from 'vue';
     import type { Devices, RTCSwap } from "@/types/rtc";
-    import type { RoomInvitation } from "@/types/common";
     import dplayer from "@/components/common/dplayer.vue";
+    import type { RoomInvitation, ContextMenuOptions } from "@/types/common";
 
     // 模态窗口可见性
     const invitationArrVisible:Ref<boolean> = ref<boolean>(false);
@@ -134,17 +135,27 @@
     let RTCServiceInstance: RTCService | null = null;//RTC服务实例
 
     const deviceControl:Reactive<Devices> = reactive<Devices>({
-        video: [{ name: '摄像头', active: undefined, type: 'webcam', bindStreams: [], seletedStreamIndex: -1 }, { name: '投屏', active: undefined, type: 'screen', bindStreams: [], seletedStreamIndex: -1 }],
-        audio: [{ name: 'PC音效', active: undefined, type: 'speaker', bindStreams: [], seletedStreamIndex: -1 }, { name: '麦克风', active: undefined, type: 'microphone', bindStreams: [], seletedStreamIndex: -1 }],
+        video: [{ name: '摄像头', active: undefined, type: 'webcam', bindStreams: [] }, { name: '投屏', active: undefined, type: 'screen', bindStreams: [] }],
+        audio: [{ name: 'PC音效', active: undefined, type: 'speaker', bindStreams: [] }, { name: '麦克风', active: undefined, type: 'microphone', bindStreams: [] }],
     });
 
     const dplayerRef:Ref<InstanceType<typeof dplayer> | undefined> = ref<InstanceType<typeof dplayer> | undefined>();
 
-    // 打开邀请窗口
+    // 完成流选择函数
     function trackSwitchComplete():void{
         invitationArrVisible.value = false;
         trackSwitchVisible.value = false;
         videoVisible.value = true;
+
+        for(let stream in deviceControl) {
+            deviceControl[stream].forEach((item)=>{
+                if(item.active=='true'){
+                    item.bindStreams[0].enabled = true;
+                } else if(item.active=='false') {
+                    item.bindStreams[0].enabled = false;
+                };
+            });
+        };
     };
 
     on("online", async():Promise<void>=>{
@@ -214,6 +225,11 @@
         });
         invitationArrVisible.value = false;
     }, 1000);
+
+    // 添加rtc窗口自定义右键菜单
+    const extraContextMenuOptions:ContextMenuOptions = [{text: "流控制", callback: async ():Promise<void>=>{
+        trackSwitchVisible.value = true;
+    }}];
 </script>
 
 <style lang="scss" scoped>

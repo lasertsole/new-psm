@@ -4,11 +4,11 @@ export type Devices = {
 };
 
 export type VideoOption = {
-    name: string, active: string | undefined, type: 'webcam' | 'screen', bindStreams: MediaStreamTrack[], seletedStreamIndex: number
+    name: string, active: string | undefined, type: 'webcam' | 'screen', bindStreams: MediaStreamTrack[]
 };
 
 export type AudioOption = {
-    name: string, active: string | undefined, type: 'microphone' | 'speaker', bindStreams: MediaStreamTrack[], seletedStreamIndex: number
+    name: string, active: string | undefined, type: 'microphone' | 'speaker', bindStreams: MediaStreamTrack[]
 };
 
 export type RTCSwap = {

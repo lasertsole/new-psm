@@ -26,10 +26,10 @@
         
       <div class="main">
         <div class="entity">
-          <ModelShowModel
+          <ModelShow3DModel
             v-if="modelInfo && modelInfo.entity"
             :entityUrl="(modelInfo.entity as string)"
-          ></ModelShowModel>
+          ></ModelShow3DModel>
         </div>
 
         <div class="info">
