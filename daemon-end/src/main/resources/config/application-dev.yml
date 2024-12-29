@@ -5,6 +5,10 @@ spring:
       on-profile: dev
 #  main:
 #    allow-circular-references: true #循环引用
+
+  application:
+    name: psm
+
   #配置文件编码
   mvc:
     content-negotiation-manager:
@@ -155,6 +159,13 @@ mybatis-plus:
 #  type-aliases-package: com.psm.domain
   #扫描通用枚举的包
   type-enums-package: com.psm.domain, com.psm.types.enums
+
+# 自动创建表
+auto-table:
+  enable: true
+  show-banner: true
+  auto-drop-column: true
+  auto-drop-index: true
 
 #阿里云配置信息
 aliyun:

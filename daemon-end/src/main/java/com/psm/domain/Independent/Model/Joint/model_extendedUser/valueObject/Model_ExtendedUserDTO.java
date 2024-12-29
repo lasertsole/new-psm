@@ -2,7 +2,7 @@ package com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject;
 
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
 import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDTO;
 import com.psm.types.common.DTO.DTO;
 import lombok.Value;

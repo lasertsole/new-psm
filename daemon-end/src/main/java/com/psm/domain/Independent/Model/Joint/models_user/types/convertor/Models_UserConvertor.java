@@ -1,9 +1,9 @@
 package com.psm.domain.Independent.Model.Joint.models_user.types.convertor;
 
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dBO;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dDO;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dDTO;
-import com.psm.domain.Independent.Model.Single.model.types.convertor.Model3dConvertor;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.types.convertor.Model3dConvertor;
 import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserBO;
 import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserDO;
 import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserDTO;

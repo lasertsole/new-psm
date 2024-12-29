@@ -2,7 +2,7 @@ package com.psm.domain.Independent.Model.Joint.models_user.adaptor.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.app.annotation.spring.Adaptor;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
 import com.psm.domain.Independent.Model.Joint.models_user.adaptor.Models_UserAdaptor;
 import com.psm.domain.Independent.Model.Joint.models_user.service.Models_UserService;
 import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserBO;

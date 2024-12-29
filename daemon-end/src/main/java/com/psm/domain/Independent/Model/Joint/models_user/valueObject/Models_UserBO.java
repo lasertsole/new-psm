@@ -2,7 +2,7 @@ package com.psm.domain.Independent.Model.Joint.models_user.valueObject;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
 import com.psm.domain.Independent.Model.Joint.models_user.types.convertor.Models_UserConvertor;
 import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
 import com.psm.types.common.BO.BO;

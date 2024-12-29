@@ -38,7 +38,7 @@ public class ReviewDO implements Serializable, DO<ReviewBO, ReviewDTO> {
     @Column(comment = "评论内容", length = 255, notNull = true)
     private String content;
 
-    @Index(name = "tb_users_createTime_index")
+    @Index(name = "tb_reviews_createTime_index")
     @InsertFillTime
     @Column(comment = "创建时间")
     private String createTime;

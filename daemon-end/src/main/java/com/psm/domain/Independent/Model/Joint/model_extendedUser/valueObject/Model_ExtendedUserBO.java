@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
 import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserBO;
 import com.psm.types.common.BO.BO;

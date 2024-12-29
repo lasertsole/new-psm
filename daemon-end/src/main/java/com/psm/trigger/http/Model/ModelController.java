@@ -1,9 +1,9 @@
 package com.psm.trigger.http.Model;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.Model.Single.model.adaptor.Model3dAdaptor;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dBO;
-import com.psm.domain.Independent.Model.Single.model.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.adaptor.Model3dAdaptor;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserBO;
 import com.psm.domain.Independent.Model.Joint.models_user.adaptor.Models_UserAdaptor;

@@ -17,7 +17,6 @@ public class Models_UserServiceImpl implements Models_UserService {
     private Models_UserDB Models_UserDB;
 
     @Override
-    @Cacheable(value = "models_UserCache", key = "#current+'_'+#isIdle+'_'+#canUrgent+'_'+#style+'_'+#type+'_'+#userSelfId+'_'+#size")
     public Page<Models_UserBO> getModelsShowBars(
             Integer current, Integer size, Boolean isIdle, Boolean canUrgent, String style, String type, Long userSelfId) {
         Page<Models_UserDO> modelsUserDOPage = Models_UserDB.selectModelsShowBars(current, size, isIdle, canUrgent, style, type, userSelfId);
