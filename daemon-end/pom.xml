@@ -101,6 +101,13 @@
 			<version>${mybatisPlusExt.version}</version>
 		</dependency>
 
+		<!--以下是spring-data依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!--以上是spring-data依赖-->
+
 		<!-- springCache多級緩存 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -1,14 +1,14 @@
 package com.psm.trigger.http.Model;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.IndependentDomain.Model.model.adaptor.Model3dAdaptor;
-import com.psm.domain.IndependentDomain.Model.model.entity.Model3dBO;
-import com.psm.domain.IndependentDomain.Model.model.entity.Model3dDTO;
-import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
-import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.model_extendedUser.valueObject.Model_ExtendedUserBO;
-import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.models_user.adaptor.Models_UserAdaptor;
-import com.psm.domain.IndependentDomain.Model.CollaborSubDomain.models_user.valueObject.Models_UserBO;
-import com.psm.domain.IndependentDomain.User.user.adaptor.UserAdaptor;
+import com.psm.domain.Independent.Model.Single.model.adaptor.Model3dAdaptor;
+import com.psm.domain.Independent.Model.Single.model.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserBO;
+import com.psm.domain.Independent.Model.Joint.models_user.adaptor.Models_UserAdaptor;
+import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserBO;
+import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
 import com.psm.types.common.DTO.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

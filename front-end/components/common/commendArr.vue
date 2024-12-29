@@ -4,72 +4,95 @@
             <div class="icon"></div>
             <span>橱窗评价</span> 
         </div>
-        <!-- <template v-for="(item,index) in commendArr">
+        <template v-for="(item,index) in commendArr">
             <comment
-                :userID="item.userID"
-                :userProfile="item.userProfile"
-                :userName="item.userName"
-                :score="item.score"
-                :date="item.date"
-                :text="item.text"
+                :ID="item.id"
+                :srcUserId="item.srcUserId"
+                :avatar="item.avatar"
+                :name="item.name"
+                :targetType="item.targetType"
+                :targetId="item.targetId"
+                :timestamp="item.timestamp"
+                :content="item.content"
+                :createTime="item.createTime"
             ></comment>
-        </template> -->
+        </template>
     </div>
 </template>
 
 <script setup lang="ts">
     import { ref } from "vue";
+    import type { Review } from "@/types/review";
+    import { TargetTypeEnum } from "@/enums/review";
 
-    // const commendArr = ref<showcaseDetailBox[]>([
-    //     {
-    //         userID:"112233",
-    //         userProfile:"images/psmlogo.png",
-    //         userName:"MOYE",
-    //         score:5,
-    //         date:"2023-05-23",
-    //         text:"又快又美，吹爆！！"
-    //     },
-    //     {
-    //         userID:"112233",
-    //         userProfile:"images/psmlogo.png",
-    //         userName:"MOYE",
-    //         score:5,
-    //         date:"2023-05-23",
-    //         text:"又快又美，吹爆！！"
-    //     },
-    //     {
-    //         userID:"112233",
-    //         userProfile:"images/psmlogo.png",
-    //         userName:"MOYE",
-    //         score:5,
-    //         date:"2023-05-23",
-    //         text:"又快又美，吹爆！！"
-    //     },
-    //     {
-    //         userID:"112233",
-    //         userProfile:"images/psmlogo.png",
-    //         userName:"MOYE",
-    //         score:5,
-    //         date:"2023-05-23",
-    //         text:"又快又美，吹爆！！"
-    //     },
-    //     {
-    //         userID:"112233",
-    //         userProfile:"images/psmlogo.png",
-    //         userName:"MOYE",
-    //         score:5,
-    //         date:"2023-05-23",
-    //         text:"又快又美，吹爆！！"
-    //     },
-    //     {
-    //         userID:"112233",
-    //         userProfile:"images/psmlogo.png",
-    //         userName:"MOYE",
-    //         score:5,
-    //         date:"2023-05-23",
-    //         text:"又快又美，吹爆！！"
-    //     }
-    // ]);
+    const commendArr = ref<Review[]>([
+        {
+            id: "112233",
+            srcUserId: "112233",
+            avatar: "",
+            name: "moya",
+            targetType: TargetTypeEnum.Model3d,
+            targetId: "112233",
+            timestamp: "2023-05-23",
+            content: "又快又美，吹爆！！",
+            createTime: "2023-05-23",
+        },
+        {
+            id: "112233",
+            srcUserId: "112233",
+            avatar: "",
+            name: "moya",
+            targetType: TargetTypeEnum.Model3d,
+            targetId: "112233",
+            timestamp: "2023-05-23",
+            content: "又快又美，吹爆！！",
+            createTime: "2023-05-23",
+        },
+        {
+            id: "112233",
+            srcUserId: "112233",
+            avatar: "",
+            name: "moya",
+            targetType: TargetTypeEnum.Model3d,
+            targetId: "112233",
+            timestamp: "2023-05-23",
+            content: "又快又美，吹爆！！",
+            createTime: "2023-05-23",
+        },
+        {
+            id: "112233",
+            srcUserId: "112233",
+            avatar: "",
+            name: "moya",
+            targetType: TargetTypeEnum.Model3d,
+            targetId: "112233",
+            timestamp: "2023-05-23",
+            content: "又快又美，吹爆！！",
+            createTime: "2023-05-23",
+        },
+        {
+            id: "112233",
+            srcUserId: "112233",
+            avatar: "",
+            name: "moya",
+            targetType: TargetTypeEnum.Model3d,
+            targetId: "112233",
+            timestamp: "2023-05-23",
+            content: "又快又美，吹爆！！",
+            createTime: "2023-05-23",
+        },
+        {
+            id: "112233",
+            srcUserId: "112233",
+            avatar: "",
+            name: "moya",
+            targetType: TargetTypeEnum.Model3d,
+            targetId: "112233",
+            timestamp: "2023-05-23",
+            content: "又快又美，吹爆！！",
+            createTime: "2023-05-23",
+        },
+    ]);
 </script>
 
 <style lang="scss" scoped>

@@ -2,9 +2,9 @@ package com.psm.trigger.socket;
 
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.psm.domain.IndependentDomain.Communication.RTC.adaptor.RTCAdaptor;
-import com.psm.domain.IndependentDomain.User.user.adaptor.UserAdaptor;
-import com.psm.domain.IndependentDomain.User.user.entity.User.UserBO;
+import com.psm.domain.Independent.Communication.Single.RTC.adaptor.RTCAdaptor;
+import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
+import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
 import com.psm.infrastructure.SocketIO.pojo.RTCSwap;
 import com.psm.infrastructure.SocketIO.pojo.Room;
 import com.psm.infrastructure.SocketIO.SocketIOApi;

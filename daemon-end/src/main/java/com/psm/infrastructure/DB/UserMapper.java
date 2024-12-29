@@ -1,6 +1,6 @@
 package com.psm.infrastructure.DB;
 
-import com.psm.domain.IndependentDomain.User.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

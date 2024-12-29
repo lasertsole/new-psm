@@ -1,6 +1,6 @@
 package com.psm.infrastructure.DB;
 
-import com.psm.domain.DependentDomain.Review.entity.ReviewDO;
+import com.psm.domain.Dependent.Review.Single.review.entity.ReviewDO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBMapper;
 import org.apache.ibatis.annotations.Mapper;
 

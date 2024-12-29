@@ -3,26 +3,26 @@
         <div class="top">
             <div class="left">
                 <div class="profile" ></div>
-                <div class="name">{{ userName }}</div>
+                <div class="name">{{ name }}</div>
             </div>
-            <div class="right">
+            <!-- <div class="right">
                 <div class="score">
                     <el-rate
                         v-model="starScore"
                         disabled
                     />
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="bottom">
             <div class="top">
                 <div class="text">
-                    {{ text }}
+                    {{ content }}
                 </div>
             </div>
             <div class="bottom">
                 <div class="date">
-                    {{ date }}
+                    {{ createTime }}
                 </div>
             </div>
         </div>
@@ -30,18 +30,20 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, defineProps } from "vue"
+    import { ref, defineProps, type PropType } from "vue";
+    import { TargetTypeEnum } from "@/enums/review";
 
     const props = defineProps({
-        userID:{type:String, required:true},
-        userProfile:{type:String, required:true},
-        userName:{type:String, required:true},
-        score:{type:Number, required:true},
-        date:{type:String, required:true},
-        text:{type:String, required:true},
+        ID:{type:String, required:true},
+        srcUserId:{type:String, required:true},
+        avatar:{type:String, required:true},
+        name:{type:Number, required:true},
+        targetType:{type:Object as PropType<TargetTypeEnum>, required:true},
+        targetId:{type:String, required:true},
+        timestamp:{type:String, required:true},
+        content:{type:String, required:true},
+        createTime:{type:String, required:true},
     });
-
-    const starScore = ref<number>(props.score)
 </script>
 
 <style lang="scss" scoped>
