@@ -2,7 +2,7 @@ package com.psm.domain.Independent.User.Single.relationships.service.impl;
 
 import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsBO;
 import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
-import com.psm.domain.Independent.User.Single.relationships.repository.RelationshipsDB;
+import com.psm.domain.Independent.User.Single.relationships.repository.RelationshipsRepository;
 import com.psm.domain.Independent.User.Single.relationships.service.RelationshipsService;
 import com.psm.domain.Independent.User.Single.relationships.types.convertor.RelationshipsConvertor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +15,9 @@ import java.util.List;
 @Slf4j
 @Service
 public class RelationshipsServiceImpl implements RelationshipsService {
+
     @Autowired
-    private RelationshipsDB relationshipsDB;
+    private RelationshipsRepository relationshipsRepository;
 
     @Override
     public List<RelationshipsBO> checkFollowers(Long tgtUserId) {
@@ -25,7 +26,7 @@ public class RelationshipsServiceImpl implements RelationshipsService {
         followerDO.setTgtUserId(tgtUserId);
         followerDO.setIsFollowing(true);
 
-        return relationshipsDB.selectByTgtUserId(followerDO).stream().map(RelationshipsConvertor.INSTANCE::DO2BO).toList();
+        return relationshipsRepository.DBSelectByTgtUserId(followerDO).stream().map(RelationshipsConvertor.INSTANCE::DO2BO).toList();
     }
 
     @Override
@@ -34,10 +35,10 @@ public class RelationshipsServiceImpl implements RelationshipsService {
         relationshipsDO.setSrcUserId(srcUserId);
         relationshipsDO.setIsFollowing(true);
 
-        return relationshipsDB.selectBySrcUserId(relationshipsDO).stream().map(RelationshipsConvertor.INSTANCE::DO2BO).toList();
+        return relationshipsRepository.DBSelectBySrcUserId(relationshipsDO).stream().map(RelationshipsConvertor.INSTANCE::DO2BO).toList();
     }
 
-        @Override
+    @Override
     public void saveOrUpdateRelationship(Long tgtUserId, Long srcUserId, Boolean isFollowing, Boolean isInContacts, Boolean isBlocking) {
         RelationshipsDO relationshipsDO = new RelationshipsDO();
         relationshipsDO.setTgtUserId(tgtUserId);
@@ -46,7 +47,7 @@ public class RelationshipsServiceImpl implements RelationshipsService {
         relationshipsDO.setIsInContacts(isInContacts);
         relationshipsDO.setIsBlocking(isBlocking);
 
-        relationshipsDB.insertOrUpdateRelationship(relationshipsDO);
+        relationshipsRepository.DBInsertOrUpdateRelationship(relationshipsDO);
     };
 
     @Override
@@ -55,7 +56,7 @@ public class RelationshipsServiceImpl implements RelationshipsService {
         relationshipsDO.setTgtUserId(tgtUserId);
         relationshipsDO.setSrcUserId(srcUserId);
 
-        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsDB.selectRelationship(relationshipsDO));
+        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsRepository.DBSelectRelationship(relationshipsDO));
     };
 
     @Override
@@ -72,7 +73,7 @@ public class RelationshipsServiceImpl implements RelationshipsService {
         relationshipsDO.setSrcUserId(srcUserId);
         relationshipsDO.setIsFollowing(true);
 
-        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsDB.selectRelationship(relationshipsDO));
+        return RelationshipsConvertor.INSTANCE.DO2BO(relationshipsRepository.DBSelectRelationship(relationshipsDO));
     }
 
     @Override

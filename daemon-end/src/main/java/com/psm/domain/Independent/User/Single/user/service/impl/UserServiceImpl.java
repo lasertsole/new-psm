@@ -6,9 +6,7 @@ import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
 import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
 import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
 import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
-import com.psm.domain.Independent.User.Single.user.repository.LoginUserRedis;
-import com.psm.domain.Independent.User.Single.user.repository.UserOSS;
-import com.psm.domain.Independent.User.Single.user.repository.UserDB;
+import com.psm.domain.Independent.User.Single.user.repository.UserRepository;
 import com.psm.domain.Independent.User.Single.user.service.UserService;
 import com.psm.domain.Independent.User.Single.user.types.convertor.UserConvertor;
 import com.psm.domain.Independent.User.Single.user.types.enums.SexEnum;
@@ -22,7 +20,6 @@ import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -40,18 +37,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserDB userDB;
-
-    @Autowired
-    private UserOSS userOSS;
-    @Autowired
     private MQPublisher mqPublisher;
 
     @Autowired
     private SocketIOApi socketIOApi;
-
-    @Autowired
-    private LoginUserRedis loginUserRedis;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -62,8 +51,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JWTUtil jwtUtil;
 
-    @Value("${spring.security.jwt.expiration}")
-    private Long expiration;//jwt有效期
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public UserBO getAuthorizedUser(){
@@ -94,7 +83,7 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtil.createJWT(id);
 
         // 把完整信息存入redis，id作为key(如果原先有则覆盖)
-        loginUserRedis.addLoginUser(id, loginUser);
+        userRepository.cacheAddLoginUser(id, loginUser);
 
         // 返回用户信息
         UserBO userBO = new UserBO();
@@ -153,7 +142,7 @@ public class UserServiceImpl implements UserService {
         Long id = getAuthorizedUserId();
 
         // 根据用户id删除redis中的用户信息
-        loginUserRedis.removeLoginUser(String.valueOf(id));
+        userRepository.cacheRemoveLoginUser(String.valueOf(id));
     }
 
     @Override
@@ -167,7 +156,7 @@ public class UserServiceImpl implements UserService {
         register.setPassword(passwordEncoder.encode(register.getPassword()));
 
         // 将register对象保存到数据库
-        userDB.save(register);
+        userRepository.DBAddUser(register);
 
         // 使用未加密密码的user对象登录
         return login(name, password);
@@ -182,10 +171,10 @@ public class UserServiceImpl implements UserService {
         Long id = loginUser.getUserDO().getId();
 
         // 根据用户id删除redis中的用户信息
-        loginUserRedis.removeLoginUser(String.valueOf(id));
+        userRepository.cacheRemoveLoginUser(String.valueOf(id));
 
         // 根据用户id删除pg中的用户信息
-        userDB.removeById(id);
+        userRepository.DBRemoveUser(id);
     }
 
     @Override
@@ -194,17 +183,17 @@ public class UserServiceImpl implements UserService {
         String userId = String.valueOf(getAuthorizedUserId());
 
         // 更新oss中用户头像信息
-        String avatarUrl = userOSS.updateAvatar(oldAvatar, newAvatarFile, userId);
+        String avatarUrl = userRepository.ossUpdateAvatar(oldAvatar, newAvatarFile, userId);
 
         // 更新数据库中用户头像信息
         Long id = getAuthorizedUserId();//获取SecurityContextHolder中的用户id
         UserDO userDO = new UserDO();
         userDO.setId(id);
         userDO.setAvatar(avatarUrl);
-        userDB.updateAvatar(userDO);
+        userRepository.DBUpdateAvatar(userDO);
 
         // 更新redis中用户头像信息
-        loginUserRedis.updateLoginUser(userDO);
+        userRepository.cacheUpdateUser(userDO);
 
         return avatarUrl;
     }
@@ -227,10 +216,10 @@ public class UserServiceImpl implements UserService {
         if(Objects.nonNull(canUrgent)) userDO.setCanUrgent(canUrgent);
         userDO.setId(id);
         // 更新用户信息
-        userDB.updateInfo(userDO);
+        userRepository.DBUpdateInfo(userDO);
 
         // 更新redis中用户信息
-        loginUserRedis.updateLoginUser(userDO);
+        userRepository.cacheUpdateUser(userDO);
     }
 
     @Override
@@ -248,7 +237,7 @@ public class UserServiceImpl implements UserService {
         // 获取数据库中用户的password
         UserDO userDO = new UserDO();
         userDO.setId(id);
-        String passwordFromDB = userDB.findPasswordById(userDO);
+        String passwordFromDB = userRepository.DBFindPasswordById(userDO);
 
         // 判断旧密码是否正确
         if(!passwordEncoder.matches(password,passwordFromDB)){
@@ -261,21 +250,21 @@ public class UserServiceImpl implements UserService {
         // 将新密码覆盖数据库中的password
         userDO.setId(id);
         userDO.setPassword(encodePassword);
-        userDB.updatePasswordById(userDO);
+        userRepository.DBUpdatePasswordById(userDO);
 
         // 更新redis中用户信息
-        loginUserRedis.updateLoginUser(userDO);
+        userRepository.cacheUpdateUser(userDO);
     }
 
     @Override
     public UserBO getUserByID(Long id) {
         UserDO userDO;
-        LoginUser loginUser = loginUserRedis.getLoginUser(String.valueOf(id));
+        LoginUser loginUser = userRepository.cacheSelectLoginUser(String.valueOf(id));
         if (Objects.nonNull(loginUser)) {
             userDO = loginUser.getUserDO();
         } else {
             // 如果缓存未命中则从数据库获取用户信息
-            userDO = userDB.getById(id);
+            userDO = userRepository.DBSelectUser(id);
         }
 
         // 判断用户是否存在
@@ -292,7 +281,7 @@ public class UserServiceImpl implements UserService {
         // 获取用户信息
         UserDO userDO = new UserDO();
         userDO.setName(name);
-        List<UserDO> userDOs = userDB.findUsersByName(userDO);
+        List<UserDO> userDOs = userRepository.DBFindUsersByName(userDO);
 
         // 判断用户是否存在
         if(!userDOs.isEmpty()){
@@ -309,13 +298,13 @@ public class UserServiceImpl implements UserService {
         Page<UserDO> page = new Page<>(currentPage,pageSize);
 
         // 返回结果
-        return userDB.selectUserOrderByCreateTimeAsc(page).stream().map(UserConvertor.INSTANCE::DO2BO).collect(Collectors.toList());
+        return userRepository.DBSelectUserOrderByCreateTimeAsc(page).stream().map(UserConvertor.INSTANCE::DO2BO).collect(Collectors.toList());
     }
 
     @Override
     public List<UserBO> getUserByIds(List<Long> ids) {
         // 将ids转化为redis中的key数组
-        List<LoginUser> loginUsers = ids.stream().map(String::valueOf).map(key -> loginUserRedis.getLoginUser(key)).toList();
+        List<LoginUser> loginUsers = ids.stream().map(String::valueOf).map(key -> userRepository.cacheSelectLoginUser(key)).toList();
 
         // 找出不在缓存的ID放入数组
         List<Long> notInCacheIds = new ArrayList<>();
@@ -329,7 +318,7 @@ public class UserServiceImpl implements UserService {
         if (notInCacheIds.isEmpty()) return loginUsers.stream().map(LoginUser::getUserDO).map(UserDO::toBO).toList();
 
         // 从数据库中找出剩下的用户信息
-        Deque<UserBO> DBUserBODeque = new LinkedList<>(userDB.selectUserByIds(notInCacheIds).stream().map(UserDO::toBO).toList());
+        Deque<UserBO> DBUserBODeque = new LinkedList<>(userRepository.DBSelectUsers(notInCacheIds).stream().map(UserDO::toBO).toList());
 
         List<UserBO> resultUserBOS = new ArrayList<>();
         // 将从缓存找到的数据和从数据库找到的数据整合
@@ -352,12 +341,12 @@ public class UserServiceImpl implements UserService {
         userDO.setId(id);
         userDO.setPublicModelNum(work_num);
 
-        return userDB.updateById(userDO);
+        return userRepository.DBUpdateInfo(userDO);
     }
 
     @Override
     public boolean addOnePublicModelNumById(Long id) {
-        UserDO userDO = userDB.selectById(id);
+        UserDO userDO = userRepository.DBSelectUser(id);
         short work_num = userDO.getPublicModelNum();
 
         return updateOnePublicModelNumById(id, (short) (work_num + 1));
@@ -365,7 +354,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean removeOnePublicModelNumById(Long id) {
-        UserDO userDO = userDB.selectById(id);
+        UserDO userDO = userRepository.DBSelectUser(id);
         short work_num = userDO.getPublicModelNum();
 
         if ( work_num == 0) return false;
@@ -380,14 +369,14 @@ public class UserServiceImpl implements UserService {
         UserDO userDO = new UserDO();
         userDO.setId(id);
         userDO.setModelCurStorage(storage);
-        if(!userDB.updateById(userDO)) throw new RuntimeException("The user does not exist.");
+        if(!userRepository.DBUpdateInfo(userDO)) throw new RuntimeException("The user does not exist.");
 
         return storage;
     }
 
     @Override
     public Long addOnePublicModelStorageById(Long id, Long storage) {
-        UserDO userDO = userDB.selectById(id);
+        UserDO userDO = userRepository.DBSelectUser(id);
         long modelCurStorage = userDO.getModelCurStorage();
         long modelMaxStorage = userDO.getModelMaxStorage();
         long newStorage = modelCurStorage + storage;
@@ -398,7 +387,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long minusOnePublicModelStorageById(Long id, Long storage) {
-        UserDO userDO = userDB.selectById(id);
+        UserDO userDO = userRepository.DBSelectUser(id);
         long modelCurStorage = userDO.getModelCurStorage();
         long newStorage = modelCurStorage - storage;
         if (newStorage < 0) newStorage = 0;

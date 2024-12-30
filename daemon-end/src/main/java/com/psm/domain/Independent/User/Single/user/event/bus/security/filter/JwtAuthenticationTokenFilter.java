@@ -2,12 +2,11 @@ package com.psm.domain.Independent.User.Single.user.event.bus.security.filter;
 
 import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.JWT.JWTUtil;
+import com.psm.infrastructure.RepositoryImpl.User.user.LoginUserCache;
 import io.jsonwebtoken.Claims;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,14 +27,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
     @Autowired
     private JWTUtil jwtUtil;
 
-    /**
-     * 登录多级缓存
-     */
-    private final Cache loginCache;
-
-    public JwtAuthenticationTokenFilter (CacheManager cacheManager) {
-        this.loginCache = cacheManager.getCache("loginCache");
-    }
+    @Autowired
+    LoginUserCache loginUserCache;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -57,12 +50,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
         };
 
         // 如果多级缓存沒有命中，則从redis中获取用户信息,如何没有则抛出异常
-        String cachekey = "login:" + userid;
-        LoginUser loginUser = loginCache.get(cachekey, LoginUser.class);
+        LoginUser loginUser = loginUserCache.getLoginUser(userid);
+
         if(Objects.isNull(loginUser)){throw new RuntimeException("User not logged in");};
 
         // 如果命中就刷新缓存
-        loginCache.put(cachekey, loginUser);
+        loginUserCache.addLoginUser(userid, loginUser);
 
         //存入SecurityContextHolder,并跳过验证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);

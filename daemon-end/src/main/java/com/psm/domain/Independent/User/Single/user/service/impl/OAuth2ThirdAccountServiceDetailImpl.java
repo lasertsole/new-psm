@@ -6,8 +6,8 @@ import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAu
 import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
 import com.psm.domain.Independent.User.Single.user.types.convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.Oauth2UserIdContextHolder;
-import com.psm.domain.Independent.User.Single.user.repository.OAuth2ThirdAccountDB;
-import com.psm.domain.Independent.User.Single.user.repository.UserDB;
+import com.psm.infrastructure.RepositoryImpl.User.user.OAuth2ThirdAccountDB;
+import com.psm.infrastructure.RepositoryImpl.User.user.UserDB;
 import com.psm.infrastructure.Cache.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,9 +89,7 @@ public class OAuth2ThirdAccountServiceDetailImpl extends DefaultOAuth2UserServic
                 oAuth2ThirdAccountDB.update(DO);
 
                 // 查询已有的用户信息
-                UserDO tempUser = new UserDO();
-                tempUser.setId(tbUserId);
-                userDO = userDB.selectById(tempUser);
+                userDO = userDB.selectById(tbUserId);
             }
 
             //将userDO转成LoginUser格式

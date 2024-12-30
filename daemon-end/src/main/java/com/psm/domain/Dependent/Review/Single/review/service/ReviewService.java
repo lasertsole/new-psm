@@ -9,8 +9,9 @@ public interface ReviewService {
      * 添加评论
      *
      * @param reviewBO 评论实体
+     * @return 是否删除成功
      */
-    void addReview(ReviewBO reviewBO);
+    Boolean addReview(ReviewBO reviewBO);
 
     /**
      * 获取评论

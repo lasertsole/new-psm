@@ -5,7 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatBO;
 import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDO;
 import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDTO;
-import com.psm.domain.Independent.Communication.Single.Chat.repository.ChatDB;
+import com.psm.domain.Independent.Communication.Single.Chat.repository.ChatRepository;
 import com.psm.domain.Independent.Communication.Single.Chat.service.ChatService;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
@@ -13,6 +13,7 @@ import com.psm.infrastructure.SocketIO.properties.SocketAppProperties;
 import com.psm.types.common.Event.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,9 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class ChatServiceImpl implements ChatService {
+
     @Autowired
-    private ChatDB chatDB;
+    private ChatRepository chatRepository;
 
     @Autowired
     private MQPublisher mqPublisher;
@@ -39,16 +41,16 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void storageMessageDM(ChatBO message) {
-        chatDB.insert(message.toDO());
+        chatRepository.DBInsert(message.toDO());
     }
 
     @Override
     @Async("asyncThreadPoolExecutor")// 使用有界异步线程池处理该方法
     public void patchInitMessage(SocketIOClient srcClient, Long userId, String timestamp) {
         Integer size = socketAppProperties.getDMMaxInitCountInPage();// 从环境配置中获取每页显示条数
-        int current = 1;// 初始页码为1
+        Integer current = 1;// 初始页码为1
         while(true) {
-            Page<ChatDO> chatDOPage = chatDB.patchInitMessage(timestamp, userId, current, size);
+            Page<ChatDO> chatDOPage = chatRepository.DBPatchInitMessage(timestamp, userId, current, size);
 
             srcClient.sendEvent("initMessage",  ChatDTO.fromDOPage(chatDOPage));
             current ++;

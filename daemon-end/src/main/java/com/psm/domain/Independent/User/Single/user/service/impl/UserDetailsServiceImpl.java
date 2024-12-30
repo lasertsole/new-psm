@@ -3,15 +3,14 @@ package com.psm.domain.Independent.User.Single.user.service.impl;
 import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
 import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
 import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
-import com.psm.domain.Independent.User.Single.user.repository.UserDB;
+import com.psm.infrastructure.RepositoryImpl.User.user.LoginUserCache;
+import com.psm.infrastructure.RepositoryImpl.User.user.UserDB;
 import com.psm.domain.Independent.User.Single.user.service.AuthUserService;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.Cache.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,11 +30,8 @@ public class UserDetailsServiceImpl implements AuthUserService {
     @Autowired
     private JWTUtil jwtUtil;
 
-    private final Cache loginCache;
-
-    public UserDetailsServiceImpl(CacheManager cacheManager) {
-        loginCache = cacheManager.getCache("loginCache");
-    }
+    @Autowired
+    private LoginUserCache loginUserCache;
 
     /**
      * SpringSecurity会自动调用这个方法进行用户名密码校验
@@ -79,8 +75,7 @@ public class UserDetailsServiceImpl implements AuthUserService {
         }
 
         //从redis中获取用户信息
-        String cachekey = "login:" + userid;
-        LoginUser loginUser = loginCache.get(cachekey, LoginUser.class);
+        LoginUser loginUser = loginUserCache.getLoginUser(userid);
 
         if(Objects.isNull(loginUser)){
             throw new RuntimeException("User not logged in");
