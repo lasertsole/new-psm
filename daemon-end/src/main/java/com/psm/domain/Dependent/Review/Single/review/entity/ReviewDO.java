@@ -14,15 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @AutoDefine
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(value="tb_reviews", comment="评论表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReviewDO implements Serializable, DO<ReviewBO, ReviewDTO> {
+public class ReviewDO implements DO<ReviewBO, ReviewDTO> {
     @ColumnId(comment = "id主键")
     private Long id;
 

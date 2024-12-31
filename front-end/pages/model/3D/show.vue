@@ -90,12 +90,12 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .show{
         border-radius: 5px;
         padding: 20px 0px 10px;
-        @include fullInParent;
+        @include common.fullInParent;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;

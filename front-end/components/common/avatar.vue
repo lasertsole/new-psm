@@ -18,18 +18,18 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .avatar {
-        @include fullInParent;
+        @include common.fullInParent;
 
         :deep(.el-avatar){
-            @include fullInParent;
+            @include common.fullInParent;
 
             background-color: transparent;
 
             img{
-                @include fullInParent;
+                @include common.fullInParent;
             }
         }
     }

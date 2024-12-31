@@ -135,14 +135,14 @@
 
 <style lang="scss" scoped>
   @use "sass:math";
-  @import "@/common.scss";
+  @use "@/common.scss" as common;
   
   .entity{
-    @include fullInParent;
+    @include common.fullInParent;
     padding: 0px;
 
     canvas{
-      @include fullInParent;
+      @include common.fullInParent;
     }
   }
 </style>

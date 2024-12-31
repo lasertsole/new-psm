@@ -88,17 +88,17 @@
   
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .detailShow{
-        @include scrollBar(8px);
-        @include fullInParent();
+        @include common.scrollBar(8px);
+        @include common.fullInParent();
         display: flex;
         justify-content: center;
         background-color: rgba(222, 222, 222, .75);
 
         .page{
-            @include fixedWidth(65%);
+            @include common.fixedWidth(65%);
             display: flex;
             flex-direction: column;
 
@@ -109,8 +109,8 @@
             }
             
             .userBar{
-                @include fullWidth();
-                @include fixedHeight(100px);
+                @include common.fullWidth();
+                @include common.fixedHeight(100px);
                 padding: 20px 30px;
                 display: flex;
                 justify-content: space-between;
@@ -118,11 +118,11 @@
                 margin-top: 30px;
 
                 .info{
-                    @include minWidth(115px);
+                    @include common.minWidth(115px);
                     display: flex;
 
                     .avatar{
-                        @include fixedCircle(60px);
+                        @include common.fixedCircle(60px);
                         margin-right: 20px;
                     }
 
@@ -144,7 +144,7 @@
                 }
 
                 .action{
-                @include fixedRetangle(120px, 40px);
+                @include common.fixedRetangle(120px, 40px);
                 
                 display: flex;
                 flex-direction: row;
@@ -154,8 +154,8 @@
                 margin-top: 2px;
                 
                 >div{
-                    @include fixedRetangle(52px, 26px);
-                    @include flexCenter();
+                    @include common.fixedRetangle(52px, 26px);
+                    @include common.flexCenter();
                     
                     border-radius: 4px;
                     cursor: pointer;
@@ -172,14 +172,14 @@
             }
             
             .main{
-                @include fullWidth();
+                @include common.fullWidth();
                 margin-top: 20px;
                 margin-bottom: 30px;
                 display: flex;
                 flex-direction: column;
 
                 .entity{
-                    @include minWidthInParent();
+                    @include common.minWidthInParent();
                     height: 550px;
                     overflow: hidden;
                 }
@@ -216,7 +216,7 @@
             }
 
             @media screen and (max-width: 800px) and (min-width: 600px) {
-                @include fixedWidth(85%);
+                @include common.fixedWidth(85%);
                 margin-top: 40px;
                 margin-bottom: 60px;
                 
@@ -226,7 +226,7 @@
             }
             
             @media screen and (max-width: 600px) {
-                @include fullWidth;
+                @include common.fullWidth;
                 margin: 0px;
                 .main{
                 margin: 0px;
@@ -239,7 +239,7 @@
                 }
                 
                 .info{
-                    @include fixedHeight(60px);
+                    @include common.fixedHeight(60px);
                     margin: 0px;
                     padding: 5px 10px;
                     display: flex;
@@ -247,7 +247,7 @@
                 }
 
                 .userBar{
-                @include fixedHeight(60px);
+                @include common.fixedHeight(60px);
                 margin: 0px;
                 padding: 5px 10px;
                 display: flex;

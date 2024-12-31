@@ -24,7 +24,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(value = "tb_chats", comment = "聊天记录表")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ChatDO implements Serializable, DO<ChatBO, ChatDTO> {
+public class ChatDO implements DO<ChatBO, ChatDTO> {
     @ColumnId(comment = "id主键")
     private Long id;
 

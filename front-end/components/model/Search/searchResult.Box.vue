@@ -21,17 +21,17 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .searchResultBox{
-        @include fixedHeight(150px);
+        @include common.fixedHeight(150px);
         display: flex;
         overflow: hidden;
         border: 1px solid #00a8e9;
         border-radius: 8px;
 
         .leftBox{
-            @include fixedRetangle(200px, 150px);
+            @include common.fixedRetangle(200px, 150px);
         }
 
         .rightBox{

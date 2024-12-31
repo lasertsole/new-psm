@@ -12,7 +12,10 @@
   .el-loading-mask{z-index: 1 !important;}
 </style>
 
-<script lang="ts" setup>  
+<script lang="ts" setup>
+import { initWebWorker } from '@/composables/webWorker';
+
+  
   // 这里的代码仅在客户端执行
   // 配置登录事件
   onMounted(async ()=>{
@@ -38,6 +41,8 @@
     DMServiceInstance.initDM();
     
     RTCServiceInstance = await RTCService.getInstance();
+
+    initWebWorker();
   });
 
   on("offline", ()=>{

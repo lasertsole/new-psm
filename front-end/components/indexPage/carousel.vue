@@ -44,13 +44,14 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
+
     .swiperBox{
-        @include fullInParent;
+        @include common.fullInParent;
         .Swiper{
-            @include fullInParent;
+            @include common.fullInParent;
             .image{
-                @include fullInParent;
+                @include common.fullInParent;
                 object-fit: cover;
                 background-position: center;
                 background-size: 100% 100%;

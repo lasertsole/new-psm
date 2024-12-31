@@ -234,7 +234,7 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .button{
         @apply cursor-pointer text-white px-2 py-1 flex items-center justify-center font-bold h-8;
@@ -250,13 +250,13 @@
 
         .dialog-rtcOptions {
             >div{
-                @include fixedHeight(100px);
+                @include common.fixedHeight(100px);
                 display: flex;
                 align-items: center;
                 margin-top: 10px;
 
                 >div{
-                    @include fullHeight;
+                    @include common.fullHeight;
                     display: flex;
                     align-items: center;
                     &.leftBox{
@@ -274,16 +274,16 @@
                         font-size: 12px;
                         color: black;
                         .icon{
-                            @include fixedCircle(80px);
-                            @include flexCenter;
+                            @include common.fixedCircle(80px);
+                            @include common.flexCenter;
                             background-color: white;
                             transition: all 0.3s ease;
                             position: relative;
 
                             div{
                                 position: absolute;
-                                @include fixedWidth(3px);
-                                @include fixedHeight(0%);
+                                @include common.fixedWidth(3px);
+                                @include common.fixedHeight(0%);
                                 transform: rotate(45deg);
                                 background-color: white;
                                 transition: height 0.6s ease;
@@ -292,7 +292,7 @@
 
                             svg{
                                 position: relative;
-                                @include fixedSquare(60px);
+                                @include common.fixedSquare(60px);
                                 cursor: pointer;
                                 z-index: 1;
                             }
@@ -333,7 +333,7 @@
                             .icon{
                                 background-color: red;
                                 div {
-                                    @include fixedHeight(95%);
+                                    @include common.fixedHeight(95%);
                                 }
                                 svg {
                                     path{

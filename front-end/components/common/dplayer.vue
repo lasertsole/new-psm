@@ -212,10 +212,10 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .rtc{
-        @include fixedRetangle(250px, 150px);
+        @include common.fixedRetangle(250px, 150px);
         position: absolute;
         z-index: 2;
         left: 0px;
@@ -229,22 +229,22 @@
         .dplayer{
             position: relative;
             z-index: 1;
-            @include fullInParent;
+            @include common.fullInParent;
             :deep(.dplayer-controller) {
                 $hideController: v-bind(isHideController);
                 display: $hideController;
             }
 
             .minVideo{
-                @include fixedRetangle(35%, 35%);
+                @include common.fixedRetangle(35%, 35%);
                 &.changeBigger{
-                    @include fixedRetangle(20%, 20%);
+                    @include common.fixedRetangle(20%, 20%);
                 }
             }
         }
 
         &.minilize{
-            @include fixedCircle(40px);
+            @include common.fixedCircle(40px);
             .overlay{
                 background-color: rgb(31 41 55);
                 background-image: url(/icons/rtc.svg);

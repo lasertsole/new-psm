@@ -56,6 +56,7 @@ public class ModelController {
 
             return ResponseDTO.ok("upload model's Entity successful");
         } catch (Exception e){
+            log.error("uploadModel3dEntity error:", e);
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:"+e.getCause());
         }
     }
@@ -77,13 +78,14 @@ public class ModelController {
 
             // 模型信息上传
             modelAdaptor.uploadModelInfo(model3dBO);
+            return ResponseDTO.ok("upload model's info successful");
         } catch (InvalidParameterException e){
+            log.error("InvalidParameterException:", e);
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         } catch (Exception e){
+            log.error("upload error:", e);
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"upload error:" + e.getCause());
         }
-
-        return ResponseDTO.ok("upload model's info successful");
     }
 
     /**
@@ -110,8 +112,10 @@ public class ModelController {
 
             return ResponseDTO.ok(modelsUserBOPage);
         } catch (InvalidParameterException e) {
+            log.error("InvalidParameterException:", e);
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         } catch (Exception e){
+            log.error("getModelsShowBar error:", e);
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelsShowBar error:" + e);
         }
     }
@@ -132,8 +136,10 @@ public class ModelController {
 
             return ResponseDTO.ok(model_ExtendedUserBO);
         } catch (InvalidParameterException e) {
+            log.error("InvalidParameterException:", e);
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         } catch (Exception e){
+            log.error("getModelByModelId error:", e);
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getModelByModelId error:" + e.getCause());
         }
     }
@@ -143,8 +149,10 @@ public class ModelController {
         try {
             return ResponseDTO.ok(modelAdaptor.getBlurSearchModel3d(keyword));
         } catch (InvalidParameterException e) {
+            log.error("InvalidParameterException:", e);
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         } catch (Exception e){
+            log.error("getBlurSearchModel3d error:", e);
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getBlurSearchModel3d error:" + e);
         }
     }
@@ -157,8 +165,10 @@ public class ModelController {
         try {
             return ResponseDTO.ok(modelAdaptor.getDetailSearchModel3d(keyword, afterKeyId, size));
         } catch (InvalidParameterException e) {
+            log.error("InvalidParameterException");
             return new ResponseDTO(HttpStatus.BAD_REQUEST,"InvalidParameterException");
         } catch (Exception e){
+            log.error("getDetailSearchModel3d error:", e);
             return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"getDetailSearchModel3d error:" + e);
         }
     }

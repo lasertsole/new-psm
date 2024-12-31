@@ -56,10 +56,10 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .avatar-uploader{
-        @include fullInParentCircle();
+        @include common.fullInParentCircle();
         border: 1px dashed #00a8e9;
         overflow: hidden;
         display: flex;
@@ -70,14 +70,14 @@
 
 
         .avatar{
-            @include fullInParent();
+            @include common.fullInParent();
             position: relative;
             z-index:1;
             background-color: white;
         }
 
         .mock{
-            @include fullInParent();
+            @include common.fullInParent();
             position: absolute;
             top:0px;
             left:0px;
@@ -95,14 +95,14 @@
 
             .rowLine{
                 background-color:white;
-                @include fixedRetangle(3px, 17px);
+                @include common.fixedRetangle(3px, 17px);
                 position: absolute;
                 z-index: 1;
             }
 
             .columnLine{
                 background-color:white;
-                @include fixedRetangle(17px, 3px);
+                @include common.fixedRetangle(17px, 3px);
                 position: absolute;
                 z-index: 2;
             }

@@ -57,18 +57,18 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .itemBox{
         margin-top: 15px;
         padding-bottom: 15px;
-        @include fixedHeight(235px);
+        @include common.fixedHeight(235px);
         border-bottom: 1px solid rgba(165, 165, 165, 0.3568627451);
         display: flex;
         flex-direction: row;
         
         .author_info{
-            @include fixedWidth(150px);
+            @include common.fixedWidth(150px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -80,7 +80,7 @@
                 align-items: center;
                 
                 .profile{
-                    @include fixedSquare(60px);
+                    @include common.fixedSquare(60px);
                     border-radius: 50%;
                     overflow: hidden;
                     cursor: pointer;
@@ -123,7 +123,7 @@
 
                         >div{
                             &::before{
-                                @include fixedCircle(10px);
+                                @include common.fixedCircle(10px);
                                 content: "";
                                 background-color: orange;
                                 margin-right: 5px;
@@ -162,14 +162,14 @@
         }
         
         .author_works{
-            @include fixedHeight(220px);
+            @include common.fixedHeight(220px);
             width: 100%;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); // 自动适应列数，每列最小宽度为 100px
             gap: 15px; // 网格项之间的间距
             justify-content: start;
             justify-items: start;
-            @include scrollBar(8px);
+            @include common.scrollBar(8px);
             
             @media (min-width: 1020px){
                 grid-template-columns: repeat(3, minmax(250px, 1fr));

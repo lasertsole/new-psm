@@ -43,10 +43,10 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .entity{
         display: inline-block;
-        @include fullInParent();
+        @include common.fullInParent();
     };
 </style>

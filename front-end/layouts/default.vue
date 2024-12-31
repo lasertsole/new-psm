@@ -36,10 +36,10 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .layout{
-        @include fullViewWindow;
+        @include common.fullViewWindow;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -76,7 +76,7 @@
             .right{
                 .menu{
                     display: none;
-                    @include fixedSquare(25px);
+                    @include common.fixedSquare(25px);
                     background-image: url(icons/menu.svg);
                     background-size: 100%;
                     cursor: pointer;
@@ -107,7 +107,7 @@
             flex-grow: 1;
             $nowMainHeight: v-bind(nowMainHeight);
             overflow: hidden;
-            @include fixedHeight($nowMainHeight);
+            @include common.fixedHeight($nowMainHeight);
         }
     }
 </style>

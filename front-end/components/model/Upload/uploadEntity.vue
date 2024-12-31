@@ -78,11 +78,11 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .UploadEntity{
-        @include fullInParent();
-        @include flexCenter();
+        @include common.fullInParent();
+        @include common.flexCenter();
         
         &::v-deep(.upload-base){
             width: 70%;

@@ -126,10 +126,10 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .search{
-        @include fullInParent;
+        @include common.fullInParent;
         background-color: white;
         display: flex;
         align-items: center;
@@ -137,7 +137,7 @@
         padding: 30px 20px 10px;
 
         >*{
-            @include fullWidth;
+            @include common.fullWidth;
         }
 
         .searchBar{
@@ -177,7 +177,7 @@
         }
 
         .detailSearchResult{
-            @include scrollBar(8px);
+            @include common.scrollBar(8px);
             align-items: center;
             padding: 0px 40px 20px 40px;
             flex-grow: 1;

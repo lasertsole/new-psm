@@ -95,7 +95,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(protocol + "://" + frontEndBaseUrl)); // 允许的源
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 允许的方法
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")); // 允许的方法
         configuration.setAllowedHeaders(List.of("*")); // 允许的头部
         configuration.setAllowCredentials(true); // 是否允许发送 Cookie
         configuration.setExposedHeaders(List.of("*"));// 暴露所有头部（一定要设置，不然只有浏览器看得到但js拿不到）
@@ -108,9 +108,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 配置请求权限
         http.authorizeHttpRequests(
-                auth -> auth.requestMatchers(anonymous.toArray(String[]::new)).anonymous()
-                        .requestMatchers(permitAll.toArray(String[]::new)).permitAll()
-                        .anyRequest().authenticated());
+            auth -> auth.requestMatchers(anonymous.toArray(String[]::new)).anonymous()
+                .requestMatchers(permitAll.toArray(String[]::new)).permitAll()
+                .anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
@@ -118,10 +118,10 @@ public class SecurityConfig {
 
         //配置第三方登录
         http.oauth2Login(oauth -> oauth
-                .loginPage("/users/login")
-                .userInfoEndpoint(userInfo -> userInfo.userService(OAuth2ThirdAccountServiceDetail))
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
+            .loginPage("/users/login")
+            .userInfoEndpoint(userInfo -> userInfo.userService(OAuth2ThirdAccountServiceDetail))
+            .successHandler(authenticationSuccessHandler)
+            .failureHandler(authenticationFailureHandler)
         );
 
         //添加过滤器
@@ -129,7 +129,7 @@ public class SecurityConfig {
 
         //配置异常处理器
         http.exceptionHandling((exceptions) -> exceptions
-                .accessDeniedHandler(accessDeniedHandler)
+            .accessDeniedHandler(accessDeniedHandler)
         );
 
         return http.build();

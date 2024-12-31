@@ -48,13 +48,13 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .commend{
         display: flex;
         flex-direction: column;
         >.top{
-            @include fixedHeight(50px);
+            @include common.fixedHeight(50px);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -62,7 +62,7 @@
                 display: flex;
                 align-items: center;
                 >.profile{
-                    @include fixedCircle(50px);
+                    @include common.fixedCircle(50px);
                     background-image:url("images/MOYE.jpg");
                     background-size: 100%;
                 }

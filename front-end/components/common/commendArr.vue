@@ -2,7 +2,7 @@
     <div class="commendArr">
         <div class="topBar">
             <div class="icon"></div>
-            <span>橱窗评价</span> 
+            <span>评论</span> 
         </div>
         <template v-for="(item,index) in commendArr">
             <comment
@@ -97,7 +97,7 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .commendArr{
         .topBar{
@@ -114,7 +114,7 @@
             color: #4a4a4a;
 
             .icon{
-                @include fixedSquare(20px);
+                @include common.fixedSquare(20px);
                 background-image: url(icons/showcaseComment.svg);
                 background-size: 100%;
                 background-position: center;

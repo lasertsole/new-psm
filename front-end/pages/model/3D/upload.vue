@@ -303,15 +303,15 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .videoUpload{
-        @include fullInParent();
-        @include flexCenter();
+        @include common.fullInParent();
+        @include common.flexCenter();
         background-color: rgb(230,234,238);
 
         .upload-detail{
-            @include fixedRoundedRectangle(80%, 95%, 20px);
+            @include common.fixedRoundedRectangle(80%, 95%, 20px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -320,14 +320,14 @@
             background-color: white;
 
             .videoProgress{
-                @include fixedRoundedRectangle(100%, 80px, 10px);
+                @include common.fixedRoundedRectangle(100%, 80px, 10px);
                 display: flex;
                 padding: 0px 10px;
                 background-color: rgb(230,234,238);
 
                 .icon{
-                    @include fixedSquare(50px);
-                    @include fullImg("/icons/model.svg");
+                    @include common.fixedSquare(50px);
+                    @include common.fullImg("/icons/model.svg");
                 }
 
                 .info{
@@ -351,7 +351,7 @@
                     
                     .progressBar{
                         $progressHeight: 10px;
-                        @include fixedRoundedRectangle(100%, $progressHeight, math.div($progressHeight,2));
+                        @include common.fixedRoundedRectangle(100%, $progressHeight, math.div($progressHeight,2));
                         background-color: rgb(203, 207, 211);
                         overflow: hidden;
                         
@@ -372,14 +372,14 @@
             }
             
             >div{
-                @include fullWidth();
+                @include common.fullWidth();
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: center;
                 
                 >span{
-                    @include fixedWidth(80px);
+                    @include common.fixedWidth(80px);
                     display: flex;
                     align-items: center;
                     
@@ -442,7 +442,7 @@
 
             .cover{
                 .modelEntity{
-                    @include fixedRetangle(220px, 180px);
+                    @include common.fixedRetangle(220px, 180px);
                     cursor: pointer;
                 }
 

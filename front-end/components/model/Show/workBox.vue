@@ -55,11 +55,11 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .workBox{
-        @include fullWidth();
-        @include fixedHeight(220px);
+        @include common.fullWidth();
+        @include common.fixedHeight(220px);
         display: flex;
         flex-direction: column;
         border: 2px solid #959595;
@@ -68,23 +68,23 @@
         cursor: pointer;
 
         .cover{
-            @include fullWidth();
-            @include fixedHeight(190px);
+            @include common.fullWidth();
+            @include common.fixedHeight(190px);
             &::v-deep(.el-image){
-                @include fullInParent();
+                @include common.fullInParent();
                 
                 .image-slot{
-                    @include fullInParent();
+                    @include common.fullInParent();
                     display: flex;
                     justify-content: center;
                     align-items: center;
 
                     .el-icon{
-                        @include fullInParent();
-                        @include flexCenter;
+                        @include common.fullInParent();
+                        @include common.flexCenter;
 
                         svg{
-                            @include fixedSquare(20%);
+                            @include common.fixedSquare(20%);
                         }
                     }
                 }

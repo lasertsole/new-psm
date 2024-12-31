@@ -5,14 +5,12 @@ import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
 import com.psm.domain.Independent.Model.Joint.models_user.types.convertor.Models_UserConvertor;
 import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
 import com.psm.types.common.DO.DO;
-import com.tangzc.mpe.processer.annotation.AutoDefine;
 import lombok.Value;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Value
-@AutoDefine
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Models_UserDO implements Serializable, DO<Models_UserBO, Models_UserDTO> {
     UserDO user;

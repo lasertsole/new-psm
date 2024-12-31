@@ -127,25 +127,25 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .home{
-        @include fullInParent;
-        @include scrollBar(8px);
+        @include common.fullInParent;
+        @include common.scrollBar(8px);
         padding: 30px 20px 30px 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
         
         .container{
-            @include fullInParent;
+            @include common.fullInParent;
             background-color: white;
             padding:30px;
             border-radius: 8px;
             overflow: hidden;
             
             .personAbtract{
-                @include fullWidth;
+                @include common.fullWidth;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -153,17 +153,17 @@
                 border-bottom: 1px solid rgba(165, 165, 165, 0.3568627451);
                 
                 .avatar{
-                    @include fixedCircle(100px);
+                    @include common.fixedCircle(100px);
                     
                     margin-bottom: 5px;
                     img{
-                        @include fullInParent;
+                        @include common.fullInParent;
                         object-fit: cover;
                     }
                 }
                 
                 .recomment{
-                    @include fixedWidth(80%);
+                    @include common.fixedWidth(80%);
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -239,7 +239,7 @@
                     justify-content: center;
                     
                     .box{
-                        @include fixedWidth(250px);
+                        @include common.fixedWidth(250px);
                         margin: 0px 20px;
                         
                         .top{
@@ -288,7 +288,7 @@
             }
 
             .icon{
-                @include fixedSquare(20px);
+                @include common.fixedSquare(20px);
                 margin-right: 10px;
             }
             

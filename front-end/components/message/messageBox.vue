@@ -34,10 +34,10 @@
 
 <style scoped lang="scss">
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .messageBox{
-        @include fullWidth;
+        @include common.fullWidth;
         display: flex;
         flex-direction: row;
         align-items: start;
@@ -47,11 +47,11 @@
         $gapSize: 8px;
 
         .avatar{
-            @include fixedSquare($avatarSize);
+            @include common.fixedSquare($avatarSize);
         }
 
         .gap{
-            @include fixedWidth($gapSize);
+            @include common.fixedWidth($gapSize);
         }
         
         .content{
@@ -72,11 +72,11 @@
         }
 
         .status{
-            @include fixedSquare(16px);
+            @include common.fixedSquare(16px);
             align-self: flex-end;
 
             >div{
-                @include fullInParent;
+                @include common.fullInParent;
                 background-size: 100%;
                 background-repeat: no-repeat;
                 background-position: center;

@@ -178,7 +178,7 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     @mixin button{
         width: 80px;
@@ -231,7 +231,7 @@
                     $profileSize: 35px;
 
                     .userAvatar{
-                        @include fixedCircle($profileSize);
+                        @include common.fixedCircle($profileSize);
                         z-index: 2;
                         position: relative;
                         display: flex;
@@ -251,7 +251,7 @@
                         z-index: 1;
                         position: absolute;
                         background-color: white;
-                        @include fixedRoundedRectangle(200px,270px, 10px);
+                        @include common.fixedRoundedRectangle(200px,270px, 10px);
                         top: 30px;
                         left: math.div($profileSize, 2);
                         transform: translateX(-50%);
@@ -322,7 +322,7 @@
                                     align-items: center;
 
                                     img{
-                                        @include fixedSquare(15px);
+                                        @include common.fixedSquare(15px);
                                     }
                                 }
                             }
@@ -348,7 +348,7 @@
             background-size: 80%;
             background-position: center;
             background-repeat: no-repeat;
-            @include fixedCircle(35px);
+            @include common.fixedCircle(35px);
             display: none;
             transition: all 0.3s;
             &:hover{
@@ -363,7 +363,7 @@
                 ul{
                     li{
                         background-color: #ecf5ff;
-                        @include fixedRoundedRectangle(100%, 50px, 4px);
+                        @include common.fixedRoundedRectangle(100%, 50px, 4px);
                         display: flex;
                         justify-content: center;
                         align-items: center;
@@ -386,8 +386,8 @@
                         }
 
                         a{
-                            @include fullInParent();
-                            @include flexCenter();
+                            @include common.fullInParent();
+                            @include common.flexCenter();
                         }
                     }
                 }

@@ -44,37 +44,37 @@
 
 <style scoped lang="scss">
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .contactsBox{
-        @include fullWidth;
-        @include fixedHeight(80px);
+        @include common.fullWidth;
+        @include common.fixedHeight(80px);
         
         padding: 20px 24px;
         display: flex;
         align-items: center;
         
         .leftBox{
-            @include fixedSquare(40px);
-            @include flexCenter;
+            @include common.fixedSquare(40px);
+            @include common.flexCenter;
             margin-right: 8px;
         }
 
         .rightBox{
-            @include fullHeight;
+            @include common.fullHeight;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
 
             .top{
-                @include fullWidth();
-                @include fixedHeight(50%);
+                @include common.fullWidth();
+                @include common.fixedHeight(50%);
                 display: flex;
                 justify-content: space-between;
                 align-items:flex-end;
                 
                 .name{
-                    @include wordEllipsis;
+                    @include common.wordEllipsis;
                 }
 
                 .time{
@@ -83,9 +83,9 @@
             }
             
             .bottom{
-                @include fullWidth();
-                @include fixedHeight(50%);
-                @include wordEllipsis;
+                @include common.fullWidth();
+                @include common.fixedHeight(50%);
+                @include common.wordEllipsis;
                 color: #707070;
                 // 添加以下样式以实现文字换行并限制显示的行数
             }

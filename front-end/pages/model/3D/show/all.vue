@@ -157,18 +157,18 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .all{
-        @include scrollBar(8px);
-        @include fullWidth();
+        @include common.scrollBar(8px);
+        @include common.fullWidth();
         min-height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
 
         .items{
-            @include fullWidth();
+            @include common.fullWidth();
             min-height: 100%;
             justify-self: flex-start;
             padding-bottom: 10px;
@@ -183,7 +183,7 @@
                 height: 200px;
                 flex-grow: 1;
                 padding: 0px 20px 30px 20px;
-                @include scrollBar(8px);
+                @include common.scrollBar(8px);
                 display: flex;
                 flex-direction: column;
                 overflow: auto;

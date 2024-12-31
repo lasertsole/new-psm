@@ -42,7 +42,6 @@ public class Model3dAdaptorImpl implements Model3dAdaptor {
         if(Objects.isNull(servletRequest)
                 || Objects.isNull(servletResponse)
                 || StringUtils.isBlank(userId)
-                || (StringUtils.isNotEmpty(folderName) && folderName.chars().filter(c -> c == '.').count()!=1) // 文件名必须有且仅有一个点
         )
             throw new InvalidParameterException("Invalid parameter");
 

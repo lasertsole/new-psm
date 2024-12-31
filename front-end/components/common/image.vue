@@ -26,13 +26,13 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .image{
-        @include fullInParent;
+        @include common.fullInParent;
 
         :deep(.el-image){
-            @include fullInParent;
+            @include common.fullInParent;
 
             background-color: transparent;
         }

@@ -56,7 +56,7 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .filter-bar{
         display: grid;
@@ -84,7 +84,7 @@
             width: 100%;
         }
         .el-button{
-            @include fixedWidth(80px);
+            @include common.fixedWidth(80px);
         }
     }
 </style>

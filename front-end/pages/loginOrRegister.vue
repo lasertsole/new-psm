@@ -25,7 +25,7 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .loginOrResigter{
         width: 100%;
@@ -53,7 +53,7 @@
                 flex-direction: row;
                 align-items: center;
                 &-image{
-                    @include fixedSquare(60px);
+                    @include common.fixedSquare(60px);
                     background-image: url(/images/psmlogo.png);
                     background-size: 100%;
                     margin-right: 10px;

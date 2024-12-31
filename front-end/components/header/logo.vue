@@ -15,7 +15,7 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .logo{
         height: 100%;
@@ -30,7 +30,7 @@
         }
 
         &-image{
-            @include fixedSquare(80px);
+            @include common.fixedSquare(80px);
             background-image: url(/images/psmlogo.png);
             background-repeat: no-repeat;
             background-position: center 5px;
@@ -73,7 +73,7 @@
     @media screen and (max-width: 600px) {
         .logo{
             &-image{
-                @include fixedSquare(50px);
+                @include common.fixedSquare(50px);
                 background-size: 56px;
                 background-position: center 4px;
             }

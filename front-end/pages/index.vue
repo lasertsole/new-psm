@@ -19,14 +19,14 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .indexPage{
-       @include fullInParent;
+       @include common.fullInParent;
        position: relative;
        z-index: 1;
        .top{
-           @include fullInParent;
+           @include common.fullInParent;
            position: absolute;
            z-index: 1;
            background-color: rgba($color: #000000, $alpha: .2);
@@ -50,7 +50,7 @@
            }
        }
         .bottom{
-           @include fullInParent;
+           @include common.fullInParent;
            position: relative;
            z-index: 0;
         }

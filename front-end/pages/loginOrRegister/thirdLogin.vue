@@ -9,19 +9,19 @@
 
 <style lang="scss" scoped>
   @use "sass:math";
-  @import "@/common.scss";
+  @use "@/common.scss" as common;
 
   .thirdLogin{
-    @include fixedRetangle(100%, 200px);
-    @include flexCenter();
+    @include common.fixedRetangle(100%, 200px);
+    @include common.flexCenter();
 
     .centerBox{
-      @include flexCenter();
+      @include common.flexCenter();
       flex-direction: column;
 
       .icon{
         $iconSize: 50px;
-        @include fixedSquare($iconSize);
+        @include common.fixedSquare($iconSize);
         background-size: $iconSize;
         background-position: center;
         background-image: url(/icons/loginSuccuss.svg);

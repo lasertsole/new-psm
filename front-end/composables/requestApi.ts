@@ -60,13 +60,14 @@ export async function tusUploadApi({
     headers: {
       token: localStorage.getItem('token')||""
     },
-    chunkSize: 1024 * 1024,// 每个分片大小1MB
+    chunkSize: 1024 * 1024 * 10,// 每个分片大小1MB
     retryDelays: [0, 3000, 5000, 10000, 20000],
     metadata: {
       filename: file.name,
       filetype: file.type,
     },
     onError: function (error) {
+      console.error(error);
       errorCB&&errorCB(error);
     },
     onProgress: function (bytesUploaded, bytesTotal) {

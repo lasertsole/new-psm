@@ -62,8 +62,8 @@ public class Model3dServiceImpl implements Model3dService {
         };
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void uploadModelInfo(Long userId, String title, String content, MultipartFile coverFile, String style, String type, VisibleEnum visible) throws Exception {
         String _userId = String.valueOf(userId);
 

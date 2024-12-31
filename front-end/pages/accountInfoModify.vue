@@ -321,17 +321,17 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
     
     .accountModify{
-        @include fullInParent();
+        @include common.fullInParent();
         background-color: #e6eaee;
         display: flex;
         justify-content: center;
         align-items: center;
 
         .infoBox{
-            @include fixedWidth(500px);
+            @include common.fixedWidth(500px);
             min-width: 350px;
             background-color: white;
             border-radius: 7px;
@@ -353,7 +353,7 @@
                 
                     .circle{
                         position: absolute;
-                        @include fixedCircle(100px);
+                        @include common.fixedCircle(100px);
                         top: -40px;
                         background-color: white;
                     }
@@ -410,7 +410,7 @@
                     }
 
                     .save{
-                        @include fixedWidth(150px);
+                        @include common.fixedWidth(150px);
                         background-color: #00a8e9;
                         color: white;
                         border-radius: 4px;
@@ -435,7 +435,7 @@
                 }
 
                 &::v-deep(.el-input){
-                    @include fixedRetangle(200px, 21px);
+                    @include common.fixedRetangle(200px, 21px);
                     
                     &:not(:first-child){
                         margin-bottom: 10px;

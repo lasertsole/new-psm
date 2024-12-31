@@ -5,15 +5,12 @@ import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.types.convertor.Model_ExtendedUserConvertor;
 import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDO;
 import com.psm.types.common.DO.DO;
-import com.tangzc.mpe.processer.annotation.AutoDefine;
 import lombok.Value;
 
-import java.io.Serializable;
 
 @Value
-@AutoDefine
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Model_ExtendedUserDO implements Serializable, DO<Model_ExtendedUserBO,Model_ExtendedUserDTO> {
+public class Model_ExtendedUserDO implements DO<Model_ExtendedUserBO,Model_ExtendedUserDTO> {
     ExtendedUserDO user;
     Model3dDO model;
 

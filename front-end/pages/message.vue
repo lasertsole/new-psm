@@ -191,10 +191,10 @@
 
 <style lang="scss" scoped>
     @use "sass:math";
-    @import "@/common.scss";
+    @use "@/common.scss" as common;
 
     .message {
-        @include fullInParent();
+        @include common.fullInParent();
         background-color: rgba(222, 222, 222, .75);
         display: flex;
         justify-content: center;
@@ -207,11 +207,11 @@
             display: flex;
             flex-direction: column;
 
-            @include fixedWidth(80%);
-            @include fixedHeight(100%);
+            @include common.fixedWidth(80%);
+            @include common.fixedHeight(100%);
             
             @media screen and (max-width: 800px) {
-                @include fixedWidth(100%);
+                @include common.fixedWidth(100%);
             }
 
             @media screen and (max-width: 700px) {
@@ -226,8 +226,8 @@
 
             $titleBoxHeight: 42px;
             .titleBox {
-                @include fullWidth();
-                @include fixedHeight($titleBoxHeight);
+                @include common.fullWidth();
+                @include common.fixedHeight($titleBoxHeight);
                 font-size: 15px;
                 color: #666;
                 padding: 0px 16px;
@@ -239,13 +239,13 @@
 
             $chatBoxMarginTop: 10px;
             .chatBox {
-                @include fullWidth();
+                @include common.fullWidth();
                 margin-top: $chatBoxMarginTop;
                 height: calc(100% - $titleBoxHeight - $chatBoxMarginTop);
                 display: flex;
 
                 >div {
-                    @include fullHeight();
+                    @include common.fullHeight();
 
                     >div{
                         background-color: #f4f5f7;
@@ -253,13 +253,13 @@
                     }
 
                     >.title{
-                        @include fixedHeight(36px);
+                        @include common.fixedHeight(36px);
                         margin-bottom: 1.6px;
                     }
                 }
 
                 .left {
-                    @include fixedWidth(220px);
+                    @include common.fixedWidth(220px);
                     &{
                         margin-right: 1.6px;
                         display: flex;
@@ -276,7 +276,7 @@
 
                     .contactList {
                         flex-grow: 1;
-                        @include scrollBar(8px);
+                        @include common.scrollBar(8px);
                     }
                 }
                 
@@ -286,23 +286,23 @@
                     flex-direction: column;
 
                     .title {
-                        @include flexCenter;
+                        @include common.flexCenter;
                         color: #333333;
                         font-size: 14px;
                     }
 
                     .messageList {
-                        @include scrollBar(8px);
+                        @include common.scrollBar(8px);
                         flex-grow: 1;
                         margin-bottom: 0.8px;
                         
                         .topGap {
-                            @include fixedHeight(22px);
-                            @include fullWidth();
+                            @include common.fixedHeight(22px);
+                            @include common.fullWidth();
                         }
                         
                         .containerBox {
-                            @include fullInParent;
+                            @include common.fullInParent;
                         }
                     }
 
@@ -312,35 +312,35 @@
                     $countHeight: 14px;
                     $toolBarHeight: 30px;
                     .sendBox {
-                        @include fixedHeight(162px);
+                        @include common.fixedHeight(162px);
                         margin-top: 0.8px;
                         position: relative;
                         z-index: 1;
 
                         .toolBar{
                             padding: 0px $padding;
-                            @include fullWidth;
-                            @include fixedHeight($toolBarHeight);
+                            @include common.fullWidth;
+                            @include common.fixedHeight($toolBarHeight);
                             position: absolute;
                             z-index: 2;
                             display: flex;
                             align-items: center;
                             i{
-                                @include fixedSquare(20px);
-                                @include fullImg("icons/phone.svg");
+                                @include common.fixedSquare(20px);
+                                @include common.fullImg("icons/phone.svg");
                                 cursor: pointer;
                             }
                         }
                         
                         &::v-deep(.el-textarea) {
-                            @include fullInParent();
+                            @include common.fullInParent();
 
                             *{
                                 background-color: rgba(14, 12, 12, 0);// 透明背景
                             }
                             
                             .el-textarea__inner {
-                                @include scrollBar(8px);
+                                @include common.scrollBar(8px);
                                 
                                 &{
                                     width: 100% !important;
@@ -350,15 +350,15 @@
                             }
 
                             .el-input__count {
-                                @include fixedHeight($countHeight);
+                                @include common.fixedHeight($countHeight);
                                 right: $padding + $buttonWidth + 15px;
                                 bottom: $padding + math.div(($buttonHeight - $countHeight), 2);
                             }
                         }
 
                         button {
-                            @include fixedWidth($buttonWidth);
-                            @include fixedHeight($buttonHeight);
+                            @include common.fixedWidth($buttonWidth);
+                            @include common.fixedHeight($buttonHeight);
                             position: absolute;
                             right: $padding;
                             bottom: $padding;
