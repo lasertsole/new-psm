@@ -43,11 +43,13 @@ public class ReviewAdaptorImpl implements ReviewAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
+        validUtil.validate(Map.of("id", id, "srcUserId", srcUserId, "targetType", targetType, "targetId", targetId, "content", content, "timestamp", timestamp), ReviewBO.class);
+
         reviewService.addReview(reviewBO);
     }
 
     @Override
-    public Page<ReviewBO> getReviews(PageBO pageBO, TargetTypeEnum targetType, Long targetId) throws InstantiationException, IllegalAccessException {
+    public Page<ReviewBO> getReviews(@Valid PageBO pageBO, TargetTypeEnum targetType, Long targetId, Long attachUserId) throws InstantiationException, IllegalAccessException {
         Integer current = pageBO.getCurrent();
         Integer size = pageBO.getSize();
         if(
@@ -58,9 +60,11 @@ public class ReviewAdaptorImpl implements ReviewAdaptor {
         )
             throw new InvalidParameterException("Invalid parameter");
 
-        validUtil.validate(Map.of("current", current, "size", size, "targetType", targetType, "targetId", targetId), Page.class);
+        validUtil.validate(Map.of("targetType", targetType, "targetId", targetId), ReviewBO.class);
 
-        return reviewService.getReviews(current, size, targetType, targetId);
+        if (Objects.nonNull(attachUserId)) validUtil.validate(Map.of("attachUserId", attachUserId), ReviewBO.class);
+
+        return reviewService.getReviews(current, size, targetType, targetId, attachUserId);
     }
 
     @Override

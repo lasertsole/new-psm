@@ -21,8 +21,8 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     @Override
-    public Page<ReviewDO> DBSelectReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId) {
-        return reviewDB.selectReviewsbyPage(current, size, targetType, targetId);
+    public Page<ReviewDO> DBSelectReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId, Long attachUserId) {
+        return reviewDB.selectReviewsbyPage(current, size, targetType, targetId, attachUserId);
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface ReviewDB extends BaseDBRepository<ReviewDO> {
      * @param targetId 目标id
      * @return 一页评论DO实体
      */
-    Page<ReviewDO> selectReviewsbyPage(Integer current, Integer size, TargetTypeEnum targetType, Long targetId);
+    Page<ReviewDO> selectReviewsbyPage(Integer current, Integer size, TargetTypeEnum targetType, Long targetId, Long attachUserId);
 
     /**
      * 根据评论id删除评论

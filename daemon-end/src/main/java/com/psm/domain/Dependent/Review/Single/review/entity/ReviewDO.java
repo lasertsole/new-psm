@@ -33,6 +33,12 @@ public class ReviewDO implements DO<ReviewBO, ReviewDTO> {
     @Column(comment = "评论对象id", notNull = true)
     private Long targetId;
 
+    @Column(comment = "附着用户id")
+    private Long attachUserId;
+
+    @Column(comment = "回复用户id")
+    private Long replyUserId;
+
     @Column(comment = "评论内容", length = 255, notNull = true)
     private String content;
 

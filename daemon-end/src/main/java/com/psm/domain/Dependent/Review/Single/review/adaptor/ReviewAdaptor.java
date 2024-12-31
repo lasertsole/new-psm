@@ -21,7 +21,7 @@ public interface ReviewAdaptor {
      * @param targetId 目标id
      * @return 一页评论BO实体
      */
-    Page<ReviewBO> getReviews(PageBO pageBO, TargetTypeEnum targetType, Long targetId) throws InstantiationException, IllegalAccessException;
+    Page<ReviewBO> getReviews(PageBO pageBO, TargetTypeEnum targetType, Long targetId, Long attachUserId) throws InstantiationException, IllegalAccessException;
 
     /**
      * 删除评论

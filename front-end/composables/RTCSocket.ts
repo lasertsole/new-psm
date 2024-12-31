@@ -26,10 +26,10 @@ export class RTCService {// 单例模式
       audio: true
     });
     private userMediaStream: MediaStream | null = null;// 本地音视频流
-    private displayMediaStream: MediaStream | null = null;// 当前投屏媒体流
+    private displayMediaStream: MediaStream | null = null;// 本地投屏媒体流
 
     // 监听事件的钩子函数
-    private inviteJoinRoomHooks: Array<Function> = [];
+    private inviteJoinRoomHooks: Array<(roomInvitation:RoomInvitation)=>void> = [];
     private agreeJoinRoomHooks: Array<(roomInvitation:RoomInvitation)=>void> = [];
     private rejectJoinRoomHooks: Array<(roomInvitation: RoomInvitation)=>void> = [];
     private swapSDPHooks: Array<(remoteSDP: RTCSwap)=>void> = [];
@@ -38,7 +38,7 @@ export class RTCService {// 单例模式
     private trackBulidHooks: Array<(event: RTCTrackEvent)=>void> = [];
 
     // 添加监听邀请事件
-    public onInviteJoinRoom(hook: Function) {
+    public onInviteJoinRoom(hook: (roomInvitation: RoomInvitation)=>void) {
         this.inviteJoinRoomHooks.push(hook);
     };
 

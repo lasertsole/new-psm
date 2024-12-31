@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Slf4j
 @RestController
 @RequestMapping("/reviews")
@@ -38,11 +40,12 @@ public class ReviewController {
         @RequestParam Integer current,
         @RequestParam Integer size,
         @RequestParam TargetTypeEnum targetType,
-        @RequestParam String targetId
+        @RequestParam String targetId,
+        @RequestParam(required = false) Optional<String> attachUserId
     ) {
         try {
             PageBO pageBO = new PageBO(current, size);
-            return ResponseDTO.ok(reviewAdaptor.getReviews(pageBO, targetType, Long.parseLong(targetId)));
+            return ResponseDTO.ok(reviewAdaptor.getReviews(pageBO, targetType, Long.parseLong(targetId), attachUserId.map(Long::parseLong).orElse(null)));
         } catch (InstantiationException | IllegalAccessException e) {
             return ResponseDTO.ok("Invalid parameter");
         } catch (Exception e) {

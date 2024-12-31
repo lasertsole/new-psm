@@ -1,5 +1,6 @@
-import { TargetTypeEnum } from "@/enums/review.d";
+import type { Page } from "@/types/common";
 import type { Review } from "@/types/review";
+import { TargetTypeEnum } from "@/enums/review.d";
 
 export async function addReview(review:Review):Promise<Boolean> {
     try{
@@ -26,7 +27,21 @@ export async function addReview(review:Review):Promise<Boolean> {
     };
 };
 
-export async function getReviews(current:number, size: number, targetType:TargetTypeEnum, targetId:string):Promise<Review[]> {
+export async function getReviews(
+    {
+        current,
+        size,
+        targetType,
+        targetId,
+        attachUserId
+    }:
+    {
+        current:number,
+        size: number,
+        targetType:TargetTypeEnum,
+        targetId:string,
+        attachUserId?:string
+    }):Promise<Page<Review>> {
     try{
         const res = await fetchApi({
             url: '/reviews',
@@ -34,7 +49,8 @@ export async function getReviews(current:number, size: number, targetType:Target
                 current,
                 size,
                 targetType,
-                targetId
+                targetId,
+                attachUserId
             }
         });
 
@@ -47,7 +63,13 @@ export async function getReviews(current:number, size: number, targetType:Target
     } catch (error) {
         import.meta.client&&ElMessage.error('添加评论失败: '+error);
 
-        return [];
+        return {
+            current,
+            size,
+            total: 0,
+            records:[],
+            pages: 1,
+        };
     };
 };
 

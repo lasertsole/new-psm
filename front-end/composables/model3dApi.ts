@@ -96,7 +96,7 @@ export async function getModel3dsShowBars(
                 total: 0,
                 records:[],
                 pages: 1
-            } as Page<Model3DInfos>;
+            };
         };
         
         return res.data;
@@ -110,7 +110,7 @@ export async function getModel3dsShowBars(
             total: 0,
             records:[],
             pages: 1
-        } as Page<Model3DInfos>;
+        };
     };
 };
 
@@ -142,7 +142,7 @@ export async function getFollowingModel3dsShowBars(
                 total: 0,
                 records:[],
                 pages: 1
-            } as Page<Model3DInfos>;
+            };
         };
         
         return res.data;
@@ -156,7 +156,7 @@ export async function getFollowingModel3dsShowBars(
             total: 0,
             records:[],
             pages: 1
-        } as Page<Model3DInfos>;
+        };
     };
 };
 
@@ -187,7 +187,7 @@ export async function blurSearchModel3d(keyword:string):Promise<ESResult[]> {
     } catch (error) {
         import.meta.client&&ElMessage.error('搜索模型失败');
         
-        return [] as ESResult[]; 
+        return []; 
     };
 };
 
@@ -212,6 +212,6 @@ export async function detailSearchModel3d(keyword:string, afterKeyId: string | n
             records: [] as ESResult[],
             size: 10,
             nextAfterKeys: []
-        } as Page<ESResult>; 
+        }; 
     };
 };

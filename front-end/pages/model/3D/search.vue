@@ -86,7 +86,8 @@
         detaliSearch(searchKeyword.value, pageCount.value, 10);
     }, 1000);
 
-    const isFinalPage: Ref<boolean> = ref<boolean>(false);
+    const isFinalPage: Ref<boolean> = ref<boolean>(false); // 是否是最后一页
+        
     async function detaliSearch(keyword:string, current: number, size: number):Promise<void> {
         if(keyword=="") { ElMessage.warning('请输入搜索内容'); return }; 
         loading.value = true;

@@ -1,15 +1,17 @@
 import { TargetTypeEnum } from "@/enums/review";
 
 export type Review = {
-    id: String;
-    srcUserId: String;
-    avatar: String;
-    name: String;
+    id: string;
+    srcUserId: string;
+    avatar: string;
+    name: string;
     targetType: TargetTypeEnum;
-    targetId: String;
-    timestamp: String;
-    content: String;
-    createTime: String;
+    targetId: string;
+    attachUserId?: string | undefined;
+    replyUserId?: string | undefined;
+    content: string;
+    timestamp: string;
+    createTime: string;
 };
 
 export { TargetTypeEnum };

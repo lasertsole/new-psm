@@ -7,7 +7,7 @@ import com.psm.domain.Dependent.Review.Single.review.types.enums.TargetTypeEnum;
 public interface ReviewRepository {
     Boolean DBAddReview(ReviewDO reviewDO);
 
-    Page<ReviewDO> DBSelectReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId);
+    Page<ReviewDO> DBSelectReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId, Long attachUserId);
 
     Boolean DBRemoveReview(Long id, Long srcUserId);
 }

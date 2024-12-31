@@ -42,14 +42,18 @@ public abstract class ReviewConvertor {
     @Mappings({
         @Mapping(target = "id", qualifiedByName = "longToString"),
         @Mapping(target = "srcUserId", qualifiedByName = "longToString"),
-        @Mapping(target = "targetId", qualifiedByName = "longToString")
+        @Mapping(target = "targetId", qualifiedByName = "longToString"),
+        @Mapping(target = "attachUserId", qualifiedByName = "longToString"),
+        @Mapping(target = "replyUserId", qualifiedByName = "longToString"),
     })
     public abstract ReviewDTO DO2DTO(ReviewDO reviewDO);
 
     @Mappings({
         @Mapping(target = "id", qualifiedByName = "longToString"),
         @Mapping(target = "srcUserId", qualifiedByName = "longToString"),
-        @Mapping(target = "targetId", qualifiedByName = "longToString")
+        @Mapping(target = "targetId", qualifiedByName = "longToString"),
+        @Mapping(target = "attachUserId", qualifiedByName = "longToString"),
+        @Mapping(target = "replyUserId", qualifiedByName = "longToString"),
     })
     public abstract ReviewDTO BO2DTO(ReviewBO reviewBO);
 }

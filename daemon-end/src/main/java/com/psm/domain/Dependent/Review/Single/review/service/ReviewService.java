@@ -22,7 +22,7 @@ public interface ReviewService {
      * @param targetId 目标id
      * @return 一页评论DO实体
      */
-    Page<ReviewBO> getReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId);
+    Page<ReviewBO> getReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId, Long attachUserId);
 
     /**
      * 删除评论

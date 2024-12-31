@@ -5,14 +5,14 @@
                 <div class="profile" ></div>
                 <div class="name">{{ name }}</div>
             </div>
-            <!-- <div class="right">
-                <div class="score">
+            <div class="right">
+                <!-- <div class="score">
                     <el-rate
                         v-model="starScore"
                         disabled
                     />
-                </div>
-            </div> -->
+                </div> -->
+            </div>
         </div>
         <div class="bottom">
             <div class="top">
@@ -33,7 +33,7 @@
     import { ref, defineProps, type PropType } from "vue";
     import { TargetTypeEnum } from "@/enums/review";
 
-    const props = defineProps({
+    const {ID, srcUserId, avatar, name, targetType, targetId, timestamp, content, createTime} = defineProps({
         ID:{type:String, required:true},
         srcUserId:{type:String, required:true},
         avatar:{type:String, required:true},

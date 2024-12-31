@@ -19,6 +19,8 @@ public class ReviewDTO implements Serializable, DTO<ReviewBO> {
     private String srcUserId;
     private TargetTypeEnum targetType;
     private String targetId;
+    private String attachUserId;
+    private String replyUserId;
     private String timestamp;
     private String content;
     private String createTime;

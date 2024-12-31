@@ -22,8 +22,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewBO> getReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId) {
-        return ReviewBO.fromDOPage(reviewRepository.DBSelectReviews(current, size, targetType, targetId));
+    public Page<ReviewBO> getReviews(Integer current, Integer size, TargetTypeEnum targetType, Long targetId, Long attachUserId) {
+        return ReviewBO.fromDOPage(reviewRepository.DBSelectReviews(current, size, targetType, targetId, attachUserId));
     }
 
     @Override

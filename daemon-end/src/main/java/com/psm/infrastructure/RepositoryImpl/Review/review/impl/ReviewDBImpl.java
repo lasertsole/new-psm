@@ -11,6 +11,8 @@ import com.psm.infrastructure.RepositoryImpl.Review.review.ReviewDB;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Objects;
+
 @Slf4j
 @Repository
 public class ReviewDBImpl extends BaseDBRepositoryImpl<ReviewMapper, ReviewDO> implements ReviewDB {
@@ -18,12 +20,19 @@ public class ReviewDBImpl extends BaseDBRepositoryImpl<ReviewMapper, ReviewDO> i
     private ReviewMapper reviewMapper;
 
     @Override
-    public Page<ReviewDO> selectReviewsbyPage(Integer current, Integer size, TargetTypeEnum targetType, Long targetId) {
+    public Page<ReviewDO> selectReviewsbyPage(Integer current, Integer size, TargetTypeEnum targetType, Long targetId, Long attachUserId) {
         LambdaQueryWrapper<ReviewDO> wrapper = new LambdaQueryWrapper<>();
         wrapper
             .eq(ReviewDO::getTargetType, targetType)
             .and(w->w.eq(ReviewDO::getTargetId, targetId))
             .orderByDesc(ReviewDO::getCreateTime);
+
+        if (Objects.nonNull(attachUserId)) {
+            wrapper.eq(ReviewDO::getAttachUserId, attachUserId);
+        } else {
+            wrapper.isNull(ReviewDO::getAttachUserId);
+        }
+
         return reviewMapper.selectPage(new Page<>(current, size), wrapper);
     }
 

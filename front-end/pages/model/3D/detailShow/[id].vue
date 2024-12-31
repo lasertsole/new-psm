@@ -61,12 +61,12 @@
 
       </div>
 
-      <!-- <div class="comment">
+      <div class="comment">
         <CommonCommentArr
           :targetId="id"
-          :targetType="TargetTypeEnum.MODEL_3D"
-        ></components/common>
-      </div> -->
+          :targetType="TargetTypeEnum.Model3d"
+        ></CommonCommentArr>
+      </div>
     </div>
   </div>
 </template>
@@ -74,6 +74,7 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import type { UserInfo } from "@/types/user";
+  import { TargetTypeEnum } from "@/enums/review";
   import { StyleEnum, TypeEnum } from "@/enums/model3d.d";
   import type { Model3DInfoDetail, Model3DInfo } from "@/types/model3d";
 
