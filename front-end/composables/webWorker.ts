@@ -7,6 +7,10 @@ const blob:Blob = new Blob([
         type: 'text/javascript'
     }
 );
+
+/**
+ * 初始化web worker
+ */
 export async function initWebWorker():Promise<void> {
     cpuCores = navigator.hardwareConcurrency;// 获取cpu核数
 };

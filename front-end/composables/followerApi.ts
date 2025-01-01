@@ -1,5 +1,9 @@
-import type { UserInfo } from "@/types/user";
-
+/**
+ * 关注用户
+ * 
+ * @param { string } id 用户id
+ * @returns { Promise<boolean> } 是否关注成功
+ */
 export async function followUser(id:string):Promise<boolean> {
     try{
         if(userInfo.id==id) {
@@ -31,6 +35,12 @@ export async function followUser(id:string):Promise<boolean> {
     }
 };
 
+/**
+ * 取消关注用户
+ * 
+ * @param { string } id 用户id
+ * @returns { Promise<boolean> } 是否取消关注成功
+ */
 export async function unFollowUser(id:string):Promise<boolean> {
     try{
         if(userInfo.id==id) {
@@ -60,6 +70,12 @@ export async function unFollowUser(id:string):Promise<boolean> {
     }
 };
 
+/**
+ * 检查是否关注用户
+ * 
+ * @param { string } id 用户id
+ * @returns { Promise<boolean> } 检查是否关注用户
+ */
 export async function checkFollowing(tgtUserId:string):Promise<boolean|undefined> {
     const res:any = await fetchApi({
         url: `/followers/${tgtUserId}/self`,

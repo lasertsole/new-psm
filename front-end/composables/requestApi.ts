@@ -17,8 +17,14 @@ interface Params {
     watch?: [];
 }
 
-// 替换路径变量
-const replacePathVariables = (url: NitroFetchRequest, params: any = {}) => {
+/**
+ * 替换路径变量
+ * 
+ * @param { NitroFetchRequest } url 请求路径
+ * @param { any } params 路径参数
+ * @returns { NitroFetchRequest } 替换后的请求路径
+ */
+const replacePathVariables = (url: NitroFetchRequest, params: any = {}):NitroFetchRequest => {
   if (Object.keys(params).length === 0) {
     return url;
   }
@@ -39,6 +45,7 @@ const replacePathVariables = (url: NitroFetchRequest, params: any = {}) => {
   return formattedURL;
 };
 
+// tus上传参数
 interface UploadParams {
   url: string;
   file: File;
@@ -47,6 +54,15 @@ interface UploadParams {
   errorCB?: Function;
 };
 
+/**
+ * tus上传文件
+ * 
+ * @param {File} file 文件对象 
+ * @param { string } url 上传地址
+ * @param { Function } progressCB 进度回调函数
+ * @param { Function } successCB 上传成功回调函数
+ * @param { Function } errorCB 上传失败回调函数
+ */
 export async function tusUploadApi({
   file, 
   url, 
@@ -95,6 +111,17 @@ export async function tusUploadApi({
   });
 };
 
+/**
+ * 有服务器渲染功能的请求
+ * @param { NitroFetchRequest } url 请求路径
+ * @param { {[key: string]: any} | FormData } opts 请求参数
+ * @param { 'get' | 'post' | 'put' | 'delete' } method 请求方法
+ * @param { 'application/x-www-form-urlencoded' | 'application/json' | 'multipart/form-data' } contentType 请求内容类型
+ * @param { {[key: string]: any} } headeropts 请求头参数
+ * @param { boolean } server 是否服务器渲染
+ * @param { Array<()=>void> } watch 监测是否需要重新请求
+ * @returns {Promise<Response>} 请求结果
+ */
 async function useFetchBaseApi({
   url,
   opts = {},
@@ -169,16 +196,52 @@ async function useFetchBaseApi({
   return data.value as Response;
 };
 
-export async function fetchApi({url,
+/**
+ * 封装请求重试
+ * 
+ * @param { ()=>Promise<Response> } fetchFunc 请求函数
+ * @param { number } retryMaxCount 最大重试次数
+ * @param { number } retryDelay 每次重试的延迟时间,单位毫秒
+ * @returns {Promise<Response>} 响应对象
+ */
+function retryFetch(fetchFunc:()=>Promise<Response>, retryMaxCount:number = 3, retryDelay:number = 1000):Promise<Response> {
+  return fetchFunc().catch(err=>{
+    if (retryMaxCount <= 0) {
+      return Promise.reject(err);
+    } else {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          retryFetch(fetchFunc, retryMaxCount - 1, retryDelay)
+            .then(resolve)
+            .catch(reject);
+        }, retryDelay);
+      });
+    }
+  });
+};
+
+/**
+ * 请求api
+ * 
+ * @param { NitroFetchRequest } url 请求路径
+ * @param { [key: string]: any | FormData } opts 请求参数
+ * @param { 'get' | 'post' | 'put' | 'delete' } method 请求方法
+ * @param { 'application/x-www-form-urlencoded' | 'application/json' | 'multipart/form-data' } contentType 请求内容类型
+ * @param { [key: string]: any } headeropts 请求头参数
+ * @returns {Promise<Response>} 请求结果
+ */
+export async function fetchApi({
+  url,
   opts = {},
   method = 'get',
   contentType = 'application/json',
   headeropts = {},
-}: Params): Promise<Response> {
-  return useFetchBaseApi({url,
+}: Params):Promise<Response> {
+  return retryFetch(() => useFetchBaseApi({
+    url,
     opts,
     method,
     contentType,
     headeropts,
-  });
+  }));
 };

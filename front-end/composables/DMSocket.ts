@@ -13,7 +13,7 @@ export const isInitDM:Ref<boolean> = ref<boolean>(false);// 是否已初始化
 
 type DMConfig = {
   DMExpireDay: number
-}
+};
 
 export class DMService { // 单例模式
   private static instance: DMService | null;

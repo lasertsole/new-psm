@@ -1,4 +1,10 @@
-// 比较string或number大小，选出大的
+/**
+ * 比较string或number大小，选出大的
+ * 
+ * @param { T extends string | number } a
+ * @param { T extends string | number } b 
+ * @returns { T } a和b中较大的值
+ */
 export function max<T extends number | string>(a: T, b: T): T {
     if (a > b) {
         return a;
@@ -7,7 +13,13 @@ export function max<T extends number | string>(a: T, b: T): T {
     }
 }
 
-// 比较string或number大小，选出小的
+/**
+ * 比较string或number大小，选出小的
+ * 
+ * @param { T extends string | number } a
+ * @param { T extends string | number } b 
+ * @returns { T } a和b中较小的值
+ */
 export function min<T extends number | string>(a: T, b: T): T {
     if (a < b) {
         return a;
@@ -16,7 +28,12 @@ export function min<T extends number | string>(a: T, b: T): T {
     }
 }
 
-// 将日期转换为格式化字符串(本地化时间)
+/**
+ * 将日期转换为格式化字符串(本地化时间)
+ * 
+ * @param { Date } date
+ * @returns { string } 格式化后的日期字符串
+ */
 export function getFormattedDate(date: Date):string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -47,7 +64,12 @@ export function getFormattedDate(date: Date):string {
     };
 };
 
-// 将字符串转换为日期
+/**
+ * 将字符串转换为日期
+ * 
+ * @param { string } dateString
+ * @returns { Date | null } 日期
+ */
 export function stringToDate(dateString: string): Date | null {
     // 检查是否为数字，可能是时间戳
     if (!isNaN(Number(dateString))) {
@@ -74,7 +96,12 @@ export function stringToDate(dateString: string): Date | null {
     return date;
 };
 
-// 计算属性，用于将 UTC 时间转换为本地时间
+/**
+ * 计算属性，用于将 UTC 时间转换为本地时间
+ * 
+ * @param { string | undefined } utcTime
+ * @returns { string | null } 本地时间字符串
+ */
 export function formatToLocalTime(utcTime: string | undefined):string | null {
     if (!utcTime) return '';
 
@@ -86,22 +113,44 @@ export function formatToLocalTime(utcTime: string | undefined):string | null {
     return getFormattedDate(date);
 };
 
-// 比较Date时间，返回时间差,若为正数，则a在b之后，若为负数，则a在b之前，若为0，则a和b相等
+/**
+ * 比较Date时间
+ * 
+ * @param { Date } a 
+ * @param { Date } b 
+ * @returns a与b的时间差,若为正数，则a在b之后，若为负数，则a在b之前，若为0，则a和b相等
+ */
 export function compareDate(a: Date, b: Date): number {
     return a.getTime() - b.getTime();
 };
 
-// 判断Date时间是否晚于另一个Date时间
+/**
+ * 判断Date时间是否晚于另一个Date时间
+ * 
+ * @param { Date } a 
+ * @param { Date } b 
+ * @returns { boolean } 若a晚于b，则返回true，否则返回false
+ */
 export function isLate(a: Date, b: Date):boolean {
     return a.getTime() > b.getTime();
 };
 
-// 筛选出最大的Date
+/**
+ * 筛选出最大的Date
+ * 
+ * @param { Date } a 
+ * @param { Date } b 
+ * @returns { Date } 若a晚于b，则返回true，否则返回false
+ */
 export function maxDate(a: Date, b: Date): Date {
     return isLate(a, b) ? a : b;
 };
 
-// 获取现在的UTC国际通用时间,精确到微秒级别
+/**
+ * 当前的UTC国际通用时间,精确到微秒级别
+ * 
+ * @returns { string } 当前的UTC国际通用时间
+ */
 export function getUTCTimeNow(): string {
     const now = new Date();
     const year = now.getUTCFullYear();
@@ -115,7 +164,12 @@ export function getUTCTimeNow(): string {
     return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + '.' + microseconds.toString().padStart(6, '0') + 'Z';
 };
 
-// 判断string是否是时间戳
+/**
+ * 判断string是否是时间戳
+ * 
+ * @param str 需要判断的字符串
+ * @returns 是否是时间戳,是true,不是false
+ */
 export function isTimestamp(str: string): boolean {
     try {
         const date = new Date(str);

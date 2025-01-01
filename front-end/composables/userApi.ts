@@ -4,9 +4,6 @@ import type { Response, UseFetchResponse } from "@/types/response";
 
 /**
  * 用户信息
- * 
- * @author: moye
- * @returns Reactive
  */
 export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
     id: '0',
@@ -27,8 +24,7 @@ export const userInfo: Reactive<UserInfo> = reactive<UserInfo>({
 /**
  * 更新用户数据
  * 
- * @author: moye
- * @param data 要更新的数据对象
+ * @param { UserInfo } data 要更新的数据对象
  */
 function updateUserInfo(data:UserInfo): void {
     data.isAdmin && (userInfo.isAdmin = data.isAdmin);
@@ -72,7 +68,13 @@ function logoutApi(): void{
     navigateTo("/");
 };
 
-export async function login(name:string | undefined, password:string | undefined):Promise<boolean>{
+/**
+ * 用户登录
+ * @param { string } name 用户名
+ * @param { string } password 密码
+ * @returns {Promise<boolean>} 登录成功返回true，失败返回false
+ */
+export async function login(name:string, password:string):Promise<boolean> {
     try {
         //先清除token防止旧token影响
         import.meta.client&&localStorage.removeItem('token');
@@ -109,7 +111,13 @@ export async function login(name:string | undefined, password:string | undefined
     };
 };
 
-export async function fastLogin():Promise<boolean>{
+
+/**
+ * 快速登录
+ * 
+ * @returns { Promise<boolean> } 登录成功返回true, 登录失败返回false
+ */
+export async function fastLogin():Promise<boolean> {
     try{
         if(import.meta.client&&!localStorage.getItem('token')) return false;
         
@@ -144,6 +152,11 @@ export async function fastLogin():Promise<boolean>{
     };
 };
 
+/**
+ * 第三方账号登录
+ * 
+ * @param { string } path 第三方账号登录路径
+ */
 export async function thirdPartyLogin(path:string):Promise<void>{
     try{
         let opts = useRuntimeConfig().public;
@@ -154,6 +167,14 @@ export async function thirdPartyLogin(path:string):Promise<void>{
     };
 };
 
+/**
+ * 获取用户信息
+ * 
+ * @param { string } name 用户名
+ * @param { string } password 密码
+ * @param { string } email 邮箱
+ * @returns { Promise<Boolean> } 用户信息
+ */
 export async function register(name:string, password:string, email:string):Promise<Boolean>{
     try{
         const res:Response = await fetchApi({
@@ -188,7 +209,13 @@ export async function register(name:string, password:string, email:string):Promi
     };
 };
 
-export async function updateAvatar(avatarFile:Blob):Promise<Boolean>{
+/**
+ * 上传用户头像
+ * 
+ * @param { Blob } avatarFile 用户头像文件
+ * @returns { Promise<Boolean> } 上传成功返回true，失败返回false
+ */
+export async function updateAvatar(avatarFile:Blob):Promise<Boolean> {
     try{
         if(avatarFile == null || avatarFile == undefined) return false;
         const formData = new FormData();
@@ -223,7 +250,19 @@ export async function updateAvatar(avatarFile:Blob):Promise<Boolean>{
     };
 };
 
-export async function updateAccountInfo({name, sex, phone, email, profile, isIdle, canUrgent}:UserInfo):Promise<Boolean>{
+/**
+ * 更新用户信息
+ * 
+ * @param { string } name 用户名
+ * @param { boolean } sex 性别
+ * @param { string } phone 手机号
+ * @param { string } email 用户邮箱
+ * @param { string } profile 用户简介
+ * @param { boolean } isIdle 是否空闲
+ * @param { boolean }canUrgent 能否加急
+ * @returns { Promise<Boolean> } 更新成功与否
+ */
+export async function updateAccountInfo({name, sex, phone, email, profile, isIdle, canUrgent}:UserInfo):Promise<Boolean> {
     try{
         const res:Response = await fetchApi({
             url: '/users/updateInfo',
@@ -261,7 +300,14 @@ export async function updateAccountInfo({name, sex, phone, email, profile, isIdl
     };
 };
 
-export async function updatePassword(password : string, changePassword: string):Promise<Boolean>{
+/**
+ * 修改用户密码
+ * 
+ * @param { string } password 旧密码
+ * @param { string } changePassword 新密码
+ * @returns { Promise<Boolean> } 是否修改成功
+ */
+export async function updatePassword(password : string, changePassword: string):Promise<Boolean> {
     try{
         const res:Response = await fetchApi({
             url: '/users/updatePassword',
@@ -293,6 +339,11 @@ export async function updatePassword(password : string, changePassword: string):
     };
 };
 
+/**
+ * 登出
+ * 
+ * @returns {Promise<boolean>} 登出成功返回true, 登出失败返回false
+ */
 export async function logout():Promise<boolean>{
     try{
         const res:Response = await fetchApi({
@@ -319,7 +370,13 @@ export function forcedLogout():void{
     emit("offline");
 };
 
-export async function getUserById(userId:string):Promise<UserInfo|null>{
+/**
+ * 根据用户id获取用户信息
+ * 
+ * @param { string } userId 用户id
+ * @returns { Promise<UserInfo|null> } 用户信息
+ */
+export async function getUserById(userId:string):Promise<UserInfo|null> {
     try{
         const res:Response = await fetchApi({
             url: `/users/${userId}`,
@@ -341,7 +398,13 @@ export async function getUserById(userId:string):Promise<UserInfo|null>{
     };
 };
 
-export async function getUserByIds(userIds:string[]):Promise<UserInfo[]>{
+/**
+ * 根据用户id列表批量获取用户信息
+ * 
+ * @param { string[] } userIds 用户id列表
+ * @returns { Promise<UserInfo[]> } Promise<UserInfo[]> 用户信息列表
+ */
+export async function getUserByIds(userIds:string[]):Promise<UserInfo[]> {
     try{
         const res:Response = await fetchApi({
             url: '/users',
