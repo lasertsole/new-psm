@@ -2,11 +2,11 @@ package com.psm.infrastructure.RepositoryImpl.Model.model_extendedUser.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserDO;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.infrastructure.DB.RelationshipsMapper;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.infrastructure.DB.UserMapper;

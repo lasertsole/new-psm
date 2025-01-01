@@ -1,9 +1,9 @@
 package com.psm.domain.Independent.Model.Joint.models_user.adaptor;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
-import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Joint.models_user.pojo.valueObject.Models_UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDTO;
 import com.psm.utils.page.PageBO;
 
 public interface Models_UserAdaptor {

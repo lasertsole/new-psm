@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.User.Single.user.adaptor;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
 import com.psm.utils.page.PageBO;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.springframework.dao.DuplicateKeyException;

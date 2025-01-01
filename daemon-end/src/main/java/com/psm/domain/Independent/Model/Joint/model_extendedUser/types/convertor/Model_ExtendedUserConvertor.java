@@ -1,16 +1,16 @@
 package com.psm.domain.Independent.Model.Joint.model_extendedUser.types.convertor;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDTO;
 import com.psm.domain.Independent.Model.Single.model3d.types.convertor.Model3dConvertor;
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserBO;
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserDO;
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserDTO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserBO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserDO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserDTO;
 import com.psm.domain.Independent.User.Single.relationships.types.convertor.ExtendedUserConvertor;
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserBO;
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDO;
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDTO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserBO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

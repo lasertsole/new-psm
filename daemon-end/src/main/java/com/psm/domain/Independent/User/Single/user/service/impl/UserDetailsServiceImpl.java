@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.user.service.impl;
 
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.infrastructure.RepositoryImpl.User.user.LoginUserCache;
 import com.psm.infrastructure.RepositoryImpl.User.user.UserDB;
 import com.psm.domain.Independent.User.Single.user.service.AuthUserService;

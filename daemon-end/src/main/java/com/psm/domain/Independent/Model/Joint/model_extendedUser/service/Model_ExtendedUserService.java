@@ -1,6 +1,6 @@
 package com.psm.domain.Independent.Model.Joint.model_extendedUser.service;
 
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserBO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserBO;
 
 public interface Model_ExtendedUserService {
     /**

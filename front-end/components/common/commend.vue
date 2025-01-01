@@ -33,16 +33,61 @@
     import { ref, defineProps, type PropType } from "vue";
     import { TargetTypeEnum } from "@/enums/review";
 
-    const {ID, srcUserId, avatar, name, targetType, targetId, timestamp, content, createTime} = defineProps({
-        ID:{type:String, required:true},
-        srcUserId:{type:String, required:true},
+    const {ID, srcUserId, avatar, name, targetType, targetId, timestamp, content, createTime, likeNum, dislikeNum} = defineProps({
+        ID:{
+            type:String,
+            required:true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
+        srcUserId:{
+            type:String,
+            required:true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
         avatar:{type:String, required:true},
         name:{type:Number, required:true},
         targetType:{type:Object as PropType<TargetTypeEnum>, required:true},
-        targetId:{type:String, required:true},
+        targetId:{
+            type:String,
+            required:true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
         timestamp:{type:String, required:true},
         content:{type:String, required:true},
         createTime:{type:String, required:true},
+        likeNum:{
+            type:Number,
+            required:false, default: 0,
+            validator: function (value:number):boolean {
+                return value >= 0;
+            }
+        },
+        dislikeNum:{
+            type:Number,
+            required:false,
+            default: 0,
+            validator: function (value:number):boolean {
+                return value >= 0;
+            }
+        },
     });
 </script>
 

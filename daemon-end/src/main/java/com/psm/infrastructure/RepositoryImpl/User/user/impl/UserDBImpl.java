@@ -3,7 +3,7 @@ package com.psm.infrastructure.RepositoryImpl.User.user.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.infrastructure.DB.UserMapper;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;

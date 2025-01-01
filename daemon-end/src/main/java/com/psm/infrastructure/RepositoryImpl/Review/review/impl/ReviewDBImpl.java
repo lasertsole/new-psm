@@ -3,8 +3,8 @@ package com.psm.infrastructure.RepositoryImpl.Review.review.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Dependent.Review.Single.review.entity.ReviewDO;
-import com.psm.domain.Dependent.Review.Single.review.types.enums.TargetTypeEnum;
+import com.psm.domain.Independent.Review.Single.review.pojo.entity.ReviewDO;
+import com.psm.domain.Independent.Review.Single.review.types.enums.TargetTypeEnum;
 import com.psm.infrastructure.DB.ReviewMapper;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import com.psm.infrastructure.RepositoryImpl.Review.review.ReviewDB;
@@ -28,9 +28,9 @@ public class ReviewDBImpl extends BaseDBRepositoryImpl<ReviewMapper, ReviewDO> i
             .orderByDesc(ReviewDO::getCreateTime);
 
         if (Objects.nonNull(attachUserId)) {
-            wrapper.eq(ReviewDO::getAttachUserId, attachUserId);
+            wrapper.eq(ReviewDO::getAttachId, attachUserId);
         } else {
-            wrapper.isNull(ReviewDO::getAttachUserId);
+            wrapper.isNull(ReviewDO::getAttachId);
         }
 
         return reviewMapper.selectPage(new Page<>(current, size), wrapper);

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psm.infrastructure.DB.OAuth2ThirdAccountMapper;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
 import com.psm.infrastructure.RepositoryImpl.User.user.OAuth2ThirdAccountDB;
 import org.springframework.beans.factory.annotation.Autowired;
 

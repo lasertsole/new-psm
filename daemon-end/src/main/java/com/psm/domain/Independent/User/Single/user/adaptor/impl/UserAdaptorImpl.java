@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.User.Single.user.adaptor.impl;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
 import com.psm.domain.Independent.User.Single.user.service.AuthUserService;

@@ -1,7 +1,7 @@
 package com.psm.infrastructure.RepositoryImpl.Model.models_user;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserDO;
+import com.psm.domain.Independent.Model.Joint.models_user.pojo.valueObject.Models_UserDO;
 
 public interface Models_UserDB {
     /**

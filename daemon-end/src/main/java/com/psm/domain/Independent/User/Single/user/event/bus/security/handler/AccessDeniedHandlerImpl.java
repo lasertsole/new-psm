@@ -2,7 +2,7 @@ package com.psm.domain.Independent.User.Single.user.event.bus.security.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.WebUtil;
-import com.psm.types.common.DTO.ResponseDTO;
+import com.psm.types.common.Response.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

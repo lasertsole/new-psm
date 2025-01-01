@@ -1,6 +1,6 @@
 package com.psm.domain.Independent.User.Single.relationships.repository;
 
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
 
 import java.util.List;
 

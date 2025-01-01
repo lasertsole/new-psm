@@ -1,7 +1,7 @@
 package com.psm.infrastructure.RepositoryImpl.User.relationships.impl;
 
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
 import com.psm.domain.Independent.User.Single.relationships.repository.RelationshipsRepository;
 import com.psm.infrastructure.RepositoryImpl.User.relationships.RelationshipsDB;
 import lombok.extern.slf4j.Slf4j;

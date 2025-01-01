@@ -1,6 +1,6 @@
 package com.psm.domain.Independent.User.Single.relationships.adaptor;
 
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsBO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsBO;
 import jakarta.validation.Valid;
 import org.springframework.dao.DuplicateKeyException;
 

@@ -2,7 +2,7 @@ package com.psm.domain.Independent.Communication.Single.Chat.event.listener;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatBO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatBO;
 import com.psm.domain.Independent.Communication.Single.Chat.service.ChatService;
 import com.psm.types.common.Event.Event;
 import jakarta.annotation.PostConstruct;

@@ -2,7 +2,7 @@ package com.psm.infrastructure.RepositoryImpl.User.relationships.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
 import com.psm.infrastructure.DB.RelationshipsMapper;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;

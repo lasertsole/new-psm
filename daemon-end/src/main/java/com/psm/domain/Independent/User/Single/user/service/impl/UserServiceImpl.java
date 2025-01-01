@@ -2,10 +2,10 @@ package com.psm.domain.Independent.User.Single.user.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.corundumstudio.socketio.SocketIOClient;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDTO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.domain.Independent.User.Single.user.repository.UserRepository;
 import com.psm.domain.Independent.User.Single.user.service.UserService;
 import com.psm.domain.Independent.User.Single.user.types.convertor.UserConvertor;

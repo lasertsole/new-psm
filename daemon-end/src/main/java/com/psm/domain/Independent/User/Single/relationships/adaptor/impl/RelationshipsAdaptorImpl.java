@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.relationships.adaptor.impl;
 
 import com.psm.domain.Independent.User.Single.relationships.adaptor.RelationshipsAdaptor;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsBO;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDTO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsBO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDTO;
 import com.psm.domain.Independent.User.Single.relationships.service.RelationshipsService;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.utils.Valid.ValidUtil;

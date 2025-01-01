@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.Communication.Single.Chat.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatDO;
 
 public interface ChatRepository {
     /**

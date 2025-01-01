@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.user.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

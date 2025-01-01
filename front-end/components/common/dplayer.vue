@@ -190,7 +190,10 @@
 
     // 添加自定义右键菜单
     props.extraContextMenuOptions.forEach(option=>{
-        contextMenuOptions.push(option);
+        contextMenuOptions.push({
+            text: typeof option.text === 'object' ? (option.text as Ref<string>).value : option.text,
+            callback: option.callback
+        });
     });
 
     const contextmenuEvent = debounce((event:MouseEvent)=>{

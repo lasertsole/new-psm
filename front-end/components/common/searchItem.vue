@@ -11,7 +11,17 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        ID: {type:String, required: true},
+        ID: {
+            type:String,
+            required: true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
     });
 
     function jumpToShowcaseDetail():void{

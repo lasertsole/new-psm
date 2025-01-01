@@ -20,7 +20,17 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        tgtUserId: {type:String, required: true},
+        tgtUserId: {
+            type:String,
+            required: true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
         avatar: {type:String, required: false, default: process.env.Default_User_Avatar},
         unread: {type:Number, required: false, default: 0},
         isMuted: {type:Boolean, required: false, default: false},

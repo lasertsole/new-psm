@@ -4,7 +4,7 @@ import com.corundumstudio.socketio.AuthTokenResult;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
 import com.psm.infrastructure.SocketIO.SocketIOApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

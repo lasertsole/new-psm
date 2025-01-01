@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.user.types.convertor;
 
-import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
-import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

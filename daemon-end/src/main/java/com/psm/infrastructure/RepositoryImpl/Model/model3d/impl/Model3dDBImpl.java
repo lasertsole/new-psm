@@ -1,7 +1,7 @@
 package com.psm.infrastructure.RepositoryImpl.Model.model3d.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
 import com.psm.infrastructure.DB.Model3dMapper;
 import com.psm.app.annotation.spring.Repository;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;

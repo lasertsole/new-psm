@@ -1,11 +1,11 @@
 package com.psm.trigger.http.Review;
 
-import com.psm.domain.Dependent.Review.Single.review.adaptor.ReviewAdaptor;
-import com.psm.domain.Dependent.Review.Single.review.entity.ReviewBO;
-import com.psm.domain.Dependent.Review.Single.review.entity.ReviewDTO;
-import com.psm.domain.Dependent.Review.Single.review.types.enums.TargetTypeEnum;
+import com.psm.domain.Independent.Review.Single.review.adaptor.ReviewAdaptor;
+import com.psm.domain.Independent.Review.Single.review.pojo.entity.ReviewBO;
+import com.psm.domain.Independent.Review.Single.review.pojo.entity.ReviewDTO;
+import com.psm.domain.Independent.Review.Single.review.types.enums.TargetTypeEnum;
 import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
-import com.psm.types.common.DTO.ResponseDTO;
+import com.psm.types.common.Response.ResponseDTO;
 import com.psm.utils.page.PageBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@ package com.psm.infrastructure.RepositoryImpl.Model.model3d.impl;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.alibaba.fastjson2.JSONObject;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDTO;
 import com.psm.infrastructure.ES.ESApi;
 import com.psm.infrastructure.RepositoryImpl.Model.model3d.Model3dES;
 import jakarta.annotation.PostConstruct;

@@ -3,7 +3,7 @@ package com.psm.domain.Independent.Model.Joint.model_extendedUser.adaptor.impl;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.adaptor.Model_ExtendedUserAdaptor;
 import com.psm.domain.Independent.Model.Joint.model_extendedUser.service.Model_ExtendedUserService;
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserBO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 

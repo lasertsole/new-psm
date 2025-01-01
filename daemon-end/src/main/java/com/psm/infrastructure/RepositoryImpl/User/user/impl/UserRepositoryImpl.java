@@ -2,8 +2,8 @@ package com.psm.infrastructure.RepositoryImpl.User.user.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.domain.Independent.User.Single.user.repository.UserRepository;
 import com.psm.infrastructure.RepositoryImpl.User.user.LoginUserCache;
 import com.psm.infrastructure.RepositoryImpl.User.user.UserDB;

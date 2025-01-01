@@ -24,8 +24,28 @@
         avatar: {type:String, required: false, default: process.env.Default_User_Avatar},
         name: {type:String, required: false, default: ""},
         type: {type:String, required: false, default: 'text'},
-        srcUserId: {type:String, required: true},
-        tgtUserId: {type:String, required: true},
+        srcUserId: {
+            type:String,
+            required: true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
+        tgtUserId: {
+            type:String,
+            required: true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
         timestamp: {type:String, required: false},
         isDeleted: {type:Boolean, required: false, default: false},
         status: {type:String, required: false, default: "sent"}

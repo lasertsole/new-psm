@@ -1,7 +1,7 @@
 package com.psm.infrastructure.RepositoryImpl.User.user;
 
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 
 public interface LoginUserCache {
     /**

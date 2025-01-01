@@ -1,6 +1,6 @@
 package com.psm.app.handler;
 
-import com.psm.types.common.DTO.ResponseDTO;
+import com.psm.types.common.Response.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.Model.Single.model3d.service.impl;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
 import com.psm.domain.Independent.Model.Single.model3d.repository.Model3dRepository;
 import com.psm.domain.Independent.Model.Single.model3d.service.Model3dService;
 import com.psm.domain.Independent.Model.Single.model3d.types.convertor.Model3dConvertor;

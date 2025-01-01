@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.Communication.Single.Chat.types.convertor;
 
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatBO;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDO;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDTO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatBO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatDO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

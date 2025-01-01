@@ -34,7 +34,17 @@
     );
 
     const props = defineProps({
-        ID: { type: String, required: true },
+        ID: {
+            type: String,
+            required: true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
         title: { type: String, required: true },
         createTime: { type: String, required: true },
         style: { type: String, required: true },

@@ -1,7 +1,7 @@
 package com.psm.trigger.routine;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatDO;
 import com.psm.infrastructure.DB.ChatMapper;
 import com.psm.infrastructure.Tus.properties.TusProperties;
 import lombok.extern.slf4j.Slf4j;

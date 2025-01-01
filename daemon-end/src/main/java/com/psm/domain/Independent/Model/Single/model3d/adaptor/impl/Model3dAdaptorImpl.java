@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.Model.Single.model3d.adaptor.impl;
 
 import com.psm.domain.Independent.Model.Single.model3d.adaptor.Model3dAdaptor;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
 import com.psm.domain.Independent.Model.Single.model3d.service.Model3dService;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.infrastructure.Tus.Tus;

@@ -1,6 +1,6 @@
 package com.psm.infrastructure.RepositoryImpl.Model.model_extendedUser;
 
-import com.psm.domain.Independent.Model.Joint.model_extendedUser.valueObject.Model_ExtendedUserDO;
+import com.psm.domain.Independent.Model.Joint.model_extendedUser.pojo.valueObject.Model_ExtendedUserDO;
 
 public interface Model_ExtendedUserDB {
     /**

@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.Model.Single.model3d.types.convertor;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDTO;
 import com.psm.types.enums.VisibleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;

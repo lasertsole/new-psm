@@ -1,6 +1,6 @@
 package com.psm.infrastructure.RepositoryImpl.User.relationships;
 
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 
 import java.util.List;

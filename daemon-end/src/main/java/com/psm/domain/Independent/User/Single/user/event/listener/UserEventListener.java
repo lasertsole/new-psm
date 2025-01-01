@@ -2,8 +2,8 @@ package com.psm.domain.Independent.User.Single.user.event.listener;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDTO;
 import com.psm.types.common.Event.Event;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

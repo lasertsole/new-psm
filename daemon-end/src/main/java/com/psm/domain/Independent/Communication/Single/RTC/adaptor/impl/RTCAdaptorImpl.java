@@ -4,7 +4,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.app.annotation.spring.Adaptor;
 import com.psm.domain.Independent.Communication.Single.RTC.adaptor.RTCAdaptor;
 import com.psm.domain.Independent.Communication.Single.RTC.service.RTCService;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
 import com.psm.infrastructure.SocketIO.pojo.RTCSwap;
 import com.psm.infrastructure.SocketIO.pojo.Room;
 import com.psm.infrastructure.SocketIO.pojo.RoomInvitation;

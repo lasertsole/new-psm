@@ -1,9 +1,9 @@
 package com.psm.trigger.http.User;
 
 import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
-import com.psm.types.common.DTO.ResponseDTO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDTO;
+import com.psm.types.common.Response.ResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

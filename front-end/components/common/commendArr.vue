@@ -12,7 +12,6 @@
                 :name="item.name"
                 :targetType="item.targetType"
                 :targetId="item.targetId"
-                :timestamp="item.timestamp"
                 :content="item.content"
                 :createTime="item.createTime"
             ></comment>
@@ -27,7 +26,17 @@
     import { TargetTypeEnum } from "@/enums/review";
 
     const { ID, targetType } = defineProps({
-        ID:{type:String, required:true},
+        ID:{
+            type:String,
+            required:true,
+            validator: function (value:string):boolean {
+                try {
+                    return parseInt(value)>=0;
+                } catch (error) {
+                    return false;
+                };
+            }
+        },
         targetType:{type:Object as PropType<TargetTypeEnum>, required:true},
     });
 
@@ -71,9 +80,9 @@
             name: "moya",
             targetType: TargetTypeEnum.Model3d,
             targetId: "112233",
-            timestamp: "2023-05-23",
             content: "又快又美，吹爆！！",
             createTime: "2023-05-23",
+            likeNum: 0,
         },
         {
             id: "112233",
@@ -82,9 +91,9 @@
             name: "moya",
             targetType: TargetTypeEnum.Model3d,
             targetId: "112233",
-            timestamp: "2023-05-23",
             content: "又快又美，吹爆！！",
             createTime: "2023-05-23",
+            likeNum: 0,
         },
         {
             id: "112233",
@@ -93,9 +102,9 @@
             name: "moya",
             targetType: TargetTypeEnum.Model3d,
             targetId: "112233",
-            timestamp: "2023-05-23",
             content: "又快又美，吹爆！！",
             createTime: "2023-05-23",
+            likeNum: 0,
         },
         {
             id: "112233",
@@ -104,9 +113,9 @@
             name: "moya",
             targetType: TargetTypeEnum.Model3d,
             targetId: "112233",
-            timestamp: "2023-05-23",
             content: "又快又美，吹爆！！",
             createTime: "2023-05-23",
+            likeNum: 0,
         },
         {
             id: "112233",
@@ -115,9 +124,9 @@
             name: "moya",
             targetType: TargetTypeEnum.Model3d,
             targetId: "112233",
-            timestamp: "2023-05-23",
             content: "又快又美，吹爆！！",
             createTime: "2023-05-23",
+            likeNum: 0,
         },
         {
             id: "112233",
@@ -126,9 +135,9 @@
             name: "moya",
             targetType: TargetTypeEnum.Model3d,
             targetId: "112233",
-            timestamp: "2023-05-23",
             content: "又快又美，吹爆！！",
             createTime: "2023-05-23",
+            likeNum: 0,
         },
     ]);
 </script>

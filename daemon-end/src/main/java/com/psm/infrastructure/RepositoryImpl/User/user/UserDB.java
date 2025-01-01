@@ -1,7 +1,7 @@
 package com.psm.infrastructure.RepositoryImpl.User.user;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 
 import java.util.List;

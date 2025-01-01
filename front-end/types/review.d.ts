@@ -1,4 +1,4 @@
-import { TargetTypeEnum } from "@/enums/review";
+import { TargetTypeEnum, AttitudeTypeEnum } from "@/enums/review";
 
 export type Review = {
     id: string;
@@ -7,11 +7,23 @@ export type Review = {
     name: string;
     targetType: TargetTypeEnum;
     targetId: string;
-    attachUserId?: string | undefined;
-    replyUserId?: string | undefined;
+    attachId?: string | undefined;
+    replyId?: string | undefined;
     content: string;
-    timestamp: string;
+    createTime: string;
+    attaches?: Review[];
+    replies?: Review[];
+    likeNum: number;
+    dislikeNum?: number;
+};
+
+export type Attitude = {
+    id: string;
+    srcUserId: string;
+    targetType: TargetTypeEnum;
+    targetId: string;
+    attitudeType: AttitudeTypeEnum;
     createTime: string;
 };
 
-export { TargetTypeEnum };
+export { TargetTypeEnum, Attitude };

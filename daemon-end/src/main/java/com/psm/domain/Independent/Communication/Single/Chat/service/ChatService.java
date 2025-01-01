@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.Communication.Single.Chat.service;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatBO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatBO;
 import org.apache.rocketmq.client.apis.ClientException;
 
 /**聊天领域服务

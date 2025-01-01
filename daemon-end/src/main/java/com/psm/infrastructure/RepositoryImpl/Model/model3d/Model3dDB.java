@@ -1,6 +1,6 @@
 package com.psm.infrastructure.RepositoryImpl.Model.model3d;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepository;
 import com.psm.types.enums.VisibleEnum;
 

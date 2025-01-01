@@ -2,9 +2,9 @@ package com.psm.infrastructure.RepositoryImpl.Review.review.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Dependent.Review.Single.review.entity.ReviewDO;
-import com.psm.domain.Dependent.Review.Single.review.repository.ReviewRepository;
-import com.psm.domain.Dependent.Review.Single.review.types.enums.TargetTypeEnum;
+import com.psm.domain.Independent.Review.Single.review.pojo.entity.ReviewDO;
+import com.psm.domain.Independent.Review.Single.review.repository.ReviewRepository;
+import com.psm.domain.Independent.Review.Single.review.types.enums.TargetTypeEnum;
 import com.psm.infrastructure.RepositoryImpl.Review.review.ReviewDB;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

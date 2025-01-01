@@ -1,6 +1,6 @@
 package com.psm.domain.Independent.Model.Single.model3d.adaptor;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
 import com.psm.types.enums.VisibleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

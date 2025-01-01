@@ -2,7 +2,7 @@ package com.psm.domain.Independent.Communication.Single.RTC.service.impl;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.psm.domain.Independent.Communication.Single.RTC.service.RTCService;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
 import com.psm.infrastructure.MQ.rocketMQ.MQPublisher;
 import com.psm.infrastructure.SocketIO.pojo.RTCSwap;
 import com.psm.infrastructure.SocketIO.pojo.Room;

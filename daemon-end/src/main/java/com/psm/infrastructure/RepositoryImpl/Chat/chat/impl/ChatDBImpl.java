@@ -3,7 +3,7 @@ package com.psm.infrastructure.RepositoryImpl.Chat.chat.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.psm.app.annotation.spring.Repository;
-import com.psm.domain.Independent.Communication.Single.Chat.entity.ChatDO;
+import com.psm.domain.Independent.Communication.Single.Chat.pojo.entity.ChatDO;
 import com.psm.infrastructure.DB.ChatMapper;
 import com.psm.infrastructure.DB.cacheEnhance.BaseDBRepositoryImpl;
 import com.psm.infrastructure.RepositoryImpl.Chat.chat.ChatDB;

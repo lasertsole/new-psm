@@ -1,6 +1,6 @@
 package com.psm.domain.Independent.User.Single.user.event.bus.security.filter;
 
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.JWT.JWTUtil;
 import com.psm.infrastructure.RepositoryImpl.User.user.LoginUserCache;
 import io.jsonwebtoken.Claims;

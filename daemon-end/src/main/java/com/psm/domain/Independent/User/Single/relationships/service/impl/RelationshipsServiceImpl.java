@@ -1,7 +1,7 @@
 package com.psm.domain.Independent.User.Single.relationships.service.impl;
 
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsBO;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsBO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
 import com.psm.domain.Independent.User.Single.relationships.repository.RelationshipsRepository;
 import com.psm.domain.Independent.User.Single.relationships.service.RelationshipsService;
 import com.psm.domain.Independent.User.Single.relationships.types.convertor.RelationshipsConvertor;

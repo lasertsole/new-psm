@@ -2,7 +2,7 @@ package com.psm.trigger.http.User;
 
 import com.psm.domain.Independent.User.Single.relationships.adaptor.RelationshipsAdaptor;
 import com.psm.domain.Independent.User.Single.user.adaptor.UserAdaptor;
-import com.psm.types.common.DTO.ResponseDTO;
+import com.psm.types.common.Response.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;

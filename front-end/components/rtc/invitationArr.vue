@@ -147,15 +147,17 @@
         trackSwitchVisible.value = false;
         videoVisible.value = true;
 
-        for(let stream in deviceControl) {
-            deviceControl[stream].forEach((item)=>{
-                if(item.active=='true'){
-                    item.bindStreams[0].enabled = true;
-                } else if(item.active=='false') {
-                    item.bindStreams[0].enabled = false;
-                };
-            });
-        };
+        Object.entries(deviceControl).forEach(([key, items]) => {
+            if (key === 'video' || key === 'audio') {
+                items.forEach((item) => {
+                    if (item.active === 'true') {
+                        item.bindStreams[0].enabled = true;
+                    } else if (item.active === 'false') {
+                        item.bindStreams[0].enabled = false;
+                    }
+                });
+            }
+        });
     };
 
     on("online", async():Promise<void>=>{
@@ -227,7 +229,7 @@
     }, 1000);
 
     // 添加rtc窗口自定义右键菜单
-    const extraContextMenuOptions:ContextMenuOptions = [{text: "流控制", callback: async ():Promise<void>=>{
+    const extraContextMenuOptions:ContextMenuOptions[] = [{text: "流控制", callback: async ():Promise<void>=>{
         trackSwitchVisible.value = true;
     }}];
 </script>

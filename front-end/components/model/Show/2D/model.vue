@@ -15,15 +15,15 @@
 
     onMounted(async () => {
         // 创建 Shadow DOM
-        const shadowRoot = entity.value.attachShadow({ mode: 'closed' });
+        const shadowRoot:any = entity.value!.attachShadow({ mode: 'closed' });
         shadowRoot.id = 'oml2d-stage';
-        const entityContainer:HTMLElement = entityContainerTemplate.value.firstChild!
+        const entityContainer:ChildNode  = entityContainerTemplate.value!.firstChild!
         shadowRoot.appendChild(entityContainer);
         
         const oh_my_live2d = () => import('oh-my-live2d');
         const { loadOml2d } = await oh_my_live2d();
         loadOml2d({
-            parentElement: entityContainer,
+            parentElement: entityContainer as HTMLElement,
             sayHello: false,
             mobileDisplay: true,
             models: [
@@ -32,8 +32,8 @@
                     scale: 0.08,
                     volume: 1,
                     stageStyle: {
-                        transform: null,
-                        position: null,
+                        transform: undefined,
+                        position: undefined,
                     }
                 }
             ]

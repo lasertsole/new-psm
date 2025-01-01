@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.relationships.types.convertor;
 
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserBO;
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDO;
-import com.psm.domain.Independent.User.Single.relationships.valueObject.ExtendedUserDTO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserBO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.valueObject.ExtendedUserDTO;
 import com.psm.domain.Independent.User.Single.user.types.convertor.UserConvertor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;

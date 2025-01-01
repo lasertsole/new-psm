@@ -1,15 +1,15 @@
 package com.psm.domain.Independent.Model.Joint.models_user.types.convertor;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dBO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDTO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dBO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDTO;
 import com.psm.domain.Independent.Model.Single.model3d.types.convertor.Model3dConvertor;
-import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserBO;
-import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserDO;
-import com.psm.domain.Independent.Model.Joint.models_user.valueObject.Models_UserDTO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
+import com.psm.domain.Independent.Model.Joint.models_user.pojo.valueObject.Models_UserBO;
+import com.psm.domain.Independent.Model.Joint.models_user.pojo.valueObject.Models_UserDO;
+import com.psm.domain.Independent.Model.Joint.models_user.pojo.valueObject.Models_UserDTO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDTO;
 import com.psm.domain.Independent.User.Single.user.types.convertor.UserConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;

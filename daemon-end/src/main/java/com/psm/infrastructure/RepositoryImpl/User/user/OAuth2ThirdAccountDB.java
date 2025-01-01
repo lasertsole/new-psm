@@ -1,7 +1,7 @@
 package com.psm.infrastructure.RepositoryImpl.User.user;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
 
 public interface OAuth2ThirdAccountDB extends IService<OAuth2ThirdAccountDO> {
     /**

@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.relationships.types.convertor;
 
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsBO;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDO;
-import com.psm.domain.Independent.User.Single.relationships.entity.RelationshipsDTO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsBO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDO;
+import com.psm.domain.Independent.User.Single.relationships.pojo.entity.RelationshipsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

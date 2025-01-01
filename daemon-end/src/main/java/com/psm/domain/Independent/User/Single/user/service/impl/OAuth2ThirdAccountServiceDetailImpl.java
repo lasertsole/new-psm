@@ -1,9 +1,9 @@
 package com.psm.domain.Independent.User.Single.user.service.impl;
 
-import com.psm.domain.Independent.User.Single.user.entity.LoginUser.LoginUser;
-import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
-import com.psm.domain.Independent.User.Single.user.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.LoginUser.LoginUser;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDTO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.OAuth2ThirdAccount.OAuth2ThirdAccountDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
 import com.psm.domain.Independent.User.Single.user.types.convertor.OAuth2ThirdAccountConvertor;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.Oauth2UserIdContextHolder;
 import com.psm.infrastructure.RepositoryImpl.User.user.OAuth2ThirdAccountDB;

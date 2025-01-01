@@ -1,6 +1,6 @@
 package com.psm.domain.Independent.Model.Single.model3d.repository;
 
-import com.psm.domain.Independent.Model.Single.model3d.entity.Model3dDO;
+import com.psm.domain.Independent.Model.Single.model3d.pojo.entity.Model3dDO;
 import com.psm.types.enums.VisibleEnum;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,8 +1,8 @@
 package com.psm.domain.Independent.User.Single.user.types.convertor;
 
-import com.psm.domain.Independent.User.Single.user.entity.User.UserBO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDO;
-import com.psm.domain.Independent.User.Single.user.entity.User.UserDTO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserBO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDO;
+import com.psm.domain.Independent.User.Single.user.pojo.entity.User.UserDTO;
 import com.psm.domain.Independent.User.Single.user.types.enums.SexEnum;
 import com.psm.domain.Independent.User.Single.user.event.bus.security.utils.BcryptEncoderUtil;
 import org.mapstruct.*;
