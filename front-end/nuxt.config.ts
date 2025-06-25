@@ -17,55 +17,55 @@ export default defineNuxtConfig({
   build: {
     transpile: ['rxjs', 'three'],
   },
-  // pwa: {
-  //   manifest: {
-  //     name: process.env.VITE_APP_NAME,
-  //     short_name: process.env.VITE_APP_NAME,
-  //     icons: [
-  //       {
-  //         src: process.env.Default_APP_Icon!,
-  //         sizes: '192x192',
-  //         type: 'image/png',
-  //         purpose: "any maskable"
-  //       },
-  //       {
-  //         src: process.env.Default_APP_Icon!,
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //         purpose: "any maskable"
-  //       },
-  //     ],
-  //     theme_color: '#ffffff',
-  //     display: 'standalone',
-  //     start_url: '/',
-  //   },
+  pwa: {
+    manifest: {
+      name: process.env.VITE_APP_NAME,
+      short_name: process.env.VITE_APP_NAME,
+      icons: [
+        {
+          src: process.env.Default_APP_Icon!,
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: "any maskable"
+        },
+        {
+          src: process.env.Default_APP_Icon!,
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: "any maskable"
+        },
+      ],
+      theme_color: '#ffffff',
+      display: 'standalone',
+      start_url: '/',
+    },
 
-  //   workbox:{
-  //     runtimeCaching: [
-  //       {
-  //         urlPattern: new RegExp(process.env.VITE_API_BACK_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
-  //         handler: 'StaleWhileRevalidate',// 推陈出新策略
-  //         options: {
-  //           cacheName: 'backEndCache',
-  //           expiration: {
-  //             maxAgeSeconds: 60 * 60, // <== 缓存过期时间1小时
-  //           },
-  //           cacheableResponse: {
-  //             statuses: [200], // 0表示离线访问
-  //           },
-  //         }
-  //       },
-  //     ]
-  //   },
+    workbox:{
+      runtimeCaching: [
+        {
+          urlPattern: new RegExp(process.env.VITE_API_BACK_URL!.replace(/\//g, '\\/') + '\\/.*', 'i'),
+          handler: 'StaleWhileRevalidate',// 推陈出新策略
+          options: {
+            cacheName: 'backEndCache',
+            expiration: {
+              maxAgeSeconds: 60 * 60, // <== 缓存过期时间1小时
+            },
+            cacheableResponse: {
+              statuses: [200], // 0表示离线访问
+            },
+          }
+        },
+      ]
+    },
 
-  //   devOptions: {
-  //     enabled: true,
-  //     suppressWarnings: true,
-  //     navigateFallback: '/',
-  //     navigateFallbackAllowlist: [/^\/$/],
-  //     type: 'module',
-  //   },
-  // },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
 
   // Defaults options
   tailwindcss: {

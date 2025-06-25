@@ -110,8 +110,8 @@ spring:
       client:
         registration:
           github:
-            client-id: Ov23lilO28AYKuoWOkPs
-            client-secret: 818af0dbaf48927dfd7770b25f47c59157a04ee7
+            client-id: xxxxxxxxxxxxxxx
+            client-secret: xxxxxxxxxxxxxxx
             authorizationGrantType: authorization_code
             redirect-uri: http://localhost:8000/login/oauth2/code/github
             scope:
@@ -172,8 +172,8 @@ aliyun:
   #oss服务
   oss:
     endpoint: https://oss-cn-guangzhou.aliyuncs.com
-    access-key-id: LTAI5t8QXMXdHCpCorzzkVi2
-    access-key-secret: Bv31pl1AcYEryStLmeN1cJksmshROK
+    access-key-id: xxxxxxxxxxxxxxx
+    access-key-secret: xxxxxxxxxxxxxxx
     bucket-name: new-psm
 
     #oss文件路径配置
